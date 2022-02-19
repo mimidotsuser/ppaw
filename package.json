@@ -1,6 +1,7 @@
 {
-  "name": "web",
-  "version": "0.0.0",
+  "name": "ppaw",
+  "version": "1.0.0",
+  "description": "Procurement Process automation web",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
