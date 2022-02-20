@@ -10,11 +10,13 @@ export class MainComponent implements OnInit {
 
   appName: string = environment.app.name;
   logoUrl: string = environment.app.logoUrl;
+  collapseSidebar = false;
 
   constructor() {}
 
-  ngOnInit()
-    :
-    void {}
+  ngOnInit(): void {}
 
+  toggleSidebar() {
+    this.collapseSidebar = !this.collapseSidebar;
+  }
 }
