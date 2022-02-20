@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CoreModule } from "../shared.module";
 
-@Injectable({
-  providedIn: CoreModule
-})
+@Injectable()
 export class HttpService {
 
   constructor() { }
