@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { SharedModule } from "../shared.module";
+import { CoreModule } from "../shared.module";
 
 @Injectable({
-  providedIn: SharedModule
+  providedIn: CoreModule
 })
 export class HttpService {
 

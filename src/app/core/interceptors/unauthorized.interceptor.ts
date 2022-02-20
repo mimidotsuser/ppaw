@@ -6,10 +6,10 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SharedModule } from "../shared.module";
+import { CoreModule } from "../shared.module";
 
 @Injectable(
-  {providedIn: SharedModule}
+  {providedIn: CoreModule}
 )
 export class UnauthorizedInterceptor implements HttpInterceptor {
 
