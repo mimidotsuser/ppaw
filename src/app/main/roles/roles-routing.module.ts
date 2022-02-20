@@ -7,7 +7,7 @@ const routes: Routes = [{
   component: RolesComponent,
   children: [
     {
-      path: '/',
+      path: '',
       loadChildren: () => import('./index/index.module').then(m => m.IndexModule)
     },
     {
