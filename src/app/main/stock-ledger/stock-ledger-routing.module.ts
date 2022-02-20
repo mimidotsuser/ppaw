@@ -10,6 +10,10 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () => import('./index/index.module').then(m => m.IndexModule)
+      },
+      {
+        path: 'inventory-adjustment',
+        loadChildren: () => import('./inventory-adjustment/inventory-adjustment.module').then(m => m.InventoryAdjustmentModule)
       }]
   }];
 
