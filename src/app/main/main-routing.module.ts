@@ -24,11 +24,11 @@ const routes: Routes = [
         loadChildren: () => import('./purchase-requisition/purchase-requisition.module').then(m => m.PurchaseRequisitionModule)
       },
       {
-        path: 'request-for-quotation',
+        path: 'request-for-quotations',
         loadChildren: () => import('./rfq/rfq.module').then(m => m.RfqModule)
       },
       {
-        path: 'purchase-order',
+        path: 'purchase-orders',
         loadChildren: () => import('./lpo/lpo.module').then(m => m.LpoModule)
       },
       {
@@ -44,7 +44,7 @@ const routes: Routes = [
         loadChildren: () => import('./checkin-approval/checkin-approval.module').then(m => m.CheckinApprovalModule)
       },
       {
-        path: 'inventory-request',
+        path: 'checkout-requests',
         loadChildren: () => import('./checkout-request/checkout-request.module').then(m => m.CheckoutRequestModule)
       },
       {
