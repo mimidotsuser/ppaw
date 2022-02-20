@@ -63,6 +63,7 @@ const routes: Routes = [
         path: 'reports',
         loadChildren: () => import('./reports/reports.module').then(m => m.ReportsModule)
       },
+      {path: 'roles', loadChildren: () => import('./roles/roles.module').then(m => m.RolesModule)},
       {path: 'home', loadChildren: () => import('./home/home.module').then(m => m.HomeModule)},
       {path: '', redirectTo: 'home', pathMatch: 'exact'},
       {
@@ -70,7 +71,7 @@ const routes: Routes = [
         loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule),
       }
     ]
-  }
+  },
 ]
 
 @NgModule({
