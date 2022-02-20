@@ -109,6 +109,41 @@ main.main-content {
 }
 
 
+:host ::ng-deep .page-header-container {
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+  align-items: center;
+
+  h1 {
+    font-size: 1.375rem;
+    font-weight: 600;
+  }
+
+  .breadcrumb-container {
+    height: 30px;
+    display: grid;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    white-space: nowrap;
+    overflow-x: auto;
+
+    .breadcrumb {
+      padding-left: 10px;
+      list-style: none;
+      margin: 0;
+      font-size: 13px;
+
+      .breadcrumb-item:not(.active) {
+        color: $breadcrumb-item-color;
+      }
+    }
+  }
+}
+
 /**Tablet and belo**/
 @media (max-width: 992px) {
   aside.main-sidebar {

@@ -1,0 +1,18 @@
+.table {
+  .permissions-cell {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+    max-width: 350px;
+    overflow: auto;
+    max-height: 80px;
+
+    .permission-badge {
+      font-size: 12px;
+      margin-left: 3px;
+      padding: 3px;
+    }
+  }
+}

@@ -1,5 +1,7 @@
-$side-menu-toggle-btn-color: #d6d9dc ;
-$side-menu-toggle-btn-active-color:#485fc7;
+$primary-color: #485fc7;
+
+$side-menu-toggle-btn-color: #d6d9dc;
+$side-menu-toggle-btn-active-color: #485fc7;
 
 $side-menu-border-left: #d6d9dc;
 $side-menu-list-label-color: #7a7a7a;
@@ -7,5 +9,10 @@ $side-menu-link-active-color: #ffff;
 $side-menu-link-active-background: #485fc7;
 
 
-$main-content-background: rgba(0, 0, 0, .1);
+$main-content-background: #f2f2f2;
 
+$breadcrumb-divider: '>>';
+$breadcrumb-item-color: $primary-color;
+
+$btn-padding-x-sm: 0.7rem;
+$btn-padding-y-sm: 2px;

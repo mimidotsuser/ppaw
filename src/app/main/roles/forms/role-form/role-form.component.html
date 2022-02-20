@@ -1,0 +1,24 @@
+<form>
+  <div class="col-6">
+    <label class="form-label">Name</label>
+    <input type="text" class="form-control">
+  </div>
+
+
+  <div class="row col-12 mt-2">
+    <label class="form-label">Select Role Permissions</label>
+
+    <div class="col-4" *ngFor="let group of permissions|async">
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let perm of group.permissions">
+          <input class="form-check-input me-1" type="checkbox">
+          {{perm.name}} : <span class="permission-description">{{perm.description}} </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-6">
+    <label class="form-label">Description</label>
+    <textarea name="description" cols="13" rows="3" class="form-control"></textarea>
+  </div>
+</form>

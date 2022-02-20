@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import "styles/variables";
+
 //start of bootstrap imports
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
@@ -24,6 +26,9 @@
 @import "~bootstrap/scss/tooltip";
 @import "~bootstrap/scss/spinners";
 @import "~bootstrap/scss/modal";
+@import "~bootstrap/scss/breadcrumb";
+@import "~bootstrap/scss/badge";
+@import "~bootstrap/scss/list-group";
 
 // Helpers
 @import "~bootstrap/scss/helpers/text-truncation";

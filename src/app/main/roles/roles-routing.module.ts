@@ -13,7 +13,11 @@ const routes: Routes = [{
     {
       path: 'create',
       loadChildren: () => import('./create/create.module').then(m => m.CreateModule)
-    }]
+    },
+    {
+      path: 'edit/:id', loadChildren: () => import('./edit/edit.module').then(m => m.EditModule)
+    }
+  ]
 }];
 
 @NgModule({

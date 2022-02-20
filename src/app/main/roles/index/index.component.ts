@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RoleService } from '../services/role.service';
 
 @Component({
   selector: 'app-index',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IndexComponent implements OnInit {
 
-  constructor() { }
+  constructor(private roleService: RoleService) { }
 
   ngOnInit(): void {
+  }
+
+  get roles() {
+    return this.roleService.roles;
   }
 
 }
