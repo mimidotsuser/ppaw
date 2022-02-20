@@ -8,6 +8,10 @@ const routes: Routes = [
     component: CheckinApprovalComponent,
     children: [
       {
+        path: 'grn-and-rga/create',
+        loadChildren: () => import('./purchased-products/create/create.module').then(m => m.CreateModule)
+      },
+      {
         path: 'grn-and-rga',
         loadChildren: () => import('./purchased-products/index/index.module').then(m => m.IndexModule)
       }]
