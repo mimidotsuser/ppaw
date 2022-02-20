@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MetaService } from '../../../core/services/meta.service';
 
 @Component({
   selector: 'app-dashboards',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private metaService: MetaService) {
+    this.metaService.title = 'Dashboard'
+  }
 
   ngOnInit(): void {
   }
