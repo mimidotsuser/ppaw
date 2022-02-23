@@ -2,11 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContentHeaderComponent } from './components/content-header/content-header.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SearchService } from './services/search.service';
+import { SidePopupComponent } from './components/side-popup/side-popup.component';
 
 @NgModule({
   declarations: [
-    ContentHeaderComponent
+    ContentHeaderComponent,
+    SidePopupComponent
   ],
   imports: [
     CommonModule,
@@ -18,6 +19,5 @@ import { SearchService } from './services/search.service';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [SearchService]
 })
 export class SharedModule {}

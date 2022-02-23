@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { map, Observable, Subject } from 'rxjs';
-import { SharedModule } from '../shared.module';
 import { HttpService } from '../../core/services/http.service';
 
-@Injectable({providedIn: SharedModule})
+@Injectable()
 export class SearchService<T> {
 
   private searchFields: (keyof T | string)[] = [];
@@ -26,7 +25,7 @@ export class SearchService<T> {
     if (route) {
       hits = this.http.get(route, {withoutToken: true, params: {search: searchTerm},});
     } else if (model) {
-      hits = model.pipe(map((rows: T[], index) => {
+      hits = model.pipe(map((rows: T[]) => {
 
         return rows.filter((row: any) => {
           return this.searchFields
