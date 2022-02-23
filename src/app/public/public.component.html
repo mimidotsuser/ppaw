@@ -1,11 +1,15 @@
-<nav>
-  <div>
-    This is dope
+<div class="container d-flex flex-column min-vh-100 justify-content-center align-items-center">
+  <div class="col-lg-5 mx-auto col-sm-8">
+    <ng-container *ngIf="logoUrl">
+      <div class="logo-container mx-auto">
+        <img class="d-block" src="{{logoUrl}}" alt="{{appName}}">
+      </div>
+    </ng-container>
+
+    <div class="card">
+      <div class="card-body">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
   </div>
-</nav>
-
-<div class="container">
-
-  <router-outlet></router-outlet>
-
 </div>
