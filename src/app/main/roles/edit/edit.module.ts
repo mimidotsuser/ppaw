@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 
 import { EditComponent } from './edit.component';
 import { SharedModule } from '../../../shared/shared.module';
-import { FormsModule } from '../forms/forms.module';
 
 @NgModule({
   declarations: [
@@ -14,7 +13,6 @@ import { FormsModule } from '../forms/forms.module';
     CommonModule,
     RouterModule.forChild([{path: '', component: EditComponent}]),
     SharedModule,
-    FormsModule
   ]
 })
 export class EditModule {}

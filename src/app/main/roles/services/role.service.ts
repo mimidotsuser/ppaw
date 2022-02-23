@@ -5,6 +5,7 @@ import { RolesModule } from '../roles.module';
 import { RoleModel } from '../../../models/role.model';
 import { PermissionService } from './permission.service';
 import { PermissionModel } from '../../../models/permission.model';
+import { HttpService } from '../../../core/services/http.service';
 
 @Injectable({
   providedIn: RolesModule
@@ -13,7 +14,7 @@ export class RoleService {
 
   private roles$ = new BehaviorSubject<RoleModel[]>([])
 
-  constructor(private permissionService: PermissionService) {
+  constructor(private permissionService: PermissionService, private http: HttpService) {
     this.roles$.next([
       {
         id: 'fLJqYgH2yEOHjNz8',
@@ -40,4 +41,7 @@ export class RoleService {
     return this.roles$;
   }
 
+  createRole(data: { name: string, description: string, permissions: string[] }): Observable<RoleModel> {
+    return this.http.put('/roles', data);
+  }
 }

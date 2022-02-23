@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 
 import { SharedModule } from '../../../shared/shared.module';
 import { CreateComponent } from './create.component';
+import { RoleWidgetsModule } from '../role-widgets/role-widgets.module';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import { CreateComponent } from './create.component';
   imports: [
     CommonModule,
     RouterModule.forChild([{path: '', component: CreateComponent}]),
-    SharedModule
+    SharedModule,
+    RoleWidgetsModule
   ]
 })
 export class CreateModule {}

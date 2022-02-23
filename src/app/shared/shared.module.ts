@@ -17,7 +17,8 @@ import { SidePopupComponent } from './components/side-popup/side-popup.component
   exports: [
     ContentHeaderComponent,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SidePopupComponent
   ],
 })
 export class SharedModule {}
