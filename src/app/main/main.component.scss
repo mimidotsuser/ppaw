@@ -90,6 +90,7 @@ aside.main-sidebar {
         color: inherit;
         display: block;
         padding: 0.5em 0.75em;
+        font-size: 14px;
 
         &.active {
           background: $side-menu-link-active-background;
@@ -99,7 +100,6 @@ aside.main-sidebar {
     }
 
   }
-
 
 }
 
