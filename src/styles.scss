@@ -33,3 +33,16 @@
 // Helpers
 @import "~bootstrap/scss/helpers/text-truncation";
 //end of bootstrap imports
+
+.table td {
+  font-size: 14px;
+}
+
+.form-control.ng-invalid.ng-touched {
+  border-color: red;
+}
+
+.help-text {
+  font-size: 0.75em;
+  color: darkgray;
+}
