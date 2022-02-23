@@ -6,15 +6,17 @@
     <label for="username" class="form-label">Email</label>
     <input type="email" class="form-control" id="username" placeholder="Email">
   </div>
-  <div class="col-12 mb-1">
-    <label for="password" class="form-label">Password</label>
+  <div class="col-12 mb-3">
+    <div class="col-12 d-flex justify-content-between">
+      <label for="password" class="form-label">Password</label>
+
+      <a routerLink="/password-reset" class="text-sm-end">
+        <small>Forgot your password?</small>
+      </a>
+    </div>
     <input type="password" class="form-control" id="password" placeholder="Password">
   </div>
-  <div class="col-12 d-flex justify-content-start">
-    <a routerLink="/password-reset" class="text-sm-end">
-      <small>Forgot your password</small>
-    </a>
-  </div>
+
   <div class="col-12 d-flex justify-content-end">
     <button class="btn btn-primary" (click)="login($event)">Log In</button>
   </div>
