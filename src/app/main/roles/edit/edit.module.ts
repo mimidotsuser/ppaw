@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 
 import { EditComponent } from './edit.component';
 import { SharedModule } from '../../../shared/shared.module';
+import { RoleWidgetsModule } from '../role-widgets/role-widgets.module';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { SharedModule } from '../../../shared/shared.module';
     CommonModule,
     RouterModule.forChild([{path: '', component: EditComponent}]),
     SharedModule,
+    RoleWidgetsModule
   ]
 })
 export class EditModule {}

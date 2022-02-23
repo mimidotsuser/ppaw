@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 
 import { RolesModule } from '../roles.module';
 import { RoleModel } from '../../../models/role.model';
@@ -43,5 +43,10 @@ export class RoleService {
 
   createRole(data: { name: string, description: string, permissions: string[] }): Observable<RoleModel> {
     return this.http.put('/roles', data);
+  }
+
+  findRoleById(id: string): Observable<RoleModel | null> {
+    return this.roles$.pipe(map((roles: RoleModel[]) => roles.filter((role: RoleModel) => role.id === id)))
+      .pipe(map((v) => v.length > 0 ? v[ 0 ] : null))
   }
 }

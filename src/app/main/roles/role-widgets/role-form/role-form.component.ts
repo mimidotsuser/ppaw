@@ -12,7 +12,7 @@ import { PermissionModel } from '../../../../models/permission.model';
 export class RoleFormComponent implements OnInit, OnDestroy {
 
   @Input() permissions!: Observable<PermissionModel[]>;
-  @Input() model!: RoleModel;
+  @Input() model!: RoleModel | null;
 
   form!: FormGroup;
 
@@ -68,7 +68,7 @@ export class RoleFormComponent implements OnInit, OnDestroy {
    * @param permission
    */
   permissionIsSelected(permission: PermissionModel) {
-    return this.model.permissions.findIndex((x) => x.id === permission.id) > -1;
+    return this.model!.permissions.findIndex((x) => x.id === permission.id) > -1;
   }
 
   ngOnDestroy(): void {
