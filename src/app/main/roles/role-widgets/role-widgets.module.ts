@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RoleFormComponent } from './role-form/role-form.component';
+import { SharedModule } from '../../../shared/shared.module';
 
 
 @NgModule({
@@ -8,8 +9,11 @@ import { RoleFormComponent } from './role-form/role-form.component';
     RoleFormComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    SharedModule
   ],
-  exports: [RoleFormComponent]
+  exports: [
+    RoleFormComponent
+  ]
 })
-export class FormsModule {}
+export class RoleWidgetsModule {}

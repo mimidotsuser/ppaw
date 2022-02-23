@@ -1,0 +1,49 @@
+<form class="row" [formGroup]="form">
+
+  <div class="col-md-6 mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input type="text" class="form-control" id="name" formControlName="name">
+  </div>
+  <div class="col-md-6"></div>
+  <div class="col-md-6 mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea class="form-control" id="description" formControlName="description"></textarea>
+  </div>
+  <div class="col-lg-6"></div>
+
+  <div class="col-lg-10">
+    <label class="form-label">Select Permissions for this role</label>
+  </div>
+
+  <div class="col-lg-10">
+    <div class="table-controls d-flex">
+
+    </div>
+    <table class="table table-bordered table-striped">
+      <thead>
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody formArrayName="permissions">
+      <ng-container *ngFor="let control of this._permissions.controls;let i =index">
+        <tr [formGroupName]="i">
+          <td>
+            <input type="checkbox" class="form-check-input" id="perm-{{i}}"
+                   formControlName="selected">
+          </td>
+          <td>
+            <label for="perm-{{i}}">{{control.value.title}} </label>
+          </td>
+          <td>
+            <label for="perm-{{i}}"> {{control.value.description}} </label>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+</form>
