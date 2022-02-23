@@ -1,0 +1,31 @@
+<form [formGroup]="form" (ngSubmit)="recoverPassword($event)">
+  <div class="text-center">
+    <h1 class="title">Account Password Recovery</h1>
+  </div>
+  <div class="col-12 mb-3">
+    <label for="password" class="form-label">New password</label>
+    <input type="password" class="form-control" id="password" formControlName="password">
+    <small class="help-text" [ngClass]="{'text-danger':form.get('password')!.touched &&
+            form!.get('password')!.hasError('pattern')}">
+      Must contain at least eight characters, with at least 1 letter and 1 number.
+    </small>
+  </div>
+  <div class="col-12 mb-3">
+    <div class="col-12 d-flex justify-content-between">
+      <label for="password-confirm" class="form-label">Confirm Password</label>
+    </div>
+    <input type="password" class="form-control" id="password-confirm"
+           formControlName="confirm_password">
+    <small class="error-text text-danger" *ngIf="form.get('password')!.touched  &&
+    form.get('confirm_password')!.touched &&
+            form!.get('confirm_password')!.hasError('noMatch')">
+      Passwords don't match!
+    </small>
+  </div>
+
+  <div class="col-12 d-flex justify-content-end">
+    <button type="submit" class="btn btn-primary" (click)="recoverPassword($event)">
+      Reset password
+    </button>
+  </div>
+</form>

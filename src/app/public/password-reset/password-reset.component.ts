@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
+import { MetaService } from '../../core/services/meta.service';
 
 @Component({
   selector: 'app-password-reset',
@@ -11,7 +12,8 @@ export class PasswordResetComponent implements OnInit {
   emailFormControl: FormControl;
   passwordResetInitiated = false;
 
-  constructor() {
+  constructor(private meta: MetaService) {
+    this.meta.title = 'Password Reset'
     this.emailFormControl = new FormControl('',
       {validators: [Validators.email, Validators.required]});
   }
@@ -20,7 +22,7 @@ export class PasswordResetComponent implements OnInit {
   }
 
   resetPassword($event: Event) {
-    $event.stopPropagation();
+    $event.preventDefault();
     if (!this.emailFormControl.invalid) {
       this.passwordResetInitiated = true;
     }

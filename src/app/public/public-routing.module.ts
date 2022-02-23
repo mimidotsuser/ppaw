@@ -16,6 +16,10 @@ const routes: Routes = [
         loadChildren: () => import('./password-reset/password-reset.module').then(m => m.PasswordResetModule)
       },
       {
+        path: 'account-recovery/:token',
+        loadChildren: () => import('./account-recovery/account-recovery.module').then(m => m.AccountRecoveryModule)
+      },
+      {
         path: '**',
         loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule)
       },
