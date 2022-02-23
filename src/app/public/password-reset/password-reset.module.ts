@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { PasswordResetComponent } from './password-reset.component';
 import { RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -11,7 +12,9 @@ import { RouterModule } from '@angular/router';
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{path: '', component: PasswordResetComponent}])
+    RouterModule.forChild([{path: '', component: PasswordResetComponent}]),
+    FormsModule,
+    ReactiveFormsModule,
   ]
 })
 export class PasswordResetModule {}
