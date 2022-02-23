@@ -12,10 +12,10 @@ export class ContentHeaderComponent implements OnInit {
   @Input() title: string = '';
 
   constructor(private titleService: MetaService) {
-    titleService.title = this.title;
   }
 
   ngOnInit(): void {
+    this.titleService.title = this.title;
   }
 
 
