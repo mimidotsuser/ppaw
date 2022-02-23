@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { StorageService } from './storage.service';
 import { environment } from '../../../environments/environment';
 
@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 export class HttpService {
   private baseUrl: string;
 
-  constructor(private httpService: HttpClient, private storageService: StorageService) {
+  constructor(private httpClient: HttpClient, private storageService: StorageService) {
     this.baseUrl = environment.app.apiUrl;
 
   }
@@ -20,7 +20,7 @@ export class HttpService {
    * @param httpOptions : HTTPOptions such as headers to send with request
    */
   get(uri: string, httpOptions?: HTTPOptions): Observable<any> {
-    return this.httpService.get(this.baseUrl + uri, this.buildHttpOptions(httpOptions));
+    return this.httpClient.get(this.baseUrl + uri, this.buildHttpOptions(httpOptions));
   }
 
   /**
@@ -30,7 +30,7 @@ export class HttpService {
    * @param httpOptions : HTTPOptions options such as headers to send with request
    */
   post(uri: string, payload: object, httpOptions?: HTTPOptions): Observable<any> {
-    return this.httpService.post(this.baseUrl + uri, payload, this.buildHttpOptions(httpOptions));
+    return this.httpClient.post(this.baseUrl + uri, payload, this.buildHttpOptions(httpOptions));
   }
 
   /**
@@ -40,7 +40,7 @@ export class HttpService {
    * @param httpOptions : options such as headers
    */
   patch(uri: string, payload: object, httpOptions?: HTTPOptions): Observable<any> {
-    return this.httpService.patch(this.baseUrl + uri, payload, this.buildHttpOptions(httpOptions));
+    return this.httpClient.patch(this.baseUrl + uri, payload, this.buildHttpOptions(httpOptions));
   }
 
   /**
@@ -51,7 +51,7 @@ export class HttpService {
    */
   put(uri: string, payload: JSON, httpOptions?: {}): Observable<any> {
 
-    return this.httpService.put(this.baseUrl + uri, payload, this.buildHttpOptions(httpOptions));
+    return this.httpClient.put(this.baseUrl + uri, payload, this.buildHttpOptions(httpOptions));
   }
 
   /**
@@ -61,7 +61,7 @@ export class HttpService {
    */
   destroy(uri: string, httpOptions?: {}): Observable<any> {
 
-    return this.httpService.delete(this.baseUrl + uri, httpOptions);
+    return this.httpClient.delete(this.baseUrl + uri, httpOptions);
   }
 
 

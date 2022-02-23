@@ -2,6 +2,7 @@ import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core
 import { HttpService } from './services/http.service';
 import { MetaService } from './services/meta.service';
 import { StorageService } from './services/storage.service';
+import { HttpClientModule } from '@angular/common/http';
 
 abstract class EnsureImportedOnce<T> {
   constructor(targetModule: any) {
@@ -13,7 +14,7 @@ abstract class EnsureImportedOnce<T> {
 
 @NgModule({
   declarations: [],
-  imports: [],
+  imports: [HttpClientModule],
 })
 export class CoreModule extends EnsureImportedOnce<CoreModule> {
   constructor(@SkipSelf() @Optional() parent: CoreModule) {
