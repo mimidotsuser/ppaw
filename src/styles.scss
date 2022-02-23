@@ -34,6 +34,9 @@
 @import "~bootstrap/scss/helpers/text-truncation";
 //end of bootstrap imports
 
+@import "styles/table";
+@import "styles/input";
+
 .table td {
   font-size: 14px;
 }

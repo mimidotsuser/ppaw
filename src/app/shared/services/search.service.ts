@@ -14,7 +14,7 @@ export class SearchService<T> {
     this.searchFields = this.searchFields.concat(fields);
   }
 
-  find(searchTerm: string | number, model?: Subject<T[]> | null, route?: string): Observable<T[]> {
+  find(searchTerm: string | number, model?: Observable<T[]> | null, route?: string): Observable<T[]> {
     if (this.searchFields.length == 0) {
       throw new Error('Search fields not provided')
     }
@@ -26,7 +26,6 @@ export class SearchService<T> {
       hits = this.http.get(route, {withoutToken: true, params: {search: searchTerm},});
     } else if (model) {
       hits = model.pipe(map((rows: T[]) => {
-
         return rows.filter((row: any) => {
           return this.searchFields
             .some((field) => this.hasHit(String(searchTerm).toLowerCase(), row, field));

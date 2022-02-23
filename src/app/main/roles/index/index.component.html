@@ -1,38 +1,53 @@
 <app-content-header title="All Roles" [menuItems]="['Home','Roles']">
 </app-content-header>
 
-<div class="container-fluid mt-5">
+<div class="container-fluid">
 
-  <table class="table table-bordered bg-white">
+  <div class="d-flex justify-content-between align-items-center my-3">
+    <div class="col-sm-6 col-md-4 data-filters">
+        <input type="text" class="form-control search" placeholder="Filter"
+               [formControl]="roleFilterControl">
+    </div>
+
+    <div class="d-none d-md-block">
+      <a routerLink="/main/roles/create" class="btn btn-outline-primary">+ Create role</a>
+    </div>
+
+  </div>
+
+
+  <table class="table table-hover table-block-sm">
     <thead>
     <tr>
-      <th>SN</th>
       <th>Name</th>
-      <th>Permissions</th>
       <th>Description</th>
-      <th>Created By</th>
+      <th>Permissions</th>
       <th></th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let role of roles|async; let i=index">
-      <td>{{i + 1}}</td>
-      <td>{{role.name}}</td>
-      <td class="permissions-cell">
+    <tr *ngFor="let role of (this.isSearching? this.filteredRoles: roles)|async; let i=index">
+
+      <td data-label="Name">{{role.name}}</td>
+      <td data-label="Description">{{role.description}}</td>
+      <td data-label="Permissions" class="permissions-cell">
         <span *ngFor="let p of role.permissions" class="badge bg-secondary permission-badge">
           {{p.name}}
         </span>
       </td>
       <td>
-        {{role.description}}
-      </td>
-      <td>{{role?.created_by?.first_name}} {{role?.created_by?.last_name}}</td>
-      <td class="d-grid gap-4 d-md-block">
-        <a routerLink="edit/{{role.id}}" class="btn btn-sm btn-primary">Edit</a>
-        <button class="btn btn-sm btn-outline-danger">Delete</button>
+        <div class="d-flex gap-2 justify-content-end">
+          <a routerLink="edit/{{role.id}}" class="btn btn-sm btn-outline-primary">Edit</a>
+          <button class="btn btn-sm btn-outline-danger">Delete</button>
+        </div>
       </td>
     </tr>
 
+    <ng-container *ngIf="isSearching && (this.filteredRoles|async)?.length===0;">
+      <tr class="no-data">
+        <td colspan="4" class="py-3"> No data matching the criteria</td>
+      </tr>
+    </ng-container>
     </tbody>
   </table>
 
