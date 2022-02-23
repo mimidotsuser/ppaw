@@ -49,7 +49,7 @@ export class HttpService {
    * @param payload : key ~ value pair data to replace with
    * @param httpOptions : options such as request header
    */
-  put(uri: string, payload: JSON, httpOptions?: {}): Observable<any> {
+  put(uri: string, payload: object, httpOptions?: {}): Observable<any> {
 
     return this.httpClient.put(this.baseUrl + uri, payload, this.buildHttpOptions(httpOptions));
   }
