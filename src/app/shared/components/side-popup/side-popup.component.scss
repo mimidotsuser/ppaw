@@ -1,5 +1,4 @@
-$side-popup-header-border-color: red;
-$side-popup-background: white;
+@import "src/styles/variables";
 
 .popup {
   display: none;
@@ -47,9 +46,9 @@ $side-popup-background: white;
 
     .icon {
       line-height: 1.3rem;
-      margin-left: 10px;
+      margin-left: 20px;
       cursor: pointer;
-      padding: 8px;
+      padding: 2px;
 
       &:hover {
         &.maximize-icon {

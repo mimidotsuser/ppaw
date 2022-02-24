@@ -1,0 +1,7 @@
+.custom-vertical-btn {
+  &.dropdown-toggle::after {
+    display: none;
+  }
+
+  border: none;
+}

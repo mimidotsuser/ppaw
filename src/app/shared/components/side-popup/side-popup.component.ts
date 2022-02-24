@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
+import { faWindowClose } from '@fortawesome/free-regular-svg-icons';
 
 @Component({
   selector: 'app-side-popup',
@@ -7,6 +9,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class SidePopupComponent implements OnInit {
 
+  faWindowMaximize = faWindowMaximize;
+  faWindowClose = faWindowClose;
 
   @Input() title: string = '';
   @Input() show = false;

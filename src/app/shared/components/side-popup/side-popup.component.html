@@ -1,20 +1,20 @@
 <div class="popup"
      [ngClass]="{'is-active':this.show,'maximize':isFullScreen,'left':showLeft,'right':!showLeft}">
-  <div class="header level is-mobile">
+  <div class="header d-flex justify-content-between">
     <div class="level-left">
       <p class="title">
         {{title}}
       </p>
     </div>
-    <div class="level-right">
+    <div class="d-flex justify-content-end">
       <div class="level-item">
         <div class="icon maximize-icon" (click)="isFullScreen=!isFullScreen">
-          <i class="fa fa-window-maximize "></i>
+          <fa-icon [icon]="faWindowMaximize"></fa-icon>
         </div>
       </div>
       <div class="level-item">
         <div class="icon close-icon" (click)="close()">
-          <span aria-hidden="true" class="fa fa-window-close"></span>
+          <fa-icon [icon]="faWindowClose"></fa-icon>
         </div>
       </div>
     </div>
