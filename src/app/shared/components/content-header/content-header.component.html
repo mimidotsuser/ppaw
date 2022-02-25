@@ -1,13 +1,11 @@
 <ng-container *ngIf="totalItems>0">
-  <header class="page-header-container">
+  <header class="page-header-container flex-wrap">
     <h1>{{title}}</h1>
     <div class="breadcrumb-container">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li *ngFor="let item of menuItems; let i =index"
-              class="breadcrumb-item" [ngClass]="{'active':totalItems == i+1}">{{item}}</li>
-        </ol>
-      </nav>
+      <ol class="breadcrumb">
+        <li *ngFor="let item of menuItems; let i =index"
+            class="breadcrumb-item" [ngClass]="{'active':totalItems == i+1}">{{item}}</li>
+      </ol>
     </div>
   </header>
 
