@@ -1,0 +1,10 @@
+.table {
+  vertical-align: middle;
+
+  .new-row {
+    background-color: #dbeeff;
+  }
+  .edit-row{
+    background-color: var(--bs-table-striped-bg);
+  }
+}

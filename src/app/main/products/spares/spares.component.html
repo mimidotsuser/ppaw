@@ -1,0 +1,84 @@
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center my-3">
+    <div class="col-sm-6 col-md-4 data-filters">
+      <input type="text" class="form-control search" placeholder="Filter"
+             [formControl]="productSearchInput">
+    </div>
+
+    <div class="d-none d-md-block">
+      <button type="button" class="btn btn-outline-primary"
+              (click)="showCreateProductFormPopup()">
+        + Create Spare Item
+      </button>
+    </div>
+
+  </div>
+
+  <table class="table table-hover table-block-sm">
+    <thead>
+    <tr>
+      <th>Item Code</th>
+      <th>M-PN</th>
+      <th>Description</th>
+      <th>EOQ</th>
+      <th>MIN-L</th>
+      <th>RO-L</th>
+      <th>MAX-L</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let prod of products|async">
+
+      <td data-label="Item Code">{{prod.item_code}}</td>
+      <td data-label="M-PN">{{prod.mpn}}</td>
+      <td data-label="Description">{{prod.description}}</td>
+      <td data-label="EOQ"> {{prod.eoq}}  </td>
+      <td data-label="MIN-L"> {{prod.minl}} </td>
+      <td data-label="RO-L"> {{prod.rol}} </td>
+      <td data-label="MAX-L"> {{prod.maxl}} </td>
+      <td>
+        <div class="d-flex gap-2 justify-content-end">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary custom-vertical-btn" id="dp" ngbDropdownToggle>
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dp">
+
+              <button ngbDropdownItem (click)="showProductEditForm(prod)">Edit</button>
+              <button ngbDropdownItem (click)="deleteProduct(prod)">Delete</button>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+
+
+    </tbody>
+  </table>
+
+</div>
+
+<app-side-popup [(show)]="showSpareFormPopup"
+                [title]="this.model?.id?'Update Spare Item':'Create Spare Item'">
+
+  <app-spare-form [model]="this.model" [machines]="this.machines" #spareFormComponent>
+
+  </app-spare-form>
+
+  <div class="d-flex gap-2">
+
+    <button type="button" class="btn btn-primary" *ngIf="!this.model?.id"
+            (click)="saveProductForm(spareFormComponent.form)">
+      CREATE
+    </button>
+    <button type="button" class="btn btn-primary" *ngIf="this.model?.id"
+            (click)="saveProductForm(spareFormComponent.form)">
+      UPDATE
+    </button>
+    <button type="button" class="btn btn-cancel"
+            (click)="this.closeProductFormPopup(spareFormComponent.form)">
+      CANCEL
+    </button>
+  </div>
+</app-side-popup>

@@ -1,2 +1,20 @@
-<p>products works!</p>
+<ng-container *ngIf="activeTab=='machinesTab';else sparesHeader">
+  <app-content-header title="All Machines Items" [menuItems]="['Home','Products','Machines']">
+  </app-content-header>
+</ng-container>
+
+<ng-template #sparesHeader>
+  <app-content-header title="All Spare Items" [menuItems]="['Home','Products','Spares']">
+  </app-content-header>
+</ng-template>
+
+<nav ngbNav [(activeId)]="activeTab" class="nav-tabs mt-2" #productsNav="ngbNav">
+  <div ngbNavItem="machinesTab">
+    <a ngbNavLink routerLink="machines">Machines</a>
+  </div>
+  <div ngbNavItem="sparesTab">
+    <a ngbNavLink routerLink="spares">Spares</a>
+  </div>
+</nav>
+
 <router-outlet></router-outlet>

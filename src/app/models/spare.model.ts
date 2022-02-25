@@ -2,6 +2,7 @@ import { UserModel } from './user.model';
 
 export interface SpareModel {
   id: string;
+  parent_id: string;
   item_code: string;
   mpn: string;
   description: string;
