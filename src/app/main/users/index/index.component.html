@@ -1,0 +1,89 @@
+<app-content-header title="All Users" [menuItems]="['Home','Users']">
+</app-content-header>
+
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center my-3">
+    <div class="col-sm-6 col-md-4 data-filters">
+      <input type="text" class="form-control search" placeholder="Filter"
+             [formControl]="usersSearchInput">
+    </div>
+
+    <div class="d-none d-md-block">
+      <button type="button" class="btn btn-outline-primary"
+              (click)="showCreateUserPopup()">
+        + Create user
+      </button>
+    </div>
+
+  </div>
+
+
+  <table class="table table-hover table-block-sm">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of users|async">
+
+      <td data-label="Name">{{user.first_name}} {{user.last_name}}</td>
+      <td data-label="Email">{{user?.email}}</td>
+      <td data-label="Role">{{user.role?.name}}</td>
+      <td data-label="Status"> {{resolveUserStatus(user.status)}}   </td>
+      <td>
+        <div class="d-flex gap-2 justify-content-end">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary custom-vertical-btn" id="dp" ngbDropdownToggle>
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dp">
+
+              <button ngbDropdownItem *ngIf="user.status===0" (click)="resendInvite(user)">Resend
+                invite
+              </button>
+              <button ngbDropdownItem (click)="showEditForm(user)">Edit</button>
+              <button ngbDropdownItem *ngIf="user.status===1" (click)="updateStatus(user)">Suspend
+              </button>
+              <button ngbDropdownItem *ngIf="user.status===2" (click)="updateStatus(user,false)">
+                Unsuspend
+              </button>
+              <button ngbDropdownItem (click)="deleteUser(user)">Delete</button>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+
+
+    </tbody>
+  </table>
+
+
+</div>
+<app-side-popup [(show)]="showUserFormPopup"
+                [title]="this.model?.id?'Update User Account':'Create User Account'">
+
+  <app-user-form [roles]="roles" [model]="this.model" #userFormComponent>
+  </app-user-form>
+  <div class="d-flex gap-2">
+
+    <button type="button" class="btn btn-primary" *ngIf="!this.model?.id"
+            (click)="saveUserForm(userFormComponent.form)">
+      CREATE
+    </button>
+    <button type="button" class="btn btn-primary" *ngIf="this.model?.id"
+            (click)="saveUserForm(userFormComponent.form)">
+      UPDATE
+    </button>
+    <button type="button" class="btn btn-cancel"
+            (click)="this.closeFormPopup(userFormComponent.form)">
+      CANCEL
+    </button>
+  </div>
+</app-side-popup>
