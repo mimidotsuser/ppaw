@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { MachineFormComponent } from './machine-form/machine-form.component';
 import { SpareFormComponent } from './spare-form/spare-form.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../../../shared/shared.module';
 
 
 @NgModule({
@@ -13,7 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    SharedModule,
   ],
   exports: [
     MachineFormComponent,
