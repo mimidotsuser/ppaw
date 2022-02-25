@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { UsersModule } from '../users.module';
+import { SharedModule } from '../../../shared/shared.module';
 import { UserModel } from '../../../models/user.model';
 import { HttpService } from '../../../core/services/http.service';
 
-@Injectable({providedIn: UsersModule})
+@Injectable({providedIn: SharedModule})
 export class UserService {
 
   private users$ = new BehaviorSubject<UserModel[]>([]);
