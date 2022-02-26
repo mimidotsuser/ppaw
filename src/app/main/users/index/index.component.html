@@ -3,16 +3,16 @@
 
 <div class="container-fluid">
 
-  <div class="d-flex justify-content-between align-items-center my-3">
+  <div class="d-flex justify-content-between align-items-center my-3 gap-2 flex-wrap-reverse">
     <div class="col-sm-6 col-md-4 data-filters">
       <input type="text" class="form-control search" placeholder="Filter"
              [formControl]="usersSearchInput">
     </div>
 
-    <div class="d-none d-md-block">
+    <div class="d-md-block">
       <button type="button" class="btn btn-outline-primary"
               (click)="showCreateUserPopup()">
-        + Create user
+        + New user
       </button>
     </div>
 
@@ -32,12 +32,24 @@
     <tbody>
     <tr *ngFor="let user of users|async">
 
-      <td data-label="Name">{{user.first_name}} {{user.last_name}}</td>
-      <td data-label="Email">{{user?.email}}</td>
-      <td data-label="Role">{{user.role?.name}}</td>
-      <td data-label="Status"> {{resolveUserStatus(user.status)}}   </td>
       <td>
-        <div class="d-flex gap-2 justify-content-end">
+        <span class="td-inline-label">Name</span>
+        {{user.first_name}} {{user.last_name}}
+      </td>
+      <td>
+        <span class="td-inline-label">Email</span>
+        {{user?.email}}
+      </td>
+      <td>
+        <span class="td-inline-label">Role</span>
+        {{user.role?.name}}
+      </td>
+      <td>
+        <span class="td-inline-label">Status</span>
+        {{resolveUserStatus(user.status)}}
+      </td>
+      <td>
+        <div class="d-flex gap-2 justify-content-end w-100">
           <div ngbDropdown class="d-inline-block">
             <button class="btn btn-outline-secondary custom-vertical-btn" id="dp" ngbDropdownToggle>
               <fa-icon [icon]="faEllipsisV"></fa-icon>

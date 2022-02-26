@@ -1,15 +1,15 @@
 <div class="container-fluid">
 
-  <div class="d-flex justify-content-between align-items-center my-3">
+  <div class="d-flex justify-content-between align-items-center my-3 gap-2 flex-wrap-reverse">
     <div class="col-sm-6 col-md-4 data-filters">
       <input type="text" class="form-control search" placeholder="Filter"
              [formControl]="productSearchInput">
     </div>
 
-    <div class="d-none d-md-block">
+    <div class="d-md-block">
       <button type="button" class="btn btn-outline-primary"
               (click)="showCreateProductFormPopup()">
-        + Create Machine Item
+        + New Machine Item
       </button>
     </div>
 
@@ -30,15 +30,36 @@
     <tbody>
     <tr *ngFor="let prod of products|async">
 
-      <td data-label="Item Code">{{prod.item_code}}</td>
-      <td data-label="M-PN">{{prod.mpn}}</td>
-      <td data-label="Description">{{prod.description}}</td>
-      <td data-label="EOQ"> {{prod.eoq}}  </td>
-      <td data-label="MIN-L"> {{prod.minl}} </td>
-      <td data-label="RO-L"> {{prod.rol}} </td>
-      <td data-label="MAX-L"> {{prod.maxl}} </td>
       <td>
-        <div class="d-flex gap-2 justify-content-end">
+        <span class="td-inline-label">Item Code</span>
+        {{prod.item_code}}
+      </td>
+      <td>
+        <span class="td-inline-label">M-PN</span>
+        {{prod.mpn}}
+      </td>
+      <td>
+        <span class="td-inline-label">Description</span>
+        {{prod.description}}
+      </td>
+      <td data-label="EOQ">
+        <span class="td-inline-label">EOQ</span>
+        {{prod.eoq}}
+      </td>
+      <td>
+        <span class="td-inline-label">MIN-L</span>
+        {{prod.minl}}
+      </td>
+      <td>
+        <span class="td-inline-label">RO-L</span>
+        {{prod.rol}}
+      </td>
+      <td>
+        <span class="td-inline-label">MAX-L</span>
+        {{prod.maxl}}
+      </td>
+      <td>
+        <div class="d-flex gap-2 justify-content-end w-100">
           <div ngbDropdown class="d-inline-block">
             <button class="btn btn-outline-secondary custom-vertical-btn" id="dp" ngbDropdownToggle>
               <fa-icon [icon]="faEllipsisV"></fa-icon>
