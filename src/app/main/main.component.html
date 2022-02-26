@@ -35,13 +35,24 @@
       <ng-container *ngFor="let menuBlock of menuBlocks">
 
         <div class="menu-list" *ngIf="menuList[menuBlock].display">
-          <p class="menu-list-label">{{menuList[menuBlock].title}}</p>
+          <p class="menu-list-label">
+            <span class="icon">
+            <ng-container *ngIf="menuList[menuBlock].icon">
+              <fa-icon [icon]="menuList[menuBlock]!.icon!"></fa-icon>
+            </ng-container>
+            </span>
+            {{menuList[menuBlock].title}}
+          </p>
           <ul class="menu nav nav-pills flex-column">
             <ng-container *ngFor="let item of menuList[menuBlock].items">
               <li class="nav-item" *ngIf="item.display">
                 <a [routerLink]="item.url" routerLinkActive="active"
                    [routerLinkActiveOptions]="{exact:true}" class="nav-link">
-                  <span class="icon"></span>
+                  <span class="icon">
+                  <ng-container *ngIf="item.icon">
+                    <fa-icon [icon]="item!.icon!"></fa-icon>
+                  </ng-container>
+                  </span>
                   <span class="title">{{item.title}}</span></a>
               </li>
             </ng-container>

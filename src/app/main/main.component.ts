@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -15,231 +16,182 @@ export class MainComponent implements OnInit {
   menuList: { [ key: string ]: MenuItem } = {
     dashboard: {
       title: 'Dashboard',
-      icon: '',
       display: true,
       items: [
-        {title: 'Dashboard', icon: '', url: 'home', display: true}
+        {title: 'Dashboard', url: 'home', display: true}
       ]
     },
     inventory_requisition: {
       title: 'Inventory Requisition',
-      icon: '',
       display: true,
       items: [
-        {title: 'New request', icon: '', url: 'checkout-requests/create', display: true},
-        {title: 'My requests', icon: '', url: 'checkout-requests', display: true},
+        {title: 'New request', url: 'checkout-requests/create', display: true},
+        {title: 'My requests', url: 'checkout-requests', display: true},
         {
-          title: 'Verify requests',
-          icon: '',
-          url: 'checkout-requests/verification',
+          title: 'Verify requests', url: 'checkout-requests/verification',
           display: true
         },
-        {title: 'Approve requests', icon: '', url: 'checkout-requests/approval', display: true},
+        {title: 'Approve requests', url: 'checkout-requests/approval', display: true},
       ]
     },
     checkout: {
       title: 'Checkout',
-      icon: '',
       display: true,
       items: [
-        {title: 'Checkout Requests', icon: '', url: 'checkout/create', display: true},
-        {title: 'Checkout History', icon: '', url: 'checkout', display: true},
+        {title: 'Checkout Requests', url: 'checkout/create', display: true},
+        {title: 'Checkout History', url: 'checkout', display: true},
       ]
     },
     purchase_requests: {
       title: 'Procurement Requisition',
-      icon: '',
       display: true,
       items: [
-        {title: 'New Requests', icon: '', url: 'purchase-requisition/create', display: true},
-        {title: 'My Requests', icon: '', url: 'purchase-requisition', display: true},
-        {title: 'Requests Checking', icon: '', url: 'purchase-requisition/check', display: true},
+        {title: 'New Requests', url: 'purchase-requisition/create', display: true},
+        {title: 'My Requests', url: 'purchase-requisition', display: true},
+        {title: 'Requests Checking', url: 'purchase-requisition/check', display: true},
         {
-          title: 'Requests Approval',
-          icon: '',
-          url: 'purchase-requisition/approve',
+          title: 'Requests Approval', url: 'purchase-requisition/approve',
           display: true
         },
       ]
     },
     rfq: {
       title: 'Request for Quotations',
-      icon: '',
       display: true,
       items: [
-        {title: 'New RFQ', icon: '', url: 'request-for-quotations/create', display: true},
-        {title: 'All RFQ\'s', icon: '', url: 'request-for-quotations', display: true},
+        {title: 'New RFQ', url: 'request-for-quotations/create', display: true},
+        {title: 'All RFQ\'s', url: 'request-for-quotations', display: true},
       ]
     },
     lpo: {
       title: 'Purchase Orders',
-      icon: '',
       display: true,
       items: [
-        {title: 'New Purchase Order', icon: '', url: 'purchase-orders/create', display: true},
-        {title: 'All Purchase Orders', icon: '', url: 'purchase-orders', display: true},
+        {title: 'New Purchase Order', url: 'purchase-orders/create', display: true},
+        {title: 'All Purchase Orders', url: 'purchase-orders', display: true},
       ]
     },
     checkin: {
       title: 'Products Checkin',
-      icon: '',
       display: true,
       items: [
-        {title: 'Purchased Products', icon: '', url: 'checkin/purchased-products', display: true},
-        {title: 'Lease Products', icon: '', url: 'checkin/leased-products', display: true},
-        {title: 'Demo Products', icon: '', url: 'checkin/demo-products', display: true},
-        {title: 'Standby Products', icon: '', url: 'checkin/standby-products', display: true},
+        {title: 'Purchased Products', url: 'checkin/purchased-products', display: true},
+        {title: 'Lease Products', url: 'checkin/leased-products', display: true},
+        {title: 'Demo Products', url: 'checkin/demo-products', display: true},
+        {title: 'Standby Products', url: 'checkin/standby-products', display: true},
       ]
     },
     inspection: {
       title: 'Products Inspection',
-      icon: '',
       display: true,
       items: [
         {
-          title: 'Inspection Requests',
-          icon: '',
-          url: 'inspection/purchased-products/create',
+          title: 'Inspection Requests', url: 'inspection/purchased-products/create',
           display: true
         },
         {
-          title: 'Inspection History',
-          icon: '',
-          url: 'inspection/purchased-products',
+          title: 'Inspection History', url: 'inspection/purchased-products',
           display: true
         }]
     },
     post_inspection: {
       title: 'Post Inspection',
-      icon: '',
+
       display: true,
       items: [
         {
-          title: 'GRN/RGA Approval',
-          icon: '',
-          url: 'checkin-approval/grn-and-rga/create',
+          title: 'GRN/RGA Approval', url: 'checkin-approval/grn-and-rga/create',
           display: true
         },
         {
-          title: 'All RGN/RGA Docs',
-          icon: '',
-          url: 'checkin-approval/grn-and-rga',
+          title: 'All RGN/RGA Docs', url: 'checkin-approval/grn-and-rga',
           display: true
         }]
     },
     stock_ledger: {
       title: 'Stock Ledger',
-      icon: '',
       display: true,
       items: [
         {
-          title: 'Stock Ledger',
-          icon: '',
-          url: 'stock-ledger',
+          title: 'Stock Ledger', url: 'stock-ledger',
           display: true
         },
         {
-          title: 'Inventory Adjustment',
-          icon: '',
-          url: 'stock-ledger/inventory-adjustment',
+          title: 'Inventory Adjustment', url: 'stock-ledger/inventory-adjustment',
           display: true
         }]
     },
     inventory_products: {
       title: 'Inventory Products',
-      icon: '',
       display: true,
       items: [
         {
-          title: 'Machines',
-          icon: '',
-          url: 'products/machines',
+          title: 'Machines', url: 'products/machines',
           display: true
         },
         {
-          title: 'Spares',
-          icon: '',
-          url: 'products/spares',
+          title: 'Spares', url: 'products/spares',
           display: true
         },
       ]
     },
     worksheets: {
       title: 'Worksheets',
-      icon: '',
       display: true,
       items: [
         {
-          title: 'New Worksheet',
-          icon: '',
-          url: 'worksheets/create',
+          title: 'New Worksheet', url: 'worksheets/create',
           display: true
         }, {
-          title: 'All Worksheets',
-          icon: '',
-          url: 'worksheets',
+          title: 'All Worksheets', url: 'worksheets',
           display: true
         },
       ]
     },
     clients: {
       title: 'Clients',
-      icon: '',
       display: true,
       items: [
         {
-          title: 'New Client',
-          icon: '',
-          url: 'clients/create',
+          title: 'New Client', url: 'clients/create',
           display: true
-        }, {
-          title: 'All Clients',
-          icon: '',
-          url: 'clients',
+        },
+        {
+          title: 'All Clients', url: 'clients',
           display: true
         },
       ]
     },
     users: {
       title: 'Users',
-      icon: '',
       display: true,
       items: [
         {
-          title: 'All Users',
-          icon: '',
-          url: 'users',
+          title: 'All Users', url: 'users',
           display: true
         },
       ]
     },
     roles: {
       title: 'Roles',
-      icon: '',
       display: true,
       items: [
         {
-          title: 'Create Role',
-          icon: '',
-          url: 'roles/create',
+          title: 'Create Role', url: 'roles/create',
           display: true
         },
         {
-          title: 'All Roles',
-          icon: '',
-          url: 'roles',
+          title: 'All Roles', url: 'roles',
           display: true
         },
       ]
     },
     reports: {
       title: 'Reports',
-      icon: '',
       display: true,
       items: [
         {
           title: 'Worksheet Reports',
-          icon: '',
           url: 'reports/worksheets',
           display: true
         }
@@ -262,8 +214,8 @@ export class MainComponent implements OnInit {
 
 interface MenuItem {
   title: string;
-  icon: string;
+  icon?: IconProp;
   display: boolean;
-  items?: { title: string, icon: string, url: string, display: boolean }[]
+  items?: { title: string, icon?: IconProp, url: string, display: boolean }[]
 
 }
