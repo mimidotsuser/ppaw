@@ -1,11 +1,8 @@
 <form [formGroup]="form" class="row">
   <div class="col-md-6 mb-3">
     <label for="parent_id" class="form-label required">Parent Machine</label>
-    <select id="parent_id" class="form-select" formControlName="parent_id">
-      <option *ngFor="let machine of machines|async" value="{{machine.id}}">
-        {{machine.item_code}} | {{machine.local_description || machine.description}}
-      </option>
-    </select>
+    <product-search-input id="parent_id" formControlName="parent_id" >
+    </product-search-input>
   </div>
   <div class="col-6"></div>
   <div class="col-6 mb-3">
