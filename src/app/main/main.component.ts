@@ -151,9 +151,15 @@ export class MainComponent implements OnInit {
       display: true,
       items: [
         {
-          title: 'Inventory Products',
+          title: 'Machines',
           icon: '',
-          url: 'products',
+          url: 'products/machines',
+          display: true
+        },
+        {
+          title: 'Spares',
+          icon: '',
+          url: 'products/spares',
           display: true
         },
       ]
