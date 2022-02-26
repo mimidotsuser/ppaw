@@ -1,0 +1,32 @@
+<form class="row" [formGroup]="form">
+
+  <div class="col-md-6 mb-3">
+    <label for="main" class="form-label">Parent/Main Branch </label>
+    <select class="form-control" id="main" (change)="onParentSelect($event)">
+      <option disabled selected value="">-- select parent if available --</option>
+      <ng-container *ngFor="let client of clients|async">
+        <option *ngIf="!client.parent_id" value="{{client.id}}" [attr.data-name]="client.name">
+          {{client.name}}
+        </option>
+      </ng-container>
+    </select>
+  </div>
+  <div class="col-md-6"></div>
+
+  <div class="col-md-6 mb-3">
+    <label for="name" class="form-label required">Client Name</label>
+    <input type="text" id="name" class="form-control" formControlName="name">
+  </div>
+  <div class="col-md-6 mb-3">
+    <label for="branch" class="form-label required">Branch Name</label>
+    <input type="text" id="branch" class="form-control" formControlName="branch">
+  </div>
+  <div class="col-md-6 mb-3">
+    <label for="region" class="form-label">Branch Region</label>
+    <input type="text" id="region" class="form-control" formControlName="region">
+  </div>
+  <div class="col-md-6 mb-3">
+    <label for="location" class="form-label">Branch Location</label>
+    <input type="text" id="location" class="form-control" formControlName="location">
+  </div>
+</form>

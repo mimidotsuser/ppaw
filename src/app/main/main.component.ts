@@ -153,10 +153,6 @@ export class MainComponent implements OnInit {
       display: true,
       items: [
         {
-          title: 'New Client', url: 'clients/create',
-          display: true
-        },
-        {
           title: 'All Clients', url: 'clients',
           display: true
         },
