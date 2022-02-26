@@ -7,7 +7,7 @@ export const environment = {
   app: {
     name: 'PPA APP',
     logoUrl: 'https://mediantinternational.com/assets/images/main-logo.png',
-    apiUrl: '',
+    apiUrl: '/api/v1',
     faviconUrl: 'favicon.ico'
   }
 };
