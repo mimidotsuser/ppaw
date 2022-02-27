@@ -38,6 +38,7 @@
 @import "styles/input";
 @import "styles/dropdown";
 
+.form-select.ng-invalid.ng-touched,
 .form-control.ng-invalid.ng-touched {
   border-color: red;
 }

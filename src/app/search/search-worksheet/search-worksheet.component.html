@@ -1,0 +1,20 @@
+<app-search-input [path]="path" [resultTemplate]="resultTemplate"
+                  [outputFormatter]="outputFormatter" [customId]="customId"
+                  [controlName]="controlName" [control]="control" [queryParams]="queryParams">
+</app-search-input>
+
+
+<ng-template let-results="result" #resultTemplate>
+  <ng-container *ngIf="results;else noResultsTemplate">
+    <div class="title">
+      {{results.id}}
+    </div>
+    <div class="subtitle ">
+      {{results?.remarks.slice(0, 15)}}
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #noResultsTemplate>
+  No results found
+</ng-template>
