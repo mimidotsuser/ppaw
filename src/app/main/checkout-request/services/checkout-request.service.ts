@@ -2,7 +2,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CheckoutRequestModule } from '../checkout-request.module';
 import { HttpService } from '../../../core/services/http.service';
-import { MRFStage, MRFLog, MRFModel, MRFPurpose } from '../../../models/m-r-f.model';
+import {
+  MRFStage,
+  MRFLog,
+  MRFModel,
+  MRFPurpose,
+  MRFOrderItemsModel
+} from '../../../models/m-r-f.model';
 
 @Injectable({
   providedIn: CheckoutRequestModule
@@ -134,6 +140,25 @@ export class CheckoutRequestService {
     ])
 
   }
+
+
+  formatOrderId(order: number): string {
+    return `REQUEST-${String(order).padStart(4, '0')}`
+  }
+
+  aggregateQty(items: MRFOrderItemsModel[]): {
+    verified: number, approved: number,
+    issued: number, requested: number
+  } {
+    return items.reduce((acc, val) => {
+      acc.issued += !val.qty_issued ? -1 : val.qty_issued;
+      acc.verified += !val.qty_verified ? -1 : val.qty_verified;
+      acc.approved += !val.qty_approved ? -1 : val.qty_approved;
+      acc.requested += val.qty_requested || 0;
+      return acc;
+    }, {verified: 0, approved: 0, issued: 0, requested: 0});
+  }
+
 
   get myRequests(): Observable<MRFModel[]> {
     return this.myRequests$;

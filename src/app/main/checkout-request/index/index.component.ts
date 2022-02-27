@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { faFilePdf,faEye } from '@fortawesome/free-regular-svg-icons';
+import { faFilePdf, faEye } from '@fortawesome/free-regular-svg-icons';
 import { CheckoutRequestService } from '../services/checkout-request.service';
 import { MRFStage, MRFModel, MRFOrderItemsModel } from '../../../models/m-r-f.model';
 
@@ -31,25 +31,18 @@ export class IndexComponent implements OnInit {
   }
 
   formatOrderId(order: number) {
-    return `REQUEST-${String(order).padStart(4, '0')}`
+    return this.crService.formatOrderId(order);
   }
 
   aggregateQty(items: MRFOrderItemsModel[]) {
-    return items.reduce((acc, val) => {
-      acc.issued += !val.qty_issued ? -1 : val.qty_issued;
-      acc.verified += !val.qty_verified ? -1 : val.qty_verified;
-      acc.approved += !val.qty_approved ? -1 : val.qty_approved;
-      acc.requested += val.qty_requested || 0;
-      return acc;
-    }, {verified: 0, approved: 0, issued: 0, requested: 0});
+    return this.crService.aggregateQty(items);
   }
-
 
   lastProcessInstance(request: MRFModel): { stage: string, status: string } {
 
     //sort in reverse such that the latest equals first index
     const lastStage = request.logs.sort((a, b) => {
-      return a.id > b.id ? 0 : -1;
+      return b.id - a.id;
     })[ 0 ];
 
     const qty = this.aggregateQty(request.order_items);
