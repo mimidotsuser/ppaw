@@ -1,4 +1,12 @@
-import { Component, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  forwardRef,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {
   ControlContainer,
   ControlValueAccessor,
@@ -46,7 +54,7 @@ export class ProductSearchInputComponent implements OnInit, ControlValueAccessor
   @Input() outputFormatter: (item: SpareModel | MachineModel) => string;
   @Input() popupClass = 'search-results';
   @Input() placement = 'bottom-start';
-
+  @Input() placeholder = 'Type to search';
   // @Input() localData: Observable<SpareModel[] | MachineModel[] | null> = of(null);
 
 

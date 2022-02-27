@@ -7,9 +7,11 @@
   <input type="text" [ngbTypeahead]="autoSearch" [editable]="editable" class="form-control"
          [resultTemplate]="resultTemplate" [inputFormatter]="outputFormatter" [showHint]="false"
          [placement]="placement" [popupClass]="popupClass" [formControl]="inputControl"
-         [id]="id" placeholder="Type to search">
+         [id]="id" [attr.placeholder]="placeholder">
 
-  <small class="text-danger help-text" *ngIf="searchFailed">Error, failed to retrieve any data</small>
+  <small class="text-danger help-text" *ngIf="searchFailed">
+    Error, failed to retrieve any data
+  </small>
 </div>
 
 <ng-template let-results="result" #resultTemplate>
