@@ -1,0 +1,19 @@
+<app-search-input [path]="path" [resultTemplate]="resultTemplate" [outputFormatter]="outputFormatter"
+                  [controlName]="controlName" [control]="control">
+</app-search-input>
+
+
+<ng-template let-results="result" #resultTemplate>
+  <ng-container *ngIf="results;else noResultsTemplate">
+    <div class="title">
+      {{results.name}}
+    </div>
+    <div class="subtitle ">
+      {{results.branch}} <span *ngIf="results.region">{{results.region}}</span>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #noResultsTemplate>
+  No results found
+</ng-template>

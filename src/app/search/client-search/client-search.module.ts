@@ -1,18 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchInputModule } from '../search-input/search-input.module';
-import { ProductSearchInputComponent } from './product-search-input/product-search-input.component';
+import { ClientSearchInputComponent } from './client-search-input/client-search-input.component';
+
 
 @NgModule({
   declarations: [
-    ProductSearchInputComponent,
+    ClientSearchInputComponent,
   ],
   imports: [
     CommonModule,
     SearchInputModule,
   ],
   exports: [
-    ProductSearchInputComponent,
+    ClientSearchInputComponent
   ]
 })
-export class ProductSearchModule {}
+export class ClientSearchModule {}
