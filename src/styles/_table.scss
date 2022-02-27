@@ -1,17 +1,22 @@
 .table td {
   font-size: 14px;
-  .td-inline-label{
+
+  .td-inline-label {
     display: none;
   }
 }
 
 .table.table-block-sm {
-  tr.no-data {
-    td {
-      margin-right: auto;
-      margin-left: auto;
-      width: 100%;
-      text-align: center !important;
+  tr {
+    vertical-align: middle;
+
+    &.no-data {
+      td {
+        margin-right: auto;
+        margin-left: auto;
+        width: 100%;
+        text-align: center !important;
+      }
     }
   }
 }

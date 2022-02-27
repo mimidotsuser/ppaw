@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import "styles/variables";
+@import "variables";
 
 //start of bootstrap imports
 @import "~bootstrap/scss/functions";
@@ -34,9 +34,9 @@
 @import "~bootstrap/scss/helpers/visually-hidden";
 //end of bootstrap imports
 
-@import "styles/table";
-@import "styles/input";
-@import "styles/dropdown";
+@import "table";
+@import "input";
+@import "dropdown";
 
 .form-select.ng-invalid.ng-touched,
 .form-control.ng-invalid.ng-touched {
