@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ClientModel } from '../../../models/client.model';
+import { ClientModel } from '../../models/client.model';
 
 @Component({
   selector: 'client-search-input[control],client-search-input[controlName]',

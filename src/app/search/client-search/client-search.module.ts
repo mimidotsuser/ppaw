@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchInputModule } from '../search-input/search-input.module';
-import { ClientSearchInputComponent } from './client-search-input/client-search-input.component';
+import { ClientSearchInputComponent } from './client-search-input.component';
 
 
 @NgModule({

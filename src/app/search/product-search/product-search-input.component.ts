@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, } from '@angular/core';
 import { FormControl, } from '@angular/forms';
 
-import { SpareModel } from '../../../models/spare.model';
-import { MachineModel } from '../../../models/machine.model';
+import { SpareModel } from '../../models/spare.model';
+import { MachineModel } from '../../models/machine.model';
 
 @Component({
   selector: 'product-search-input[control],product-search-input[controlName]',
