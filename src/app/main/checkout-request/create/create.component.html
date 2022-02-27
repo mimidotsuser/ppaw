@@ -1,1 +1,188 @@
-<p>create works!</p>
+<app-content-header title="New Material Requisition"
+                    [menuItems]="['Home','New Material Requisition']">
+</app-content-header>
+
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+    <div class="col-sm-6 col-md-3 data-filters">
+      <input type="text" class="form-control search" placeholder="Filter"
+             [formControl]="itemsSearchInput">
+    </div>
+
+    <div class="d-md-block">
+      <button type="button" class="btn btn-outline-primary"
+              (click)="showCreateForm()">
+        + New Item
+      </button>
+    </div>
+
+  </div>
+
+  <table class="table table-hover table-block-sm">
+    <thead>
+    <tr>
+      <th>Item</th>
+      <th>Qty</th>
+      <th>Client</th>
+      <th>Purpose</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container *ngIf="_selectedItems.length>0">
+      <tr *ngFor="let item of selectedItems|async">
+        <td>
+          <span class="td-inline-label">Item</span>
+          <div class="d-flex flex-row">
+            {{item.product.item_code}}
+            <small class="text-muted">
+              {{item.product.local_description || item.product.description}}
+            </small>
+          </div>
+        </td>
+        <td>
+          <span class="td-inline-label">Quantity</span>
+          {{item.qty}}
+        </td>
+        <td>
+          <span class="td-inline-label">Client</span>
+          <div class="d-flex flex-row">
+            {{item.client.name}}
+            <small class="text-muted">
+              {{item.client.branch}} | {{item.client.region}}
+            </small>
+          </div>
+        </td>
+        <td>
+          <span class="td-inline-label">Purpose</span>
+          {{item.purpose}}
+        </td>
+        <td>
+          <div class="d-flex gap-2 justify-content-end w-100">
+            <div ngbDropdown class="d-inline-block">
+              <button class="btn btn-outline-secondary custom-vertical-btn" id="dp"
+                      ngbDropdownToggle>
+                <fa-icon [icon]="faEllipsisV"></fa-icon>
+              </button>
+              <div ngbDropdownMenu aria-labelledby="dp">
+                <button ngbDropdownItem (click)="showCreateForm(item)">Edit</button>
+                <button ngbDropdownItem (click)="removeSelectedItem(item)">Delete</button>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+
+    <ng-container *ngIf="_selectedItems.length===0">
+      <tr>
+        <td class="text-center py-3" colspan="5">
+          There is no item added yet.
+          <a type="button" class="text-decoration-none" (click)="showCreateForm()">Add new item</a>
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-end mb-3" *ngIf="_selectedItems.length>0">
+    <button type="button" class="btn btn-outline-primary" (click)="showCreateForm()">
+      + New Item
+    </button>
+  </div>
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="remarks" class="form-label">Remarks</label>
+      <textarea id="remarks" class="form-control"></textarea>
+    </div>
+    <div class="col-12">
+      <button type="button" class="btn btn-primary" (click)="submit()"
+              [disabled]="_selectedItems.length===0">
+        Submit
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-side-popup title="Add Material Requisition Item" [(show)]="showPopupForm">
+  <form class="row" [formGroup]="form">
+    <div class="col-12 gap-5 mb-3">
+      <label class="form-label">Item Category</label>
+      <div class="col-12">
+        <div class="form-check form-check-inline">
+          <input type="radio" name="type" class="form-check-input" [value]="itemType.machine"
+                 formControlName="type" id="machine-type">
+          <label for="machine-type" class="form-check-label">Machine</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input type="radio" name="type" class="form-check-input" [value]="itemType.spare"
+                 formControlName="type" id="spare-type">
+          <label for="spare-type" class="form-check-label">Spare</label>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="form.get('type')?.value === itemType.spare">
+      <div class="col-md-6 mb-3">
+        <label for="parent" class="form-label">
+          Machine Model
+        </label>
+        <product-search-input customId="parent" controlName="parent">
+        </product-search-input>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="product" class="form-label required">
+          Spare Part
+        </label>
+        <product-search-input customId="product" controlName="product"
+                              [parent]="this.form.get('parent')?.value">
+        </product-search-input>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="form.get('type')?.value === itemType.machine">
+      <div class="col-md-6 mb-3">
+        <label for="machine_id" class="form-label required">
+          Machine Model
+        </label>
+        <product-search-input customId="machine_id" controlName="product">
+        </product-search-input>
+      </div>
+
+    </ng-container>
+
+    <div class="mb-3 col-md-6">
+      <label for="purpose" class="form-label required">Purpose</label>
+      <select id="purpose" class="form-select" formControlName="purpose">
+        <option disabled selected></option>
+        <option *ngFor="let purpose of purposes" value="{{purpose.id}}">
+          {{purpose.title}}
+        </option>
+      </select>
+    </div>
+
+    <div class="mb-3 col-md-6">
+      <label for="client" class="form-label required">Client/Branch</label>
+      <client-search-input customId="client" controlName="client">
+      </client-search-input>
+    </div>
+
+    <div class="mb-3 col-md-6">
+      <label for="qty" class="form-label required">Quantity</label>
+      <input type="number" id="qty" class="form-control" min="1" formControlName="qty">
+    </div>
+
+    <ng-container *ngIf="form.get('type')?.value === itemType.spare">
+      <div class="col-md-6 mb-3">
+        <label for="worksheet" class="form-label">Referenced Worksheet</label>
+        <search-worksheet customId="worksheet" controlName="worksheet"
+                          [client]="form.get('client')?.value">
+        </search-worksheet>
+      </div>
+    </ng-container>
+
+    <div class="col-md-6 mb-3 d-flex gap-2">
+      <button type="button" class="btn btn-primary" (click)="addItem()">ADD ITEM</button>
+      <button class="btn btn-outline-primary btn-cancel" (click)="closePopup()">CANCEL</button>
+    </div>
+  </form>
+</app-side-popup>
