@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
+import { SharedModule } from '../../../shared/shared.module';
 import { ApproveComponent } from './approve.component';
 
 
@@ -11,7 +11,8 @@ import { ApproveComponent } from './approve.component';
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{path: '', component: ApproveComponent}])
+    RouterModule.forChild([{path: '', component: ApproveComponent}]),
+    SharedModule
   ]
 })
 export class ApproveModule {}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, mergeMap, Observable, take } from 'rxjs';
 import { CheckoutRequestModule } from '../checkout-request.module';
 import { HttpService } from '../../../core/services/http.service';
 import {
@@ -38,7 +38,7 @@ export class CheckoutRequestService {
     this.myRequests$.next([
       {
         created_at: new Date().toLocaleDateString(),
-        id: Math.random().toString(32).substr(3),
+        id: '2n9mOiLAqttunBVUw',
         created_by_id: 'edfforerf',
         order_id: 1,
         order_items: [
@@ -51,6 +51,7 @@ export class CheckoutRequestService {
             qty_verified: 8,
             qty_approved: 5,
             qty_issued: 5,
+            worksheet_id: 'zFwY9svIcM1mcZA',
             product: {
               id: 'ajwcnw5QTW79PwLM',
               parent_id: 'VguDlcIHj5zeEYns',
@@ -136,11 +137,10 @@ export class CheckoutRequestService {
           }
         ],
         logs: demoLogs
-      }
+      },
     ])
 
   }
-
 
   formatOrderId(order: number): string {
     return `REQUEST-${String(order).padStart(4, '0')}`
@@ -159,8 +159,18 @@ export class CheckoutRequestService {
     }, {verified: 0, approved: 0, issued: 0, requested: 0});
   }
 
-
   get myRequests(): Observable<MRFModel[]> {
     return this.myRequests$;
+  }
+
+  get requestsToApprove(): Observable<MRFModel[]> {
+    return this.myRequests$;
+  }
+
+  findById(id: string): Observable<MRFModel> {
+    return this.myRequests$
+      .pipe(map((v) => v.filter((x) => x.id == id)))
+      .pipe(mergeMap((v) => v))
+      .pipe(take(1))
   }
 }

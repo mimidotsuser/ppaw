@@ -27,7 +27,7 @@ export interface MRFOrderItemsModel {
   qty_verified?: number;
   qty_approved?: number;
   qty_issued?: number;
-  qty_worksheet_id?: string;
+  worksheet_id?: string;
   product?: ProductModel;
   client?: ClientModel;
 }

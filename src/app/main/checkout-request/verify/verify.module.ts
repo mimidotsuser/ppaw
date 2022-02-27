@@ -1,17 +1,24 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
-import { VerifyComponent } from './verify.component';
+import { SharedModule } from '../../../shared/shared.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { IndexComponent } from './index/index.component';
+import { CreateComponent } from './create/create.component';
 
 
 @NgModule({
   declarations: [
-    VerifyComponent
+    CreateComponent,
+    IndexComponent
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{path: '', component: VerifyComponent}])
+    RouterModule.forChild([
+      {path: '', component: IndexComponent}, {path: ':id', component: CreateComponent}
+    ]),
+    SharedModule,
+    FontAwesomeModule,
   ]
 })
 export class VerifyModule {}

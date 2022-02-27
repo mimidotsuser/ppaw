@@ -1,0 +1,55 @@
+<app-content-header title="Material Requisition Requests"
+                    [menuItems]="['Home','Material Requisition Requests','Verification']">
+</app-content-header>
+
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+    <div class="col-sm-6 col-md-4 col-lg-3 data-filters">
+      <input type="text" class="form-control search" placeholder="Filter by requestor's name"
+             [formControl]="requestSearchInput">
+    </div>
+
+  </div>
+
+  <table class="table table-hover table-block-sm">
+    <thead>
+    <tr>
+      <th>Request No.</th>
+      <th>Total Items</th>
+      <th>Requested On</th>
+      <th>Requested By</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let request of checkoutRequests|async">
+      <td>
+        <span class="td-inline-label">Request No.</span>
+        <a [routerLink]="request.id" class="text-decoration-none">{{formatOrderId(request.order_id)}} </a>
+      </td>
+      <td>
+        <span class="td-inline-label">Total Items</span>
+        {{aggregateQty(request.order_items).requested}}
+      </td>
+
+      <td>
+        <span class="td-inline-label">Requested On</span>
+        {{request.created_at|date}}
+      </td>
+      <td>
+        <span class="td-inline-label">Requested By</span>
+        {{request?.created_by?.first_name}} {{request?.created_by?.last_name}}
+      </td>
+      <td></td>
+    </tr>
+    <ng-container *ngIf="(checkoutRequests|async)?.length===0">
+      <tr>
+        <td class="text-center py-3" colspan="5">
+          No items pending action.
+        </td>
+      </tr>
+    </ng-container>
+
+    </tbody>
+  </table>
+</div>
