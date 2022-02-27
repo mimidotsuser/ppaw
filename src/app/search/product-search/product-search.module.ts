@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { SharedModule } from '../../shared/shared.module';
 import { ProductSearchInputComponent } from './product-search-input/product-search-input.component';
+import { SearchInputModule } from '../search-input/search-input.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -11,9 +10,8 @@ import { ProductSearchInputComponent } from './product-search-input/product-sear
   ],
   imports: [
     CommonModule,
-    NgbTypeaheadModule,
-    SharedModule,
-    FontAwesomeModule,
+    SearchInputModule,
+    ReactiveFormsModule,
   ],
   exports: [
     ProductSearchInputComponent,

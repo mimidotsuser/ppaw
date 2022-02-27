@@ -1,0 +1,15 @@
+<div class="col-12 parent">
+  <ng-container *ngIf="showIcons">
+    <fa-icon [icon]="searching?faSpinner:faSearch" [spin]="searching" class="icon">
+    </fa-icon>
+  </ng-container>
+
+  <input type="text" [ngbTypeahead]="autoSearch" [editable]="editable" class="form-control"
+         [resultTemplate]="resultTemplate" [inputFormatter]="outputFormatter" [showHint]="false"
+         [placement]="placement" [popupClass]="popupClass" [formControl]="inputControl"
+         [id]="id" [attr.placeholder]="placeholder">
+
+  <small class="text-danger help-text" *ngIf="searchFailed">
+    Error, failed to retrieve any data
+  </small>
+</div>

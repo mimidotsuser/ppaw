@@ -1,0 +1,16 @@
+.parent {
+  position: relative;
+
+  .icon {
+    position: absolute;
+    top: .45rem;
+    right: 10px;
+
+    svg {
+      path {
+        fill: #343a40;
+      }
+    }
+  }
+}
+
