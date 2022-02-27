@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, startWith, switchMap } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { MachineModel } from '../../../models/machine.model';
 import { SearchService } from '../../../shared/services/search.service';
 import { ProductService } from '../services/product.service';
+import { ProductModel } from '../../../models/product.model';
 
 @Component({
   selector: 'app-machines',
@@ -16,12 +16,14 @@ export class MachinesComponent implements OnInit {
 
   faEllipsisV = faEllipsisV;
   showMachineFormPopup = false;
-  model: MachineModel | null = null;
+  model: ProductModel | null = null;
   productSearchInput = new FormControl('');
-  private _machines$: Observable<MachineModel[]> = new Observable<MachineModel[]>();
+  private _machines$: Observable<ProductModel[]> = new Observable<ProductModel[]>();
 
-  constructor(private productService: ProductService, private searchService: SearchService<MachineModel>) {
-    searchService.setFields(['item_code', 'mpn', 'local_description', 'description', 'eoq', 'minl', 'maxl'])
+  constructor(private productService: ProductService,
+              private searchService: SearchService<ProductModel>) {
+    searchService.setFields(['item_code', 'mpn', 'local_description', 'description',
+      'eoq', 'minl', 'maxl'])
   }
 
   ngOnInit(): void {
@@ -31,7 +33,7 @@ export class MachinesComponent implements OnInit {
     )
   }
 
-  get products(): Observable<MachineModel[]> {
+  get products(): Observable<ProductModel[]> {
     return this._machines$;
   }
 
@@ -40,7 +42,7 @@ export class MachinesComponent implements OnInit {
     this.model = null;
   }
 
-  showProductEditForm(product: MachineModel) {
+  showProductEditForm(product: ProductModel) {
     this.showMachineFormPopup = true;
     this.model = {...product};
   }
@@ -51,7 +53,7 @@ export class MachinesComponent implements OnInit {
 
   saveProductForm(form: FormGroup) {}
 
-  deleteProduct(product: MachineModel) {
+  deleteProduct(product: ProductModel) {
 
   }
 }

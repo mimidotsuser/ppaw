@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SharedModule } from '../../../shared/shared.module';
-import { MachineModel } from '../../../models/machine.model';
-import { SpareModel } from '../../../models/spare.model';
+import { ProductModel } from '../../../models/product.model';
 
 @Injectable({
   providedIn: SharedModule
 })
 export class ProductService {
-  private machines$ = new BehaviorSubject<MachineModel[]>([])
-  private spares$ = new BehaviorSubject<SpareModel[]>([])
+  private machines$ = new BehaviorSubject<ProductModel[]>([])
+  private spares$ = new BehaviorSubject<ProductModel[]>([])
 
   constructor() {
     const m = [
@@ -88,11 +87,11 @@ export class ProductService {
     ])
   }
 
-  get machines(): BehaviorSubject<MachineModel[]> {
+  get machines(): BehaviorSubject<ProductModel[]> {
     return this.machines$;
   }
 
-  get spares(): BehaviorSubject<SpareModel[]> {
+  get spares(): BehaviorSubject<ProductModel[]> {
     return this.spares$;
   }
 }

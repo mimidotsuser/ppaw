@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { SpareModel } from '../../../../models/spare.model';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { MachineModel } from '../../../../models/machine.model';
+import { ProductModel } from '../../../../models/product.model';
 
 @Component({
   selector: 'app-spare-form[machines]',
@@ -12,11 +11,11 @@ import { MachineModel } from '../../../../models/machine.model';
 export class SpareFormComponent implements OnInit {
 
 
-  @Input() set model(model: SpareModel | null) {
+  @Input() set model(model: ProductModel | null) {
     this.initForm(model);
   }
 
-  @Input() machines!: Observable<MachineModel[]>;
+  @Input() machines!: Observable<ProductModel[]>;
 
   form!: FormGroup;
 
@@ -26,7 +25,7 @@ export class SpareFormComponent implements OnInit {
     this.initForm();
   }
 
-  initForm(model: SpareModel | null = null) {
+  initForm(model: ProductModel | null = null) {
     this.form = this.fb.group({
       parent_id: new FormControl(model?.parent_id,
         {validators: [Validators.required]}),

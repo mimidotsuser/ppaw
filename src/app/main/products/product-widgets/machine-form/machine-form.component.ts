@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MachineModel } from '../../../../models/machine.model';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators
 } from '@angular/forms';
+import { ProductModel } from '../../../../models/product.model';
 
 @Component({
   selector: 'app-machine-form',
@@ -14,7 +14,7 @@ import {
 })
 export class MachineFormComponent implements OnInit {
 
-  @Input() set model(model: MachineModel | null) {
+  @Input() set model(model: ProductModel | null) {
     this.initForm(model)
   }
 
@@ -25,7 +25,7 @@ export class MachineFormComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  initForm(model: MachineModel | null = null) {
+  initForm(model: ProductModel | null = null) {
     this.form = this.fb.group({
       item_code: new FormControl(model?.item_code,
         {

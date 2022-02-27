@@ -3,11 +3,10 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Observable, of, startWith, Subscription, switchMap, tap } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { MRFPurpose } from '../../../models/m-r-f.model';
-import { MachineModel } from '../../../models/machine.model';
-import { SpareModel } from '../../../models/spare.model';
 import { WorksheetModel } from '../../../models/worksheet.model';
 import { ClientModel } from '../../../models/client.model';
 import { SearchService } from '../../../shared/services/search.service';
+import { ProductModel } from '../../../models/product.model';
 
 @Component({
   selector: 'app-create',
@@ -132,8 +131,8 @@ export class CreateComponent implements OnInit, OnDestroy {
 
 interface FormModel {
   type: string;
-  parent: null | MachineModel;
-  product: MachineModel | SpareModel;
+  parent: null | ProductModel;
+  product: ProductModel;
   purpose: MRFPurpose;
   client: ClientModel;
   worksheet: null | WorksheetModel;

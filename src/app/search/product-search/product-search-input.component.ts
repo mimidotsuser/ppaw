@@ -1,8 +1,6 @@
 import { Component, Input, OnInit, } from '@angular/core';
 import { FormControl, } from '@angular/forms';
-
-import { SpareModel } from '../../models/spare.model';
-import { MachineModel } from '../../models/machine.model';
+import { ProductModel } from '../../models/product.model';
 
 @Component({
   selector: 'product-search-input[control],product-search-input[controlName]',
@@ -16,7 +14,7 @@ export class ProductSearchInputComponent implements OnInit {
 
   @Input() path = '/products/items'; //TODO replace with correct endpoint
   @Input() placeholder = 'Type to search';
-  @Input() parent: MachineModel | null = null; //TODO use parent to filter
+  @Input() parent: ProductModel | null = null; //TODO use parent to filter
   @Input() customId?: string;
 
   constructor() {
@@ -25,7 +23,7 @@ export class ProductSearchInputComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  get outputFormatter(): (item: SpareModel | MachineModel) => string {
+  get outputFormatter(): (item:  ProductModel) => string {
     return (item) => {
       return `${item.item_code} | ${item.mpn}`
     }

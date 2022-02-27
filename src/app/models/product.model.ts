@@ -1,8 +1,8 @@
 import { UserModel } from './user.model';
 
-export interface SpareModel {
+export interface ProductModel {
   id: string;
-  parent_id: string;
+  parent_id?: string;
   item_code: string;
   mpn: string;
   description: string;
@@ -14,5 +14,5 @@ export interface SpareModel {
   maxl: number;
   created_by_id: string;
   created_by?: UserModel;
-  edit?: boolean
+  edit?: boolean;
 }
