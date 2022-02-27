@@ -1,0 +1,11 @@
+@import "variables";
+
+.dropdown-item fa-icon.icon {
+  width: 18px;
+  display: inline-block;
+  text-align: center;
+
+  &.export-pdf {
+    color: $export-to-pdf-icon-color;
+  }
+}

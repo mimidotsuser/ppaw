@@ -1,1 +1,168 @@
-<p>index works!</p>
+<app-content-header title="All Requisition Requests"
+                    [menuItems]="['Home','Material Requisition','My Requests']">
+</app-content-header>
+
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+    <div class="col-sm-6 col-md-3 data-filters">
+    </div>
+
+    <div class="d-md-block">
+      <a class="btn btn-outline-primary" routerLink="create">
+        + New Request
+      </a>
+    </div>
+  </div>
+</div>
+<div class="container-md-fluid">
+  <table class="table table-hover table-block-sm">
+    <thead>
+    <tr>
+      <th>Request No.</th>
+      <th>Total Qty</th>
+      <th>Stage/Status</th>
+      <th>Requested On</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let request of checkoutRequests|async">
+      <td (click)="showLogs(request)">
+        <span class="td-inline-label">Request No.</span>
+        {{formatOrderId(request.order_id)}}
+      </td>
+      <td>
+        <span class="td-inline-label">Quantity</span>
+        {{aggregateQty(request.order_items).requested}}
+      </td>
+      <td>
+        <span class="td-inline-label">Stage/Status</span>
+        <div class="d-flex flex-column">
+          {{lastProcessInstance(request).stage}}
+          <small class="text-muted">
+            {{lastProcessInstance(request).status}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Requested On</span>
+        {{request.created_at|date}}
+      </td>
+      <td>
+        <div class="d-flex gap-2 justify-content-end w-100">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary custom-vertical-btn" id="dp"
+                    ngbDropdownToggle>
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dp">
+              <button ngbDropdownItem (click)="showLogs(request)">
+                <fa-icon [icon]="faEye" class="icon"></fa-icon>
+                View logs
+              </button>
+              <button ngbDropdownItem (click)="exportMRN(request)">
+                <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
+                Export MRN
+              </button>
+              <button ngbDropdownItem (click)="exportSIV(request)">
+                <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
+                Export SIV
+              </button>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <ng-container *ngIf="(checkoutRequests|async)?.length===0">
+      <tr>
+        <td class="text-center py-3" colspan="5">
+          There is no item added yet.
+          <a class="text-decoration-none">Add new item</a>
+        </td>
+      </tr>
+    </ng-container>
+
+    </tbody>
+  </table>
+</div>
+<app-side-popup [(show)]="showLogsPopup" [isFullScreen]="activeTab==='items'"
+                [title]="formatOrderId(model?.order_id||0)">
+  <nav ngbNav [(activeId)]="activeTab" class="nav-tabs my-3" #outlet="ngbNav">
+    <div ngbNavItem="items">
+      <a ngbNavLink>Request Items</a>
+      <ng-template ngbNavContent>
+        <ng-container *ngTemplateOutlet="requestItemsTemplate"></ng-container>
+      </ng-template>
+    </div>
+    <div ngbNavItem="logs">
+      <a ngbNavLink>All Stage Logs</a>
+      <ng-template ngbNavContent>
+        <ng-container *ngTemplateOutlet="requestLogsTemplate"></ng-container>
+      </ng-template>
+    </div>
+  </nav>
+  <div [ngbNavOutlet]="outlet"></div>
+</app-side-popup>
+
+<ng-template #requestItemsTemplate>
+  <table class="table table-striped table-responsive table-bordered table-block-sm">
+    <thead>
+    <tr>
+      <th>Item</th>
+      <th>Purpose</th>
+      <th>Client</th>
+      <th>Qty Requested</th>
+      <th>Qty Verified</th>
+      <th>Qty Approved</th>
+      <th>Qty Issued</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of model?.order_items">
+      <td>
+        <span class="td-inline-label">Item</span>
+        <div class="d-flex flex-column">
+          {{item.product?.item_code}}
+          <small class="text-muted">
+            {{item.product?.local_description || item?.product?.description}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Purpose</span>
+        {{item.purpose}}
+      </td>
+      <td>
+        <span class="td-inline-label">Client</span>
+        <div class="d-flex flex-column">
+          {{item?.client?.name}}
+          <small class="text-muted">
+            {{item?.client?.branch || item?.client?.region}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Qty Requested</span>
+        {{item.qty_requested}}
+      </td>
+      <td>
+        <span class="td-inline-label">Qty Verified</span>
+        {{item.qty_verified}}
+      </td>
+      <td>
+        <span class="td-inline-label">Qty Approved</span>
+        {{item.qty_approved}}
+      </td>
+      <td>
+        <span class="td-inline-label">Qty Issued</span>
+        {{item.qty_issued}}
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</ng-template>
+<ng-template #requestLogsTemplate>
+  <div class="container-fluid p-0 p-md-2">
+    <mrf-logs-timeline [model]="model?.logs||[]"></mrf-logs-timeline>
+  </div>
+</ng-template>

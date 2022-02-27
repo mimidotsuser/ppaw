@@ -1,4 +1,6 @@
 import { UserModel } from './user.model';
+import { ProductModel } from './product.model';
+import { ClientModel } from './client.model';
 
 export enum MRFPurpose {
   CLIENT_DEMO = 'CLIENT_DEMO',
@@ -8,14 +10,15 @@ export enum MRFPurpose {
   CLIENT_REPAIR = 'CLIENT_REPAIR',
 }
 
-enum MRFLevels {
+export enum MRFStage {
   CREATE,
   VERIFY,
   APPROVE,
-  CHECKOUT
+  CHECKOUT,
+  ISSUED
 }
 
-export interface MRFProductModel {
+export interface MRFOrderItemsModel {
   product_id: string;
   type: 'spare' | 'machine';
   purpose: MRFPurpose;
@@ -25,14 +28,16 @@ export interface MRFProductModel {
   qty_approved?: number;
   qty_issued?: number;
   qty_worksheet_id?: string;
+  product?: ProductModel;
+  client?: ClientModel;
 }
 
 export interface MRFLog {
-  id: string;
-  level: MRFLevels;
+  id: number;
+  stage: MRFStage;
   remarks: string;
-  created_at?: string;
-  created_by_id?: string;
+  created_at: string;
+  created_by_id: string;
   created_by?: UserModel;
 }
 
@@ -41,8 +46,9 @@ export interface MRFLog {
  */
 export interface MRFModel {
   id?: string;
-  products: MRFProductModel[];
-  logs: MRFLog[] | [];
+  order_id: number;
+  order_items: MRFOrderItemsModel[];
+  logs: MRFLog[];
   created_at?: string;
   created_by_id?: string;
   created_by?: UserModel;

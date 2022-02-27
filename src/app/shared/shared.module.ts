@@ -2,13 +2,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContentHeaderComponent } from './components/content-header/content-header.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SidePopupComponent } from './components/side-popup/side-popup.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SidePopupComponent } from './components/side-popup/side-popup.component';
+import { MrfLogsTimelineComponent } from './components/mrf-logs-timeline/mrf-logs-timeline.component';
 
 @NgModule({
   declarations: [
     ContentHeaderComponent,
-    SidePopupComponent
+    SidePopupComponent,
+    MrfLogsTimelineComponent
   ],
   imports: [
     CommonModule,
@@ -22,6 +24,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     ReactiveFormsModule,
     SidePopupComponent,
     FontAwesomeModule,
+    MrfLogsTimelineComponent
   ],
 })
 export class SharedModule {}
