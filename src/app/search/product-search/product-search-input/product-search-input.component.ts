@@ -25,9 +25,9 @@ import {
   tap
 } from 'rxjs';
 import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { HttpService } from '../../../../core/services/http.service';
-import { SpareModel } from '../../../../models/spare.model';
-import { MachineModel } from '../../../../models/machine.model';
+import { HttpService } from '../../../core/services/http.service';
+import { SpareModel } from '../../../models/spare.model';
+import { MachineModel } from '../../../models/machine.model';
 
 @Component({
   selector: 'product-search-input',
@@ -55,6 +55,7 @@ export class ProductSearchInputComponent implements OnInit, ControlValueAccessor
   @Input() popupClass = 'search-results';
   @Input() placement = 'bottom-start';
   @Input() placeholder = 'Type to search';
+  @Input() parent: MachineModel | null = null; //TODO use parent to filter
   // @Input() localData: Observable<SpareModel[] | MachineModel[] | null> = of(null);
 
 
