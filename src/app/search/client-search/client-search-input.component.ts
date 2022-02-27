@@ -12,6 +12,7 @@ export class ClientSearchInputComponent implements OnInit {
   @Input() control: FormControl | null = null;
   @Input() controlName: string = '';
   @Input() path = '/clients';
+  @Input() customId?: string;
 
   constructor() {
   }

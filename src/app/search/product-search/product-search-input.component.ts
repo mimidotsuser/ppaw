@@ -17,7 +17,7 @@ export class ProductSearchInputComponent implements OnInit {
   @Input() path = '/products/items'; //TODO replace with correct endpoint
   @Input() placeholder = 'Type to search';
   @Input() parent: MachineModel | null = null; //TODO use parent to filter
-
+  @Input() customId?: string;
 
   constructor() {
   }

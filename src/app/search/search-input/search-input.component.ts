@@ -41,7 +41,7 @@ export class SearchInputComponent<T> implements OnInit, ControlValueAccessor {
   @Input() outputFormatter!: (item: T) => string;
   @Input() resultTemplate!: TemplateRef<ResultTemplateContext>;
   @Input() queryParams?: { [ key: string ]: string | boolean | number | null };
-  @Input() id = Math.random().toString(20).substr(3)
+  @Input() customId?: string = Math.random().toString(20).substr(3)
   @Input() editable = false;
   @Input() showIcons = true;
   @Input() popupClass = 'search-results';
