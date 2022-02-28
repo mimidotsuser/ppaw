@@ -1,7 +1,7 @@
 <nav class="main-navbar navbar navbar-expand-md navbar-light bg-light">
   <div class="container-fluid  flex-nowrap">
     <div class="collapse-button navbar-burger d-md-block d-lg-none" role="button"
-         [ngClass]="{'is-active':this.collapseSidebar}" (click)="toggleSidebar()">
+         (click)="toggleSidebar()">
       <span></span><span></span><span></span>
     </div>
     <a routerLink="home" routerLinkActive="active" class="navbar-brand">
@@ -29,37 +29,38 @@
 </nav>
 <div class="container-fluid">
   <div class="wrapper row flex-nowrap">
-    <aside class="main-sidebar d-none d-lg-block  col-lg-2"
+    <aside class="main-sidebar d-none d-lg-block  col-lg-2 min-vh-100"
            [ngClass]="{'collapsed':this.collapseSidebar}">
 
-      <ng-container *ngFor="let menuBlock of menuBlocks">
+      <div class="sidebar-menu-wrapper overflow-auto vh-100">
+        <ng-container *ngFor="let menuBlock of menuBlocks">
 
-        <div class="menu-list" *ngIf="menuList[menuBlock].display">
-          <p class="menu-list-label">
+          <div class="menu-list" *ngIf="menuList[menuBlock].display">
+            <p class="menu-list-label">
             <span class="icon">
             <ng-container *ngIf="menuList[menuBlock].icon">
               <fa-icon [icon]="menuList[menuBlock]!.icon!"></fa-icon>
             </ng-container>
             </span>
-            {{menuList[menuBlock].title}}
-          </p>
-          <ul class="menu nav nav-pills flex-column">
-            <ng-container *ngFor="let item of menuList[menuBlock].items">
-              <li class="nav-item" *ngIf="item.display">
-                <a [routerLink]="item.url" routerLinkActive="active" class="nav-link"
-                   [routerLinkActiveOptions]="{exact:(item?.exact!=undefined?item.exact!:true)}">
+              {{menuList[menuBlock].title}}
+            </p>
+            <ul class="menu nav nav-pills flex-column">
+              <ng-container *ngFor="let item of menuList[menuBlock].items">
+                <li class="nav-item" *ngIf="item.display">
+                  <a [routerLink]="item.url" routerLinkActive="active" class="nav-link"
+                     [routerLinkActiveOptions]="{exact:(item?.exact!=undefined?item.exact!:true)}">
                   <span class="icon">
                   <ng-container *ngIf="item.icon">
                     <fa-icon [icon]="item!.icon!"></fa-icon>
                   </ng-container>
                   </span>
-                  <span class="title">{{item.title}}</span></a>
-              </li>
-            </ng-container>
-          </ul>
-        </div>
-      </ng-container>
-
+                    <span class="title">{{item.title}}</span></a>
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </ng-container>
+      </div>
     </aside>
     <main class="main-content col-sm-12 col-lg-10">
       <router-outlet></router-outlet>

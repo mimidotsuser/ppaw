@@ -40,24 +40,6 @@
       }
     }
 
-    &.is-active {
-      span {
-        background-color: $side-menu-toggle-btn-active-color;
-
-        &:first-child {
-          transform: translateY(11px) rotate(45deg);
-        }
-
-        &:nth-child(2) {
-          transform: translateY(2px) rotate(-45deg);
-
-        }
-
-        &:nth-child(3) {
-          opacity: 0;
-        }
-      }
-    }
   }
 
   .navbar-brand {
@@ -68,7 +50,7 @@
 
 aside.main-sidebar {
   border-right: 1px solid $side-menu-border-left;
-  padding: 15px 4px;
+  padding: 15px 0 15px 10px;
   background-color: white;
 
   .menu-list {

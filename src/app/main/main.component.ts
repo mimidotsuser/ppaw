@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { environment } from '../../environments/environment';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { filter, tap } from 'rxjs';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit,OnDestroy {
 
   appName: string = environment.app.name;
   logoUrl: string = environment.app.logoUrl;
@@ -196,7 +198,14 @@ export class MainComponent implements OnInit {
     },
   }
 
-  constructor() {}
+  constructor(private router: Router) {
+    this.router.events
+      .pipe(filter((evt) => evt instanceof NavigationEnd))
+      .pipe(tap(() => this.collapseSidebar = false))
+      .pipe(tap((z)=>console.log('mmm',z,this.collapseSidebar)))
+      .subscribe()
+
+  }
 
   ngOnInit(): void {}
 
@@ -206,6 +215,10 @@ export class MainComponent implements OnInit {
 
   get menuBlocks(): string[] {
     return Object.keys(this.menuList);
+  }
+
+  ngOnDestroy(): void {
+    console.log('hello')
   }
 }
 
