@@ -163,6 +163,10 @@ export class CheckoutRequestService {
     return this.myRequests$;
   }
 
+  get requestsToVerify(): Observable<MRFModel[]> {
+    return this.myRequests$;
+  }
+
   get requestsToApprove(): Observable<MRFModel[]> {
     return this.myRequests$;
   }

@@ -1,17 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import { CheckoutRequestService } from '../../services/checkout-request.service';
 import { MRFModel, MRFOrderItemsModel, MRFStage } from '../../../../models/m-r-f.model';
+import { CheckoutRequestService } from '../../services/checkout-request.service';
 
 @Component({
-  selector: 'app-verify',
+  selector: 'app-create',
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit, OnDestroy {
+export class CreateComponent implements OnInit {
 
   faExternalLinkAlt = faExternalLinkAlt;
   model: MRFModel | null = null;
@@ -28,6 +28,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
 
     this.form = this.fb.group({});
+
   }
 
   ngOnInit(): void {
@@ -52,12 +53,15 @@ export class CreateComponent implements OnInit, OnDestroy {
     return log ? log.remarks : '';
   }
 
+  get verifierRemarks() {
+    const log = this.model?.logs ?
+      this.model?.logs.find((log) => log?.stage === MRFStage.VERIFY) : null;
+
+    return log ? log.remarks : '';
+  }
+
 
   submit() {
     //TODO
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.map((s) => s.unsubscribe())
   }
 }

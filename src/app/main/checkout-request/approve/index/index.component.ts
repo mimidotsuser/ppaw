@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Observable, startWith, switchMap, tap } from 'rxjs';
 import { CheckoutRequestService } from '../../services/checkout-request.service';
-import { Observable, startWith, switchMap } from 'rxjs';
-import { MRFModel, MRFOrderItemsModel } from '../../../../models/m-r-f.model';
+import { MRFModel, MRFOrderItemsModel, MRFStage } from '../../../../models/m-r-f.model';
 import { SearchService } from '../../../../shared/services/search.service';
 
 @Component({
@@ -26,7 +26,7 @@ export class IndexComponent implements OnInit {
   ngOnInit(): void {
     this.requests$ = this.requestSearchInput.valueChanges.pipe(
       startWith(''),
-      switchMap((v) => this.searchService.find(v, this.crService.requestsToVerify))
+      switchMap((v) => this.searchService.find(v, this.crService.requestsToApprove))
     );
   }
 
@@ -41,4 +41,16 @@ export class IndexComponent implements OnInit {
   aggregateQty(items: MRFOrderItemsModel[]) {
     return this.crService.aggregateQty(items);
   }
+
+  approvedOn(item: MRFModel): string {
+    const x = item?.logs?.find((log) => log.stage === MRFStage.VERIFY);
+    return x ? x.created_at : '';
+  }
+
+  approver(item: MRFModel): string {
+    const x = item?.logs?.find((log) => log.stage === MRFStage.VERIFY);
+    return x ? `${x.created_by?.first_name || ''} ${x.created_by?.last_name || ''}` : '---';
+
+  }
+
 }
