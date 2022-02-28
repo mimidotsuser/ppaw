@@ -1,0 +1,25 @@
+@import "variables";
+
+.card-group {
+  background-color: $checkout-group-card-background-color;
+
+  .group-header {
+    position: relative;
+  }
+
+  .action-group {
+    position: absolute;
+    right: 5px;
+    top: -8px;
+  }
+
+  .icon-button {
+    padding-right: 3px;
+    padding-left: 3px;
+    margin-right: 8px;
+  }
+
+  label.form-label {
+    font-size: 14px;
+  }
+}

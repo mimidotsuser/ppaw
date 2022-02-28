@@ -34,9 +34,8 @@ export class IndexComponent implements OnInit {
     return this.requests$;
   }
 
-
   formatOrderId(order: number): string {
-    return `REQUEST-${String(order).padStart(4, '0')}`
+    return this.checkoutService.formatOrderId(order);
   }
 
 

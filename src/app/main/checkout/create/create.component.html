@@ -1,1 +1,195 @@
-<p>create works!</p>
+<app-content-header title="Material Requisition Request Checkout" [menuItems]="['Home','Checkout']">
+</app-content-header>
+
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label for="request_id" class="form-label">Request No.</label>
+      <input type="text" class="form-control" disabled id="request_id"
+             [value]="formatOrderId(requestModel?.order_id||0)">
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="name" class="form-label">Requested By</label>
+      <input type="text" class="form-control" disabled id="name"
+             [value]="name">
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="created_at" class="form-label">Created On</label>
+      <input type="text" class="form-control" disabled id="created_at"
+             [value]="requestModel?.created_at|date">
+    </div>
+
+    <ng-container *ngIf="requesterRemarks">
+      <div class="col-md-4 mb-3">
+        <label for="a_remarks" class="form-label">Requestor Remarks</label>
+        <textarea id="a_remarks" class="form-control" disabled>{{requesterRemarks}}</textarea>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="verifierRemarks">
+      <div class="col-md-4 mb-3">
+        <label for="b_remarks" class="form-label">Verification Remarks</label>
+        <textarea id="b_remarks" class="form-control" disabled>{{verifierRemarks}}</textarea>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="approverRemarks">
+      <div class="col-md-4 mb-3">
+        <label for="c_remarks" class="form-label">Approval Remarks</label>
+        <textarea id="c_remarks" class="form-control" disabled>{{approverRemarks}}</textarea>
+      </div>
+    </ng-container>
+  </div>
+
+  <table class="table table-striped table-responsive table-bordered table-block-sm">
+    <thead>
+    <tr>
+      <th>Item</th>
+      <th>Purpose</th>
+      <th>Client</th>
+      <th>Qty Approved</th>
+      <th>Qty Issued</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of requestModel?.order_items">
+      <td>
+        <span class="td-inline-label">Item</span>
+        <div class="d-flex flex-column">
+          {{item.product?.item_code}}
+          <small class="text-muted">
+            {{item.product?.local_description || item?.product?.description}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Purpose</span>
+        {{item.purpose}}
+      </td>
+      <td>
+        <span class="td-inline-label">Client</span>
+        <div class="d-flex flex-column">
+          {{item?.client?.name}}
+          <small class="text-muted">
+            {{item?.client?.branch || item?.client?.region}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Qty Approved</span>
+        <div class="text-sm-center"> {{item.qty_approved}}</div>
+      </td>
+      <td>
+        <span class="td-inline-label">Qty Issued</span>
+        <div class="text-sm-center"
+             [ngClass]="{'text-danger': item?.qty_approved||0> (item?.qty_issued||0) }">
+          {{item?.qty_issued || 0}}
+        </div>
+      </td>
+
+      <td>
+        <button type="button" class="btn btn-sm btn-outline-success"
+                (click)="openIssuePopupForm(item)">
+          <fa-icon [icon]="faCartPlus"></fa-icon>
+          Issue
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="remarks" class="form-label">Remarks</label>
+      <textarea id="remarks" class="form-control"></textarea>
+    </div>
+    <div class="col-12">
+      <button type="button" class="btn btn-primary" (click)="submit()">
+        Submit
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-side-popup [(show)]="showIssueFormPopup" [title]="issueFormPopupTitle"
+                [(isFullScreen)]="issueFormPopupFullscreen">
+
+  <ng-container *ngIf="selectedOrderItemIsSpare">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="ns" class="form-label">Total new spare issued</label>
+        <input type="number" id="ns" min="0" class="form-control"
+               max="{{selectedOrderItem?.qty_approved||0}}"
+               value="{{selectedOrderItem?.qty_approved||0}}">
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="os" class="form-label">Total old spare issued</label>
+        <input type="number" id="os" min="0" class="form-control"
+               max="{{selectedOrderItem?.qty_approved||0}}" value="0">
+      </div>
+      <div class="col-12 d-flex gap-2">
+        <button type="button" class="btn btn-primary" (click)="tempSpareIssue()">
+          Done
+        </button>
+
+        <button type="button" class="btn btn-cancel" (click)="showIssueFormPopup=false">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!selectedOrderItemIsSpare">
+    <div class="row ">
+      <div class="item-group" [ngClass]="{'col-md-6':issueFormPopupFullscreen}">
+        <div class="card-group card card-body">
+          <div class="row">
+            <div class="group-header col-12">
+              <div class="action-group">
+            <span class="icon-button btn-collapse" role="button">
+              <fa-icon [icon]="faMinusCircle"></fa-icon>
+            </span>
+                <span class="icon-button btn-delete" role="button">
+                <fa-icon [icon]="faWindowClose" class="text-danger"></fa-icon>
+              </span>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="serial" class="form-label">Select Serial Number</label>
+              <input type="search" id="serial" class="form-control">
+            </div>
+            <div class="col-12"></div>
+            <div class="col-md-6 mb-3">
+              <label for="warrant_start" class="form-label">Warrant Start Date</label>
+              <input type="date" id="warrant_start" class="form-control">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="warrant_start" class="form-label">Warrant End Date</label>
+              <input type="date" id="warrant_end" class="form-control">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="my-3 d-flex justify-content-end">
+        <button class="btn btn-outline-success">+ New item</button>
+      </div>
+
+      <div class="col-12 d-flex gap-2 my-5">
+        <button type="button" class="btn btn-primary" (click)="tempSpareIssue()">
+          Done
+        </button>
+
+        <button type="button" class="btn btn-cancel" (click)="showIssueFormPopup=false">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</app-side-popup>
