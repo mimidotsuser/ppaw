@@ -1,19 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { environment } from '../../environments/environment';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { filter, tap } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter, Subscription, tap } from 'rxjs';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit,OnDestroy {
+export class MainComponent implements OnInit, OnDestroy {
 
   appName: string = environment.app.name;
   logoUrl: string = environment.app.logoUrl;
   collapseSidebar = false;
+  routerSubscription: Subscription | null = null
 
   menuList: { [ key: string ]: MenuItem } = {
     dashboard: {
@@ -199,10 +200,9 @@ export class MainComponent implements OnInit,OnDestroy {
   }
 
   constructor(private router: Router) {
-    this.router.events
+    this.routerSubscription = this.router.events
       .pipe(filter((evt) => evt instanceof NavigationEnd))
       .pipe(tap(() => this.collapseSidebar = false))
-      .pipe(tap((z)=>console.log('mmm',z,this.collapseSidebar)))
       .subscribe()
 
   }
@@ -218,7 +218,9 @@ export class MainComponent implements OnInit,OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('hello')
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 }
 
