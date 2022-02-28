@@ -44,9 +44,21 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const x = this.form.get('type')?.valueChanges!.pipe(tap(() => {
-      if (this.form.get('type')?.value === this.itemType.spare
-        && !this.form.get('parent_id')?.value) {
+    //on product category change,
+    const y = this.form.get('type')?.valueChanges!
+      .pipe(tap(() => {
+        //reset product
+        this.form.get('product')?.reset();
+        //if spare, disable product input
+        if (this.form.get('type')?.value === this.itemType.spare) {
+          this.form.get('product')?.disable();
+        } else {
+          this.form.get('product')?.enable();
+        }
+      })).subscribe();
+
+    const x = this.form.get('parent')?.valueChanges!.pipe(tap(() => {
+      if (this.form.get('type')?.value === this.itemType.spare && !this.form.get('parent')?.value) {
         this.form.get('product')?.disable();
       } else {
         this.form.get('product')?.enable();
@@ -56,6 +68,9 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     if (x) {
       this.subscriptions.push(x);
+    }
+    if (y) {
+      this.subscriptions.push(y);
     }
 
     //search
