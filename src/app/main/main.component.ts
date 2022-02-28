@@ -39,8 +39,8 @@ export class MainComponent implements OnInit {
       title: 'Checkout',
       display: true,
       items: [
-        {title: 'Checkout Requests', url: 'checkout/create', display: true},
-        {title: 'Checkout History', url: 'checkout', display: true},
+        {title: 'Checkout Requests', url: 'checkout', display: true},
+        {title: 'Checkout History', url: 'checkout/history', display: true},
       ]
     },
     purchase_requests: {

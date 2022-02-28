@@ -8,14 +8,20 @@ const routes: Routes = [
     component: CheckoutComponent,
     children: [
       {
+        path: ':id',
+        loadChildren: () => import('./create/create.module').then(m => m.CreateModule)
+      },
+      {
+        path: 'history',
+        loadChildren: () => import('./history/history.module').then(m => m.HistoryModule)
+      },
+      {
         path: '',
         loadChildren: () => import('./index/index.module').then(m => m.IndexModule)
       },
-      {
-        path: 'create',
-        loadChildren: () => import('./create/create.module').then(m => m.CreateModule)
-      }]
-  }];
+    ]
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

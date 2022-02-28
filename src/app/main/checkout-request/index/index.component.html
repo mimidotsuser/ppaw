@@ -27,9 +27,11 @@
     </thead>
     <tbody>
     <tr *ngFor="let request of checkoutRequests|async">
-      <td (click)="showLogs(request)">
+      <td (click)="showLogs(request)" role="button">
         <span class="td-inline-label">Request No.</span>
-        {{formatOrderId(request.order_id)}}
+        <a class="text-decoration-none">
+          {{formatOrderId(request.order_id)}}
+        </a>
       </td>
       <td>
         <span class="td-inline-label">Quantity</span>
