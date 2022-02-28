@@ -3,7 +3,7 @@
   <div class="col-md-6 mb-3">
     <label for="main" class="form-label">Parent/Main Branch </label>
     <select class="form-control" id="main" (change)="onParentSelect($event)">
-      <option disabled selected value="">-- select parent if available --</option>
+      <option disabled selected value=""></option>
       <ng-container *ngFor="let client of clients|async">
         <option *ngIf="!client.parent_id" value="{{client.id}}" [attr.data-name]="client.name">
           {{client.name}}
@@ -18,7 +18,7 @@
     <input type="text" id="name" class="form-control" formControlName="name">
   </div>
   <div class="col-md-6 mb-3">
-    <label for="branch" class="form-label required">Branch Name</label>
+    <label for="branch" class="form-label">Branch Name</label>
     <input type="text" id="branch" class="form-control" formControlName="branch">
   </div>
   <div class="col-md-6 mb-3">
