@@ -103,9 +103,11 @@ export class SearchInputComponent<T> implements OnInit, ControlValueAccessor {
       .pipe(map((res) => res.data))
       .pipe(catchError(() => {
         this.searchFailed = true;
+        this.searching = false;
         return []
       }))
       .pipe(takeWhile(() => !this.searchFailed))
+      .pipe(tap((rs) => this.showIcons = rs.length === 0))
       .pipe(map((rs) => rs.length > 0 ? rs : [null]))
   }
 
