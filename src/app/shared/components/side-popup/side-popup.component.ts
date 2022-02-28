@@ -17,8 +17,11 @@ export class SidePopupComponent implements OnInit {
   @Input() id: string = Math.random().toString(32).substr(3);
   @Input() showLeft = false;
   @Input() isFullScreen = false;
+  @Input() showFullscreenIcon = true;
+  @Input() showCloseIcon = true;
 
   @Output() showChange = new EventEmitter<boolean>();
+  @Output() isFullScreenChange = new EventEmitter<boolean>()
 
   constructor() {
   }
@@ -29,5 +32,10 @@ export class SidePopupComponent implements OnInit {
   close() {
     this.show = false;
     this.showChange.emit(this.show);
+  }
+
+  toggleFullscreen() {
+    this.isFullScreen = !this.isFullScreen;
+    this.isFullScreenChange.emit(this.isFullScreen)
   }
 }

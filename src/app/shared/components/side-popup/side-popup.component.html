@@ -8,12 +8,12 @@
     </div>
     <div class="d-flex justify-content-end">
       <div class="level-item">
-        <div class="icon maximize-icon" (click)="isFullScreen=!isFullScreen">
+        <div class="icon maximize-icon" (click)="toggleFullscreen()" *ngIf="showFullscreenIcon">
           <fa-icon [icon]="faWindowMaximize"></fa-icon>
         </div>
       </div>
       <div class="level-item">
-        <div class="icon close-icon" (click)="close()">
+        <div class="icon close-icon" (click)="close()" *ngIf="showCloseIcon">
           <fa-icon [icon]="faWindowClose"></fa-icon>
         </div>
       </div>
