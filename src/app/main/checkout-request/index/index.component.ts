@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { faFilePdf, faEye } from '@fortawesome/free-regular-svg-icons';
 import { CheckoutRequestService } from '../services/checkout-request.service';
-import { MRFStage, MRFModel, MRFOrderItemsModel } from '../../../models/m-r-f.model';
+import { MRFStage, MRFModel, MRFOrderItemModel } from '../../../models/m-r-f.model';
 
 @Component({
   selector: 'app-index',
@@ -34,7 +34,7 @@ export class IndexComponent implements OnInit {
     return this.crService.formatOrderId(order);
   }
 
-  aggregateQty(items: MRFOrderItemsModel[]) {
+  aggregateQty(items: MRFOrderItemModel[]) {
     return this.crService.aggregateQty(items);
   }
 

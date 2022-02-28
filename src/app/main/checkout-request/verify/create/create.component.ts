@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { CheckoutRequestService } from '../../services/checkout-request.service';
-import { MRFModel, MRFOrderItemsModel, MRFStage } from '../../../../models/m-r-f.model';
+import { MRFModel, MRFOrderItemModel, MRFStage } from '../../../../models/m-r-f.model';
 
 @Component({
   selector: 'app-verify',
@@ -37,7 +37,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     return this.crService.formatOrderId(order);
   }
 
-  aggregateQty(items: MRFOrderItemsModel[]) {
+  aggregateQty(items: MRFOrderItemModel[]) {
     return this.crService.aggregateQty(items);
   }
 

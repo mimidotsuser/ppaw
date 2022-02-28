@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import { MRFModel, MRFOrderItemsModel, MRFStage } from '../../../../models/m-r-f.model';
+import { MRFModel, MRFOrderItemModel, MRFStage } from '../../../../models/m-r-f.model';
 import { CheckoutRequestService } from '../../services/checkout-request.service';
 
 @Component({
@@ -38,7 +38,7 @@ export class CreateComponent implements OnInit {
     return this.crService.formatOrderId(order);
   }
 
-  aggregateQty(items: MRFOrderItemsModel[]) {
+  aggregateQty(items: MRFOrderItemModel[]) {
     return this.crService.aggregateQty(items);
   }
 

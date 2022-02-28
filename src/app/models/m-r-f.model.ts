@@ -18,7 +18,7 @@ export enum MRFStage {
   ISSUED
 }
 
-export interface MRFOrderItemsModel {
+export interface MRFOrderItemModel {
   product_id: string;
   type: 'spare' | 'machine';
   purpose: MRFPurpose;
@@ -47,7 +47,7 @@ export interface MRFLog {
 export interface MRFModel {
   id?: string;
   order_id: number;
-  order_items: MRFOrderItemsModel[];
+  order_items: MRFOrderItemModel[];
   logs: MRFLog[];
   created_at?: string;
   created_by_id?: string;

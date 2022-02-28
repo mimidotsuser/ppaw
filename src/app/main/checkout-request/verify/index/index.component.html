@@ -10,7 +10,9 @@
     </div>
 
   </div>
+</div>
 
+<div class="container-md-fluid">
   <table class="table table-hover table-block-sm">
     <thead>
     <tr>
@@ -25,7 +27,8 @@
     <tr *ngFor="let request of checkoutRequests|async">
       <td>
         <span class="td-inline-label">Request No.</span>
-        <a [routerLink]="request.id" class="text-decoration-none">{{formatOrderId(request.order_id)}} </a>
+        <a [routerLink]="request.id"
+           class="text-decoration-none">{{formatOrderId(request.order_id)}} </a>
       </td>
       <td>
         <span class="td-inline-label">Total Items</span>

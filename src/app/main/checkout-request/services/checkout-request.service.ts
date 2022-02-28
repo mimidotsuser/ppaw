@@ -7,7 +7,7 @@ import {
   MRFLog,
   MRFModel,
   MRFPurpose,
-  MRFOrderItemsModel
+  MRFOrderItemModel
 } from '../../../models/m-r-f.model';
 
 @Injectable({
@@ -146,7 +146,7 @@ export class CheckoutRequestService {
     return `REQUEST-${String(order).padStart(4, '0')}`
   }
 
-  aggregateQty(items: MRFOrderItemsModel[]): {
+  aggregateQty(items: MRFOrderItemModel[]): {
     verified: number, approved: number,
     issued: number, requested: number
   } {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CheckoutRequestService } from '../../services/checkout-request.service';
 import { Observable, startWith, switchMap } from 'rxjs';
-import { MRFModel, MRFOrderItemsModel } from '../../../../models/m-r-f.model';
+import { MRFModel, MRFOrderItemModel } from '../../../../models/m-r-f.model';
 import { SearchService } from '../../../../shared/services/search.service';
 
 @Component({
@@ -38,7 +38,7 @@ export class IndexComponent implements OnInit {
     return this.crService.formatOrderId(order);
   }
 
-  aggregateQty(items: MRFOrderItemsModel[]) {
+  aggregateQty(items: MRFOrderItemModel[]) {
     return this.crService.aggregateQty(items);
   }
 }

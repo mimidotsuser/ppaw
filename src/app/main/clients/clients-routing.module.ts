@@ -9,10 +9,6 @@ const routes: Routes = [
     children: [
       {path: '', loadChildren: () => import('./index/index.module').then(m => m.IndexModule)},
       {
-        path: 'create',
-        loadChildren: () => import('./create/create.module').then(m => m.CreateModule)
-      },
-      {
         path: ':id/contracts/create',
         loadChildren: () => import('./contracts/create/create.module').then(m => m.CreateModule)
       },
