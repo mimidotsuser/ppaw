@@ -4,7 +4,7 @@ export interface ClientModel {
   id: string;
   parent_id: string | null;
   name: string;
-  branch: string;
+  branch?: string;
   region?: string;
   location?: string;
   contracts_total?: number;
