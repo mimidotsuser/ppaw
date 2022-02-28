@@ -22,16 +22,17 @@ export class MainComponent implements OnInit {
       ]
     },
     inventory_requisition: {
-      title: 'Inventory Requisition',
+      title: 'Material Requisition',
       display: true,
       items: [
         {title: 'New request', url: 'checkout-requests/create', display: true},
         {title: 'My requests', url: 'checkout-requests', display: true},
         {
           title: 'Verify requests', url: 'checkout-requests/verification',
-          display: true
+          display: true,
+          exact: false
         },
-        {title: 'Approve requests', url: 'checkout-requests/approval', display: true},
+        {title: 'Approve requests', url: 'checkout-requests/approval', display: true, exact: false},
       ]
     },
     checkout: {
@@ -212,6 +213,6 @@ interface MenuItem {
   title: string;
   icon?: IconProp;
   display: boolean;
-  items?: { title: string, icon?: IconProp, url: string, display: boolean }[]
+  items?: { title: string, icon?: IconProp, url: string, display: boolean, exact?: boolean }[]
 
 }

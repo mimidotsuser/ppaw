@@ -46,8 +46,8 @@
           <ul class="menu nav nav-pills flex-column">
             <ng-container *ngFor="let item of menuList[menuBlock].items">
               <li class="nav-item" *ngIf="item.display">
-                <a [routerLink]="item.url" routerLinkActive="active"
-                   [routerLinkActiveOptions]="{exact:true}" class="nav-link">
+                <a [routerLink]="item.url" routerLinkActive="active" class="nav-link"
+                   [routerLinkActiveOptions]="{exact:(item?.exact!=undefined?item.exact!:true)}">
                   <span class="icon">
                   <ng-container *ngIf="item.icon">
                     <fa-icon [icon]="item!.icon!"></fa-icon>
