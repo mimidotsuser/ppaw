@@ -43,7 +43,7 @@ export class MainComponent implements OnInit, OnDestroy {
       display: true,
       items: [
         {title: 'Checkout Requests', url: 'checkout', display: true, exact: false},
-        {title: 'Checkout History', url: 'checkout/history', display: true},
+        {title: 'Checkout History', url: 'reports/checkout', display: true},
       ]
     },
     purchase_requests: {

@@ -12,10 +12,6 @@ const routes: Routes = [
         loadChildren: () => import('./create/create.module').then(m => m.CreateModule)
       },
       {
-        path: 'history',
-        loadChildren: () => import('./history/history.module').then(m => m.HistoryModule)
-      },
-      {
         path: '',
         loadChildren: () => import('./index/index.module').then(m => m.IndexModule)
       },

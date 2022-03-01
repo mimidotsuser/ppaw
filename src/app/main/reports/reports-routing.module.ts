@@ -8,8 +8,14 @@ const routes: Routes = [
       {
         path: 'worksheets',
         loadChildren: () => import('./worksheets/worksheets.module').then(m => m.WorksheetsModule)
-      }]
-  }];
+      },
+      {
+        path: 'checkout',
+        loadChildren: () => import('./checkout/checkout.module').then(m => m.CheckoutModule)
+      }
+    ]
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
