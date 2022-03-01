@@ -54,7 +54,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     });
 
     this.spareAllocationFormGroup = this.fb.group({
-      spareOrderItemsAllocation: new FormArray([])
+      allottedSpares: new FormArray([])
     })
 
   }
@@ -128,30 +128,7 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   /** Forms and submission **/
 
-
-  get spareItemsIssueForm(): FormArray {
-    return this.spareAllocationFormGroup.get('spareOrderItemsAllocation') as FormArray
-  }
-
-  private createSpareItemIssueForm(orderItem: MRFOrderItemModel) {
-    return this.fb.group({
-      order_item_id: new FormControl(orderItem.id),
-      product_id: new FormControl(orderItem.product_id),
-      used_total: new FormControl(0,
-        {
-          validators: [Validators.required, Validators.min(0),
-            Validators.max(orderItem.qty_approved || 0)
-          ]
-        }),
-      brand_new_total: new FormControl(orderItem.qty_approved || 0,
-        {
-          validators: [Validators.required, Validators.min(0),
-            Validators.max(orderItem.qty_approved || 0)
-          ]
-        }),
-    })
-  }
-
+  //1 Machines
 
   /**
    * Machine Form Structure
@@ -258,12 +235,95 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   }
 
-  addSpareIssue() {
+
+  // 2. Spares
+
+  get spareAllottedItemsForm(): FormArray {
+    return this.spareAllocationFormGroup.get('allottedSpares') as FormArray
+  }
+
+  createSpareAllotmentForm(orderItem: MRFOrderItemModel) {
+    return this.fb.group({
+      order_item_id: new FormControl(orderItem.id),
+      product_id: new FormControl(orderItem.product_id),
+      unused_total: new FormControl(orderItem.qty_approved || 0,
+        {
+          validators: [
+            Validators.required, Validators.min(0),
+            Validators.max(orderItem.qty_approved || 0)
+          ]
+        }),
+      used_total: new FormControl(0,
+        {
+          validators: [
+            Validators.required, Validators.min(0),
+            Validators.max(orderItem.qty_approved || 0)
+          ],
+          updateOn: 'blur'
+        }),
+    });
+  }
+
+  spareAllotmentForm(orderItem: MRFOrderItemModel): FormGroup {
+    //check if form exists first
+    let group = (this.spareAllottedItemsForm.controls as FormGroup[])
+      .find((group: FormGroup) => group.get('order_item_id')?.value === orderItem.id);
+
+    if (group) {return group}
+    //else create and return
+    group = this.createSpareAllotmentForm(orderItem);
+    this.spareAllottedItemsForm.push(group);
+    //register for value synchronization
+    this.registerSpareControlSynchrony(orderItem);
+    return group;
+  }
+
+  registerSpareControlSynchrony(orderItem: MRFOrderItemModel) {
+    // get the form group
+    const group = this.spareAllotmentForm(orderItem);
+    if (!group || !group.get('used_total') || !group.get('unused_total')) {
+      return;
+    }
+
+    const b = group.get('used_total')!.valueChanges.subscribe((value) => {
+      if ((orderItem.qty_approved || 0) - value > -1) {
+        group.get('unused_total')?.patchValue((orderItem.qty_approved || 0) - value)
+      }
+    });
+
+    this.subscriptions.push(b)
+  }
+
+  saveOrderItemSpareIssue(orderItem: MRFOrderItemModel) {
+    // get the form
+    const form = this.spareAllotmentForm(orderItem);
+    form.markAllAsTouched();
+    if (form.invalid) {
+      //todo notify user
+      return
+    }
+    //update the quantity issued (extra step approach)
+    orderItem.qty_issued = (form.get('used_total')?.value || 0) +
+      (form.get('unused_total')?.value || 0)
+    this.showIssueFormPopup = false;
 
   }
 
   submitOrderFulfillment() {
+    //verify all items have been issued
+    const notIssued = this.requestModel!.order_items
+      .find((item) => (item.qty_approved || 0) > (item.qty_issued || 0));
 
+    if (notIssued) {
+      alert('You have not issued all the items');
+      return;
+    }
+    //submit the forms
+    const machineAllocation = this.selectedProductSerials();
+    const spareAllocation = (this.spareAllottedItemsForm.controls as FormGroup[])
+      .map((group: FormGroup) => group.value);
+
+    //todo submit the machine allocation and spare allocation
   }
 
   ngOnDestroy(): void {
