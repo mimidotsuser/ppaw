@@ -7,10 +7,10 @@
 <ng-template let-results="result" #resultTemplate>
   <ng-container *ngIf="results;else noResultsTemplate">
     <div class="title">
-      {{results.name}}
+      {{results.serial_number}}
     </div>
     <div class="subtitle ">
-      {{results.branch}} <span *ngIf="results.region">{{results.region}}</span>
+      {{results?.product?.item_code}}
     </div>
   </ng-container>
 </ng-template>

@@ -19,6 +19,7 @@ export enum MRFStage {
 }
 
 export interface MRFOrderItemModel {
+  id: string;
   product_id: string;
   type: 'spare' | 'machine';
   purpose: MRFPurpose;

@@ -164,21 +164,26 @@
               </span>
                 </div>
               </div>
-              <div class="col-md-6 mb-3">
-                <label for="serial" class="form-label">Select Serial Number</label>
-                <product-serial-search customId="serial" controlName="serial_id">
+              <div class="col-md-6 mb-2">
+                <label for="serial-{{i}}" class="form-label">Serial number</label>
+                <product-serial-search customId="serial-{{i}}" controlName="serial_id">
                 </product-serial-search>
+                <small class="help-text text-danger"
+                       *ngIf="grp.get('serial_id')?.touched &&
+                        grp.get('serial_id')?.getError('duplicated')">
+                  Duplicate serial number assignment
+                </small>
               </div>
               <div class="col-12"></div>
-              <div class="col-md-6 mb-3">
-                <label for="warrant_start" class="form-label">Warrant Start Date</label>
-                <input type="date" id="warrant_start" class="form-control"
+              <div class="col-md-6 mb-2">
+                <label for="warrant_start-{{i}}" class="form-label">Warrant start date</label>
+                <input type="date" id="warrant_start-{{i}}" class="form-control"
                        formControlName="warrant_start">
               </div>
 
-              <div class="col-md-6 mb-3">
-                <label for="warrant_start" class="form-label">Warrant End Date</label>
-                <input type="date" id="warrant_end" class="form-control"
+              <div class="col-md-6 mb-2">
+                <label for="warrant_end-{{i}}" class="form-label">Warrant end date</label>
+                <input type="date" id="warrant_end-{{i}}" class="form-control"
                        formControlName="warrant_end">
               </div>
             </div>

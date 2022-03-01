@@ -7,6 +7,7 @@ import { faWindowClose } from '@fortawesome/free-regular-svg-icons';
 import { MRFModel, MRFOrderItemModel, MRFStage } from '../../../models/m-r-f.model';
 import { CheckoutService } from '../services/checkout.service';
 import { SearchService } from '../../../shared/services/search.service';
+import { arrayUnique } from '../../../utils/validators/array-unique';
 
 @Component({
   selector: 'app-create',
@@ -190,7 +191,8 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   private createMachineAllotmentForm(): FormGroup {
     return this.fb.group({
-      serial_id: new FormControl(null, {validators: [Validators.required]}),
+      serial_id: new FormControl(null,
+        {validators: [Validators.required,arrayUnique()]}),
       warrant_start: new FormControl(this.defaultWarrantStartDate.toISOString().slice(0, 10)),
       warrant_end: new FormControl(this.defaultWarrantEndDate.toISOString().slice(0, 10)),
     });
@@ -228,7 +230,6 @@ export class CreateComponent implements OnInit, OnDestroy {
       //todo notify user
       return
     }
-    console.log(form.value)
     //form is valid
     this.showIssueFormPopup = false;
   }
