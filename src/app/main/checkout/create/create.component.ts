@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
-  AbstractControl,
   FormArray,
   FormBuilder,
   FormControl,
@@ -14,8 +13,8 @@ import { faWindowClose } from '@fortawesome/free-regular-svg-icons';
 import { MRFModel, MRFOrderItemModel, MRFStage } from '../../../models/m-r-f.model';
 import { CheckoutService } from '../services/checkout.service';
 import { SearchService } from '../../../shared/services/search.service';
-import { arrayUnique } from '../../../utils/validators/array-unique';
 import { ProductSerialModel } from '../../../models/product-serial.model';
+import { uniqueProductSerial } from '../../../utils/validators/unique-product-serial';
 
 @Component({
   selector: 'app-create',
@@ -200,7 +199,12 @@ export class CreateComponent implements OnInit, OnDestroy {
   private createMachineAllotmentForm(): FormGroup {
     return this.fb.group({
       product_serial: new FormControl(null,
-        {validators: [Validators.required, arrayUnique()]}),
+        {
+          validators: [
+            Validators.required,
+            uniqueProductSerial(this.selectedProductSerials.bind(this))
+          ]
+        }),
       warrant_start: new FormControl(this.defaultWarrantStartDate.toISOString().slice(0, 10)),
       warrant_end: new FormControl(this.defaultWarrantEndDate.toISOString().slice(0, 10)),
     });
@@ -243,13 +247,13 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.showIssueFormPopup = false;
   }
 
-  get selectedProductSerials(): string[] {
+  selectedProductSerials(): ProductSerialModel[] {
     return (this.machineOrderItemsFormArray!.controls as FormGroup[])
       .flatMap((orderGroup) => {
         const allocation = (orderGroup as FormGroup).get('allotted_machines') as FormArray;
         return (allocation.controls as FormGroup[])
           .filter((group) => group.get('product_serial')?.valid) //return only valid
-          .map((group) => group.get('product_serial')?.value)
+          .map((group) => group.get('product_serial')?.value as ProductSerialModel)
       });
 
   }
