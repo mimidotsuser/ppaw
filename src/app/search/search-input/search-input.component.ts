@@ -17,6 +17,7 @@ import {
 } from 'rxjs';
 import { ResultTemplateContext } from '@ng-bootstrap/ng-bootstrap/typeahead/typeahead-window';
 import { HttpService } from '../../core/services/http.service';
+import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-search-input[path][outputFormatter][resultTemplate][control],' +
@@ -47,6 +48,8 @@ export class SearchInputComponent<T> implements OnInit, ControlValueAccessor {
   @Input() popupClass = 'search-results';
   @Input() placement = 'bottom-start';
   @Input() placeholder = 'Type to search';
+
+  @Input() modelValueFormatter?: (data: T) => any
 
   faSearch = faSearch;
   faSpinner = faSpinner;
@@ -121,4 +124,11 @@ export class SearchInputComponent<T> implements OnInit, ControlValueAccessor {
         switchMap((value: string) => this.backendSearch(value)),
         tap(() => this.searching = false)
       )
+
+  onSelect($event: NgbTypeaheadSelectItemEvent) {
+    if (this.modelValueFormatter) {
+      this.writeValue(this.modelValueFormatter($event.item));
+      $event.preventDefault();
+    }
+  }
 }

@@ -13,6 +13,7 @@ export class ProductSerialSearchComponent implements OnInit {
   @Input() controlName: string = '';
   @Input() path = '/product-serials';
   @Input() customId: string | undefined;
+  @Input() editable = false;
 
   constructor() {
   }
