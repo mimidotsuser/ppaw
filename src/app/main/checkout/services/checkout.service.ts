@@ -52,6 +52,7 @@ export class CheckoutService {
         order_id: 1,
         order_items: [
           {
+            id:'kYWQfIQ8IL6ilf2K',
             client_id: '6mKy1FhLWuQVZ0O',
             type: 'spare',
             purpose: MRFPurpose.CLIENT_REPAIR,
@@ -85,6 +86,7 @@ export class CheckoutService {
             },
           },
           {
+            id:'XeGJN927xh8Lbbc9',
             client_id: 'hMu91M6IeGHTJGQi',
             type: 'machine',
             purpose: MRFPurpose.CLIENT_PURCHASE,
@@ -116,6 +118,7 @@ export class CheckoutService {
             }
           },
           {
+            id:'5vP1CR07s0Xz2uup',
             client_id: 'Em34PuZA0jbs04',
             type: 'machine',
             purpose: MRFPurpose.CLIENT_PURCHASE,

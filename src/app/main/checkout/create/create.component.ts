@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { faCartPlus, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCartPlus } from '@fortawesome/free-solid-svg-icons';
 import { faWindowClose } from '@fortawesome/free-regular-svg-icons';
 import { MRFModel, MRFOrderItemModel, MRFStage } from '../../../models/m-r-f.model';
 import { CheckoutService } from '../services/checkout.service';
@@ -20,15 +20,16 @@ export class CreateComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   faCartPlus = faCartPlus;
   faWindowClose = faWindowClose;
-  faMinusCircle = faMinusCircle;
   showIssueFormPopup = false;
   issueFormPopupFullscreen = false;
   selectedOrderItem: MRFOrderItemModel | null = null;
 
-  //forms
-  //machineAllocationFormGroup: FormGroup;
- // orderItemMachineAllocation: FormArray;
+  defaultWarrantStartDate = new Date();
+  defaultWarrantEndDate = this.addDaysToDate(this.defaultWarrantStartDate, 365);
 
+  //forms
+  machineAllocationFormGroup: FormGroup;
+  spareAllocationFormGroup: FormGroup;
 
   constructor(private checkoutService: CheckoutService, private fb: FormBuilder,
               private searchService: SearchService<MRFModel>, private route: ActivatedRoute) {
@@ -39,6 +40,14 @@ export class CreateComponent implements OnInit, OnDestroy {
     if (x) {
       this.subscriptions.push(x);
     }
+
+    this.machineAllocationFormGroup = this.fb.group({
+      machineOrderItems: new FormArray([])
+    });
+
+    this.spareAllocationFormGroup = this.fb.group({
+      spareOrderItemsAllocation: new FormArray([])
+    })
 
   }
 
@@ -91,18 +100,145 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   openIssuePopupForm(item: MRFOrderItemModel) {
     this.selectedOrderItem = item;
+    if (this.selectedOrderItemIsSpare) {
+    } else {
+      this.addMachineOrderItemsFormGroup(item);  //Init machine order items array
+      if (this.machineAllottedItemsForm(item).length === 0) {
+        this.addMachineAllottedItemFormGroup(item);       //add one group
+      }
+    }
+
     this.showIssueFormPopup = true;
   }
 
-  tempSpareIssue() {
+  addDaysToDate(start: any, days: number): Date {
+    const prev = new Date(start.getTime());
+    prev.setDate(prev.getDate() + days);
+    return prev;
+  }
+
+
+  /** Forms and submission **/
+
+
+  get spareItemsIssueForm(): FormArray {
+    return this.spareAllocationFormGroup.get('spareOrderItemsAllocation') as FormArray
+  }
+
+  private createSpareItemIssueForm(orderItem: MRFOrderItemModel) {
+    return this.fb.group({
+      order_item_id: new FormControl(orderItem.id),
+      product_id: new FormControl(orderItem.product_id),
+      used_total: new FormControl(0,
+        {
+          validators: [Validators.required, Validators.min(0),
+            Validators.max(orderItem.qty_approved || 0)
+          ]
+        }),
+      brand_new_total: new FormControl(orderItem.qty_approved || 0,
+        {
+          validators: [Validators.required, Validators.min(0),
+            Validators.max(orderItem.qty_approved || 0)
+          ]
+        }),
+    })
+  }
+
+
+  /**
+   * Machine Form Structure
+   *     x = this.fb.group({
+   *       machineOrderItems: new FormArray([
+   *         this.fb.group({
+   *           order_item: new FormControl('abc'),
+   *           allotted_machines: new FormArray([
+   *             this.fb.group({
+   *               serial_id: new FormControl(null, {validators: [Validators.required]}),
+   *               warrant_start: new FormControl(this.defaultWarrantStartDate),
+   *               warrant_end: new FormControl(this.defaultWarrantEndDate),
+   *             })
+   *           ])
+   *         }),
+   *         ...
+   *       ])
+   *     })
+   */
+
+  get machineOrderItemsFormArray(): FormArray {
+    return (this.machineAllocationFormGroup.get('machineOrderItems') as FormArray)
+  }
+
+  addMachineOrderItemsFormGroup(orderItem: MRFOrderItemModel) {
+    //check if group exists
+    let group = this.machineOrderItemsFormGroup(orderItem.id);
+    if (!group) {
+      //create the group if not exist
+      group = this.fb.group({
+        order_item_id: new FormControl(orderItem.id),
+        product_id: new FormControl(orderItem.product_id),
+        allotted_machines: new FormArray([])
+      });
+
+      this.machineOrderItemsFormArray.push(group);
+    }
+  }
+
+  machineOrderItemsFormGroup(itemId: string): FormGroup | undefined {
+    return (this.machineOrderItemsFormArray.controls as FormGroup[])
+      .find((group: FormGroup) => group.get('order_item_id')?.value === itemId)
+  }
+
+  private createMachineAllotmentForm(): FormGroup {
+    return this.fb.group({
+      serial_id: new FormControl(null, {validators: [Validators.required]}),
+      warrant_start: new FormControl(this.defaultWarrantStartDate.toISOString().slice(0, 10)),
+      warrant_end: new FormControl(this.defaultWarrantEndDate.toISOString().slice(0, 10)),
+    });
+  }
+
+  machineAllottedItemsForm(orderItem: MRFOrderItemModel): FormArray {
+    const root = this.machineOrderItemsFormGroup(orderItem.id);
+    if (!root) {
+      throw new Error('Trying to access machine allocation group from un-initialized array')
+    }
+
+    return root.get('allotted_machines') as FormArray;
+  }
+
+
+  addMachineAllottedItemFormGroup(orderItem: MRFOrderItemModel) {
+    const allottedMachinesForm = this.createMachineAllotmentForm();
+    this.machineAllottedItemsForm(orderItem).push(allottedMachinesForm);
+  }
+
+  removeMachineAllottedItemFormGroup(orderItem: MRFOrderItemModel, index: number) {
+    this.machineAllottedItemsForm(orderItem).removeAt(index);
+  }
+
+  canAddMachineAllottedItemForm(orderItem: MRFOrderItemModel) {
+    return this.machineAllottedItemsForm(orderItem).length < (orderItem.qty_approved || 0);
+  }
+
+
+  saveOrderItemMachineIssue(orderItem: MRFOrderItemModel) {
+    // get the form
+    const form = this.machineAllottedItemsForm(orderItem);
+    form.markAllAsTouched();
+    if (form.invalid) {
+      //todo notify user
+      return
+    }
+    console.log(form.value)
+    //form is valid
+    this.showIssueFormPopup = false;
+  }
+
+
+  addSpareIssue() {
 
   }
 
-  tempMachineIssue() {
-
-  }
-
-  submit() {
+  submitOrderFulfillment() {
 
   }
 
