@@ -1,7 +1,7 @@
 import { UserModel } from './user.model';
 import { ProductModel } from './product.model';
 
-export interface ProductItemModel {
+export interface ProductSerialModel {
   id: string;
   product_id: string;
   serial_number: string;

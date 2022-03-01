@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ProductItemModel } from '../../models/product-serial.model';
+import { ProductSerialModel } from '../../models/product-serial.model';
 
 @Component({
   selector: 'product-serial-search',
@@ -21,8 +21,8 @@ export class ProductSerialSearchComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  get outputFormatter(): (item: ProductItemModel) => string {
-    return (item: ProductItemModel) => `${item.serial_number}|${item?.product?.item_code || ''}`
+  get outputFormatter(): (item: ProductSerialModel) => string {
+    return (item: ProductSerialModel) => `${item.serial_number}|${item?.product?.item_code || ''}`
   };
 
 }

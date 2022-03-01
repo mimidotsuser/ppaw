@@ -1,6 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { faCartPlus } from '@fortawesome/free-solid-svg-icons';
 import { faWindowClose } from '@fortawesome/free-regular-svg-icons';
@@ -8,6 +15,7 @@ import { MRFModel, MRFOrderItemModel, MRFStage } from '../../../models/m-r-f.mod
 import { CheckoutService } from '../services/checkout.service';
 import { SearchService } from '../../../shared/services/search.service';
 import { arrayUnique } from '../../../utils/validators/array-unique';
+import { ProductSerialModel } from '../../../models/product-serial.model';
 
 @Component({
   selector: 'app-create',
@@ -154,7 +162,7 @@ export class CreateComponent implements OnInit, OnDestroy {
    *           order_item: new FormControl('abc'),
    *           allotted_machines: new FormArray([
    *             this.fb.group({
-   *               serial_id: new FormControl(null, {validators: [Validators.required]}),
+   *               product_serial: new FormControl(null, {validators: [Validators.required]}),
    *               warrant_start: new FormControl(this.defaultWarrantStartDate),
    *               warrant_end: new FormControl(this.defaultWarrantEndDate),
    *             })
@@ -191,8 +199,8 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   private createMachineAllotmentForm(): FormGroup {
     return this.fb.group({
-      serial_id: new FormControl(null,
-        {validators: [Validators.required,arrayUnique()]}),
+      product_serial: new FormControl(null,
+        {validators: [Validators.required, arrayUnique()]}),
       warrant_start: new FormControl(this.defaultWarrantStartDate.toISOString().slice(0, 10)),
       warrant_end: new FormControl(this.defaultWarrantEndDate.toISOString().slice(0, 10)),
     });
@@ -230,10 +238,21 @@ export class CreateComponent implements OnInit, OnDestroy {
       //todo notify user
       return
     }
-    //form is valid
+    //update the quantity issued
+    orderItem.qty_issued = form.length;
     this.showIssueFormPopup = false;
   }
 
+  get selectedProductSerials(): string[] {
+    return (this.machineOrderItemsFormArray!.controls as FormGroup[])
+      .flatMap((orderGroup) => {
+        const allocation = (orderGroup as FormGroup).get('allotted_machines') as FormArray;
+        return (allocation.controls as FormGroup[])
+          .filter((group) => group.get('product_serial')?.valid) //return only valid
+          .map((group) => group.get('product_serial')?.value)
+      });
+
+  }
 
   addSpareIssue() {
 
