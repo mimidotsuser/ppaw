@@ -6,7 +6,7 @@
   <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
     <div class="col-sm-6 col-md-3 data-filters">
       <input type="text" class="form-control search" placeholder="Filter"
-             [formControl]="itemsSearchInput">
+             [formControl]="searchInput">
     </div>
 
     <div class="d-md-block">
@@ -29,7 +29,7 @@
     </tr>
     </thead>
     <tbody>
-    <ng-container *ngIf="_selectedItems.length>0">
+    <ng-container *ngIf="(selectedItems|async)!.length>0;else noData">
       <tr *ngFor="let item of selectedItems|async">
         <td>
           <span class="td-inline-label">Item</span>
@@ -46,7 +46,7 @@
         </td>
         <td>
           <span class="td-inline-label">Client</span>
-          <div class="d-flex flex-row">
+          <div class="d-flex flex-column">
             {{item.client.name}}
             <small class="text-muted">
               {{item.client.branch}} | {{item.client.region}}
@@ -74,19 +74,24 @@
       </tr>
     </ng-container>
 
-    <ng-container *ngIf="_selectedItems.length===0">
+    <ng-template #noData>
       <tr>
         <td class="text-center py-3" colspan="5">
-          There is no item added yet.&nbsp;
-          <a type="button" class="text-decoration-none" (click)="showCreateForm()">
-            Add new item
-          </a>
+          <ng-container *ngIf="!searchInput.value;else noResults">
+            There is no item added yet.&nbsp;
+            <a type="button" class="text-decoration-none" (click)="showCreateForm()">
+              Add new item
+            </a>
+          </ng-container>
+          <ng-template #noResults>
+            No data matching that criteria
+          </ng-template>
         </td>
       </tr>
-    </ng-container>
+    </ng-template>
     </tbody>
   </table>
-  <div class="d-flex justify-content-end mb-3" *ngIf="_selectedItems.length>0">
+  <div class="d-flex justify-content-end mb-3" *ngIf="(selectedItems|async)!.length>0">
     <button type="button" class="btn btn-outline-primary" (click)="showCreateForm()">
       + New Item
     </button>
@@ -98,14 +103,15 @@
     </div>
     <div class="col-12">
       <button type="button" class="btn btn-primary" (click)="submit()"
-              [disabled]="_selectedItems.length===0">
+              [disabled]="(selectedItems|async)!.length===0">
         Submit
       </button>
     </div>
   </div>
 </div>
 
-<app-side-popup title="Add Material Requisition Item" [(show)]="showPopupForm">
+<app-side-popup title="Add Material Requisition Item" [show]="showPopupForm"
+                (showChange)="closePopup()">
   <form class="row" [formGroup]="form">
     <div class="col-12 gap-5 mb-3">
       <label class="form-label">Item Category</label>
@@ -128,7 +134,7 @@
         <label for="parent" class="form-label">
           Machine Model
         </label>
-        <product-search-input customId="parent" controlName="parent">
+        <product-search-input customId="parent" controlName="parent" [parent]="null">
         </product-search-input>
       </div>
       <div class="col-md-6 mb-3">
@@ -146,7 +152,7 @@
         <label for="machine_id" class="form-label required">
           Machine Model
         </label>
-        <product-search-input customId="machine_id" controlName="product">
+        <product-search-input customId="machine_id" controlName="product" [parent]="null">
         </product-search-input>
       </div>
 
