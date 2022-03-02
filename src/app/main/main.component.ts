@@ -47,7 +47,7 @@ export class MainComponent implements OnInit, OnDestroy {
       ]
     },
     purchase_requests: {
-      title: 'Procurement Requisition',
+      title: 'Purchase Requests',
       display: true,
       items: [
         {title: 'New Requests', url: 'purchase-requisition/create', display: true},

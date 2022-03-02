@@ -1,0 +1,19 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+
+@include media-breakpoint-up(md) {
+  .cart-actions-column {
+    max-width: 130px;
+    min-width: 130px;
+
+    .cart-actions{
+      .input-group .form-control{
+        text-align: center;
+      }
+    }
+  }
+
+
+}

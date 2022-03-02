@@ -1,9 +1,7 @@
-.custom-vertical-btn {
+.hide-dropdown-toggle {
   &.dropdown-toggle::after {
     display: none;
   }
-
-  border: none;
 }
 
 .dropdown-menu.search-results {
