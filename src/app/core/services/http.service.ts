@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { StorageService } from './storage.service';
 import { environment } from '../../../environments/environment';
@@ -71,7 +71,7 @@ export class HttpService {
    */
   private buildHttpOptions(options?: HTTPOptions): HTTPOptions {
 
-    let headers: { [ key: string ]: string | number } = {
+    let headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     };
@@ -101,9 +101,14 @@ export class HttpService {
 
 export class HTTPOptions {
   withoutToken?: boolean;
-  headers?: {};
-  params ?: {};
+  headers?: HttpHeaders | { [ header: string ]: string | string[]; };
+  params ?: HttpParams |
+    { [ param: string ]: string | number | boolean | ReadonlyArray<string | number | boolean> };
   withCredentials ?: boolean;
   responseType ?: any;
+  observe?: 'body';
+  context?: HttpContext;
+  reportProgress?: boolean;
 }
+
 
