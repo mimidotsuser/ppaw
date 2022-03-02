@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { faShoppingCart,faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { SearchService } from '../../../shared/services/search.service';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
 import { PurchaseRequisitionService } from '../services/purchase-requisition.service';
@@ -23,11 +23,15 @@ export class CreateComponent implements OnInit {
   showCartPopup = false;
   //forms
   form: FormGroup;
-
+  pagination = {
+    perPage: 15,
+    page: 1
+  }
 
   constructor(private searchService: SearchService<ProductBalanceModel>, private fb: FormBuilder,
               private prService: PurchaseRequisitionService) {
-    this._itemBalance = this.prService.productBalances;
+
+    this._itemBalance = this.prService.productBalances(this.pagination.page, this.pagination.perPage);
 
     this.form = this.fb.group({
       cart_items: new FormArray([]),
@@ -41,6 +45,11 @@ export class CreateComponent implements OnInit {
 
   get itemsBalances(): Observable<ProductBalanceModel[]> {
     return this._itemBalance;
+  }
+
+  loadProductBalances(page: number) {
+    this.pagination.page = page;
+    this._itemBalance = this.prService.productBalances(this.pagination.page, this.pagination.perPage);
   }
 
   get cartForm(): FormArray {

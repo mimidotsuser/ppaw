@@ -136,8 +136,28 @@
     </ng-template>
     </tbody>
   </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5 d-none">
+    <ngb-pagination [(page)]="pagination.page" [pageSize]="pagination.perPage"
+                    [collectionSize]="100" (pageChange)="loadProductBalances($event)">
+      <ng-template ngbPaginationPrevious>
+        Previous
+      </ng-template>
+      <ng-template ngbPaginationPages>
+        <div
+          class="pagination-info d-flex align-items-center disabled page-item">
+          <span class="page-link">
+          {{(pagination.perPage * pagination.page) - pagination.perPage + 1}} -
+            {{pagination.page * pagination.perPage}} of 100
+            </span>
+        </div>
 
-  <div class="row mt-5">
+      </ng-template>
+      <ng-template ngbPaginationNext>
+        Next
+      </ng-template>
+    </ngb-pagination>
+  </div>
+  <div class="row mt-2">
     <div class="col-md-6 mb-3">
       <label for="remarks" class="form-label">Remarks</label>
       <textarea id="remarks" class="form-control" formControlName="remarks"></textarea>
