@@ -1,8 +1,25 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { environment } from '../../environments/environment';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription, tap } from 'rxjs';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import {
+  faUserShield,
+  faWaveSquare,
+  faBook,
+  faHome,
+  faAddressBook,
+  faShoppingBasket,
+  faShoppingCart,
+  faPeopleCarry,
+  faDolly,
+  faFileInvoiceDollar,
+  faWarehouse,
+  faCheckDouble,
+  faClipboardCheck,
+  faCubes
+
+} from '@fortawesome/free-solid-svg-icons';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-main',
@@ -20,6 +37,7 @@ export class MainComponent implements OnInit, OnDestroy {
     dashboard: {
       title: 'Dashboard',
       display: true,
+      icon: faHome,
       items: [
         {title: 'Dashboard', url: 'home', display: true}
       ]
@@ -27,6 +45,7 @@ export class MainComponent implements OnInit, OnDestroy {
     inventory_requisition: {
       title: 'Material Requisition',
       display: true,
+      icon: faWarehouse,
       items: [
         {title: 'New request', url: 'checkout-requests/create', display: true},
         {title: 'My requests', url: 'checkout-requests', display: true},
@@ -41,6 +60,7 @@ export class MainComponent implements OnInit, OnDestroy {
     checkout: {
       title: 'Checkout',
       display: true,
+      icon: faPeopleCarry,
       items: [
         {title: 'Checkout Requests', url: 'checkout', display: true, exact: false},
         {title: 'Checkout History', url: 'reports/checkout', display: true},
@@ -49,6 +69,7 @@ export class MainComponent implements OnInit, OnDestroy {
     purchase_requests: {
       title: 'Purchase Requests',
       display: true,
+      icon: faShoppingBasket,
       items: [
         {title: 'New Requests', url: 'purchase-requisition/create', display: true},
         {title: 'My Requests', url: 'purchase-requisition', display: true},
@@ -60,8 +81,9 @@ export class MainComponent implements OnInit, OnDestroy {
       ]
     },
     rfq: {
-      title: 'Request for Quotations',
+      title: 'RFQ',
       display: true,
+      icon: faFileInvoiceDollar,
       items: [
         {title: 'New RFQ', url: 'request-for-quotations/create', display: true},
         {title: 'All RFQ\'s', url: 'request-for-quotations', display: true},
@@ -70,6 +92,7 @@ export class MainComponent implements OnInit, OnDestroy {
     lpo: {
       title: 'Purchase Orders',
       display: true,
+      icon: faShoppingCart,
       items: [
         {title: 'New Purchase Order', url: 'purchase-orders/create', display: true},
         {title: 'All Purchase Orders', url: 'purchase-orders', display: true},
@@ -78,6 +101,7 @@ export class MainComponent implements OnInit, OnDestroy {
     checkin: {
       title: 'Products Checkin',
       display: true,
+      icon: faDolly,
       items: [
         {title: 'Purchased Products', url: 'checkin/purchased-products', display: true},
         {title: 'Lease Products', url: 'checkin/leased-products', display: true},
@@ -88,6 +112,7 @@ export class MainComponent implements OnInit, OnDestroy {
     inspection: {
       title: 'Products Inspection',
       display: true,
+      icon: faCheckDouble,
       items: [
         {
           title: 'Inspection Requests', url: 'inspection/purchased-products/create',
@@ -100,7 +125,7 @@ export class MainComponent implements OnInit, OnDestroy {
     },
     post_inspection: {
       title: 'Post Inspection',
-
+      icon: faClipboardCheck,
       display: true,
       items: [
         {
@@ -115,6 +140,7 @@ export class MainComponent implements OnInit, OnDestroy {
     stock_ledger: {
       title: 'Stock Ledger',
       display: true,
+      icon: faCubes,
       items: [
         {
           title: 'Stock Ledger', url: 'stock-ledger',
@@ -125,23 +151,10 @@ export class MainComponent implements OnInit, OnDestroy {
           display: true
         }]
     },
-    inventory_products: {
-      title: 'Inventory Products',
-      display: true,
-      items: [
-        {
-          title: 'Machines', url: 'products/machines',
-          display: true
-        },
-        {
-          title: 'Spares', url: 'products/spares',
-          display: true
-        },
-      ]
-    },
     worksheets: {
       title: 'Worksheets',
       display: true,
+      icon: faBook,
       items: [
         {
           title: 'New Worksheet', url: 'worksheets/create',
@@ -155,6 +168,7 @@ export class MainComponent implements OnInit, OnDestroy {
     clients: {
       title: 'Clients',
       display: true,
+      icon: faAddressBook,
       items: [
         {
           title: 'All Clients', url: 'clients',
@@ -162,33 +176,10 @@ export class MainComponent implements OnInit, OnDestroy {
         },
       ]
     },
-    users: {
-      title: 'Users',
-      display: true,
-      items: [
-        {
-          title: 'All Users', url: 'users',
-          display: true
-        },
-      ]
-    },
-    roles: {
-      title: 'Roles',
-      display: true,
-      items: [
-        {
-          title: 'Create Role', url: 'roles/create',
-          display: true
-        },
-        {
-          title: 'All Roles', url: 'roles',
-          display: true
-        },
-      ]
-    },
     reports: {
       title: 'Reports',
       display: true,
+      icon: faWaveSquare,
       items: [
         {
           title: 'Worksheet Reports',
@@ -197,6 +188,27 @@ export class MainComponent implements OnInit, OnDestroy {
         }
       ]
     },
+    adminstration: {
+      title: 'Administration',
+      display: true,
+      icon: faUserShield,
+      items: [
+        {
+          title: 'Inventory Products',
+          url: 'products/machines',
+          display: true
+        },
+        {
+          title: 'Staff Accounts', url: 'users',
+          display: true
+        },
+        {
+          title: 'User Roles', url: 'roles',
+          display: true
+        },
+      ]
+    }
+
   }
 
   constructor(private router: Router) {

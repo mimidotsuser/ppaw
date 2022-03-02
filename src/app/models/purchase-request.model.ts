@@ -22,6 +22,7 @@ export interface PurchaseRequestItemModel {
 
 export interface PurchaseRequestModel {
   id: string;
+  order_id: number; //human-readable incrementing number
   logs: PurchaseRequestLogModel[];
   items: PurchaseRequestItemModel[]
   created_by_id: string;

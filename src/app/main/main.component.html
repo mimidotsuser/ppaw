@@ -31,7 +31,7 @@
     <aside class="main-sidebar d-none d-lg-block  col-lg-2 min-vh-100"
            [ngClass]="{'collapsed':this.collapseSidebar}">
 
-      <div class="sidebar-menu-wrapper overflow-auto vh-100">
+      <div class="sidebar-menu-wrapper overflow-auto">
         <ng-container *ngFor="let menuBlock of menuBlocks">
 
           <div class="menu-list" *ngIf="menuList[menuBlock].display">
