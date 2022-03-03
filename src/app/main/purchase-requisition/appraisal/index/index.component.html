@@ -17,14 +17,14 @@
     <thead>
     <tr>
       <th>Request No.</th>
-      <th>Total Items</th>
+      <th>Total Qty/Items</th>
       <th>Requested On</th>
       <th>Requested By</th>
       <th></th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let request of purchaseRequests|async">
+    <tr *ngFor="let request of purchaseRequests">
       <td>
         <span class="td-inline-label">Request No.</span>
         <a [routerLink]="request.id" class="text-decoration-none">
@@ -32,8 +32,9 @@
         </a>
       </td>
       <td>
-        <span class="td-inline-label">Total Items</span>
-        {{request.items!.length}}
+        <span class="td-inline-label">Total Qty/Items</span>
+        {{aggregateRequestItemsQty(request.items).requested}}
+        <small>({{request.items!.length}})</small>
       </td>
 
       <td>
@@ -50,7 +51,7 @@
         </div>
       </td>
     </tr>
-    <ng-container *ngIf="(purchaseRequests|async)?.length===0">
+    <ng-container *ngIf="purchaseRequests.length===0">
       <tr>
         <td class="text-center py-3" colspan="5">
           No items pending action.

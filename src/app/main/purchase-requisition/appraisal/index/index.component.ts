@@ -1,31 +1,49 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { PurchaseRequestModel } from '../../../../models/purchase-request.model';
+import { Observable, Subscription } from 'rxjs';
+import {
+  PurchaseRequestItemModel,
+  PurchaseRequestModel
+} from '../../../../models/purchase-request.model';
+import { PurchaseRequisitionService } from '../../services/purchase-requisition.service';
 
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss']
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent implements OnInit, OnDestroy {
   searchInput = new FormControl();
-  _purchaseRequests: Observable<PurchaseRequestModel[]> = new Observable<PurchaseRequestModel[]>();
+  _purchaseRequests: PurchaseRequestModel[] = [];
+  subscriptions: Subscription[] = [];
 
-  constructor() { }
+  constructor(private prService: PurchaseRequisitionService) {
+    this.prService.fetchPendingVerification()
+      .subscribe((model) => this._purchaseRequests.push(...model))
+  }
 
   ngOnInit(): void {
   }
 
-  get purchaseRequests(): Observable<PurchaseRequestModel[]> {
+  get purchaseRequests(): PurchaseRequestModel[] {
     return this._purchaseRequests;
   }
 
   formatRequestId(orderId: number): string {
-    return ''
+    return this.prService.formatRequestId(orderId);
   }
 
-  aggregateRequestQty(orderItem: string): number {
-    return 0;
+  aggregateRequestItemsQty(items: PurchaseRequestItemModel[]) {
+    return items.reduce((acc, item) => {
+      acc.requested += item.qty_requested;
+      acc.verified += item.qty_verified;
+      acc.approved += item.qty_approved;
+      return acc;
+    }, {requested: 0, verified: 0, approved: 0})
+  }
+
+
+  ngOnDestroy(): void {
+    this.subscriptions.map((sub) => sub.unsubscribe())
   }
 }

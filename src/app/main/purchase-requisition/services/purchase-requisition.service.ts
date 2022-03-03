@@ -34,4 +34,10 @@ export class PurchaseRequisitionService {
       params: {_expand: 'created_by', _page: page, _limit: perPage}
     }).pipe(map((res: { data: PurchaseRequestModel[] }) => res.data))
   }
+
+  fetchPendingVerification({page, perPage} = {page: 1, perPage: 10}): Observable<PurchaseRequestModel[]> {
+    return this.http.get('/purchase-requests', {
+      params: {_expand: 'created_by', _page: page, _limit: perPage}
+    }).pipe(map((res: { data: PurchaseRequestModel[] }) => res.data))
+  }
 }
