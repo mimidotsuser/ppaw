@@ -1,10 +1,15 @@
 import { ProductModel } from './product.model';
 import { UserModel } from './user.model';
-import { MRFStage } from './m-r-f.model';
+
+export enum PRStage{
+  CREATE,
+  VERIFY,
+  APPROVE
+}
 
 export interface PurchaseRequestLogModel {
   id: number;
-  stage: MRFStage;
+  stage: PRStage;
   remarks: string;
   created_at: string;
   created_by_id: string;

@@ -15,19 +15,4 @@ export class MrfLogsTimelineComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  resolveStage(stage: number) {
-    if (stage === MRFStage.CREATE) {
-      return 'Request Application Stage';
-    }
-    if (stage === MRFStage.VERIFY) {
-      return 'Request Verification Stage';
-    }
-    if (stage === MRFStage.APPROVE) {
-      return 'Request Approval Stage';
-    }
-    if (stage === MRFStage.CHECKOUT) {
-      return 'Request Checkout';
-    }
-    return 'Request Stage Unknown';
-  }
 }

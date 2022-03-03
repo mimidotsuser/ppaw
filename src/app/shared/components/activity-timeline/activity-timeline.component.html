@@ -1,0 +1,18 @@
+<ng-container *ngIf="model.length>0">
+  <div class="timeline">
+    <div class="timeline-group" *ngFor="let data of model">
+      <div class="timeline-box">
+        <div class="timeline-date">
+          <span>{{data?.created_at|date:'dd MMM, yyyy'}}</span>
+        </div>
+        <div class="timeline-body">
+          <p class="title">{{formatTitle(data)}}</p>
+          <p>{{data?.remarks}}</p>
+          <p class="author">{{data?.created_by?.first_name}} {{data?.created_by?.last_name}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+

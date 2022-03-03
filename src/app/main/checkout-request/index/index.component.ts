@@ -52,14 +52,20 @@ export class IndexComponent implements OnInit {
     }
 
     if (lastStage.stage === MRFStage.VERIFY) {
-      return {stage: 'Approval', status: qty.verified == 0 ? 'Rejected' : 'Pending Approval'}
+      return {
+        stage: qty.verified == 0 ? 'Complete' : 'Approval',
+        status: qty.verified == 0 ? 'Rejected' : 'Pending Approval'
+      }
     }
     if (lastStage.stage === MRFStage.APPROVE) {
-      return {stage: 'Approval', status: qty.approved == 0 ? 'Rejected' : 'Pending Approval'}
+      return {
+        stage: qty.approved == 0 ? 'Complete' : 'Approval',
+        status: qty.approved == 0 ? 'Rejected' : 'Pending Issuing'
+      }
     }
 
     if (lastStage.stage === MRFStage.CHECKOUT) {
-      return {stage: 'Approval', status: 'Pending Approval'}
+      return {stage: 'Complete', status: 'Issued'}
     }
     return {stage: 'Unknown', status: 'Unknown'}
   }
