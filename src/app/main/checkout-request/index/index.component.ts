@@ -40,7 +40,7 @@ export class IndexComponent implements OnInit {
   lastProcessInstance(request: MRFModel): { stage: string, status: string } {
 
     //sort in reverse such that the latest equals first index
-    const lastStage = request.logs.sort((a, b) => {
+    const lastStage = [...request.logs].sort((a, b) => {
       return b.id - a.id;
     })[ 0 ];
 
