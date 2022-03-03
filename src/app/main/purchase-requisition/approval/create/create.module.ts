@@ -1,12 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Routes, RouterModule } from '@angular/router';
+import {  RouterModule } from '@angular/router';
+import { SharedModule } from '../../../../shared/shared.module';
 import { CreateComponent } from './create.component';
-
-
-const routes: Routes = [
-  { path: '', component: CreateComponent }
-];
 
 @NgModule({
   declarations: [
@@ -14,7 +10,8 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild([{path: '', component: CreateComponent}]),
+    SharedModule
   ]
 })
-export class CreateModule { }
+export class CreateModule {}
