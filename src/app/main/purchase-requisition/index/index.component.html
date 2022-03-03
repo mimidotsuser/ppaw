@@ -53,6 +53,23 @@
       </td>
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp"
+                    ngbDropdownToggle>
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dp">
+              <button ngbDropdownItem (click)="showRequestHistory(request)">
+                <fa-icon [icon]="faEye" class="icon"></fa-icon>
+                View activity
+              </button>
+
+              <button ngbDropdownItem (click)="export(request)">
+                <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
+                Export PR
+              </button>
+            </div>
+          </div>
 
         </div>
       </td>

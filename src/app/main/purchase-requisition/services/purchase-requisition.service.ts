@@ -13,7 +13,7 @@ export class PurchaseRequisitionService {
   constructor(private http: HttpService) { }
 
   formatRequestId(requestId: number): string {
-    return `REQUEST${String(requestId).padStart(4, '0')}`
+    return `REQUEST-${String(requestId).padStart(4, '0')}`
   }
 
   /**

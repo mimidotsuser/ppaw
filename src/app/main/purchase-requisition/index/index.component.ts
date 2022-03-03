@@ -1,4 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { faEllipsisV, faEye, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import {
   PRStage,
   PurchaseRequestItemModel,
@@ -6,7 +8,6 @@ import {
   PurchaseRequestModel
 } from '../../../models/purchase-request.model';
 import { PurchaseRequisitionService } from '../services/purchase-requisition.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-index',
@@ -19,6 +20,9 @@ export class IndexComponent implements OnInit, OnDestroy {
   showRequestHistoryPopup = false
   model: PurchaseRequestModel | null = null;
   subscriptions: Subscription[] = [];
+  faEllipsisV = faEllipsisV;
+  faEye = faEye
+  faFilePdf = faFilePdf;
 
   constructor(private prService: PurchaseRequisitionService) {
     const a$ = this.prService.fetchMyRequests()
@@ -92,6 +96,8 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.model = request;
     this.showRequestHistoryPopup = true;
   }
+
+  export(request: PurchaseRequestModel) {}
 
   ngOnDestroy(): void {
     this.subscriptions.map((sub) => sub.unsubscribe());
