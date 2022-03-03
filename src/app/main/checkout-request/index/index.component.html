@@ -88,9 +88,9 @@
     </tbody>
   </table>
 </div>
-<app-side-popup [(show)]="showLogsPopup" [isFullScreen]="activeTab==='items'"
+<app-side-popup [(show)]="showLogsPopup" [isFullScreen]="outlet.activeId==='items'"
                 [title]="formatOrderId(model?.order_id||0)">
-  <nav ngbNav [(activeId)]="activeTab" class="nav-tabs my-3" #outlet="ngbNav">
+  <nav ngbNav activeId="logs" class="nav-tabs my-3" #outlet="ngbNav">
     <div ngbNavItem="items">
       <a ngbNavLink>Request Items</a>
       <ng-template ngbNavContent>
@@ -166,6 +166,7 @@
 </ng-template>
 <ng-template #requestLogsTemplate>
   <div class="container-fluid p-0 p-md-2">
-    <mrf-logs-timeline [model]="model?.logs||[]"></mrf-logs-timeline>
+    <activity-timeline [model]="model?.logs||[]" [formatTitle]="formatTimelineStageTitle">
+    </activity-timeline>
   </div>
 </ng-template>

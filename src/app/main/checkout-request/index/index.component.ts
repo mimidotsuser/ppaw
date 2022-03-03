@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { faFilePdf, faEye } from '@fortawesome/free-regular-svg-icons';
 import { CheckoutRequestService } from '../services/checkout-request.service';
-import { MRFStage, MRFModel, MRFOrderItemModel } from '../../../models/m-r-f.model';
+import { MRFStage, MRFModel, MRFOrderItemModel, MRFLog } from '../../../models/m-r-f.model';
 
 @Component({
   selector: 'app-index',
@@ -19,7 +19,6 @@ export class IndexComponent implements OnInit {
   faEye = faEye;
   showLogsPopup = false;
   model: MRFModel | null = null;
-  activeTab = 'logs';
 
   constructor(private crService: CheckoutRequestService) { }
 
@@ -74,6 +73,23 @@ export class IndexComponent implements OnInit {
     this.showLogsPopup = true;
     this.model = item;
   }
+
+  formatTimelineStageTitle(log: MRFLog) {
+    if (log.stage === MRFStage.CREATE) {
+      return 'Request Application Stage';
+    }
+    if (log.stage === MRFStage.VERIFY) {
+      return 'Request Verification Stage';
+    }
+    if (log.stage === MRFStage.APPROVE) {
+      return 'Request Approval Stage';
+    }
+    if (log.stage === MRFStage.CHECKOUT) {
+      return 'Request Checkout';
+    }
+    return 'Request Stage Unknown';
+  }
+
 
   exportMRN(request: MRFModel) {}
 
