@@ -16,8 +16,8 @@ import {
   tap
 } from 'rxjs';
 import { ResultTemplateContext } from '@ng-bootstrap/ng-bootstrap/typeahead/typeahead-window';
-import { HttpService } from '../../core/services/http.service';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { HttpService } from '../../core/services/http.service';
 
 @Component({
   selector: 'app-search-input[path][outputFormatter][resultTemplate][control],' +
@@ -49,7 +49,8 @@ export class SearchInputComponent<T> implements OnInit, ControlValueAccessor {
   @Input() placement = 'bottom-start';
   @Input() placeholder = 'Type to search';
 
-  @Input() modelValueFormatter?: (data: T) => any
+  @Input() modelValueFormatter?: (data: T) => any //use this to override data set to control on suggestion select
+  @Input() search?: (searchTerm: string) => Observable<T[] | [] | [null]> //use it to override search
 
   faSearch = faSearch;
   faSpinner = faSpinner;
@@ -97,7 +98,7 @@ export class SearchInputComponent<T> implements OnInit, ControlValueAccessor {
     }, {})
   }
 
-  private backendSearch(searchTerm: string): Observable<T[] | [] | [null]> {
+  private _backendSearch(searchTerm: string): Observable<T[] | [] | [null]> {
     if (searchTerm.trim() === '') {
       return of([]);
     }
@@ -121,7 +122,7 @@ export class SearchInputComponent<T> implements OnInit, ControlValueAccessor {
         distinctUntilChanged(),
         tap(() => this.searching = true),
         //TODO: do local data search first?
-        switchMap((value: string) => this.backendSearch(value)),
+        switchMap((v: string) => this.search ? this.search(v) : this._backendSearch(v)),
         tap(() => this.searching = false)
       )
 
