@@ -28,3 +28,21 @@ export function shallowEqual(obj1: any, obj2: any): boolean {
 
   return true;
 }
+
+export function addDaysToDate(start: any, days: number, excludeWeekends = false): Date {
+  const prev = new Date(start.getTime());
+  if (!excludeWeekends) {
+    prev.setDate(prev.getDate() + days);
+    return prev;
+  } else {
+    let isWeekend = false;
+    while (days) {
+      prev.setDate(prev.getDate() + 1);
+      isWeekend = prev.getDay() === 0 || prev.getDay() === 6;
+      if (!isWeekend) {
+        days--;
+      }
+    }
+    return prev;
+  }
+}

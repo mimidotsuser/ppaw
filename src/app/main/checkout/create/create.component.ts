@@ -15,6 +15,7 @@ import { CheckoutService } from '../services/checkout.service';
 import { SearchService } from '../../../shared/services/search.service';
 import { ProductSerialModel } from '../../../models/product-serial.model';
 import { uniqueProductSerial } from '../../../utils/validators/unique-product-serial';
+import { addDaysToDate } from '../../../utils/utils';
 
 @Component({
   selector: 'app-create',
@@ -33,7 +34,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   selectedOrderItem: MRFOrderItemModel | null = null;
 
   defaultWarrantStartDate = new Date();
-  defaultWarrantEndDate = this.addDaysToDate(this.defaultWarrantStartDate, 365);
+  defaultWarrantEndDate = addDaysToDate(this.defaultWarrantStartDate, 365);
 
   //forms
   machineAllocationFormGroup: FormGroup;
@@ -119,11 +120,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.showIssueFormPopup = true;
   }
 
-  addDaysToDate(start: any, days: number): Date {
-    const prev = new Date(start.getTime());
-    prev.setDate(prev.getDate() + days);
-    return prev;
-  }
+
 
 
   /** Forms and submission **/
