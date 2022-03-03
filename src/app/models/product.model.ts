@@ -15,4 +15,5 @@ export interface ProductModel {
   created_by_id: string;
   created_by?: UserModel;
   edit?: boolean;
+  physical_balance?:number
 }
