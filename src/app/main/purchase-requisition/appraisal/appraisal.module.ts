@@ -11,7 +11,14 @@ import { AppraisalComponent } from './appraisal.component';
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{path: '', component: AppraisalComponent}])
+    RouterModule.forChild([{
+      path: '', component: AppraisalComponent, children: [
+        {path: '', loadChildren: () => import('./index/index.module').then(m => m.IndexModule)},
+        {
+          path: ':id',
+          loadChildren: () => import('./create/create.module').then(m => m.CreateModule)
+        }]
+    }])
   ]
 })
 export class AppraisalModule {}

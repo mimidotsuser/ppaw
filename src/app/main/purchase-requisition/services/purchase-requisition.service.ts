@@ -3,6 +3,7 @@ import { map, Observable, shareReplay } from 'rxjs';
 import { PurchaseRequisitionModule } from '../purchase-requisition.module';
 import { HttpService } from '../../../core/services/http.service';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
+import { PurchaseRequestModel } from '../../../models/purchase-request.model';
 
 @Injectable({
   providedIn: PurchaseRequisitionModule
@@ -10,6 +11,10 @@ import { ProductBalanceModel } from '../../../models/product-balance.model';
 export class PurchaseRequisitionService {
 
   constructor(private http: HttpService) { }
+
+  formatRequestId(requestId: number): string {
+    return `REQUEST${String(requestId).padStart(4, '0')}`
+  }
 
   /**
    * Fetch all product balances
@@ -22,5 +27,11 @@ export class PurchaseRequisitionService {
     })
       .pipe(map((res: { data: ProductBalanceModel[] }) => res.data))
       .pipe(shareReplay())
+  }
+
+  fetchMyRequests({page, perPage} = {page: 1, perPage: 10}): Observable<PurchaseRequestModel[]> {
+    return this.http.get('/purchase-requests', {
+      params: {_expand: 'created_by', _page: page, _limit: perPage}
+    }).pipe(map((res: { data: PurchaseRequestModel[] }) => res.data))
   }
 }

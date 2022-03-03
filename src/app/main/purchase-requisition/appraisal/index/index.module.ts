@@ -1,10 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import {  NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
-import { SharedModule } from '../../../shared/shared.module';
+import { Routes, RouterModule } from '@angular/router';
 import { IndexComponent } from './index.component';
-
+import { SharedModule } from '../../../../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -13,8 +11,7 @@ import { IndexComponent } from './index.component';
   imports: [
     CommonModule,
     RouterModule.forChild([{path: '', component: IndexComponent}]),
-    SharedModule,
-    NgbNavModule
+    SharedModule
   ]
 })
 export class IndexModule {}
