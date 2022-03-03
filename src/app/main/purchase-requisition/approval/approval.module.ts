@@ -11,7 +11,17 @@ import { ApprovalComponent } from './approval.component';
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{path: '', component: ApprovalComponent}])
+    RouterModule.forChild([
+      {
+        path: '', component: ApprovalComponent,
+        children: [
+          {path: '', loadChildren: () => import('./index/index.module').then(m => m.IndexModule)},
+          {
+            path: ':id',
+            loadChildren: () => import('./create/create.module').then(m => m.CreateModule)
+          }
+        ]
+      }])
   ]
 })
 export class ApprovalModule {}

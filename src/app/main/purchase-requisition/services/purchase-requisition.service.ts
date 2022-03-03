@@ -45,6 +45,15 @@ export class PurchaseRequisitionService {
     }).pipe(map((res: { data: PurchaseRequestModel[] }) => res.data))
   }
 
+  fetchPendingApproval({page, perPage} = {
+    page: 1,
+    perPage: 10
+  }): Observable<PurchaseRequestModel[]> {
+    return this.http.get('/purchase-requests', {
+      params: {_expand: 'created_by', _page: page, _limit: perPage}
+    }).pipe(map((res: { data: PurchaseRequestModel[] }) => res.data))
+  }
+
   findById(id: string): Observable<PurchaseRequestModel> {
     return this.http.get(`/purchase-requests/${id}`, {
       params: {_expand: 'created_by'}
@@ -58,12 +67,12 @@ export class PurchaseRequisitionService {
         return this.http.get('/stock-balances?', {params})
           .pipe(map((rs: { data: ProductBalanceModel[] }) => rs.data))
           .pipe(map((m: ProductBalanceModel[]) => {
-            return this.demo(pr, m);
+            return this.demoDataMap(pr, m);
           }))
       }));
   }
 
-  demo(request: PurchaseRequestModel, balances: ProductBalanceModel[]): PurchaseRequestModel {
+  demoDataMap(request: PurchaseRequestModel, balances: ProductBalanceModel[]): PurchaseRequestModel {
     request.items.map((item) => {
       const bal = balances.find((x) => x.product_id === item.product_id);
       if (bal) {
