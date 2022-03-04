@@ -1,1 +1,146 @@
-<p>create works!</p>
+<app-content-header title="New Request for Quotation"
+                    [menuItems]="['Home','Request for Quotations','Create']">
+</app-content-header>
+
+<form [formGroup]="form">
+  <div class="container-fluid">
+    <div class="row my-4">
+      <div class="col-md-3 mb-3">
+        <label for="purchase_request" class="form-label required">Purchase Request</label>
+        <purchase-request-search controlName="purchase_request" customId="purchase_request"
+                                 (change)="onPurchaseRequestSelected()">
+
+        </purchase-request-search>
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="closing_date" class="form-label required">Closing Date </label>
+        <input type="date" class="form-control" id="closing_date" formControlName="closing_date">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="vendors" class="form-label required">Vendors </label>
+        <input type="text" class="form-control" id="vendors" formControlName="vendors">
+      </div>
+
+
+    </div>
+  </div>
+
+  <div class="container-fluid px-sm-0">
+    <table class="table table-responsive table-bordered table-block-sm">
+      <thead>
+      <tr>
+        <td></td>
+        <th>Item</th>
+        <th class="product-column">M-PN</th>
+        <th>Balance</th>
+        <th>PR Qty <small>Approved)</small>(</th>
+        <th>Qty Required</th>
+      </tr>
+      </thead>
+      <tbody formArrayName="request_items">
+      <ng-container *ngIf="this.requestItemsForm.length>0;else noPurchaseRequestData">
+        <tr *ngFor="let group of this.requestItemsForm.controls;let i=index" [formGroupName]="i">
+          <td>
+            <span class="td-inline-label">Include Item</span>
+            <input type="checkbox" checked
+                   (change)="rfqItemChecked($event,i,group.get('order_item')?.value)">
+          </td>
+          <td>
+            <span class="td-inline-label">Item</span>
+            <div class="d-flex flex-column">
+              {{group.get('product')?.value?.item_code}}
+              <small class="text-muted">
+                {{
+                group.get('product')?.value?.local_description
+                || group.get('product')?.value?.description
+                }}
+              </small>
+            </div>
+          </td>
+          <td>
+            <span class="td-inline-label">M-PN</span>
+            {{group.get('product')?.value?.mpn}}
+          </td>
+          <td>
+            <span class="td-inline-label">Balance</span>
+            {{group.get('product')?.value?.physical_balance || 0}}
+          </td>
+          <td class="qty-cell">
+            <span class="td-inline-label">PR Qty<small>(Approved)</small></span>
+            {{group.get('order_item')?.value?.qty_approved || 0}}
+          </td>
+          <td class="qty-cell">
+            <span class="td-inline-label">Qty Required</span>
+            <input type="number" class="form-control" min="0" formControlName="qty">
+          </td>
+          <td></td>
+        </tr>
+      </ng-container>
+
+      <ng-template #noPurchaseRequestData>
+        <tr>
+          <td colspan="7">
+            <div class="py-5 text-center">
+              Search purchase request to autofill request items
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-outline-primary" (click)="showAdhocRFQItemFormPopup=true">
+        + Add Item
+      </button>
+    </div>
+    <div class="d-flex my-4">
+      <button type="button" class="btn btn-primary" (click)="submitRFQ()"
+              [disabled]="this.form.invalid">
+        Submit
+      </button>
+    </div>
+  </div>
+
+
+</form>
+
+<app-side-popup title="Add RFQ Item" [(show)]="showAdhocRFQItemFormPopup">
+
+  <div class="row" [formGroup]="adhocRFQItemForm">
+
+    <div class="mb-3 col-md-6">
+      <label for="product" class="form-label">Product</label>
+      <product-search-input customId="product" controlName="product">
+      </product-search-input>
+    </div>
+    <div class="mb-3 col-md-6">
+      <label for="current_balance" class="form-label">Physical Balance</label>
+      <input type="text" disabled id="current_balance" class="form-control"
+             [value]="adhocRFQItemForm.get('product')?.value?.physical_balance||0">
+    </div>
+    <div class="mb-3 col-md-6">
+      <label for="min_l" class="form-label">MIN-L</label>
+      <input type="text" disabled id="min_l" class="form-control"
+             [value]="adhocRFQItemForm.get('product')?.value?.minl||0">
+    </div>
+    <div class="mb-3 col-md-6">
+      <label for="max_l" class="form-label">MAX-L</label>
+      <input type="text" disabled id="max_l" class="form-control"
+             [value]="adhocRFQItemForm.get('product')?.value?.maxl||0">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="qty" class="form-label">Quantity Required</label>
+      <input type="number" min="0" class="form-control" formControlName="qty">
+    </div>
+    <div class="col-12 d-flex gap-2 my-5">
+      <button type="button" class="btn btn-primary" (click)="saveAdhocItemForm()">
+        Done
+      </button>
+
+      <button type="button" class="btn btn-cancel" (click)="showAdhocRFQItemFormPopup=false">
+        Cancel
+      </button>
+    </div>
+  </div>
+</app-side-popup>
