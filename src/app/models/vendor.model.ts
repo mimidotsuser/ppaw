@@ -9,7 +9,7 @@ export interface VendorModel {
   created_at: string;
   created_by_id: string;
   created_by?: UserModel;
-  contact_person?: {
+  contact_persons?: {
     first_name: string;
     last_name?: string;
     mobile?: string;

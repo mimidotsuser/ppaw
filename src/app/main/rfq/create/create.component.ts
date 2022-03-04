@@ -18,6 +18,8 @@ import { ActivatedRoute } from '@angular/router';
 import { RqfService } from '../services/rqf.service';
 import { ProductModel } from '../../../models/product.model';
 import { VendorModel } from '../../../models/vendor.model';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { VendorService } from '../../vendors/vendor-widgets/services/vendor.service';
 
 @Component({
   selector: 'app-create',
@@ -31,41 +33,15 @@ export class CreateComponent implements OnInit {
   adhocRFQItemForm!: FormGroup;
   showAdhocRFQItemFormPopup = false;
   subscriptions: Subscription[] = [];
-  vendors = [
-    {
-      id: 'ckmce', business_name: 'Test one',
-      email: 'email@email.com', address: 'Nairobi',
-    },
-    {
-      id: 'fjeoif', business_name: 'Automodules',
-      email: 'emaiil@email.com', address: 'Taiwan',
-    },
-    {
-      id: 'jdnej', business_name: 'Test two',
-      email: 'emaijil@email.com', address: 'Taiwan',
-    },
-  ]
+  showVendorCreateFormPopup = false;
+  vendors: VendorModel[] = []
 
   constructor(private route: ActivatedRoute, private rfqService: RqfService,
-              private fb: FormBuilder) {
+              private fb: FormBuilder, private vendorService: VendorService) {
 
-    //if purchase request id is available on url, preload.
-    if (this.route.snapshot.queryParamMap.has('pr')) {
-      const x = this.rfqService.findPRById(this.route.snapshot.queryParamMap.get('pr')!)
-        .subscribe((p) => {
-          this._purchase_request = p;
-          this.renderPurchaseRequestItemsForm(p)
-        })
-      this.subscriptions.push(x);
-    }
-
-  }
-
-  ngOnInit(): void {
     //main form
     this.form = this.fb.group({
-      purchase_request: this.fb.control(this._purchase_request,
-        {validators: [Validators.required]}),
+      purchase_request: this.fb.control(null, {validators: [Validators.required]}),
       closing_date: this.fb.control(
         addDaysToDate(new Date(), 7, true).toISOString().slice(0, 10)),
       request_items: this.fb.array([]),
@@ -78,6 +54,27 @@ export class CreateComponent implements OnInit {
       qty: this.fb.control(1,
         {validators: [Validators.required, Validators.min(1)]})
     });
+
+    //if purchase request id is available on url, preload.
+    if (this.route.snapshot.queryParamMap.has('pr')) {
+      const x = this.rfqService.findPRById(this.route.snapshot.queryParamMap.get('pr')!)
+        .subscribe((p) => {
+          this.form.patchValue({purchase_request: p});
+          this.renderPurchaseRequestItemsForm(p)
+        })
+      this.subscriptions.push(x);
+    }
+
+  }
+
+  ngOnInit(): void {
+    //fetch vendors
+    const x = this.vendorService.fetchAll()
+      .subscribe((value) => {
+        this.vendors = [...this.vendors, ...value];
+
+      });
+    this.subscriptions.push(x);
   }
 
   get requestItemsForm(): FormArray {
@@ -217,5 +214,28 @@ export class CreateComponent implements OnInit {
       return
     }
     //todo submit
+  }
+
+  showVendorForm(vendorSelector: NgSelectComponent, vendorForm: FormGroup) {
+    vendorSelector.close();
+    vendorForm.reset();
+    this.showVendorCreateFormPopup = true;
+  }
+
+  submitVendor(form: FormGroup) {
+    form.markAllAsTouched();
+    if (form.invalid) {
+      return;
+    }
+
+    //submit the client data
+    this.vendorService.create(form.value)
+      .subscribe((vendor: VendorModel) => {
+        //add it into the RFQ form vendors list (set as selected)
+        this.vendors = [...this.vendors, vendor];
+
+        this.showVendorCreateFormPopup = false;
+      })
+
   }
 }

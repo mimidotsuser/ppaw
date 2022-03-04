@@ -18,7 +18,7 @@
       </div>
       <div class="col-md-4 mb-3">
         <label for="vendors" class="form-label required">Vendors </label>
-        <ng-select [items]="vendors" bindLabel="business_name" [multiple]="true"
+        <ng-select [items]="vendors" bindLabel="business_name" [multiple]="true" #vc
                    formControlName="vendors" labelForId="vendors" [closeOnSelect]="false">
           <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
             <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
@@ -26,8 +26,9 @@
             {{item.business_name}}
           </ng-template>
           <ng-template ng-footer-tmp>
-            <a role="button" class="btn btn-outline-primary border-0 ">
-              <small> + Add new client </small>
+            <a role="button" class="btn btn-outline-primary border-0"
+               (click)="showVendorForm(vc,vendorFormComponent.form)">
+              <small> + Create new vendor </small>
             </a>
           </ng-template>
         </ng-select>
@@ -36,7 +37,7 @@
     </div>
   </div>
 
-  <div class="container-fluid px-sm-0">
+  <div class="container-fluid px-sm-0 px-md-3">
     <table class="table table-responsive table-bordered table-block-sm">
       <thead>
       <tr>
@@ -44,7 +45,7 @@
         <th>Item</th>
         <th class="product-column">M-PN</th>
         <th>Balance</th>
-        <th>PR Qty <small>Approved)</small>(</th>
+        <th>PR Qty <small>(Approved)</small></th>
         <th>Qty Required</th>
       </tr>
       </thead>
@@ -84,7 +85,6 @@
             <span class="td-inline-label">Qty Required</span>
             <input type="number" class="form-control" min="0" formControlName="qty">
           </td>
-          <td></td>
         </tr>
       </ng-container>
 
@@ -104,6 +104,8 @@
         + Add Item
       </button>
     </div>
+  </div>
+  <div class="container-fluid">
     <div class="d-flex my-4">
       <button type="button" class="btn btn-primary" (click)="submitRFQ()"
               [disabled]="this.form.invalid">
@@ -111,7 +113,6 @@
       </button>
     </div>
   </div>
-
 
 </form>
 
@@ -154,4 +155,20 @@
       </button>
     </div>
   </div>
+</app-side-popup>
+
+<app-side-popup title="Create new vendor" [(show)]="showVendorCreateFormPopup">
+  <app-vendor-form #vendorFormComponent>
+
+    <div class="col-12 d-flex gap-2 mt-3">
+      <button type="button" class="btn btn-primary"
+              (click)="submitVendor(vendorFormComponent.form)">
+        CREATE
+      </button>
+
+      <button type="button" class="btn btn-cancel" (click)="showVendorCreateFormPopup=false">
+        CANCEL
+      </button>
+    </div>
+  </app-vendor-form>
 </app-side-popup>
