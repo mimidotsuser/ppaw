@@ -17,6 +17,7 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { RqfService } from '../services/rqf.service';
 import { ProductModel } from '../../../models/product.model';
+import { VendorModel } from '../../../models/vendor.model';
 
 @Component({
   selector: 'app-create',
@@ -30,6 +31,20 @@ export class CreateComponent implements OnInit {
   adhocRFQItemForm!: FormGroup;
   showAdhocRFQItemFormPopup = false;
   subscriptions: Subscription[] = [];
+  vendors = [
+    {
+      id: 'ckmce', business_name: 'Test one',
+      email: 'email@email.com', address: 'Nairobi',
+    },
+    {
+      id: 'fjeoif', business_name: 'Automodules',
+      email: 'emaiil@email.com', address: 'Taiwan',
+    },
+    {
+      id: 'jdnej', business_name: 'Test two',
+      email: 'emaijil@email.com', address: 'Taiwan',
+    },
+  ]
 
   constructor(private route: ActivatedRoute, private rfqService: RqfService,
               private fb: FormBuilder) {
@@ -201,7 +216,6 @@ export class CreateComponent implements OnInit {
     if (this.form.invalid) {
       return
     }
-
     //todo submit
   }
 }

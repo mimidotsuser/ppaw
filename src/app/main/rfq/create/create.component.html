@@ -16,11 +16,22 @@
         <label for="closing_date" class="form-label required">Closing Date </label>
         <input type="date" class="form-control" id="closing_date" formControlName="closing_date">
       </div>
-      <div class="col-md-3 mb-3">
+      <div class="col-md-4 mb-3">
         <label for="vendors" class="form-label required">Vendors </label>
-        <input type="text" class="form-control" id="vendors" formControlName="vendors">
+        <ng-select [items]="vendors" bindLabel="business_name" [multiple]="true"
+                   formControlName="vendors" labelForId="vendors" [closeOnSelect]="false">
+          <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
+            <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
+                   [ngModelOptions]="{standalone:true}" class="form-check-inline">
+            {{item.business_name}}
+          </ng-template>
+          <ng-template ng-footer-tmp>
+            <a role="button" class="btn btn-outline-primary border-0 ">
+              <small> + Add new client </small>
+            </a>
+          </ng-template>
+        </ng-select>
       </div>
-
 
     </div>
   </div>
