@@ -1,24 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
-  Validator,
   Validators
 } from '@angular/forms';
 import { addDaysToDate } from '../../../utils/utils';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { NgSelectComponent } from '@ng-select/ng-select';
 import {
   PurchaseRequestItemModel,
   PurchaseRequestModel
 } from '../../../models/purchase-request.model';
-import { RFQItemModel } from '../../../models/r-f-q.model';
-import { Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
 import { RqfService } from '../services/rqf.service';
 import { ProductModel } from '../../../models/product.model';
 import { VendorModel } from '../../../models/vendor.model';
-import { NgSelectComponent } from '@ng-select/ng-select';
 import { VendorService } from '../../vendors/vendor-widgets/services/vendor.service';
 
 @Component({
@@ -26,9 +23,8 @@ import { VendorService } from '../../vendors/vendor-widgets/services/vendor.serv
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit {
+export class CreateComponent implements OnInit, OnDestroy {
 
-  private _purchase_request: PurchaseRequestModel | null = null;
   form!: FormGroup;
   adhocRFQItemForm!: FormGroup;
   showAdhocRFQItemFormPopup = false;
@@ -237,5 +233,10 @@ export class CreateComponent implements OnInit {
         this.showVendorCreateFormPopup = false;
       })
 
+  }
+
+
+  ngOnDestroy(): void {
+    this.subscriptions.map((sub) => sub.unsubscribe())
   }
 }
