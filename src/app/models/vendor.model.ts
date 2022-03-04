@@ -11,8 +11,8 @@ export interface VendorModel {
   created_by?: UserModel;
   contact_person?: {
     first_name: string;
-    last_name: string;
-    mobile: string;
-    email: string;
-  },
+    last_name?: string;
+    mobile?: string;
+    email?: string;
+  }[],
 }
