@@ -1,1 +1,210 @@
-<p>index works!</p>
+<app-content-header title="Request for Quotations" [menuItems]="['Home','Request for Quotations']">
+</app-content-header>
+
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+    <div class="col-sm-6 col-md-3 data-filters">
+    </div>
+
+    <div class="d-md-block">
+      <a class="btn btn-outline-primary" routerLink="create">
+        + New Request
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <table class="table table-hover table-block-sm">
+    <thead>
+    <tr>
+      <th>Request No.</th>
+      <th>Total Items</th>
+      <th>Closing Date</th>
+      <th>Purchase Request</th>
+      <th>Created On</th>
+      <th>Created By</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let request of rfqRequests">
+      <td (click)="showRFQSummary(request)" role="button">
+        <span class="td-inline-label">Request No.</span>
+        <a class="text-decoration-none">
+          {{formatOrderId(request.order_id)}}
+        </a>
+      </td>
+      <td>
+        <span class="td-inline-label">Total Items</span>
+        {{request.items.length}}
+        <small>({{aggregateQty(request.items)}})</small>
+      </td>
+      <td>
+        <span class="td-inline-label">Closing Date</span>
+        {{request.closing_date|date}}
+      </td>
+      <td>
+        <span class="td-inline-label">Purchase Request</span>
+        <a *ngIf="request.purchase_request_id" target="_blank">
+          <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+          view
+        </a>
+      </td>
+      <td>
+        <span class="td-inline-label">Requested On</span>
+        {{request.created_at|date}}
+      </td>
+      <td>
+        <span class="td-inline-label">Created By</span>
+        {{authorName(request)}}
+      </td>
+      <td>
+        <div class="d-flex gap-2 justify-content-end w-100">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp"
+                    ngbDropdownToggle>
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dp">
+              <button ngbDropdownItem (click)="showRFQSummary(request)">
+                <fa-icon [icon]="faEye" class="icon"></fa-icon>
+                View Summary
+              </button>
+              <button ngbDropdownItem (click)="exportRFQ(request)">
+                <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
+                Export RFQ
+              </button>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <ng-container *ngIf="rfqRequests.length === 0">
+      <tr>
+        <td class="text-center py-3" colspan="5">
+          There are no RFQ's available at the moment.
+          <a class="text-decoration-none" routerLink="create">Create new RFQ</a>
+        </td>
+      </tr>
+    </ng-container>
+
+    </tbody>
+  </table>
+</div>
+
+<app-side-popup [title]="'RFQ '+formatOrderId(selectedModel?.order_id||0)+' Summary'"
+                [(show)]="showRFQSummaryPopup" [isFullScreen]="true">
+
+  <div class="row container-fluid">
+
+    <div class="col-12 mt-3">
+      <h6>Vendors</h6>
+    </div>
+    <table class="table table-responsive table-bordered table-block-sm">
+      <thead>
+      <tr>
+        <th>Business Name</th>
+        <th>Email</th>
+        <th>Telephone</th>
+        <th>Address</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container
+        *ngIf="selectedModel && selectedModel?.vendors?.length||0>0;else noSelectedVendorsData">
+        <tr *ngFor="let vendor of this.selectedModel!.vendors!">
+          <td>
+            <span class="td-inline-label">Business Name</span>
+            {{vendor.vendor?.business_name}}
+          </td>
+          <td>
+            <span class="td-inline-label">Email</span>
+            {{vendor.vendor?.email}}
+          </td>
+          <td>
+            <span class="td-inline-label">Telephone</span>
+            {{vendor.vendor?.telephone}}
+          </td>
+          <td>
+            <span class="td-inline-label">Address</span>
+            {{vendor.vendor?.address}}
+          </td>
+
+        </tr>
+      </ng-container>
+
+      <ng-template #noSelectedVendorsData>
+        <tr>
+          <td colspan="7">
+            <div class="py-5 text-center">
+              No vendors data found
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+
+    <hr class="col-12"/>
+    <div class="col-12 mt-3">
+      <h6>Request Items</h6>
+    </div>
+    <table class="table table-responsive table-bordered table-block-sm">
+      <thead>
+      <tr>
+        <th class="product-column">Item</th>
+        <th>M-PN</th>
+        <th>Balance</th>
+        <th>Qty Requested</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container
+        *ngIf="selectedModel && selectedModel?.items?.length||0>0;else noSelectedItemData">
+        <tr *ngFor="let item of this.selectedModel!.items!">
+
+          <td>
+            <span class="td-inline-label">Item</span>
+            <div class="d-flex flex-column">
+              {{item.product?.item_code}}
+              <small class="text-muted">
+                {{item.product?.local_description || item.product?.description}}
+              </small>
+            </div>
+          </td>
+          <td>
+            <span class="td-inline-label">M-PN</span>
+            {{item.product?.mpn}}
+          </td>
+          <td>
+            <span class="td-inline-label">Physical Balance</span>
+            {{item.product?.physical_balance || '--'}}
+          </td>
+
+          <td class="qty-cell">
+            <span class="td-inline-label">Qty Requested</span>
+            {{item.qty}}
+          </td>
+        </tr>
+      </ng-container>
+
+      <ng-template #noSelectedItemData>
+        <tr>
+          <td colspan="7">
+            <div class="py-5 text-center">
+              No request items
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+
+    <div class="mt-4">
+      <button type="button" class="btn btn-primary" (click)="showRFQSummaryPopup=false">
+        CLOSE
+      </button>
+    </div>
+  </div>
+</app-side-popup>

@@ -6,9 +6,10 @@ import { ProductModel } from './product.model';
 export interface RFQVendors {
   id: number;
   vendor_id: string;
-  vendor: VendorModel;
   created_at: string;
   created_by_id: string;
+  vendor?: VendorModel;
+  created_by?: UserModel;
 }
 
 export interface RFQItemModel {
@@ -16,9 +17,11 @@ export interface RFQItemModel {
   product_id: string;
   product?: ProductModel;
   qty: number;
-  uom_id: UOMModel;
+  uom_id: string;
+  uom?: UOMModel;
   created_at: string;
   created_by_id: string;
+  created_by?: UserModel;
 }
 
 export interface RFQModel {
@@ -30,5 +33,5 @@ export interface RFQModel {
   vendors: RFQVendors[]
   created_at: string;
   created_by_id: string;
-  created_by: UserModel;
+  created_by?: UserModel;
 }
