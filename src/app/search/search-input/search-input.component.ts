@@ -49,8 +49,11 @@ export class SearchInputComponent<T> implements OnInit, ControlValueAccessor {
   @Input() placement = 'bottom-start';
   @Input() placeholder = 'Type to search';
 
-  @Input() modelValueFormatter?: (data: T) => any //use this to override data set to control on suggestion select
-  @Input() search?: (searchTerm: string) => Observable<T[] | [] | [null]> //use it to override search
+  //use modelValueFormatter to override data set to control on suggestion select
+  @Input() modelValueFormatter?: (data: T) => any
+  //use search to override actual search
+
+  @Input() search?: (searchTerm: string) => Observable<T[] | [] | [null]>
 
   faSearch = faSearch;
   faSpinner = faSpinner;
@@ -99,32 +102,31 @@ export class SearchInputComponent<T> implements OnInit, ControlValueAccessor {
   }
 
   private _backendSearch(searchTerm: string): Observable<T[] | [] | [null]> {
-    if (searchTerm.trim() === '') {
-      return of([]);
-    }
     return this.httpService.get(this.path, {params: this.parsedQueryParams(searchTerm)})
-      .pipe(tap(() => this.searchFailed = false))
       .pipe(map((res) => res.data))
-      .pipe(catchError(() => {
-        this.searchFailed = true;
-        this.searching = false;
-        return []
-      }))
-      .pipe(takeWhile(() => !this.searchFailed))
-      .pipe(tap((rs) => this.showIcons = rs.length === 0))
-      .pipe(map((rs) => rs.length > 0 ? rs : [null]))
   }
 
   autoSearch: (searchTerm: Observable<string>) => Observable<T[] | [] | [null]> =
     (searchTerm: Observable<string>) =>
-      searchTerm.pipe(
-        debounceTime(200),
-        distinctUntilChanged(),
-        tap(() => this.searching = true),
-        //TODO: do local data search first?
-        switchMap((v: string) => this.search ? this.search(v) : this._backendSearch(v)),
-        tap(() => this.searching = false)
-      )
+      searchTerm.pipe(debounceTime(200), distinctUntilChanged())
+        .pipe(tap(() => this.searching = true))
+        .pipe(tap(() => this.searchFailed = false))
+        .pipe(switchMap((v: string) => {
+          if (v.trim() === '') {return of([]);}
+
+          return this.search
+            ? this.search(v)
+            : this._backendSearch(v)
+        }))
+        .pipe(catchError(() => {
+          this.searchFailed = true;
+          this.searching = false;
+          return []
+        }))
+        .pipe(takeWhile(() => !this.searchFailed))
+        .pipe(tap((rs) => this.showIcons = rs.length === 0))
+        .pipe(map((rs: any) => Array.isArray(rs) && rs.length > 0 ? rs : [null]))
+        .pipe(tap(() => this.searching = false))
 
   onSelect($event: NgbTypeaheadSelectItemEvent) {
     if (this.modelValueFormatter) {
