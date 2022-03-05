@@ -176,7 +176,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       //update the form group quantity
       this.requestItemsForm.at(index).patchValue({qty: this.adhocRFQItemForm.value.product});
       this.showAdhocRFQItemFormPopup = false;
-
+      this.adhocRFQItemForm.reset({qty: 1});
     } else {
       const group = this.createRFQItemForm(this.adhocRFQItemForm.value.product, {
         pr_item: null,

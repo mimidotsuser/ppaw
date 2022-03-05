@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { HttpParams } from '@angular/common/http';
+import { map, mergeMap, Observable } from 'rxjs';
 import { PurchaseRequestModel } from '../../models/purchase-request.model';
-import { catchError, map, mergeMap, Observable, takeWhile, tap } from 'rxjs';
 import { HttpService } from '../../core/services/http.service';
 import { ProductBalanceModel } from '../../models/product-balance.model';
-import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'purchase-request-search[controlName],purchase-request-search[control]',
@@ -31,7 +31,7 @@ export class PurchaseRequestSearchComponent implements OnInit {
 
   get outputFormatter(): (item: PurchaseRequestModel) => string {
     return (item: PurchaseRequestModel) => {
-      return `${this.formatRequestId(item.order_id)} ${item.created_by ? '| by ' : ''}` +
+      return `${this.formatRequestId(item.order_id)} ${item.created_by?'| by ' : ''}` +
         `${item?.created_by?.first_name || ''} ${item?.created_by?.last_name || ''}`
     }
   }
