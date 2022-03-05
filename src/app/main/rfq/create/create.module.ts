@@ -9,6 +9,7 @@ import {
 } from '../../../search/purchase-request-search/purchase-request-search.module';
 import { VendorWidgetsModule } from '../../vendors/vendor-widgets/vendor-widgets.module';
 import { CreateComponent } from './create.component';
+import { VendorService } from '../../vendors/vendor-widgets/services/vendor.service';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { CreateComponent } from './create.component';
     PurchaseRequestSearchModule,
     NgSelectModule,
     VendorWidgetsModule,
-  ]
+  ],
+  providers: [VendorService]
 })
 export class CreateModule {}

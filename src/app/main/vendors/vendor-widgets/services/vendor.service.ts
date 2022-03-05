@@ -3,9 +3,7 @@ import { HttpService } from '../../../../core/services/http.service';
 import { VendorModel } from '../../../../models/vendor.model';
 import { map, Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class VendorService {
 
   constructor(private http: HttpService) { }
