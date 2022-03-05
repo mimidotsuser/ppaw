@@ -1,1 +1,191 @@
-<p>index works!</p>
+<app-content-header title="Purchase Orders" [menuItems]="['Home','Purchase Orders']">
+</app-content-header>
+
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+    <div class="col-sm-6 col-md-3 data-filters">
+    </div>
+
+    <div class="d-md-block">
+      <a class="btn btn-outline-primary" routerLink="create">
+        + New Request
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <table class="table table-hover table-block-sm">
+    <thead>
+    <tr>
+      <th>Request No.</th>
+      <th>Total Amount</th>
+      <th>Doc Date</th>
+      <th>RFQ</th>
+      <th>Created On</th>
+      <th>Created By</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let request of lpoRequests">
+      <td (click)="showLPOSummary(request)" role="button">
+        <span class="td-inline-label">Request No.</span>
+        <a class="text-decoration-none">
+          {{formatOrderId(request.order_id)}}
+        </a>
+      </td>
+      <td>
+        <span class="td-inline-label">Total Amount</span>
+        {{aggregateOrderTotal(request)|currency:(request?.currency?.code || '') + ' '}}
+      </td>
+      <td>
+        <span class="td-inline-label">DOC Date</span>
+        {{request.doc_date|date}}
+      </td>
+      <td>
+        <span class="td-inline-label">RFQ </span>
+        <a *ngIf="request.rfq_id" target="_blank">
+          <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+          view
+        </a>
+      </td>
+      <td>
+        <span class="td-inline-label">Created On</span>
+        {{request.created_at|date}}
+      </td>
+      <td>
+        <span class="td-inline-label">Created By</span>
+        {{authorName(request)}}
+      </td>
+      <td>
+        <div class="d-flex gap-2 justify-content-end w-100">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp"
+                    ngbDropdownToggle>
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dp">
+              <button ngbDropdownItem (click)="showLPOSummary(request)">
+                <fa-icon [icon]="faEye" class="icon"></fa-icon>
+                View Summary
+              </button>
+              <button ngbDropdownItem (click)="exportPurchaseOrder(request)">
+                <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
+                Export RFQ
+              </button>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <ng-container *ngIf="lpoRequests.length === 0">
+      <tr class="table-hover">
+        <td class="text-center py-5" colspan="8">
+          There are no purchase orders available at the moment.
+          <a class="text-decoration-none" routerLink="create">Create new PO</a>
+        </td>
+      </tr>
+    </ng-container>
+
+    </tbody>
+  </table>
+</div>
+
+<app-side-popup [title]="'RFQ '+formatOrderId(selectedModel?.order_id||0)+' Summary'"
+                [(show)]="showLPOSummaryPopup" [isFullScreen]="true">
+
+  <div class="row container-fluid">
+    <div class="col-md-4 mb-3">
+      <label for="vendor" class="form-label">Vendor</label>
+      <input type="text" id="vendor" class="form-control" disabled
+             [value]="selectedLPOVendor">
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="doc_date" class="form-label">DOC Date</label>
+      <input type="text" id="doc_date" class="form-control" disabled
+             [value]="selectedModel?.doc_date|date">
+    </div>
+
+    <div class="col-12 mt-3">
+      <h6>Purchase Order Items</h6>
+    </div>
+    <table class="table table-bordered table-block-sm">
+      <thead>
+      <tr>
+        <th class="product-column">Item</th>
+        <th>M-PN</th>
+        <th>Balance</th>
+        <th>Qty Requested</th>
+        <th>Unit Price</th>
+        <th>Total</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container
+        *ngIf="selectedModel && selectedModel?.items?.length||0>0;else noSelectedItemData">
+        <tr *ngFor="let item of this.selectedModel!.items!">
+          <td>
+            <span class="td-inline-label">Item</span>
+            <div class="d-flex flex-column">
+              {{item.product?.item_code}}
+              <small class="text-muted">
+                {{item.product?.local_description || item.product?.description}}
+              </small>
+            </div>
+          </td>
+          <td>
+            <span class="td-inline-label">M-PN</span>
+            {{item.product?.mpn}}
+          </td>
+          <td>
+            <span class="td-inline-label">Balance</span>
+            {{item.product?.physical_balance || '--'}}
+          </td>
+
+          <td class="qty-cell">
+            <span class="td-inline-label">Qty Requested</span>
+            {{item.qty}}
+          </td>
+          <td>
+            <span class="td-inline-label">Unit Price</span>
+            {{item.unit_price|currency:selectedModel?.currency?.code + ' ' }}
+          </td>
+          <td>
+            <span class="td-inline-label">Total </span>
+            {{item.unit_price * item.qty|currency:selectedModel?.currency?.code + ' ' }}
+          </td>
+
+        </tr>
+        <tr>
+          <td colspan="5">
+            <div class="d-flex justify-content-md-end">
+              <strong>Total</strong>
+            </div>
+          </td>
+          <td>
+            <span class="td-inline-label">Total </span>
+            {{aggregateOrderTotal(selectedModel!)|currency:selectedModel?.currency?.code + ' ' }}
+          </td>
+        </tr>
+      </ng-container>
+
+      <ng-template #noSelectedItemData>
+        <tr>
+          <td colspan="7">
+            <div class="py-5 text-center">
+              No request items
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+
+    <div class="mt-4">
+      <button type="button" class="btn btn-primary" (click)="showLPOSummaryPopup=false">
+        CLOSE
+      </button>
+    </div>
+  </div>
+</app-side-popup>

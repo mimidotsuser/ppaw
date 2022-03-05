@@ -91,7 +91,7 @@ export class MainComponent implements OnInit, OnDestroy {
       display: true,
       icon: faFileInvoiceDollar,
       items: [
-        {title: 'New RFQ', url: 'request-for-quotations/create', display: true,exact:false},
+        {title: 'New RFQ', url: 'request-for-quotations/create', display: true, exact: false},
         {title: 'All RFQ\'s', url: 'request-for-quotations', display: true},
       ]
     },
@@ -100,7 +100,7 @@ export class MainComponent implements OnInit, OnDestroy {
       display: true,
       icon: faShoppingCart,
       items: [
-        {title: 'New Purchase Order', url: 'purchase-orders/create', display: true},
+        {title: 'New Purchase Order', url: 'purchase-orders/create', display: true, exact: false},
         {title: 'All Purchase Orders', url: 'purchase-orders', display: true},
       ]
     },
