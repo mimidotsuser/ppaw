@@ -230,10 +230,7 @@ export class CreateComponent implements OnInit, OnDestroy {
         //add it into the RFQ form vendors list (set as selected)
         this.vendors = [...this.vendors, vendor];
 
-        this.form.get('vendors')?.patchValue([
-          ...this.form.get('vendors')?.value,
-          vendor
-        ])
+        this.form.get('vendors')?.patchValue([... (this.form.value.vendors || []), vendor])
         this.showVendorCreateFormPopup = false;
       })
 
