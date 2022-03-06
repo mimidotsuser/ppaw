@@ -2,6 +2,12 @@
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
+
+.submit-buttons .dropdown .dropdown-menu.show {
+  min-width: 130px !important;
+  border-radius: 0;
+}
+
 @include media-breakpoint-up(md) {
   .qty-cell {
     max-width: 100px;

@@ -2,6 +2,11 @@
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
+.submit-buttons .dropdown .dropdown-menu.show {
+  min-width: 138px !important;
+  border-radius: 0;
+}
+
 @include media-breakpoint-up(md) {
   th.qty-column,
   th.price-column {

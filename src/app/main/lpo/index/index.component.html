@@ -149,11 +149,11 @@
           </td>
           <td>
             <span class="td-inline-label">Unit Price</span>
-            {{item.unit_price|currency:selectedModel?.currency?.code + ' ' }}
+            {{item.unit_price|currency:selectedModel?.currency?.code || '' + ' ' }}
           </td>
           <td>
             <span class="td-inline-label">Total </span>
-            {{item.unit_price * item.qty|currency:selectedModel?.currency?.code + ' ' }}
+            {{item.unit_price * item.qty|currency:selectedModel?.currency?.code || '' + ' ' }}
           </td>
 
         </tr>
@@ -165,7 +165,7 @@
           </td>
           <td>
             <span class="td-inline-label">Total </span>
-            {{aggregateOrderTotal(selectedModel!)|currency:selectedModel?.currency?.code + ' ' }}
+            {{aggregateOrderTotal(selectedModel!)|currency:selectedModel?.currency?.code || '' + ' ' }}
           </td>
         </tr>
       </ng-container>

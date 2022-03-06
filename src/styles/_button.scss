@@ -1,8 +1,18 @@
 .btn-filter {
   line-height: $filter-control-line-height;
+  padding-bottom: $filter-control-padding-y;
+  padding-top: $filter-control-padding-y;
 }
 
 .btn-cancel {
   box-shadow: 0 0 #0003, 0 0 #00000024, 0 0 #0000001f;
   border-color: #0000001f;
+}
+
+.btn-submit {
+  //nothing at the moment
+}
+
+.btn-sm {
+  font-weight: 300;
 }

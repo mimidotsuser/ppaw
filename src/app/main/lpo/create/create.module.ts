@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '../../../shared/shared.module';
 import { VendorService } from '../../vendors/vendor-widgets/services/vendor.service';
 import { ProductSearchModule } from '../../../search/product-search/product-search.module';
@@ -22,7 +23,7 @@ import { RfqSearchModule } from '../../../search/rfq-search/rfq-search.module';
     ProductSearchModule,
     VendorWidgetsModule,
     RfqSearchModule,
-
+    NgbDropdownModule,
   ],
   providers: [VendorService]
 })

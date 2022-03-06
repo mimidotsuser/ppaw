@@ -84,7 +84,7 @@
           <td class="qty-cell" [formGroup]="itemAllocationFormOrCreate(item)">
             <span class="td-inline-label">Qty Verified</span>
             <div class="w-50">
-            <input type="number" class="form-control" min="0" formControlName="qty_approved">
+              <input type="number" class="form-control" min="0" formControlName="qty_approved">
             </div>
           </td>
         </tr>
@@ -99,13 +99,14 @@
 
     </tbody>
   </table>
-  <div class="row">
+  <div class="row container-fluid">
     <div class="col-md-6 mb-3">
       <label for="remarks" class="form-label">Remarks</label>
       <textarea id="remarks" class="form-control" formControlName="remarks"></textarea>
     </div>
     <div class="col-12">
-      <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="form.invalid">
+      <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submit()"
+              [disabled]="form.invalid">
         Submit
       </button>
     </div>
