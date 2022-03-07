@@ -3,7 +3,7 @@
 .main-navbar.navbar {
   width: 100%;
   z-index: 10;
-
+  border-bottom: 1px solid $main-nav-border-bottom-color;
   .navbar-burger {
     position: relative;
     color: $side-menu-toggle-btn-color;
@@ -43,7 +43,8 @@
   }
 
   .navbar-brand {
-    margin-left: 0.8em
+    margin-left: 0.8em;
+    color: $primary-color
   }
 }
 

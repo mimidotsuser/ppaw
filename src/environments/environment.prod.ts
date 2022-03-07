@@ -1,9 +1,9 @@
 export const environment = {
   production: true,
   app: {
-    name: 'Mediant Procurement/Inventory System',
+    name: 'Mediant International',
     logoUrl: 'https://mediantinternational.com/assets/images/main-logo.png',
-    apiUrl: '',
+    apiUrl: '/api/v1',
     faviconUrl: 'https://mediantinternational.com/favicon.ico'
   }
 };

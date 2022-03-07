@@ -2,7 +2,7 @@
 
   <div class="col-md-6 mb-3">
     <label for="main" class="form-label">Parent/Main Branch </label>
-    <select class="form-control" id="main" (change)="onParentSelect($event)">
+    <select class="form-select" id="main" (change)="onParentSelect($event)">
       <option disabled selected value=""></option>
       <ng-container *ngFor="let client of clients|async">
         <option *ngIf="!client.parent_id" value="{{client.id}}" [attr.data-name]="client.name">
