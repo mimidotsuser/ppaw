@@ -69,6 +69,10 @@ const routes: Routes = [
         loadChildren: () => import('./vendors/vendors.module').then(m => m.VendorsModule)
       },
       {path: 'home', loadChildren: () => import('./home/home.module').then(m => m.HomeModule)},
+      {
+        path: 'product-items',
+        loadChildren: () => import('./product-items/product-items.module').then(m => m.ProductItemsModule)
+      },
       {path: '', redirectTo: 'home', pathMatch: 'exact'},
       {
         path: '**',

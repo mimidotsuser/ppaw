@@ -155,7 +155,12 @@ export class MainComponent implements OnInit, OnDestroy {
         {
           title: 'Inventory Adjustment', url: 'stock-ledger/inventory-adjustment',
           display: true
-        }]
+        },
+        {
+          title: 'Product Tracking', url: 'product-items',
+          display: true
+        },
+        ]
     },
     worksheets: {
       title: 'Worksheets',
