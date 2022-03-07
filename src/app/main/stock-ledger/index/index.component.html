@@ -1,1 +1,170 @@
-<p>index works!</p>
+<app-content-header title="Stock Ledger" [menuItems]="['Home','Stock Ledger']">
+</app-content-header>
+
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+    <div class="data-filters d-flex gap-2 col-6">
+      <div class="col-md-6 mb-1">
+        <input type="text" class="form-control search" [formControl]="searchInput"
+               placeholder="Search item">
+      </div>
+      <div class="col-md-4 mb-1">
+        <div ngbDropdown class="d-inline-block">
+          <button id="dp" ngbDropdownToggle
+                  class="btn btn-outline-secondary hide-dropdown-toggle btn-filter">
+            <fa-icon [icon]="faFilter"></fa-icon>
+            Filter
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dp">
+            <div class="dropdown-header">
+              <h6 class="text-capitalize">Filter options</h6>
+            </div>
+            <form class="px-3">
+
+              <div class="mb-3">
+                <label class="form-label" for="">Product category</label>
+                <select class="form-select" id="product_category">
+                  <option value="all">All</option>
+                  <option value="machine">Machine</option>
+                  <option value="spare">Spare</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="stock-level-filter">Stock level</label>
+                <select class="form-select" id="stock-level-filter">
+                  <option value="all">All</option>
+                  <option value="spare">Low stock</option>
+                </select>
+              </div>
+
+              <div class="mt-3 d-grid">
+                <button class="btn btn-success btn-lg">Apply filters</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-lg-3 justify-content-end d-flex">
+
+    </div>
+
+  </div>
+</div>
+<div class="container-md-fluid mt-3">
+  <table class="table table-hover table-block-sm table-bordered">
+    <thead>
+    <tr>
+      <th class="product-column">Item</th>
+      <th>M-PN</th>
+      <th>EOQ</th>
+      <th>MIN-L</th>
+      <th>RO-L</th>
+      <th>MAX-L</th>
+      <th>Physical Bal</th>
+      <th>Virtual Bal</th>
+      <th class="actions-column"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of itemsBalances">
+      <td>
+        <span class="td-inline-label">Item</span>
+        <div class="d-flex flex-column">
+          {{item.product.item_code}}
+          <small class="text-muted">
+            {{item.product.local_description || item.product.description}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">M-PN</span>
+        {{item.product.mpn}}
+      </td>
+      <td>
+        <span class="td-inline-label">EOQ</span>
+        {{item.product?.eoq}}
+      </td>
+      <td>
+        <span class="td-inline-label">MIN-L</span>
+        {{item.product.minl}}
+      </td>
+      <td>
+        <span class="td-inline-label">RO-L</span>
+        {{item.product.rol}}
+      </td>
+      <td>
+        <span class="td-inline-label">MAX-L</span>
+        {{item.product?.maxl}}
+      </td>
+      <td>
+        <span class="td-inline-label">Physical Bal</span>
+        {{item?.physical_balance}}
+      </td>
+      <td>
+        <span class="td-inline-label">Virtual Bal</span>
+        {{item?.virtual_balance}}
+      </td>
+
+      <td>
+        <div class="d-flex gap-2 justify-content-end w-100">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="adp"
+                    ngbDropdownToggle>
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="adp">
+              <button ngbDropdownItem>
+                Adjust Balance
+              </button>
+              <button ngbDropdownItem>
+                Edit Item
+              </button>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+
+    <ng-container *ngIf="itemsBalances.length===0">
+      <tr>
+        <td class="text-center py-3" colspan="9">
+          <ng-container *ngIf="!searchInput.value;else noResults">
+            There is no product items.&nbsp;
+            <a class="text-decoration-none">
+              Click to add new item
+            </a>
+          </ng-container>
+          <ng-template #noResults>
+            No data matching filters criteria
+          </ng-template>
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <ngb-pagination [(page)]="pagination.page" [pageSize]="pagination.perPage"
+                    [collectionSize]="100" (pageChange)="loadProductBalances($event)">
+      <ng-template ngbPaginationPrevious>
+        Previous
+      </ng-template>
+      <ng-template ngbPaginationPages>
+        <div
+          class="pagination-info d-flex align-items-center disabled page-item">
+          <span class="page-link">
+          {{(pagination.perPage * pagination.page) - pagination.perPage + 1}} -
+            {{pagination.page * pagination.perPage}} of 100
+            </span>
+        </div>
+
+      </ng-template>
+      <ng-template ngbPaginationNext>
+        Next
+      </ng-template>
+    </ngb-pagination>
+  </div>
+</div>
