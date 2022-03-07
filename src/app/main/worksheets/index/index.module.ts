@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { IndexRoutingModule } from './index-routing.module';
+import { RouterModule } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { SharedModule } from '../../../shared/shared.module';
 import { IndexComponent } from './index.component';
 
 
@@ -11,7 +13,10 @@ import { IndexComponent } from './index.component';
   ],
   imports: [
     CommonModule,
-    IndexRoutingModule
+    RouterModule.forChild([{path: '', component: IndexComponent}]),
+    SharedModule,
+    FontAwesomeModule,
+    NgbDropdownModule,
   ]
 })
-export class IndexModule { }
+export class IndexModule {}
