@@ -1,0 +1,48 @@
+@import "variables";
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+
+.section-title {
+  font-size: 15px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+
+.spare-entry {
+  background-color: $checkout-group-card-background-color;
+
+  .group-header {
+    position: relative;
+  }
+
+  .action-group {
+    position: absolute;
+    right: 5px;
+    top: -8px;
+  }
+
+  .icon-button {
+    padding-right: 3px;
+    padding-left: 3px;
+    margin-right: 8px;
+  }
+
+  label.form-label {
+    font-size: 14px;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  .entry-column {
+    min-width: 180px;
+  }
+  .products-column {
+    width: 200px;
+  }
+  .actions-column {
+    min-width: 80px;
+  }
+}

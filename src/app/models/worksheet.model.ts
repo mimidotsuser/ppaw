@@ -1,21 +1,29 @@
 import { UserModel } from './user.model';
 import { ClientModel } from './client.model';
+import { ActivityDescriptionModel } from './activity-description.model';
+import { ProductItemModel } from './product-item.model';
 
-export enum WorksheetType {
-  DELIVERY_AND_INSTALLATION,
-  TRAINING_AND_INSTALLATION,
-  MACHINE_REPAIR,
-  GENERAL_SERVICING,
-  TECHNICAL_REPORT,
-  OTHER
+export enum WorkCategory {
+  DELIVERY_AND_INSTALLATION = 'Delivery and Installation',
+  TRAINING_AND_INSTALLATION = 'Training and Installation',
+  MACHINE_REPAIR = 'Machine Repair',
+  GENERAL_SERVICING = 'Service and Maintenance',
+  TECHNICAL_REPORT = 'Technical Report',
+  OTHER = 'Other'
 }
+
 
 export interface WorksheetModel {
   id: string;
-  work_type: WorksheetType;
+  reference_number: string;
+  category_code: keyof typeof WorkCategory;
+  category: WorkCategory;
   remarks: string;
   client_id: string;
   client?: ClientModel;
+  activity_description_id: string;
+  activity_description: ActivityDescriptionModel;
+  product_items: ProductItemModel[];
   created_by_id: string;
   created_by?: UserModel;
   created_at: string;
