@@ -53,14 +53,12 @@
 
       &:hover {
         &.maximize-icon {
-          background: #cecece;
-          color: white;
+          color: $side-popup-maximize-hover-color;
           border-radius: 4px;
         }
 
         &.close-icon {
-          background: red;
-          color: white;
+          color:  $side-popup-close-hover-color;
           border-radius: 4px;
         }
       }
