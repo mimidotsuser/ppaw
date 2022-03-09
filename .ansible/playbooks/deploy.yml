@@ -13,7 +13,7 @@
         follow: false
         group: "{{remote_owner_group}}"
         owner: "{{remote_owner_user}}"
-      no_log: True
+      no_log: false
       ignore_errors: true
 
     - name: Copy new application files to deployment path
