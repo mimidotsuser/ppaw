@@ -13,6 +13,7 @@
   box-shadow: 0 1px 15px rgb(0 0 0 / 4%), 0 1px 6px rgb(0 0 0 / 4%);
 
   .logo-container {
+    border-left: solid 1px #f6f6f7;
 
     img {
       max-width: 100%;
@@ -20,7 +21,6 @@
   }
 
   .main-form-container {
-    border-left: solid 1px #f6f6f7;
     min-height: 380px;
     padding: 20px;
   }
@@ -32,6 +32,7 @@
 
   .box {
     box-shadow: none;
+
     .logo-container {
       width: 200px;
 
@@ -47,8 +48,8 @@
   }
 }
 
-@include media-breakpoint-up(sm){
-  .wrapper{
+@include media-breakpoint-up(sm) {
+  .wrapper {
     background-position: center center;
     background-attachment: fixed;
     background-size: cover;

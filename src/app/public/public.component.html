@@ -1,13 +1,14 @@
 <div class="wrapper d-flex flex-column justify-content-evenly min-vh-100 ">
-  <div class="row align-items-center box">
-    <div class="col-md-6">
-      <ng-container *ngIf="logoUrl">
-        <div class="logo-container mx-auto">
+  <div class="row align-items-center box w-100">
+    <ng-container *ngIf="logoUrl">
+      <div class="col-md-6 logo-container">
+        <div class="mx-auto">
           <img class="d-block" src="{{logoUrl}}" alt="{{appName}}">
         </div>
-      </ng-container>
-    </div>
-    <div class="col-md-6 main-form-container">
+      </div>
+    </ng-container>
+    <div class="main-form-container justify-content-center"
+         [ngClass]="logoUrl?'col-md-6':'col-md-12'">
       <router-outlet></router-outlet>
     </div>
   </div>

@@ -6,7 +6,7 @@ const routes: Routes = [{
   path: '', component: CheckinComponent, children: [
     {
       path: 'purchased-products',
-      loadChildren: () => import('./purchased-products/purchased-products.module').then(m => m.PurchasedProductsModule)
+      loadChildren: () => import('./purchased-products/create/create.module').then(m => m.CreateModule)
     },
     {
       path: 'leased-products',

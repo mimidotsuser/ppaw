@@ -1,0 +1,19 @@
+<app-search-input [path]="path" [resultTemplate]="resultTemplate" [controlName]="controlName"
+                  [outputFormatter]="outputFormatter" [control]="control" [customId]="customId" >
+</app-search-input>
+
+
+<ng-template let-results="result" #resultTemplate>
+  <ng-container *ngIf="results;else noResultsTemplate">
+    <div class="title">
+      {{  formatRequestId(results.order_id) }}
+    </div>
+    <div class="subtitle " *ngIf="results?.created_by as author">
+      By {{author?.first_name||''}} {{author?.last_name||''}}
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #noResultsTemplate>
+  No results found
+</ng-template>
