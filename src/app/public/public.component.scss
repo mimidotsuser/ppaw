@@ -1,13 +1,57 @@
-.container.d-flex {
-  margin-top: -40px;
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+
+.box {
+  background-color: white;
+  padding: 15px;
+  border-radius: 6px;
+  max-width: 750px;
+  margin: 0 auto;
+  -webkit-box-shadow: 0 1px 15px rgb(0 0 0 / 4%), 0 1px 6px rgb(0 0 0 / 4%);
+  box-shadow: 0 1px 15px rgb(0 0 0 / 4%), 0 1px 6px rgb(0 0 0 / 4%);
 
   .logo-container {
-    margin-top: -60px;
-    width: 200px;
 
     img {
-      width: 100%;
-      height: auto;
+      max-width: 100%;
     }
+  }
+
+  .main-form-container {
+    border-left: solid 1px #f6f6f7;
+    min-height: 380px;
+    padding: 20px;
+  }
+
+}
+
+
+@include media-breakpoint-down(md) {
+
+  .box {
+    box-shadow: none;
+    .logo-container {
+      width: 200px;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    .main-form-container {
+      border-left: none;
+    }
+  }
+}
+
+@include media-breakpoint-up(sm){
+  .wrapper{
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+    background-image: url("/assets/images/public-bg.jpg");
   }
 }

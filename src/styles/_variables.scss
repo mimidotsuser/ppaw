@@ -6,7 +6,7 @@ $main-nav-border-bottom-color: rgba(77, 77, 77, .3);
 
 $side-popup-header-border-color: #dbdbdb;
 $side-popup-background: #fff;
-$side-popup-maximize-hover-color:#cecece;
+$side-popup-maximize-hover-color: #cecece;
 $side-popup-close-hover-color: orangered;
 
 $side-menu-toggle-btn-color: #d6d9dc;
@@ -52,3 +52,7 @@ $timeline-title-color: #0e4c4c;
 $export-to-pdf-icon-color: orangered;
 
 $checkout-group-card-background-color: #f7f7f7;
+
+:root {
+  --bs-body-bg: #fbfbfb !important;
+}

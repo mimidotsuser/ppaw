@@ -4,6 +4,7 @@
   width: 100%;
   z-index: 10;
   border-bottom: 1px solid $main-nav-border-bottom-color;
+
   .navbar-burger {
     position: relative;
     color: $side-menu-toggle-btn-color;
@@ -107,6 +108,7 @@ main.main-content {
   padding-top: 15px;
   padding-bottom: 50px;
   background: $main-content-background;
+  min-height: 100vh;
 }
 
 
