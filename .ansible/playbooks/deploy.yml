@@ -14,6 +14,7 @@
         group: "{{remote_owner_group}}"
         owner: "{{remote_owner_user}}"
       no_log: True
+      ignore_errors: true
 
     - name: Copy new application files to deployment path
       ansible.posix.synchronize:
