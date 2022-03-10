@@ -3,15 +3,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { InspectionComponent } from './inspection.component';
 
 const routes: Routes = [{
-  path: '',
+  path: 'purchased-products',
   component: InspectionComponent,
   children: [
     {
-      path: 'purchased-products/create',
+      path: ':id/create',
       loadChildren: () => import('./purchased-products/create/create.module').then(m => m.CreateModule)
     },
     {
-      path: 'purchased-products',
+      path: '',
       loadChildren: () => import('./purchased-products/index/index.module').then(m => m.IndexModule)
     }]
 }];

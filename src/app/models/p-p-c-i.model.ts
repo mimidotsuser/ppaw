@@ -13,6 +13,7 @@ export interface PPCItemModel {
   product_id: string;
   product?: ProductModel;
   qty: number;
+  qty_fit: number; //quantity fit for use i.e. has passed inspection
   created_by_id: string;
   created_by?: UserModel;
   po_item_id: string;
@@ -40,4 +41,5 @@ export interface PPCIModel {
   created_by?: UserModel;
   items: PPCItemModel[],
   logs?: PPCLogModel[],
+  created_at: string;
 }

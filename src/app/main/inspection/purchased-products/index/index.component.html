@@ -1,1 +1,102 @@
-<p>index works!</p>
+<app-content-header title="Products Inspection"
+                    [menuItems]="['Home','Inspection','Pending Requests' ]">
+</app-content-header>
+
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+    <div class="data-filters d-flex gap-2 col-md-6">
+      <div class="col-md-5 mb-1">
+        <input type="text" class="form-control search" [formControl]="searchInput"
+               placeholder="Search request number">
+      </div>
+      <div class="col-md-4 mb-1">
+        <div ngbDropdown class="d-inline-block">
+          <button id="dp" ngbDropdownToggle
+                  class="btn btn-outline-secondary hide-dropdown-toggle btn-filter">
+            <fa-icon [icon]="faFilter"></fa-icon>
+            Filter
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dp">
+            <div class="dropdown-header">
+              <h6 class="text-capitalize">Filter options</h6>
+            </div>
+            <form class="px-3">
+
+              <div class="mb-3">
+                <label class="form-label" for="">Created By</label>
+                <select class="form-select" id="creator">
+                  <option value="all">All</option>
+                  <option>James Smith</option>
+                  <option>Mercy Wanjiku</option>
+                </select>
+              </div>
+              <div class="mt-3 d-grid">
+                <button class="btn btn-success btn-lg">Apply filters</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div>
+    </div>
+  </div>
+</div>
+
+<div class="container-md-fluid">
+  <table class="table table-hover table-block-sm table-bordered">
+    <thead>
+    <tr>
+      <th class="sn-number">Reference No.</th>
+      <th>PO No.</th>
+      <th>Supplier</th>
+      <th>Created On</th>
+      <th>Created By</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let request of requests">
+      <td>
+        <span class="td-inline-label">Reference No.</span>
+        <a class="text-decoration-none" routerLink="{{request.id}}/create/">
+          {{request.reference_no}}
+        </a>
+      </td>
+      <td>
+        <span class="td-inline-label">PO No.</span>
+        <a class="text-decoration-none">
+          {{request.po_id}}
+        </a>
+      </td>
+      <td>
+        <span class="td-inline-label">Supplier</span>
+        {{formatRequestVendors(request?.po?.vendors)}}
+      </td>
+      <td>
+        <span class="td-inline-label">Created On</span>
+        {{request?.created_at|date}}
+      </td>
+      <td>
+        <span class="td-inline-label">Created By</span>
+        {{request?.created_by?.first_name || ''}} {{request?.created_by?.last_name || ''}}
+      </td>
+      <td>
+        <div class="d-flex gap-2 justify-content-end w-100">
+          <a routerLink="{{request.id}}/create" class="btn btn-outline-primary btn-sm">view</a>
+        </div>
+      </td>
+    </tr>
+    <ng-container *ngIf="requests?.length===0">
+      <tr>
+        <td class="text-center py-3" colspan="5">
+          No items pending action.
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+</div>

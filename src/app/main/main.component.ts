@@ -121,11 +121,12 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faCheckDouble,
       items: [
         {
-          title: 'Inspection Requests', url: 'inspection/purchased-products/create',
-          display: true
+          title: 'Inspection Requests', url: 'inspection/purchased-products',
+          display: true,
+          exact: false
         },
         {
-          title: 'Inspection History', url: 'inspection/purchased-products',
+          title: 'Inspection History', url: 'inspection/history',
           display: true
         }]
     },
@@ -160,7 +161,7 @@ export class MainComponent implements OnInit, OnDestroy {
           title: 'Product Tracking', url: 'product-items',
           display: true
         },
-        ]
+      ]
     },
     worksheets: {
       title: 'Worksheets',

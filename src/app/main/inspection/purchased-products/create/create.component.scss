@@ -1,0 +1,25 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+@include media-breakpoint-up(md) {
+  .qty-column {
+    width: 150px;
+  }
+
+  .inspection-checklist-table.table {
+
+    .actions-column {
+      width: 75px;
+    }
+
+    tbody td {
+      vertical-align: middle;
+    }
+  }
+}

@@ -4,7 +4,7 @@ enum CheckInTypes {
   PURCHASED_PRODUCT = 'PURCHASED_PRODUCT',
 }
 
-export interface InspectionReportModel {
+export interface InspectionReportParamModel {
   id: string;
   feature: string;
   passed: boolean;
@@ -16,7 +16,7 @@ export interface InspectionModel {
   id: string;
   checkin_id: string;
   checkin_type: CheckInTypes.PURCHASED_PRODUCT
-  report: InspectionReportModel[];
+  report_params: InspectionReportParamModel[];
   created_at: string;
   created_by_id: string;
   created_by?: UserModel;

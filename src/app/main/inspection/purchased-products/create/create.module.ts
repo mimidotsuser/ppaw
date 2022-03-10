@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CreateComponent } from './create.component';
+import { SharedModule } from '../../../../shared/shared.module';
 
 
 @NgModule({
@@ -11,7 +12,9 @@ import { CreateComponent } from './create.component';
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{path: '', component: CreateComponent}])
+    RouterModule.forChild([{path: '', component: CreateComponent}]),
+    SharedModule,
+    FontAwesomeModule,
   ]
 })
 export class CreateModule {}
