@@ -9,16 +9,7 @@ const routes: Routes = [{
       loadChildren: () => import('./purchased-products/create/create.module').then(m => m.CreateModule)
     },
     {
-      path: 'leased-products',
-      loadChildren: () => import('./leased-products/leased-products.module').then(m => m.LeasedProductsModule)
-    },
-
-    {
-      path: 'demo-products',
-      loadChildren: () => import('./demo-products/demo-products.module').then(m => m.DemoProductsModule)
-    },
-    {
-      path: 'standby-products',
+      path: 'standby-reminder',
       loadChildren: () => import('./standby-products/standby-products.module').then(m => m.StandbyProductsModule)
     }]
 }];

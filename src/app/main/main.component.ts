@@ -110,9 +110,7 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faDolly,
       items: [
         {title: 'Purchased Products', url: 'checkin/purchased-products', display: true},
-        {title: 'Lease Products', url: 'checkin/leased-products', display: true},
-        {title: 'Demo Products', url: 'checkin/demo-products', display: true},
-        {title: 'Standby Products', url: 'checkin/standby-products', display: true},
+        {title: 'Spare Standby Reminder', url: 'checkin/standby-reminder', display: true},
       ]
     },
     inspection: {
@@ -140,25 +138,26 @@ export class MainComponent implements OnInit, OnDestroy {
           display: true
         },
         {
-          title: 'All RGN/RGA Docs', url: 'checkin-approval/grn-and-rga',
+          title: 'All GRN/RGA Docs', url: 'checkin-approval/grn-and-rga',
           display: true
         }]
     },
-    stock_ledger: {
-      title: 'Stock Ledger',
+    stock_balance: {
+      title: 'Tracking & Balances',
       display: true,
       icon: faCubes,
       items: [
         {
-          title: 'Stock Ledger', url: 'stock-ledger',
+          title: 'Product Tracking',
+          url: 'product-items',
           display: true
         },
         {
-          title: 'Inventory Adjustment', url: 'stock-ledger/inventory-adjustment',
+          title: 'Stock Balances', url: 'stock-balances',
           display: true
         },
         {
-          title: 'Product Tracking', url: 'product-items',
+          title: 'Balance Adjustment', url: 'stock-balances/adjustment',
           display: true
         },
       ]

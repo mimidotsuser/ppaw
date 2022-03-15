@@ -12,7 +12,7 @@ const routes: Routes = [
         loadChildren: () => import('./index/index.module').then(m => m.IndexModule)
       },
       {
-        path: 'inventory-adjustment',
+        path: 'adjustment',
         loadChildren: () => import('./inventory-adjustment/inventory-adjustment.module').then(m => m.InventoryAdjustmentModule)
       }]
   }];

@@ -56,7 +56,7 @@ const routes: Routes = [
         loadChildren: () => import('./worksheets/worksheets.module').then(m => m.WorksheetsModule)
       },
       {
-        path: 'stock-ledger',
+        path: 'stock-balances',
         loadChildren: () => import('./stock-ledger/stock-ledger.module').then(m => m.StockLedgerModule)
       },
       {
