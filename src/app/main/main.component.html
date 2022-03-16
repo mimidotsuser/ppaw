@@ -21,6 +21,7 @@
         <div ngbDropdownMenu>
           <a ngbDropdownItem routerLink="./settings/edit-account">Edit Account</a>
           <a ngbDropdownItem routerLink="./settings/change-password">Account Password</a>
+          <button ngbDropdownItem (click)="logout()">Sign out</button>
         </div>
       </li>
     </ul>

@@ -20,6 +20,8 @@ import {
 
 } from '@fortawesome/free-solid-svg-icons';
 import { environment } from '../../environments/environment';
+import { HttpService } from '../core/services/http.service';
+import { StorageService } from '../core/services/storage.service';
 
 @Component({
   selector: 'app-main',
@@ -31,7 +33,7 @@ export class MainComponent implements OnInit, OnDestroy {
   appName: string = environment.app.name;
   logoUrl: string = environment.app.logoUrl;
   collapseSidebar = false;
-  routerSubscription: Subscription | null = null
+  private _subscriptions: Subscription[] = [];
 
   menuList: { [ key: string ]: MenuItem } = {
     dashboard: {
@@ -222,8 +224,9 @@ export class MainComponent implements OnInit, OnDestroy {
 
   }
 
-  constructor(private router: Router) {
-    this.routerSubscription = this.router.events
+  constructor(private router: Router, private httpService: HttpService,
+              private storageService: StorageService) {
+    this.subSink = this.router.events
       .pipe(filter((evt) => evt instanceof NavigationEnd))
       .pipe(tap(() => this.collapseSidebar = false))
       .subscribe()
@@ -231,6 +234,10 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {}
+
+  set subSink(value: Subscription) {
+    this._subscriptions.push(value);
+  }
 
   toggleSidebar() {
     this.collapseSidebar = !this.collapseSidebar;
@@ -240,10 +247,17 @@ export class MainComponent implements OnInit, OnDestroy {
     return Object.keys(this.menuList);
   }
 
+  logout() {
+    this.subSink = this.httpService.post('/auth/logout', {})
+      .subscribe(() => {
+        this.storageService.user = null; //reset the local storage user
+        this.router.navigateByUrl('/');// route out of the main application
+      })
+  }
+
   ngOnDestroy(): void {
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-    }
+    this._subscriptions.map((sub) => sub.unsubscribe());
+
   }
 }
 
