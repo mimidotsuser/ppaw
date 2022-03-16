@@ -4,17 +4,19 @@
   </div>
   <div class="col-12 mb-3">
     <label for="username" class="form-label">Email</label>
-    <input type="email" class="form-control" id="username" placeholder="Email">
+    <input type="email" class="form-control" id="username" placeholder="Email"
+           formControlName="username">
   </div>
   <div class="col-12 mb-3">
     <div class="col-12 d-flex justify-content-between">
       <label for="password" class="form-label">Password</label>
 
-      <a routerLink="/password-reset" class="text-sm-end">
+      <a routerLink="/password-reset" class="text-sm-end" tabindex="-1">
         <small>Forgot your password?</small>
       </a>
     </div>
-    <input type="password" class="form-control" id="password" placeholder="Password">
+    <input type="password" class="form-control" id="password" placeholder="Password"
+           formControlName="password">
   </div>
 
   <div class="col-12 d-flex justify-content-end">

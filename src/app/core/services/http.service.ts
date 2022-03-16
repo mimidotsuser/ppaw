@@ -76,21 +76,16 @@ export class HttpService {
       'Content-Type': 'application/json'
     };
 
-    if (!options?.withoutToken) {
-      headers = {...headers, ...{Authorization: `Bearer ${this.storageService.token}`}};
-    }
 
     let obj: HTTPOptions = {
-      withoutToken: false,
       headers: headers,
       params: {},
-      withCredentials: false,
+      withCredentials: true,
       responseType: 'json'
     };
 
     if (options) {
       obj = {...obj, ...options}
-      delete obj?.withoutToken;
     }
 
     return obj;
@@ -100,7 +95,6 @@ export class HttpService {
 
 
 export class HTTPOptions {
-  withoutToken?: boolean;
   headers?: HttpHeaders | { [ header: string ]: string | string[]; };
   params ?: HttpParams |
     { [ param: string ]: string | number | boolean | ReadonlyArray<string | number | boolean> };

@@ -6,10 +6,9 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CoreModule } from "../shared.module";
 
 @Injectable(
-  {providedIn: CoreModule}
+  {providedIn: "root"}
 )
 export class UnauthorizedInterceptor implements HttpInterceptor {
 

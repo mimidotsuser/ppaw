@@ -1,19 +1,25 @@
 import { Injectable } from '@angular/core';
+import { UserModel } from '../../models/user.model';
 
 @Injectable()
 export class StorageService {
 
   constructor() { }
 
-  get token(): string {
-    return window.localStorage.getItem('access_token') ?? '';
+  get user(): UserModel | null {
+    const u = window.localStorage.getItem('user');
+    return u ? JSON.parse(u) : null;
   }
 
   /**
    *
-   * @param access_token
+   * @param user
    */
-  set token(access_token: string) {
-    window.localStorage.setItem('access_token', access_token);
+  set user(user: UserModel | null) {
+    if (user) {
+      window.localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      window.localStorage.removeItem('user');
+    }
   }
 }

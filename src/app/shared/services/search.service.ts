@@ -23,7 +23,7 @@ export class SearchService<T> {
 
     //if there is a route, search the backend
     if (route) {
-      hits = this.http.get(route, {withoutToken: true, params: {search: searchTerm},});
+      hits = this.http.get(route,{ params: {search: searchTerm},});
     } else if (model) {
       hits = model.pipe(map((rows: T[]) => {
         return rows.filter((row: any) => {
