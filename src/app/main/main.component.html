@@ -39,7 +39,7 @@
             <p class="menu-list-label">
             <span class="icon">
             <ng-container *ngIf="menuList[menuBlock].icon">
-              <fa-icon [icon]="menuList[menuBlock]!.icon!"></fa-icon>
+              <fa-icon [icon]="menuList[menuBlock]!.icon!" [fixedWidth]="true"></fa-icon>
             </ng-container>
             </span>
               {{menuList[menuBlock].title}}
@@ -51,7 +51,7 @@
                      [routerLinkActiveOptions]="{exact:(item?.exact!=undefined?item.exact!:true)}">
                   <span class="icon">
                   <ng-container *ngIf="item.icon">
-                    <fa-icon [icon]="item!.icon!"></fa-icon>
+                    <fa-icon [icon]="item!.icon!" [fixedWidth]="true"></fa-icon>
                   </ng-container>
                   </span>
                     <span class="title">{{item.title}}</span></a>

@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 export class PasswordResetComponent implements OnInit, OnDestroy {
 
   emailFormControl: FormControl;
-  passwordResetInitiated = true;
+  passwordResetInitiated = false;
   private _subscriptions: Subscription[] = [];
   emailPattern = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,24}$';
   submitting = false;
