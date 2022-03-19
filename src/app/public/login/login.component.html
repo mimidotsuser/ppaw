@@ -2,10 +2,23 @@
   <div class="text-center">
     <h1 class="title">Sign in to continue</h1>
   </div>
+  <ng-container *ngIf="this.flashMessage;else spacingPlaceholder">
+    <div class="col-12 mb-3 d-flex alert error justify-content-between align-items-center">
+      <div class="message">
+        {{flashMessage}}
+      </div>
+      <div class="alert-actions">
+        <div role="button" class="alert-close" (click)="flashMessage=null">×</div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #spacingPlaceholder>
+    <div class="col-12 pb-3"></div>
+  </ng-template>
   <div class="col-12 mb-3">
     <label for="username" class="form-label">Email</label>
     <input type="email" class="form-control" id="username" placeholder="Email"
-           formControlName="username">
+           formControlName="username" autocomplete="username">
   </div>
   <div class="col-12 mb-3">
     <div class="col-12 d-flex justify-content-between">
@@ -16,10 +29,15 @@
       </a>
     </div>
     <input type="password" class="form-control" id="password" placeholder="Password"
-           formControlName="password">
+           formControlName="password" autocomplete="current-password">
   </div>
 
   <div class="col-12 d-flex justify-content-end">
-    <button class="btn btn-primary" (click)="login($event)">Log In</button>
+    <ng-container *ngIf="submitting;else submitButton">
+      <button type="button" disabled class="btn btn-primary">Logging in ...</button>
+    </ng-container>
+    <ng-template #submitButton>
+      <button type="submit" class="btn btn-primary" (click)="login($event)">Log In</button>
+    </ng-template>
   </div>
 </form>
