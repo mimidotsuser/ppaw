@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MetaService } from '../../core/services/meta.service';
 import { HttpService } from '../../core/services/http.service';
 import { Subscription } from 'rxjs';
@@ -18,9 +18,9 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
   submitting = false;
   flashMessage: null | string = null;
 
-  constructor(private meta: MetaService, private httpService: HttpService) {
+  constructor(private meta: MetaService, private httpService: HttpService, private fb: FormBuilder) {
     this.meta.title = 'Password Reset'
-    this.emailFormControl = new FormControl('',
+    this.emailFormControl = this.fb.control('',
       {validators: [Validators.pattern(this.emailPattern), Validators.required]});
   }
 
@@ -56,7 +56,7 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
               }
             });
         }, error: () => {
-          this.submitting = true;
+          this.submitting = false;
           this.flashMessage = 'Something went wrong. Please try again.'
         }
       });

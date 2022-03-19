@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { HttpService } from '../../core/services/http.service';
 import { MetaService } from '../../core/services/meta.service';
@@ -25,9 +25,9 @@ export class LoginComponent implements OnInit, OnDestroy {
               private storageService: StorageService) {
     this.meta.title = 'Login'
     this.form = this.fb.group({
-      username: new FormControl('',
+      username: this.fb.control('',
         {validators: [Validators.required, Validators.pattern(this.emailPattern)]}),
-      password: new FormControl('', {validators: [Validators.required]})
+      password: this.fb.control('', {validators: [Validators.required]})
     })
   }
 
