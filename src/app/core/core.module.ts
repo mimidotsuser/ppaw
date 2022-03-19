@@ -2,7 +2,8 @@ import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core
 import { HttpService } from './services/http.service';
 import { MetaService } from './services/meta.service';
 import { StorageService } from './services/storage.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { UnauthenticatedInterceptor } from './interceptors/unauthenticated-interceptor.service';
 
 abstract class EnsureImportedOnce<T> {
   constructor(targetModule: any) {
@@ -22,9 +23,15 @@ export class CoreModule extends EnsureImportedOnce<CoreModule> {
   }
 
   static forRoot(): ModuleWithProviders<CoreModule> {
+    //register services that shouldn't be recreated by lazy loaded modules. Interceptors first.
     return {
       ngModule: CoreModule,
-      providers: [HttpService, MetaService, StorageService] //singleton services that shouldn't be recreated
+      providers: [{
+        provide: HTTP_INTERCEPTORS,
+        useClass: UnauthenticatedInterceptor,
+        multi: true
+      },
+        HttpService, MetaService, StorageService]
     }
   }
 }

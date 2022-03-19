@@ -12,6 +12,6 @@ import { StockLedgerComponent } from './stock-ledger.component';
   imports: [
     CommonModule,
     StockLedgerRoutingModule
-  ]
+  ],
 })
 export class StockLedgerModule { }

@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
 import { HttpService } from '../../../core/services/http.service';
+import { MainModule } from '../../main.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: MainModule
 })
 export class StockLedgerService {
 
