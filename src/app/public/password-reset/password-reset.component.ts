@@ -12,13 +12,16 @@ import { Subscription } from 'rxjs';
 export class PasswordResetComponent implements OnInit, OnDestroy {
 
   emailFormControl: FormControl;
-  passwordResetInitiated = false;
+  passwordResetInitiated = true;
   private _subscriptions: Subscription[] = [];
+  emailPattern = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,24}$';
+  submitting = false;
+  flashMessage: null | string = null;
 
   constructor(private meta: MetaService, private httpService: HttpService) {
     this.meta.title = 'Password Reset'
     this.emailFormControl = new FormControl('',
-      {validators: [Validators.email, Validators.required]});
+      {validators: [Validators.pattern(this.emailPattern), Validators.required]});
   }
 
   ngOnInit(): void {
@@ -34,14 +37,28 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
     if (this.emailFormControl.invalid) {
       return;
     }
-
+    this.submitting = true;
     this.subSink = this.httpService.get('/csrf-cookie')
-      .subscribe(() => {
-        this.subSink = this.httpService.post('/auth/forgot-password',
-          {username: this.emailFormControl.value})
-          .subscribe(() => {
-            this.passwordResetInitiated = true
-          })
+      .subscribe({
+        next: () => {
+          this.subSink = this.httpService.post('/auth/forgot-password',
+            {username: this.emailFormControl.value})
+            .subscribe({
+              next: () => {
+                this.passwordResetInitiated = true
+              },
+              error: (err) => {
+                this.submitting = false;
+                this.emailFormControl.setErrors({'404': 'Email not found on our records'})
+                if (err.status !== 422) {
+                  this.flashMessage = 'Something went wrong. Please try again.'
+                }
+              }
+            });
+        }, error: () => {
+          this.submitting = true;
+          this.flashMessage = 'Something went wrong. Please try again.'
+        }
       });
   }
 
