@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpService } from '../../core/services/http.service';
 import { matchValues } from '../../utils/validators/match-values';
 import { MetaService } from '../../core/services/meta.service';
+import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-account-recovery',
@@ -11,34 +12,86 @@ import { MetaService } from '../../core/services/meta.service';
   styleUrls: ['./account-recovery.component.scss']
 })
 export class AccountRecoveryComponent implements OnInit {
+  private _subscriptions: Subscription[] = [];
   form: FormGroup;
+  passwordPattern = '^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$'
+  emailPattern = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,24}$';
+  validationStatus = {lengthOk: false, hasLetters: false, hasNumbers: false}
+  submitting = false;
+  resetPasswordComplete = false;
+  flashErrorMessage: null | string = null;
+  formTitle = 'Account Password Recovery';
 
   constructor(private meta: MetaService, private fb: FormBuilder, private route: ActivatedRoute,
-              private router: Router, private http: HttpService) {
+              private httpService: HttpService, private router: Router) {
 
     this.meta.title = 'Password Reset'
-
     this.form = this.fb.group({
-      password: new FormControl('',
+      username: this.fb.control(this.route.snapshot.queryParams[ 'email' ],
+        {validators: [Validators.required, Validators.pattern(this.emailPattern)]}),
+      password: this.fb.control('',
         {
           validators: [Validators.required, Validators.minLength(8),
             Validators.maxLength(17),
-            Validators.pattern('(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}')]
+            Validators.pattern(this.passwordPattern)]
         }),
-      confirm_password: new FormControl('',
+      password_confirmation: this.fb.control('',
         {validators: [Validators.required, matchValues('password')]})
     })
   }
 
   ngOnInit(): void {
+    if (this.route.snapshot.queryParams[ 'invite' ]) {
+      this.formTitle = 'Setup Account Password';
+    }
+
+    this.form.get('password')!.valueChanges
+      .pipe(debounceTime(200), distinctUntilChanged())
+      .subscribe((value) => {
+        this.validationStatus.hasNumbers = /(?=.*\d)/.test(value);
+        this.validationStatus.hasLetters = /(?=.*[A-Za-z])/.test(value);
+        this.validationStatus.lengthOk = value.length >= 8;
+      })
   }
 
-  recoverPassword($evt: Event) {
-    $evt.preventDefault();
+  set subSink(value: Subscription) {
+    this._subscriptions.push(value);
+  }
+
+  recoverPassword() {
     this.form.markAllAsTouched();
     this.form.get('confirm_password')?.updateValueAndValidity();
-    if (this.form.invalid) {
-      //Todo reset the password
-    }
+    if (this.form.invalid) {return}
+
+    this.submitting = true;
+    this.subSink = this.httpService.get('/csrf-cookie')
+      .subscribe({
+        next: () => {
+          const token = this.route.snapshot.params[ 'token' ];
+          this.subSink = this.httpService.post(`/auth/reset-password/${token}`, this.form.value)
+            .subscribe({
+              next: () => {
+                this.submitting = false;
+                this.resetPasswordComplete = true;
+                setTimeout(() => this.router.navigateByUrl('login'), 3000);
+              },
+              error: (err) => {
+                this.submitting = false;
+                this.flashErrorMessage = 'Password reset token invalid';
+                if (err.status !== 422) {
+                  this.flashErrorMessage = 'Something went wrong. Please try again.'
+                }
+              }
+            });
+        }, error: () => {
+          this.submitting = false;
+          this.flashErrorMessage = 'Something went wrong. Please try again.'
+        }
+      });
+  }
+
+
+  ngOnDestroy(): void {
+    this._subscriptions.map((sub) => sub.unsubscribe());
   }
 }
