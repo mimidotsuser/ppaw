@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 export class HttpService {
   private baseUrl: string;
 
-  constructor(private httpClient: HttpClient, private storageService: StorageService) {
+  constructor(private httpClient: HttpClient) {
     this.baseUrl = environment.app.apiUrl;
 
   }
@@ -49,7 +49,7 @@ export class HttpService {
    * @param payload : key ~ value pair data to replace with
    * @param httpOptions : options such as request header
    */
-  put(uri: string, payload: object, httpOptions?: {}): Observable<any> {
+  put(uri: string, payload: object, httpOptions?: HTTPOptions): Observable<any> {
 
     return this.httpClient.put(this.baseUrl + uri, payload, this.buildHttpOptions(httpOptions));
   }
@@ -69,7 +69,7 @@ export class HttpService {
    * Build HTTP request options
    *
    */
-  private buildHttpOptions(options?: HTTPOptions): HTTPOptions {
+  private buildHttpOptions = (options?: HTTPOptions): object => {
 
     let headers = {
       Accept: 'application/json',
@@ -89,20 +89,18 @@ export class HttpService {
     }
 
     return obj;
-  }
+  };
 
 }
 
 
-export class HTTPOptions {
-  headers?: HttpHeaders | { [ header: string ]: string | string[]; };
-  params ?: HttpParams |
-    { [ param: string ]: string | number | boolean | ReadonlyArray<string | number | boolean> };
-  withCredentials ?: boolean;
-  responseType ?: any;
-  observe?: 'body';
+interface HTTPOptions {
+  headers?: HttpHeaders | { [ p: string ]: string | string[] };
   context?: HttpContext;
+  params?: HttpParams |
+    { [ param: string ]: string | number | boolean | ReadonlyArray<string | number | boolean> };
   reportProgress?: boolean;
+  withCredentials?: boolean;
+  observe?: 'body' | 'events' | 'response';
+  responseType?: 'json' | 'arraybuffer' | 'blob' | 'text';
 }
-
-
