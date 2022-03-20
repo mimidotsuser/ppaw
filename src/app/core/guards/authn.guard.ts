@@ -1,20 +1,28 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {
+    ActivatedRouteSnapshot,
+    CanActivate,
+    Router,
+    RouterStateSnapshot,
+    UrlTree
+} from '@angular/router';
+import {catchError, map, Observable, of} from 'rxjs';
+import {HttpService} from "../services/http.service";
+import {HttpResponse} from "@angular/common/http";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
-export class AuthnGuard implements CanActivate, CanActivateChild {
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return true;
-  }
-  canActivateChild(
-    childRoute: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return true;
-  }
-  
+export class AuthnGuard implements CanActivate {
+    constructor(private httpService: HttpService, private router: Router) {
+    }
+
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean |
+        UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+        return this.httpService.post('/auth/is-authenticated', {},
+            {observe: 'response'})
+            .pipe(map((res: HttpResponse<Object>) => res.status == 200))
+            .pipe(catchError(x => of(this.router.parseUrl(`/login?src=${state.url}`))));
+    }
+
 }
