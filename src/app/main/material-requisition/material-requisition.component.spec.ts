@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CheckoutRequestComponent } from './checkout-request.component';
+import { MaterialRequisitionComponent } from './material-requisition.component';
 
 describe('CheckoutRequestComponent', () => {
-  let component: CheckoutRequestComponent;
-  let fixture: ComponentFixture<CheckoutRequestComponent>;
+  let component: MaterialRequisitionComponent;
+  let fixture: ComponentFixture<MaterialRequisitionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CheckoutRequestComponent ]
+      declarations: [ MaterialRequisitionComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CheckoutRequestComponent);
+    fixture = TestBed.createComponent(MaterialRequisitionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

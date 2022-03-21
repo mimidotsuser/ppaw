@@ -46,8 +46,8 @@ const routes: Routes = [
         loadChildren: () => import('./checkin-approval/checkin-approval.module').then(m => m.CheckinApprovalModule)
       },
       {
-        path: 'checkout-requests',
-        loadChildren: () => import('./checkout-request/checkout-request.module').then(m => m.CheckoutRequestModule)
+        path: 'material-requisition',
+        loadChildren: () => import('./material-requisition/material-requisition.module').then(m => m.MaterialRequisitionModule)
       },
       {
         path: 'checkout',

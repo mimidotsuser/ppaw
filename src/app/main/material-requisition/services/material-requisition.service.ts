@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, mergeMap, Observable, take } from 'rxjs';
-import { CheckoutRequestModule } from '../checkout-request.module';
+import { MaterialRequisitionModule } from '../material-requisition.module';
 import { HttpService } from '../../../core/services/http.service';
 import {
-  MRFStage,
   MRFLog,
   MRFModel,
+  MRFOrderItemModel,
   MRFPurpose,
-  MRFOrderItemModel
+  MRFStage
 } from '../../../models/m-r-f.model';
 
 @Injectable({
-  providedIn: CheckoutRequestModule
+  providedIn: MaterialRequisitionModule
 })
-export class CheckoutRequestService {
+export class MaterialRequisitionService {
 
   private myRequests$ = new BehaviorSubject<MRFModel[]>([]);
 

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { map, Observable, of, startWith, Subscription, tap } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { MRFPurpose } from '../../../models/m-r-f.model';
@@ -16,11 +16,11 @@ import { ProductModel } from '../../../models/product.model';
 })
 export class CreateComponent implements OnInit, OnDestroy {
 
-  searchInput = new FormControl();
+  searchInput = this.fb.control('');
   form: FormGroup;
   showPopupForm = false;
   itemType = {machine: 'Machine', spare: 'Spare'}
-  remarksControl = new FormControl('', {validators: Validators.required});
+  remarksControl = this.fb.control('', {validators: Validators.required});
   faEllipsisV = faEllipsisV;
   subscriptions: Subscription[] = [];
 
@@ -33,14 +33,14 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   constructor(private fb: FormBuilder, private searchService: SearchService<FormModel>) {
     this.form = this.fb.group({
-      type: new FormControl(this.itemType.machine, {validators: [Validators.required]}),
-      parent: new FormControl(),
-      product: new FormControl(null, {validators: [Validators.required]}),
-      purpose: new FormControl(null, {validators: [Validators.required]}),
-      client: new FormControl(null, {validators: [Validators.required]}),
-      qty: new FormControl(1,
+      type: this.fb.control(this.itemType.machine, {validators: [Validators.required]}),
+      parent: this.fb.control(null),
+      product: this.fb.control(null, {validators: [Validators.required]}),
+      purpose: this.fb.control(null, {validators: [Validators.required]}),
+      client: this.fb.control(null, {validators: [Validators.required]}),
+      qty: this.fb.control(1,
         {validators: [Validators.required, Validators.min(1)]}),
-      worksheet: new FormControl()
+      worksheet: this.fb.control(null)
     });
   }
 

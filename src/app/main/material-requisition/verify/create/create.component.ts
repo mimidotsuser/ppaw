@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import { CheckoutRequestService } from '../../services/checkout-request.service';
+import { MaterialRequisitionService } from '../../services/material-requisition.service';
 import { MRFModel, MRFOrderItemModel, MRFStage } from '../../../../models/m-r-f.model';
 
 @Component({
@@ -19,7 +19,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
   constructor(private route: ActivatedRoute, private fb: FormBuilder,
-              private crService: CheckoutRequestService) {
+              private crService: MaterialRequisitionService) {
     const x = this.crService.findById(this.route.snapshot.params[ 'id' ])
       .subscribe((v) => this.model = v);
 

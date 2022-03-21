@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CheckoutRequestComponent } from './checkout-request.component';
+import { MaterialRequisitionComponent } from './material-requisition.component';
 import { Actions, Resources } from '../../utils/permissions';
 
 const routes: Routes = [{
   path: '',
-  component: CheckoutRequestComponent,
+  component: MaterialRequisitionComponent,
   children: [
     {
-      path: '',
+      path: 'history',
       loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
       data: {resource: Resources.materialRequisition, action: Actions.view}
     },
@@ -35,4 +35,4 @@ const routes: Routes = [{
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class CheckoutRequestRoutingModule {}
+export class MaterialRequisitionRoutingModule {}

@@ -48,14 +48,14 @@ export class MainComponent implements OnInit, OnDestroy {
       display: true,
       icon: faWarehouse,
       items: [
-        {title: 'New request', url: 'checkout-requests/create', display: true},
-        {title: 'My requests', url: 'checkout-requests', display: true},
+        {title: 'New request', url: 'material-requisition/create', display: true},
+        {title: 'All requests', url: 'material-requisition/history', display: true},
         {
-          title: 'Verify requests', url: 'checkout-requests/verification',
+          title: 'Verify requests', url: 'material-requisition/verification',
           display: true,
           exact: false
         },
-        {title: 'Approve requests', url: 'checkout-requests/approval', display: true, exact: false},
+        {title: 'Approve requests', url: 'material-requisition/approval', display: true, exact: false},
       ]
     },
     checkout: {

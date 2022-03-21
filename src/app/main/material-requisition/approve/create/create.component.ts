@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { MRFModel, MRFOrderItemModel, MRFStage } from '../../../../models/m-r-f.model';
-import { CheckoutRequestService } from '../../services/checkout-request.service';
+import { MaterialRequisitionService } from '../../services/material-requisition.service';
 
 @Component({
   selector: 'app-create',
@@ -19,7 +19,7 @@ export class CreateComponent implements OnInit {
   form: FormGroup;
 
   constructor(private route: ActivatedRoute, private fb: FormBuilder,
-              private crService: CheckoutRequestService) {
+              private crService: MaterialRequisitionService) {
     const x = this.crService.findById(this.route.snapshot.params[ 'id' ])
       .subscribe((v) => this.model = v);
 

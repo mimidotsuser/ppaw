@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { faFilePdf, faEye } from '@fortawesome/free-regular-svg-icons';
-import { CheckoutRequestService } from '../services/checkout-request.service';
-import { MRFStage, MRFModel, MRFOrderItemModel, MRFLog } from '../../../models/m-r-f.model';
+import { faEye, faFilePdf } from '@fortawesome/free-regular-svg-icons';
+import { MaterialRequisitionService } from '../services/material-requisition.service';
+import { MRFLog, MRFModel, MRFOrderItemModel, MRFStage } from '../../../models/m-r-f.model';
 
 @Component({
   selector: 'app-index',
@@ -13,14 +13,16 @@ import { MRFStage, MRFModel, MRFOrderItemModel, MRFLog } from '../../../models/m
 })
 export class IndexComponent implements OnInit {
 
-  itemsSearchInput = new FormControl();
+  itemsSearchInput: FormControl;
   faEllipsisV = faEllipsisV;
   faFilePdf = faFilePdf;
   faEye = faEye;
   showLogsPopup = false;
   model: MRFModel | null = null;
 
-  constructor(private crService: CheckoutRequestService) { }
+  constructor(private crService: MaterialRequisitionService, private fb: FormBuilder) {
+    this.itemsSearchInput = this.fb.control('');
+  }
 
   ngOnInit(): void {
   }
