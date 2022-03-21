@@ -7,12 +7,12 @@ const routes: Routes = [
     path: '', component: UserAccountComponent,
     children: [
       {
-        path: 'change-password',
-        loadChildren: () => import('./change-password/change-password.module').then(m => m.ChangePasswordModule)
+        path: 'password',
+        loadChildren: () => import('./password/password.module').then(m => m.PasswordModule)
       },
       {
-        path: 'edit',
-        loadChildren: () => import('./edit-account/edit-account.module').then(m => m.EditAccountModule)
+        path: 'profile',
+        loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule)
       }
     ]
   },];

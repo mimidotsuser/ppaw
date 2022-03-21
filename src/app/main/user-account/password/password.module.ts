@@ -1,17 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
-import { EditAccountComponent } from './edit-account.component';
+import { EditComponent } from './edit/edit.component';
 
 
 @NgModule({
   declarations: [
-    EditAccountComponent
+    EditComponent
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{path: '', component: EditAccountComponent}])
+    RouterModule.forChild([{path: 'edit', component: EditComponent}])
   ]
 })
-export class EditAccountModule {}
+export class PasswordModule {}
