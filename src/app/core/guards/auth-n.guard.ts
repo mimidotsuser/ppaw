@@ -13,7 +13,7 @@ import {HttpResponse} from "@angular/common/http";
 @Injectable({
     providedIn: 'root'
 })
-export class AuthnGuard implements CanActivate {
+export class AuthNGuard implements CanActivate {
     constructor(private httpService: HttpService, private router: Router) {
     }
 
