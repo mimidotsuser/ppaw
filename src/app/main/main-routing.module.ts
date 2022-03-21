@@ -42,8 +42,8 @@ const routes: Routes = [
         loadChildren: () => import('./inspection-report/inspection-report.module').then(m => m.InspectionReportModule)
       },
       {
-        path: 'checkin-approval',
-        loadChildren: () => import('./checkin-approval/checkin-approval.module').then(m => m.CheckinApprovalModule)
+        path: 'receiving-report',
+        loadChildren: () => import('./receiving-report/receiving-report.module').then(m => m.ReceivingReportModule)
       },
       {
         path: 'material-requisition',
@@ -77,6 +77,10 @@ const routes: Routes = [
         loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule),
       }
     ]
+  },
+  {
+    path: 'receiving-report',
+    loadChildren: () => import('./receiving-report/receiving-report.module').then(m => m.ReceivingReportModule)
   },
 ]
 

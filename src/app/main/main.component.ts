@@ -3,20 +3,19 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription, tap } from 'rxjs';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {
-  faUserShield,
-  faBook,
-  faHome,
   faAddressBook,
-  faShoppingBasket,
-  faShoppingCart,
-  faPeopleCarry,
-  faDolly,
-  faFileInvoiceDollar,
-  faWarehouse,
+  faBook,
   faCheckDouble,
   faClipboardCheck,
-  faCubes
-
+  faCubes,
+  faDolly,
+  faFileInvoiceDollar,
+  faHome,
+  faPeopleCarry,
+  faShoppingBasket,
+  faShoppingCart,
+  faUserShield,
+  faWarehouse
 } from '@fortawesome/free-solid-svg-icons';
 import { environment } from '../../environments/environment';
 import { HttpService } from '../core/services/http.service';
@@ -55,7 +54,12 @@ export class MainComponent implements OnInit, OnDestroy {
           display: true,
           exact: false
         },
-        {title: 'Approve requests', url: 'material-requisition/approval', display: true, exact: false},
+        {
+          title: 'Approve requests',
+          url: 'material-requisition/approval',
+          display: true,
+          exact: false
+        },
       ]
     },
     checkout: {
@@ -135,11 +139,12 @@ export class MainComponent implements OnInit, OnDestroy {
       display: true,
       items: [
         {
-          title: 'GRN/RGA Approval', url: 'checkin-approval/grn-and-rga/create',
-          display: true
+          title: 'GRN/RGA Approval', url: 'receiving-report/grn-and-rga',
+          display: true,
+          exact: false
         },
         {
-          title: 'All GRN/RGA Docs', url: 'checkin-approval/grn-and-rga',
+          title: 'All GRN/RGA Docs', url: 'receiving-report/history',
           display: true
         }]
     },

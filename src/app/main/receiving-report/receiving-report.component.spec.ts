@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CheckinApprovalComponent } from './checkin-approval.component';
+import { ReceivingReportComponent } from './receiving-report.component';
 
-describe('CheckinApprovalComponent', () => {
-  let component: CheckinApprovalComponent;
-  let fixture: ComponentFixture<CheckinApprovalComponent>;
+describe('ReceivingReportComponent', () => {
+  let component: ReceivingReportComponent;
+  let fixture: ComponentFixture<ReceivingReportComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CheckinApprovalComponent ]
+      declarations: [ ReceivingReportComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CheckinApprovalComponent);
+    fixture = TestBed.createComponent(ReceivingReportComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
