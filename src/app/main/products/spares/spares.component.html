@@ -62,7 +62,8 @@
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
           <div ngbDropdown class="d-inline-block">
-            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp" ngbDropdownToggle>
+            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp"
+                    ngbDropdownToggle>
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
@@ -84,23 +85,21 @@
 <app-side-popup [(show)]="showSpareFormPopup"
                 [title]="this.model?.id?'Update Spare Item':'Create Spare Item'">
 
-  <app-spare-form [model]="this.model" [machines]="this.machines" #spareFormComponent>
+  <app-product-form [model]="this.model" [hasParent]="true"  #spareFormComponent>
+    <div class="d-flex gap-2">
 
-  </app-spare-form>
-
-  <div class="d-flex gap-2">
-
-    <button type="button" class="btn btn-primary" *ngIf="!this.model?.id"
-            (click)="saveProductForm(spareFormComponent.form)">
-      CREATE
-    </button>
-    <button type="button" class="btn btn-primary" *ngIf="this.model?.id"
-            (click)="saveProductForm(spareFormComponent.form)">
-      UPDATE
-    </button>
-    <button type="button" class="btn btn-cancel"
-            (click)="this.closeProductFormPopup(spareFormComponent.form)">
-      CANCEL
-    </button>
-  </div>
+      <button type="submit" class="btn btn-primary" *ngIf="!this.model?.id"
+              (click)="saveProductForm(spareFormComponent.form)">
+        CREATE
+      </button>
+      <button type="submit" class="btn btn-primary" *ngIf="this.model?.id"
+              (click)="saveProductForm(spareFormComponent.form)">
+        UPDATE
+      </button>
+      <button type="button" class="btn btn-cancel"
+              (click)="this.closeProductFormPopup(spareFormComponent.form)">
+        CANCEL
+      </button>
+    </div>
+  </app-product-form>
 </app-side-popup>

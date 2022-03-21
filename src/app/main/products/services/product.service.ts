@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { SharedModule } from '../../../shared/shared.module';
 import { ProductModel } from '../../../models/product.model';
+import { ProductsModule } from '../products.module';
 
 @Injectable({
-  providedIn: SharedModule
+  providedIn: ProductsModule
 })
 export class ProductService {
   private machines$ = new BehaviorSubject<ProductModel[]>([])

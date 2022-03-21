@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SpareFormComponent } from './spare-form.component';
+import { ProductFormComponent } from './product-form.component';
 
 describe('SpareFormComponent', () => {
-  let component: SpareFormComponent;
-  let fixture: ComponentFixture<SpareFormComponent>;
+  let component: ProductFormComponent;
+  let fixture: ComponentFixture<ProductFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SpareFormComponent ]
+      declarations: [ ProductFormComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SpareFormComponent);
+    fixture = TestBed.createComponent(ProductFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

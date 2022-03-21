@@ -1,5 +1,13 @@
 <form [formGroup]="form" class="row">
-  <div class="col-md-6 mb-3">
+  <ng-container *ngIf="hasParent">
+    <div class="col-md-6 mb-3">
+      <label for="parent_id" class="form-label required">Parent Machine</label>
+      <product-search-input customId="parent_id" controlName="parent">
+      </product-search-input>
+    </div>
+  </ng-container>
+  <div class="col-12"></div>
+  <div class="col-6 mb-3">
     <label for="item_code" class="form-label required">Item Code</label>
     <input type="text" id="item_code" class="form-control" formControlName="item_code">
   </div>
@@ -40,4 +48,5 @@
               formControlName="chinese_description"></textarea>
   </div>
 
+  <ng-content></ng-content>
 </form>

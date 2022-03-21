@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Observable, startWith, switchMap } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { SearchService } from '../../../shared/services/search.service';
@@ -16,13 +16,14 @@ export class SparesComponent implements OnInit {
   faEllipsisV = faEllipsisV;
   showSpareFormPopup = false;
   model: ProductModel | null = null;
-  productSearchInput = new FormControl('');
+  productSearchInput: FormControl;
   private _spares: Observable<ProductModel[]> = new Observable<ProductModel[]>();
 
-  constructor(private productService: ProductService,
+  constructor(private productService: ProductService, private fb: FormBuilder,
               private searchService: SearchService<ProductModel>) {
     searchService.setFields(['item_code', 'mpn', 'local_description', 'description',
-      'eoq', 'minl', 'maxl'])
+      'eoq', 'minl', 'maxl']);
+    this.productSearchInput = this.fb.control('')
   }
 
   ngOnInit(): void {
@@ -54,7 +55,9 @@ export class SparesComponent implements OnInit {
 
   }
 
-  saveProductForm(form: FormGroup) {}
+  saveProductForm(form: FormGroup) {
+    form.markAllAsTouched();
+  }
 
   deleteProduct(product: ProductModel) {
 

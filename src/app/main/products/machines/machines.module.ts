@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from '../../../shared/shared.module';
-import { ProductWidgetsModule } from '../product-widgets/product-widgets.module';
+import { WidgetsModule as ProductWidgetsModule } from '../widgets/widgets.module';
 import { MachinesComponent } from './machines.component';
 
 

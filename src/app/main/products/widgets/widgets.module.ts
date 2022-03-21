@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MachineFormComponent } from './machine-form/machine-form.component';
-import { SpareFormComponent } from './spare-form/spare-form.component';
+import { ProductFormComponent } from './product-form/product-form.component';
 import { SharedModule } from '../../../shared/shared.module';
 import { ProductSearchModule } from '../../../search/product-search/product-search.module';
 
 
 @NgModule({
   declarations: [
-    MachineFormComponent,
-    SpareFormComponent,
+    ProductFormComponent,
   ],
   imports: [
     CommonModule,
@@ -17,8 +15,7 @@ import { ProductSearchModule } from '../../../search/product-search/product-sear
     ProductSearchModule
   ],
   exports: [
-    MachineFormComponent,
-    SpareFormComponent
+    ProductFormComponent
   ]
 })
-export class ProductWidgetsModule {}
+export class WidgetsModule {}

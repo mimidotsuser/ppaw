@@ -3,6 +3,7 @@ import { UserModel } from './user.model';
 export interface ProductModel {
   id: string;
   parent_id?: string;
+  parent?: ProductModel;
   item_code: string;
   mpn: string;
   description: string;
@@ -15,5 +16,5 @@ export interface ProductModel {
   created_by_id: string;
   created_by?: UserModel;
   edit?: boolean;
-  physical_balance?:number
+  physical_balance?: number
 }
