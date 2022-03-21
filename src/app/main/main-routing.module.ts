@@ -71,16 +71,16 @@ const routes: Routes = [
         path: 'product-items',
         loadChildren: () => import('./product-items/product-items.module').then(m => m.ProductItemsModule)
       },
+      {
+        path: 'not-authorized',
+        loadChildren: () => import('./not-authorized/not-authorized.module').then(m => m.NotAuthorizedModule)
+      },
       {path: '', redirectTo: 'home', pathMatch: 'exact'},
       {
         path: '**',
         loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule),
       }
     ]
-  },
-  {
-    path: 'receiving-report',
-    loadChildren: () => import('./receiving-report/receiving-report.module').then(m => m.ReceivingReportModule)
   },
 ]
 

@@ -34,7 +34,8 @@ export class AuthGuard implements CanActivate {
     if (!childRoute.data[ 'resource' ] || !childRoute.data[ 'action' ]) {
       return true
     }
-    return this.authService.can(childRoute.data[ 'resource' ], childRoute.data[ 'action' ]);
+    return this.authService.can(childRoute.data[ 'resource' ], childRoute.data[ 'action' ])
+      ? true : this.router.parseUrl('/main/not-authorized');
   }
 
 }

@@ -1,0 +1,24 @@
+.wrapper {
+  transform: translateY(20%);
+  min-height: 100vh;
+
+  svg {
+    height: 130px;
+
+    .st0 {
+      fill: #E0E0D1;
+    }
+
+    .st1 {
+      opacity: 0.2;
+    }
+
+    .st2 {
+      fill: #231F20;
+    }
+
+    .st3 {
+      fill: #C75C5C;
+    }
+  }
+}
