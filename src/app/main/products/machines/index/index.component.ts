@@ -2,17 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Observable, startWith, switchMap } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { SearchService } from '../../../shared/services/search.service';
-import { ProductService } from '../services/product.service';
-import { ProductModel } from '../../../models/product.model';
+import { SearchService } from '../../../../shared/services/search.service';
+import { ProductModel } from '../../../../models/product.model';
+import { ProductService } from '../../services/product.service';
 
 @Component({
-  selector: 'app-machines',
-  templateUrl: './machines.component.html',
-  styleUrls: ['./machines.component.scss'],
+  selector: 'app-index',
+  templateUrl: './index.component.html',
+  styleUrls: ['./index.component.scss'],
   providers: [SearchService]
 })
-export class MachinesComponent implements OnInit {
+export class IndexComponent implements OnInit {
 
   faEllipsisV = faEllipsisV;
   showMachineFormPopup = false;
@@ -61,4 +61,5 @@ export class MachinesComponent implements OnInit {
   deleteProduct(product: ProductModel) {
 
   }
+
 }

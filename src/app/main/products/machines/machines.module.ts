@@ -5,16 +5,16 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from '../../../shared/shared.module';
 import { WidgetsModule as ProductWidgetsModule } from '../widgets/widgets.module';
-import { MachinesComponent } from './machines.component';
+import { IndexComponent } from './index/index.component';
 
 
 @NgModule({
   declarations: [
-    MachinesComponent
+    IndexComponent
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{path: '', component: MachinesComponent}]),
+    RouterModule.forChild([{path: '', component: IndexComponent}]),
     SharedModule,
     NgbDropdownModule,
     FontAwesomeModule,

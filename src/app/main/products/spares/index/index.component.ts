@@ -2,17 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Observable, startWith, switchMap } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { SearchService } from '../../../shared/services/search.service';
-import { ProductService } from '../services/product.service';
-import { ProductModel } from '../../../models/product.model';
+import { ProductModel } from '../../../../models/product.model';
+import { ProductService } from '../../services/product.service';
+import { SearchService } from '../../../../shared/services/search.service';
 
 @Component({
-  selector: 'app-spares',
-  templateUrl: './spares.component.html',
-  styleUrls: ['./spares.component.scss'],
-  providers: [SearchService]
+  selector: 'app-index',
+  templateUrl: './index.component.html',
+  styleUrls: ['./index.component.scss']
 })
-export class SparesComponent implements OnInit {
+export class IndexComponent implements OnInit {
   faEllipsisV = faEllipsisV;
   showSpareFormPopup = false;
   model: ProductModel | null = null;
@@ -62,5 +61,6 @@ export class SparesComponent implements OnInit {
   deleteProduct(product: ProductModel) {
 
   }
+
 
 }
