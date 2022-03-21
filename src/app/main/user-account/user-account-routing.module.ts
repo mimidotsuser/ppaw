@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SettingsComponent } from './settings.component';
+import { UserAccountComponent } from './user-account.component';
 
 const routes: Routes = [
   {
-    path: '', component: SettingsComponent,
+    path: '', component: UserAccountComponent,
     children: [
       {
         path: 'change-password',
         loadChildren: () => import('./change-password/change-password.module').then(m => m.ChangePasswordModule)
       },
       {
-        path: 'edit-account',
+        path: 'edit',
         loadChildren: () => import('./edit-account/edit-account.module').then(m => m.EditAccountModule)
       }
     ]
@@ -21,4 +21,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class SettingsRoutingModule {}
+export class UserAccountRoutingModule {}
