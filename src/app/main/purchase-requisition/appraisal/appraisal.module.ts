@@ -1,24 +1,32 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
-import { AppraisalComponent } from './appraisal.component';
+import { IndexComponent } from './index/index.component';
+import { SharedModule } from '../../../shared/shared.module';
+import { CreateComponent } from './create/create.component';
+import { Actions, Resources } from '../../../utils/permissions';
 
 
 @NgModule({
   declarations: [
-    AppraisalComponent
+    IndexComponent,
+    CreateComponent
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{
-      path: '', component: AppraisalComponent, children: [
-        {path: '', loadChildren: () => import('./index/index.module').then(m => m.IndexModule)},
-        {
-          path: ':id',
-          loadChildren: () => import('./create/create.module').then(m => m.CreateModule)
-        }]
-    }])
+    RouterModule.forChild([
+      {
+        path: '',
+        component: IndexComponent,
+        data: {resource: Resources.purchaseRequisition, action: Actions.verify}
+      },
+      {
+        path: '',
+        component: CreateComponent,
+        data: {resource: Resources.purchaseRequisition, action: Actions.verify}
+      }
+    ]),
+    SharedModule,
   ]
 })
 export class AppraisalModule {}

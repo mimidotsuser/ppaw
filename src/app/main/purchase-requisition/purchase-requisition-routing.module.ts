@@ -9,7 +9,7 @@ const routes: Routes = [{
     {
       path: '', loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
       data: {resource: Resources.purchaseRequisition, action: Actions.view}
-    },
+   },
     {
       path: 'create',
       loadChildren: () => import('./create/create.module').then(m => m.CreateModule),
@@ -22,8 +22,7 @@ const routes: Routes = [{
     },
     {
       path: 'approve',
-      loadChildren: () => import('./approval/approval.module').then(m => m.ApprovalModule),
-      data: {resource: Resources.purchaseRequisition, action: Actions.approve}
+      loadChildren: () => import('./approval/approval.module').then(m => m.ApprovalModule)
     }]
 }];
 

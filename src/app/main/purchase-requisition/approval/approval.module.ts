@@ -1,27 +1,31 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
-import { ApprovalComponent } from './approval.component';
-
+import { IndexComponent } from './index/index.component';
+import { Actions, Resources } from '../../../utils/permissions';
+import { CreateComponent } from './create/create.component';
+import { SharedModule } from '../../../shared/shared.module';
 
 @NgModule({
   declarations: [
-    ApprovalComponent
+    IndexComponent,
+    CreateComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild([
       {
-        path: '', component: ApprovalComponent,
-        children: [
-          {path: '', loadChildren: () => import('./index/index.module').then(m => m.IndexModule)},
-          {
-            path: ':id',
-            loadChildren: () => import('./create/create.module').then(m => m.CreateModule)
-          }
-        ]
-      }])
+        path: '',
+        component: IndexComponent,
+        data: {resource: Resources.purchaseRequisition, action: Actions.approve}
+      },
+      {
+        path: '',
+        component: CreateComponent,
+        data: {resource: Resources.purchaseRequisition, action: Actions.approve}
+      }
+    ]),
+    SharedModule,
   ]
 })
 export class ApprovalModule {}
