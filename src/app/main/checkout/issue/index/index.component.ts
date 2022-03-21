@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, startWith, switchMap } from 'rxjs';
-import { MRFModel, MRFStage } from '../../../models/m-r-f.model';
-import { SearchService } from '../../../shared/services/search.service';
-import { CheckoutService } from '../services/checkout.service';
+import { MRFModel, MRFStage } from '../../../../models/m-r-f.model';
+import { SearchService } from '../../../../shared/services/search.service';
+import { CheckoutService } from '../../services/checkout.service';
 
 @Component({
   selector: 'app-index',

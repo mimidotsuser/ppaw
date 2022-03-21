@@ -9,12 +9,11 @@ const routes: Routes = [
     component: CheckoutComponent,
     children: [
       {
-        path: ':id',
-        loadChildren: () => import('./create/create.module').then(m => m.CreateModule),
-        data: {resource: Resources.checkout, action: Actions.create}
+        path: 'issue-requests',
+        loadChildren: () => import('./issue/issue.module').then(m => m.IssueModule),
       },
       {
-        path: '',
+        path: 'history',
         loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
         data: {resource: Resources.checkout, action: Actions.view}
       },

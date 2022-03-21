@@ -67,8 +67,8 @@ export class MainComponent implements OnInit, OnDestroy {
       display: true,
       icon: faPeopleCarry,
       items: [
-        {title: 'Checkout Requests', url: 'checkout', display: true, exact: false},
-        {title: 'Checkout History', url: 'reports/checkout', display: true},
+        {title: 'Checkout Requests', url: 'checkout/issue-requests', display: true, exact: false},
+        {title: 'Checkout History', url: 'checkout/history', display: true},
       ]
     },
     purchase_requests: {
