@@ -1,0 +1,31 @@
+export enum Actions {
+  view = 'view',
+  create = 'create',
+  edit = 'edit',
+  delete = 'delete',
+  search = 'search',
+  approve = 'approve',
+  verify = 'verify',
+}
+
+export enum Resources {
+  materialRequisition = 'materialRequisition',
+  checkout = 'checkout',
+  purchaseRequisition = 'purchaseRequests',
+  rfq = 'rfqs',
+  purchaseOrder = 'purchaseOrders',
+  checkin = 'productCheckIn',
+  inspection = 'inspectionReport',
+  postInspection = 'receivingReport',
+  stockBalance = 'stockBalances',
+  worksheet = 'worksheets',
+  contracts = 'customerContracts',
+  customers = 'customers',
+  products = 'products',
+  productItems = 'productItems',
+  productItemsTracking = 'tracking',
+  users = 'users',
+  roles = 'roles',
+  organizationSettings = 'organizationSettings',
+  vendors = 'vendors',
+}

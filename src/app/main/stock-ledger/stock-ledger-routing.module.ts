@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { StockLedgerComponent } from './stock-ledger.component';
+import { Actions, Resources } from '../../utils/permissions';
 
 const routes: Routes = [
   {
@@ -9,12 +10,10 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => import('./index/index.module').then(m => m.IndexModule)
+        loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
+        data: {resource: Resources.stockBalance, action: Actions.view}
       },
-      {
-        path: 'adjustment',
-        loadChildren: () => import('./inventory-adjustment/inventory-adjustment.module').then(m => m.InventoryAdjustmentModule)
-      }]
+     ]
   }];
 
 @NgModule({
