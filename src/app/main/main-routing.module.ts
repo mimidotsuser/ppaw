@@ -59,7 +59,7 @@ const routes: Routes = [
       },
       {
         path: 'stock-balances',
-        loadChildren: () => import('./stock-ledger/stock-ledger.module').then(m => m.StockLedgerModule)
+        loadChildren: () => import('./stock-balances/stock-balances.module').then(m => m.StockBalancesModule)
       },
       {
         path: 'reports',

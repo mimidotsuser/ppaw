@@ -3,7 +3,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { faFilter, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
-import { StockLedgerService } from '../services/stock-ledger.service';
+import { StockBalanceService } from '../services/stock-balance.service';
 
 @Component({
   selector: 'app-index',
@@ -22,7 +22,7 @@ export class IndexComponent implements OnInit, OnDestroy {
     page: 1
   }
 
-  constructor(private ledgerService: StockLedgerService, private fb: FormBuilder) {
+  constructor(private ledgerService: StockBalanceService, private fb: FormBuilder) {
     this.searchInput = this.fb.control(null);
   }
 

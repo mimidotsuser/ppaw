@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { StockLedgerComponent } from './stock-ledger.component';
+import { StockBalancesComponent } from './stock-balances.component';
 import { Actions, Resources } from '../../utils/permissions';
 
 const routes: Routes = [
   {
     path: '',
-    component: StockLedgerComponent,
+    component: StockBalancesComponent,
     children: [
       {
         path: '',
@@ -20,4 +20,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class StockLedgerRoutingModule {}
+export class StockBalancesRoutingModule {}

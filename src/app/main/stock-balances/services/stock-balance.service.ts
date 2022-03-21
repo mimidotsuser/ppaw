@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
 import { HttpService } from '../../../core/services/http.service';
-import { MainModule } from '../../main.module';
+import { StockBalancesModule } from '../stock-balances.module';
 
 @Injectable({
-  providedIn: MainModule
+  providedIn: StockBalancesModule
 })
-export class StockLedgerService {
+export class StockBalanceService {
 
   constructor(private http: HttpService) { }
 
