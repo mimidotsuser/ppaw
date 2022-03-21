@@ -18,7 +18,7 @@ const routes: Routes = [
         loadChildren: () => import('./products/products.module').then(m => m.ProductsModule)
       },
       {
-        path: 'clients',
+        path: 'customers',
         loadChildren: () => import('./customers/customers.module').then(m => m.CustomersModule)
       },
       {
@@ -70,6 +70,10 @@ const routes: Routes = [
       {
         path: 'product-items',
         loadChildren: () => import('./product-items/product-items.module').then(m => m.ProductItemsModule)
+      },
+      {
+        path: 'customer-contracts',
+        loadChildren: () => import('./customer-contracts/customer-contracts.module').then(m => m.CustomerContractsModule)
       },
       {
         path: 'not-authorized',

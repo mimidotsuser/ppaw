@@ -178,13 +178,17 @@ export class MainComponent implements OnInit, OnDestroy {
         },
       ]
     },
-    clients: {
-      title: 'Clients',
+    customers: {
+      title: 'Clients & Contracts',
       display: true,
       icon: faAddressBook,
       items: [
         {
-          title: 'All Clients', url: 'clients',
+          title: 'All Customers', url: 'customers',
+          display: true
+        },
+        {
+          title: 'All Contracts', url: 'customer-contracts',
           display: true
         },
       ]
