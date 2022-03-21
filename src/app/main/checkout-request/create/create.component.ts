@@ -1,20 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import {
-  map,
-  Observable,
-  Observer,
-  of,
-  startWith,
-  Subject,
-  Subscription,
-  switchMap,
-  tap
-} from 'rxjs';
+import { map, Observable, of, startWith, Subscription, tap } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { MRFPurpose } from '../../../models/m-r-f.model';
 import { WorksheetModel } from '../../../models/worksheet.model';
-import { ClientModel } from '../../../models/client.model';
+import { CustomerModel } from '../../../models/customerModel';
 import { SearchService } from '../../../shared/services/search.service';
 import { ProductModel } from '../../../models/product.model';
 
@@ -189,7 +179,7 @@ interface FormModel {
   parent: null | ProductModel;
   product: ProductModel;
   purpose: MRFPurpose;
-  client: ClientModel;
+  client: CustomerModel;
   worksheet: null | WorksheetModel;
   qty: number;
 }

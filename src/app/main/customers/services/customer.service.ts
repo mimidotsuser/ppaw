@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ClientsModule } from '../clients.module';
+import { CustomersModule } from '../customers.module';
 import { HttpService } from '../../../core/services/http.service';
-import { ClientModel } from '../../../models/client.model';
+import { CustomerModel } from '../../../models/customerModel';
 
 @Injectable({
-  providedIn: ClientsModule
+  providedIn: CustomersModule
 })
-export class ClientService {
+export class CustomerService {
 
-  private clients$ = new BehaviorSubject<ClientModel[]>([]);
+  private clients$ = new BehaviorSubject<CustomerModel[]>([]);
 
   constructor(private http: HttpService) {
     this.clients$.next([
@@ -93,7 +93,7 @@ export class ClientService {
     ]);
   }
 
-  get clients(): Observable<ClientModel[]> {
+  get clients(): Observable<CustomerModel[]> {
     return this.clients$;
   }
 }

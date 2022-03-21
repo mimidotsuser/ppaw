@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from '../../../shared/shared.module';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { ClientWidgetsModule } from '../client-widgets/client-widgets.module';
+import { WidgetsModule as ClientWidgetsModule } from '../widgets/widgets.module';
 import { IndexComponent } from './index.component';
 
 

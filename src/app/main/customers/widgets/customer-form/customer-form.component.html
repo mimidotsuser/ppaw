@@ -1,15 +1,10 @@
 <form class="row" [formGroup]="form">
 
   <div class="col-md-6 mb-3">
-    <label for="main" class="form-label">Parent/Main Branch </label>
-    <select class="form-select" id="main" (change)="onParentSelect($event)">
-      <option disabled selected value=""></option>
-      <ng-container *ngFor="let client of clients|async">
-        <option *ngIf="!client.parent_id" value="{{client.id}}" [attr.data-name]="client.name">
-          {{client.name}}
-        </option>
-      </ng-container>
-    </select>
+    <label for="parent" class="form-label">Parent/Main Branch </label>
+    <client-search-input controlName="parent" customId="parent" (change)="onParentSelect()">
+
+    </client-search-input>
   </div>
   <div class="col-md-6"></div>
 
@@ -29,4 +24,5 @@
     <label for="location" class="form-label">Branch Location</label>
     <input type="text" id="location" class="form-control" formControlName="location">
   </div>
+  <ng-content></ng-content>
 </form>

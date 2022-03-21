@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ClientsComponent } from './clients.component';
+import { CustomersComponent } from './customers.component';
 import { Actions, Resources } from '../../utils/permissions';
 
 const routes: Routes = [
   {
     path: '',
-    component: ClientsComponent,
+    component: CustomersComponent,
     children: [
       {
         path: '', loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
@@ -19,4 +19,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ClientsRoutingModule {}
+export class CustomersRoutingModule {}

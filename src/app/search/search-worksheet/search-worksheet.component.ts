@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { WorksheetModel } from '../../models/worksheet.model';
-import { ClientModel } from '../../models/client.model';
+import { CustomerModel } from '../../models/customerModel';
 
 @Component({
   selector: 'search-worksheet[control],search-worksheet[controlName]',
@@ -13,7 +13,7 @@ export class SearchWorksheetComponent implements OnInit {
   @Input() control: FormControl | null = null;
   @Input() controlName: string = '';
   @Input() path = '/worksheets';
-  @Input() client: ClientModel | null = null;
+  @Input() client: CustomerModel | null = null;
   @Input() customId: string | undefined;
 
   constructor() {

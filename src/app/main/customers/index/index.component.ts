@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ClientService } from '../services/client.service';
+import { CustomerService } from '../services/customer.service';
 import { Observable } from 'rxjs';
-import { ClientModel } from '../../../models/client.model';
+import { CustomerModel } from '../../../models/customerModel';
 import { FormControl, FormGroup } from '@angular/forms';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
@@ -15,27 +15,33 @@ export class IndexComponent implements OnInit {
   faEllipsisV = faEllipsisV;
   clientSearchInput = new FormControl();
   openFormSidePopup = false;
-  model: null | ClientModel = null;
-  parent: null | ClientModel = null;
+  model: null | CustomerModel = null;
 
-  constructor(private clientService: ClientService) { }
+  constructor(private clientService: CustomerService) { }
 
   ngOnInit(): void {
   }
 
 
-  get clients(): Observable<ClientModel[]> {
+  get clients(): Observable<CustomerModel[]> {
     //TODO transform to  ClientModel {children:[]}
     return this.clientService.clients;
   }
 
-  showCreateForm(parent: null | ClientModel = null) {
-    this.model = null;
-    this.parent = parent;
+  showCreateForm(parent: null | CustomerModel = null) {
+    this.model = {
+      id: '',
+      name: '',
+      region: '',
+      location: '',
+      branch: '',
+      parent_id: parent ? parent.id! : '',
+      parent: parent ? parent : undefined,
+    }
     this.openFormSidePopup = true;
   }
 
-  showEditForm(client: ClientModel) {
+  showEditForm(client: CustomerModel) {
     this.model = {...client};
     this.openFormSidePopup = true;
   }
@@ -51,7 +57,7 @@ export class IndexComponent implements OnInit {
     this.openFormSidePopup = false;
   }
 
-  deleteClient(client: ClientModel) {
+  deleteClient(client: CustomerModel) {
 
   }
 }

@@ -5,7 +5,7 @@ import { faWindowClose } from '@fortawesome/free-solid-svg-icons';
 import { WorkCategory } from '../../../models/worksheet.model';
 import { ProductItemModel } from '../../../models/product-item.model';
 import { WorksheetService } from '../services/worksheet.service';
-import { ClientModel } from '../../../models/client.model';
+import { CustomerModel } from '../../../models/customerModel';
 
 @Component({
   selector: 'app-create',
@@ -60,7 +60,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   onClientSelection() {
-    const client = this.form.value.client as ClientModel;
+    const client = this.form.value.client as CustomerModel;
     this.clientMachines = []; //reset the machines available
     if (!client) {
       this.form.reset();

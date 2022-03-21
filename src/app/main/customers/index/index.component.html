@@ -59,7 +59,8 @@
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
           <div ngbDropdown class="d-inline-block">
-            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp" ngbDropdownToggle>
+            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp"
+                    ngbDropdownToggle>
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
@@ -81,23 +82,22 @@
 <app-side-popup [(show)]="openFormSidePopup"
                 [title]="this.model?.id?'Update Client Details':'Add Client Details'">
 
-  <app-client-form [clients]="clients" [model]="this.model" [parent]="this.parent"
-                   #clientFormComponent>
-  </app-client-form>
+  <app-customer-form [model]="this.model" #clientFormComponent>
+    <div class="d-flex gap-2">
 
-  <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary" *ngIf="!this.model?.id"
+              (click)="saveClientForm(clientFormComponent.form)">
+        CREATE
+      </button>
+      <button type="submit" class="btn btn-primary" *ngIf="this.model?.id"
+              (click)="saveClientForm(clientFormComponent.form)">
+        UPDATE
+      </button>
+      <button type="button" class="btn btn-cancel"
+              (click)="this.closeFormPopup(clientFormComponent.form)">
+        CANCEL
+      </button>
+    </div>
+  </app-customer-form>
 
-    <button type="button" class="btn btn-primary" *ngIf="!this.model?.id"
-            (click)="saveClientForm(clientFormComponent.form)">
-      CREATE
-    </button>
-    <button type="button" class="btn btn-primary" *ngIf="this.model?.id"
-            (click)="saveClientForm(clientFormComponent.form)">
-      UPDATE
-    </button>
-    <button type="button" class="btn btn-cancel"
-            (click)="this.closeFormPopup(clientFormComponent.form)">
-      CANCEL
-    </button>
-  </div>
 </app-side-popup>

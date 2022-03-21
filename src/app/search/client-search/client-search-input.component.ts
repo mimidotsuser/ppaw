@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ClientModel } from '../../models/client.model';
+import { CustomerModel } from '../../models/customerModel';
 
 @Component({
   selector: 'client-search-input[control],client-search-input[controlName]',
@@ -20,8 +20,8 @@ export class ClientSearchInputComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  get outputFormatter(): (item: ClientModel) => string {
-    return (item: ClientModel) => `${item.name}|${item.branch || item.region}`
+  get outputFormatter(): (item: CustomerModel) => string {
+    return (item: CustomerModel) => `${item.name}|${item.branch || item.region}`
   };
 
 }

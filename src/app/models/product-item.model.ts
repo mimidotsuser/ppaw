@@ -1,6 +1,6 @@
 import { ProductModel } from './product.model';
 import { UserModel } from './user.model';
-import { ClientModel } from './client.model';
+import { CustomerModel } from './customerModel';
 import { ContractModel } from './contract.model';
 import { ActivityDescriptionModel } from './activity-description.model';
 
@@ -16,7 +16,7 @@ export interface ProductItemLogModel {
   category_code: keyof typeof ProductItemLogCategory;
   category: ProductItemLogCategory;
   client_id: string;
-  client?: ClientModel;
+  client?: CustomerModel;
   contract_id: string;
   contract?: ContractModel;
   activity_description_id: string;

@@ -1,5 +1,5 @@
 <div class="col-12 parent">
-  <ng-container *ngIf="showIcons || !inputControl?.value">
+  <ng-container *ngIf="showIcons && !inputControl?.value">
     <fa-icon [icon]="searching?faSpinner:faSearch" [spin]="searching" class="icon">
     </fa-icon>
   </ng-container>

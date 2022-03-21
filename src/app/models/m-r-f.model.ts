@@ -1,6 +1,6 @@
 import { UserModel } from './user.model';
 import { ProductModel } from './product.model';
-import { ClientModel } from './client.model';
+import { CustomerModel } from './customerModel';
 
 export enum MRFPurpose {
   CLIENT_DEMO = 'CLIENT_DEMO',
@@ -30,7 +30,7 @@ export interface MRFOrderItemModel {
   qty_issued?: number;
   worksheet_id?: string;
   product?: ProductModel;
-  client?: ClientModel;
+  client?: CustomerModel;
 }
 
 export interface MRFLog {

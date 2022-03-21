@@ -1,5 +1,5 @@
 import { UserModel } from './user.model';
-import { ClientModel } from './client.model';
+import { CustomerModel } from './customerModel';
 import { ActivityDescriptionModel } from './activity-description.model';
 import { ProductItemModel } from './product-item.model';
 
@@ -20,7 +20,7 @@ export interface WorksheetModel {
   category: WorkCategory;
   remarks: string;
   client_id: string;
-  client?: ClientModel;
+  client?: CustomerModel;
   activity_description_id: string;
   activity_description: ActivityDescriptionModel;
   product_items: ProductItemModel[];
