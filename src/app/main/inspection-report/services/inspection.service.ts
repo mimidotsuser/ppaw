@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { InspectionModule } from '../inspection.module';
 import { HttpService } from '../../../core/services/http.service';
 import { PPCIModel } from '../../../models/p-p-c-i.model';
+import { InspectionReportModule } from '../inspection-report.module';
 
 @Injectable({
-  providedIn: InspectionModule
+  providedIn: InspectionReportModule
 })
 export class InspectionService {
 

@@ -38,8 +38,8 @@ const routes: Routes = [
         loadChildren: () => import('./checkin/checkin.module').then(m => m.CheckinModule)
       },
       {
-        path: 'inspection',
-        loadChildren: () => import('./inspection/inspection.module').then(m => m.InspectionModule)
+        path: 'inspection-report',
+        loadChildren: () => import('./inspection-report/inspection-report.module').then(m => m.InspectionReportModule)
       },
       {
         path: 'checkin-approval',

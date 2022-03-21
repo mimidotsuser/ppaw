@@ -120,12 +120,12 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faCheckDouble,
       items: [
         {
-          title: 'Inspection Requests', url: 'inspection/purchased-products',
+          title: 'Inspection Requests', url: 'inspection-report/purchased-products',
           display: true,
           exact: false
         },
         {
-          title: 'Inspection History', url: 'inspection/history',
+          title: 'Inspection History', url: 'inspection-report/history',
           display: true
         }]
     },
