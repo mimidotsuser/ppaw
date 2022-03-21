@@ -162,10 +162,6 @@ export class MainComponent implements OnInit, OnDestroy {
           title: 'Stock Balances', url: 'stock-balances',
           display: true
         },
-        {
-          title: 'Balance Adjustment', url: 'stock-balances/adjustment',
-          display: true
-        },
       ]
     },
     worksheets: {
