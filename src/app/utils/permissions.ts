@@ -16,7 +16,7 @@ export enum Resources {
   purchaseOrder = 'purchaseOrders',
   checkin = 'productCheckIn',
   inspection = 'inspectionReport',
-  postInspection = 'receivingReport',
+  receivingReport = 'receivingReport',
   stockBalance = 'stockBalances',
   worksheet = 'worksheets',
   contracts = 'customerContracts',
