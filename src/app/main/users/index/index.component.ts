@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { debounceTime, flatMap, map, mergeMap, Observable, startWith, switchMap } from 'rxjs';
+import { Observable, startWith, switchMap } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { UserModel } from '../../../models/user.model';
 import { UserService } from '../services/user.service';
 import { SearchService } from '../../../shared/services/search.service';
 import { RoleService } from '../../roles/services/role.service';
 import { RoleModel } from '../../../models/role.model';
-import { UserFormComponent } from '../user-widgets/user-form/user-form.component';
 
 @Component({
   selector: 'app-index',

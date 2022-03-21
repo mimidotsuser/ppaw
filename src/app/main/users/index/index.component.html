@@ -51,7 +51,8 @@
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
           <div ngbDropdown class="d-inline-block">
-            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp" ngbDropdownToggle>
+            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp"
+                    ngbDropdownToggle>
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
@@ -82,20 +83,20 @@
                 [title]="this.model?.id?'Update User Account':'Create User Account'">
 
   <app-user-form [roles]="roles" [model]="this.model" #userFormComponent>
-  </app-user-form>
-  <div class="d-flex gap-2">
+    <div class="d-flex gap-2 col-12">
 
-    <button type="button" class="btn btn-primary" *ngIf="!this.model?.id"
-            (click)="saveUserForm(userFormComponent.form)">
-      CREATE
-    </button>
-    <button type="button" class="btn btn-primary" *ngIf="this.model?.id"
-            (click)="saveUserForm(userFormComponent.form)">
-      UPDATE
-    </button>
-    <button type="button" class="btn btn-cancel"
-            (click)="this.closeFormPopup(userFormComponent.form)">
-      CANCEL
-    </button>
-  </div>
+      <button type="button" class="btn btn-primary" *ngIf="!this.model?.id"
+              (click)="saveUserForm(userFormComponent.form)">
+        CREATE
+      </button>
+      <button type="button" class="btn btn-primary" *ngIf="this.model?.id"
+              (click)="saveUserForm(userFormComponent.form)">
+        UPDATE
+      </button>
+      <button type="button" class="btn btn-cancel"
+              (click)="this.closeFormPopup(userFormComponent.form)">
+        CANCEL
+      </button>
+    </div>
+  </app-user-form>
 </app-side-popup>

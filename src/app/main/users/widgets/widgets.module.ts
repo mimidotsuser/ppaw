@@ -14,4 +14,4 @@ import { UserFormComponent } from './user-form/user-form.component';
   ],
   exports: [UserFormComponent]
 })
-export class UserWidgetsModule {}
+export class WidgetsModule {}
