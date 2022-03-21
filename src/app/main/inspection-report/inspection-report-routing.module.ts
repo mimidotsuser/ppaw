@@ -7,16 +7,14 @@ const routes: Routes = [
   {
     path: '', component: InspectionReportComponent,
     children: [
-      {path: 'history', loadChildren: () => import('./index/index.module').then(m => m.IndexModule)},
       {
-        path: 'purchased-products/:id/create',
-        loadChildren: () => import('../inspection-report/purchased-products/create/create.module').then(m => m.CreateModule),
-        data: {resource: Resources.inspection, action: Actions.create}
+        path: 'history',
+        loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
+        data: {resource: Resources.inspection, action: Actions.view}
       },
       {
         path: 'purchased-products',
-        loadChildren: () => import('../inspection-report/purchased-products/index/index.module').then(m => m.IndexModule),
-        data: {resource: Resources.inspection, action: Actions.view}
+        loadChildren: () => import('./purchased-products/purchased-products.module').then(m => m.PurchasedProductsModule),
       },
     ],
   },
