@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpService } from '../../../../core/services/http.service';
-import { VendorModel } from '../../../../models/vendor.model';
 import { map, Observable } from 'rxjs';
+import { HttpService } from '../../../core/services/http.service';
+import { VendorModel } from '../../../models/vendor.model';
+import { VendorsModule } from '../vendors.module';
 
-@Injectable()
+@Injectable({providedIn: VendorsModule})
 export class VendorService {
 
   constructor(private http: HttpService) { }

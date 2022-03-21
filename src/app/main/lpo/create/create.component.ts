@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { PurchaseOrderService } from '../services/purchase-order.service';
 import { VendorModel } from '../../../models/vendor.model';
-import { VendorService } from '../../vendors/vendor-widgets/services/vendor.service';
+import { VendorService } from '../../vendors/services/vendor.service';
 import { RFQItemModel, RFQModel } from '../../../models/r-f-q.model';
 import { ProductModel } from '../../../models/product.model';
 import { addDaysToDate } from '../../../utils/utils';

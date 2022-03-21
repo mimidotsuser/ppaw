@@ -16,7 +16,7 @@ import {
 import { RqfService } from '../services/rqf.service';
 import { ProductModel } from '../../../models/product.model';
 import { VendorModel } from '../../../models/vendor.model';
-import { VendorService } from '../../vendors/vendor-widgets/services/vendor.service';
+import { VendorService } from '../../vendors/services/vendor.service';
 
 @Component({
   selector: 'app-create',

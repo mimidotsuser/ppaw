@@ -4,9 +4,9 @@ import { RouterModule } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '../../../shared/shared.module';
-import { VendorService } from '../../vendors/vendor-widgets/services/vendor.service';
+import { VendorService } from '../../vendors/services/vendor.service';
 import { ProductSearchModule } from '../../../search/product-search/product-search.module';
-import { VendorWidgetsModule } from '../../vendors/vendor-widgets/vendor-widgets.module';
+import { WidgetsModule as VendorWidgetsModule } from '../../vendors/widgets/widgets.module';
 import { CreateComponent } from './create.component';
 import { RfqSearchModule } from '../../../search/rfq-search/rfq-search.module';
 

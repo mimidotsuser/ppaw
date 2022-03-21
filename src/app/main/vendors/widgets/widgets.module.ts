@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { VendorFormComponent } from './vendor-form/vendor-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { VendorFormComponent } from './vendor-form/vendor-form.component';
 
 
 @NgModule({
@@ -17,4 +17,4 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     VendorFormComponent
   ]
 })
-export class VendorWidgetsModule {}
+export class WidgetsModule {}
