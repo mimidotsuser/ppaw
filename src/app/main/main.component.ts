@@ -4,7 +4,6 @@ import { filter, Subscription, tap } from 'rxjs';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {
   faUserShield,
-  faWaveSquare,
   faBook,
   faHome,
   faAddressBook,
@@ -187,18 +186,6 @@ export class MainComponent implements OnInit, OnDestroy {
           title: 'All Clients', url: 'clients',
           display: true
         },
-      ]
-    },
-    reports: {
-      title: 'Reports',
-      display: true,
-      icon: faWaveSquare,
-      items: [
-        {
-          title: 'Worksheet Reports',
-          url: 'reports/worksheets',
-          display: true
-        }
       ]
     },
     adminstration: {

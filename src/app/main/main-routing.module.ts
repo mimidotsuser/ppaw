@@ -61,10 +61,6 @@ const routes: Routes = [
         path: 'stock-balances',
         loadChildren: () => import('./stock-balances/stock-balances.module').then(m => m.StockBalancesModule)
       },
-      {
-        path: 'reports',
-        loadChildren: () => import('./reports/reports.module').then(m => m.ReportsModule)
-      },
       {path: 'roles', loadChildren: () => import('./roles/roles.module').then(m => m.RolesModule)},
       {
         path: 'vendors',
