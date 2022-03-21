@@ -2,10 +2,11 @@
 </app-content-header>
 
 <div class="container mb-3 mt-3">
-  <app-role-form [permissions]="permissions" #roleForm></app-role-form>
+  <app-role-form [permissions]="permissions" #roleForm>
+    <div class="mt-3 d-flex gap-2">
+      <button type="button" class="btn btn-primary" (click)="submit(roleForm.form)">CREATE</button>
+      <a routerLink="/main/roles" class="btn btn-outline-primary btn-cancel">CANCEL</a>
+    </div>
+  </app-role-form>
 
-  <div class="mt-3 d-flex gap-2">
-    <button type="button" class="btn btn-primary" (click)="submit(roleForm.form)">CREATE</button>
-    <a routerLink="/main/roles" class="btn btn-outline-primary btn-cancel">CANCEL</a>
-  </div>
 </div>

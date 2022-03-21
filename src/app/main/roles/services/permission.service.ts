@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { SharedModule } from '../../../shared/shared.module';
 import { PermissionModel } from '../../../models/permission.model';
+import { RolesModule } from '../roles.module';
 
 @Injectable({
-  providedIn: SharedModule
+  providedIn: RolesModule
 })
 export class PermissionService {
 

@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 
 import { SharedModule } from '../../../shared/shared.module';
 import { CreateComponent } from './create.component';
-import { RoleWidgetsModule } from '../role-widgets/role-widgets.module';
+import { WidgetsModule as RoleWidgetsModule } from '../widgets/widgets.module';
 
 @NgModule({
   declarations: [

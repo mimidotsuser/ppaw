@@ -16,4 +16,4 @@ import { SharedModule } from '../../../shared/shared.module';
     RoleFormComponent
   ]
 })
-export class RoleWidgetsModule {}
+export class WidgetsModule {}
