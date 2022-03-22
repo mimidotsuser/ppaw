@@ -162,8 +162,8 @@
               </div>
               <div class="col-md-6 mb-2">
                 <label for="serial-{{i}}" class="form-label">Serial number</label>
-                <product-serial-search customId="serial-{{i}}" controlName="product_serial">
-                </product-serial-search>
+                <product-item-typeahead-input customId="serial-{{i}}" controlName="product_serial">
+                </product-item-typeahead-input>
                 <small class="help-text text-danger"
                        *ngIf="grp.get('product_serial')?.touched &&
                         grp.get('product_serial')?.getError('duplicated')">

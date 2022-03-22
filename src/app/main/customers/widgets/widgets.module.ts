@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CustomerFormComponent } from './customer-form/customer-form.component';
-import { ClientSearchModule } from '../../../search/client-search/client-search.module';
+import { CustomerSearchModule } from '../../../search/customer-search/customer-search.module';
 
 
 @NgModule({
@@ -12,7 +12,7 @@ import { ClientSearchModule } from '../../../search/client-search/client-search.
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ClientSearchModule
+    CustomerSearchModule
   ],
   exports: [
     CustomerFormComponent

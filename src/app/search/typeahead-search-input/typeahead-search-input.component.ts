@@ -20,19 +20,19 @@ import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from '../../core/services/http.service';
 
 @Component({
-  selector: 'app-search-input[path][outputFormatter][resultTemplate][control],' +
-    'app-search-input[path][outputFormatter][resultTemplate][controlName]',
-  templateUrl: './search-input.component.html',
-  styleUrls: ['./search-input.component.scss'],
+  selector: 'typeahead-input[path][outputFormatter][resultTemplate][control],' +
+    'typeahead-input[path][outputFormatter][resultTemplate][controlName]',
+  templateUrl: './typeahead-search-input.component.html',
+  styleUrls: ['./typeahead-search-input.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: forwardRef(() => SearchInputComponent)
+      useExisting: forwardRef(() => TypeaheadSearchInputComponent)
     }
   ]
 })
-export class SearchInputComponent<T> implements OnInit, ControlValueAccessor {
+export class TypeaheadSearchInputComponent<T> implements OnInit, ControlValueAccessor {
 
   @Input() control: FormControl | null = null;
   @Input() controlName: string = '';

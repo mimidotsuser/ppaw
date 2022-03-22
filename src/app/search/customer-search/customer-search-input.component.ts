@@ -1,20 +1,22 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CustomerModel } from '../../models/customerModel';
+import { HttpService } from '../../core/services/http.service';
 
 @Component({
-  selector: 'client-search-input[control],client-search-input[controlName]',
-  templateUrl: './client-search-input.component.html',
-  styleUrls: ['./client-search-input.component.scss']
+  selector: 'customer-typeahead-input[control],customer-typeahead-input[controlName]',
+  templateUrl: './customer-search-input.component.html',
+  styleUrls: ['./customer-search-input.component.scss']
 })
-export class ClientSearchInputComponent implements OnInit {
+export class CustomerSearchInputComponent implements OnInit {
 
   @Input() control: FormControl | null = null;
   @Input() controlName: string = '';
-  @Input() path = '/clients';
   @Input() customId?: string;
+  path: string;
 
-  constructor() {
+  constructor(private httpService: HttpService) {
+    this.path = httpService.endpoint.customers;
   }
 
   ngOnInit(): void {

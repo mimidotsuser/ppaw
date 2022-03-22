@@ -1,21 +1,23 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ProductSerialModel } from '../../models/product-serial.model';
+import { HttpService } from '../../core/services/http.service';
 
 @Component({
-  selector: 'product-serial-search',
-  templateUrl: './product-serial-search.component.html',
-  styleUrls: ['./product-serial-search.component.scss']
+  selector: 'product-item-typeahead-input[control],product-item-typeahead-input[controlName]',
+  templateUrl: './product-item-search.component.html',
+  styleUrls: ['./product-item-search.component.scss']
 })
-export class ProductSerialSearchComponent implements OnInit {
+export class ProductItemSearchComponent implements OnInit {
 
   @Input() control: FormControl | null = null;
   @Input() controlName: string = '';
-  @Input() path = '/product-serials';
   @Input() customId: string | undefined;
   @Input() editable = false;
+  path: string;
 
-  constructor() {
+  constructor(private httpService: HttpService) {
+    this.path = httpService.endpoint.productItems
   }
 
   ngOnInit(): void {

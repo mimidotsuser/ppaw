@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProductSearchInputComponent } from './product-search-input.component';
+import { ProductItemSearchComponent } from './product-serial-search.component';
 
-describe('ProductSearchInputComponent', () => {
-  let component: ProductSearchInputComponent;
-  let fixture: ComponentFixture<ProductSearchInputComponent>;
+describe('ProductSerialSearchComponent', () => {
+  let component: ProductItemSearchComponent;
+  let fixture: ComponentFixture<ProductItemSearchComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ProductSearchInputComponent ]
+      declarations: [ ProductItemSearchComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProductSearchInputComponent);
+    fixture = TestBed.createComponent(ProductItemSearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

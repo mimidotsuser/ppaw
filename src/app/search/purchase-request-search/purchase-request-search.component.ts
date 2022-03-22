@@ -7,7 +7,7 @@ import { HttpService } from '../../core/services/http.service';
 import { ProductBalanceModel } from '../../models/product-balance.model';
 
 @Component({
-  selector: 'purchase-request-search[controlName],purchase-request-search[control]',
+  selector: 'pr-typeahead-input[controlName],pr-typeahead-input[control]',
   templateUrl: './purchase-request-search.component.html',
   styleUrls: ['./purchase-request-search.component.scss']
 })
@@ -15,15 +15,17 @@ export class PurchaseRequestSearchComponent implements OnInit {
 
   @Input() control: FormControl | null = null;
   @Input() controlName: string = '';
-  @Input() path = '/purchase-requests';
   @Input() customId: string | undefined;
   @Input() editable = false;
 
-  constructor(private http: HttpService) { }
+  constructor(private httpService: HttpService) { }
 
   ngOnInit(): void {
   }
 
+  get path(){
+    return this.httpService.endpoint.purchaseRequests;
+  }
 
   formatRequestId(id: number) {
     return `REQUEST-${String(id).padStart(4, '0')}`
@@ -31,14 +33,14 @@ export class PurchaseRequestSearchComponent implements OnInit {
 
   get outputFormatter(): (item: PurchaseRequestModel) => string {
     return (item: PurchaseRequestModel) => {
-      return `${this.formatRequestId(item.order_id)} ${item.created_by?'| by ' : ''}` +
+      return `${this.formatRequestId(item.order_id)} ${item.created_by ? '| by ' : ''}` +
         `${item?.created_by?.first_name || ''} ${item?.created_by?.last_name || ''}`
     }
   }
 
   get search(): (searchItem: string) => Observable<PurchaseRequestModel[]> {
     return (searchItem: string) => {
-      return this.http.get(this.path, {params: {search: searchItem}})
+      return this.httpService.get(this.path, {params: {search: searchItem}})
         .pipe(map((value: { data: PurchaseRequestModel[] }) => value.data))
         .pipe(mergeMap((prs: PurchaseRequestModel[]) => {
           let params = new HttpParams();
@@ -48,7 +50,7 @@ export class PurchaseRequestSearchComponent implements OnInit {
             pr.items.map((v) => params = params.append('product_id', v.product_id));
           });
 
-          return this.http.get('/stock-balances?', {params})
+          return this.httpService.get('/stock-balances?', {params})
             .pipe(map((rs: { data: ProductBalanceModel[] }) => rs.data))
             .pipe(map((m: ProductBalanceModel[]) => {
               return this.demoDataMap(prs, m);

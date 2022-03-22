@@ -4,9 +4,8 @@
     <div class="row my-4">
       <div class="col-md-3 mb-3">
         <label for="purchase_request" class="form-label">RFQ Request</label>
-        <rfq-search controlName="rfq" (change)="onRFQRequestSelection()">
-
-        </rfq-search>
+        <rfq-typeahead-input controlName="rfq" (change)="onRFQRequestSelection()">
+        </rfq-typeahead-input>
       </div>
       <div class="col-md-3 mb-3">
         <label for="closing_date" class="form-label required">Doc Validity </label>
@@ -163,8 +162,8 @@
 
     <div class="mb-3 col-md-6">
       <label for="product" class="form-label required">Product</label>
-      <product-search-input customId="product" controlName="product">
-      </product-search-input>
+      <product-typeahead-input customId="product" controlName="product">
+      </product-typeahead-input>
     </div>
     <div class="mb-3 col-md-6">
       <label for="current_balance" class="form-label">Balance</label>

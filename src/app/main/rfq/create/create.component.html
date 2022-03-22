@@ -3,10 +3,10 @@
     <div class="row my-4">
       <div class="col-md-3 mb-3">
         <label for="purchase_request" class="form-label required">Purchase Request</label>
-        <purchase-request-search controlName="purchase_request" customId="purchase_request"
+        <pr-typeahead-input controlName="purchase_request" customId="purchase_request"
                                  (change)="onPurchaseRequestSelected()">
 
-        </purchase-request-search>
+        </pr-typeahead-input>
       </div>
       <div class="col-md-3 mb-3">
         <label for="closing_date" class="form-label required">Closing Date </label>
@@ -130,8 +130,8 @@
 
     <div class="mb-3 col-md-6">
       <label for="product" class="form-label">Product</label>
-      <product-search-input customId="product" controlName="product">
-      </product-search-input>
+      <product-typeahead-input customId="product" controlName="product">
+      </product-typeahead-input>
     </div>
     <div class="mb-3 col-md-6">
       <label for="current_balance" class="form-label">Physical Balance</label>

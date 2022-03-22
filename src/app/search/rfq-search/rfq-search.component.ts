@@ -5,20 +5,23 @@ import { HttpService } from '../../core/services/http.service';
 import { RFQModel } from '../../models/r-f-q.model';
 
 @Component({
-  selector: 'rfq-search',
+  selector: 'rfq-typeahead-input[control],rfq-typeahead-input[controlName]',
   templateUrl: './rfq-search.component.html',
   styleUrls: ['./rfq-search.component.scss']
 })
 export class RfqSearchComponent implements OnInit {
   @Input() control: FormControl | null = null;
   @Input() controlName: string = '';
-  @Input() path = '/rfqs';
   @Input() customId: string | undefined;
   @Input() editable = false;
 
-  constructor(private http: HttpService) { }
+  constructor(private httpService: HttpService) { }
 
   ngOnInit(): void {
+  }
+
+  get path() {
+    return this.httpService.endpoint.rfqs;
   }
 
   formatRequestId(id: number) {
@@ -34,7 +37,7 @@ export class RfqSearchComponent implements OnInit {
 
   get search(): (searchItem: string) => Observable<RFQModel[]> {
     return (searchItem: string) => {
-      return this.http.get(this.path, {params: {search: searchItem, include: 'product'}})
+      return this.httpService.get(this.path, {params: {search: searchItem, include: 'product'}})
         .pipe(map((value: { data: RFQModel[] }) => value.data))
     }
   }

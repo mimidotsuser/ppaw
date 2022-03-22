@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { HttpService } from '../../core/services/http.service';
-import { PurchaseRequestModel } from '../../models/purchase-request.model';
 import { LPOModel } from '../../models/l-p-o.model';
 
 @Component({
-  selector: 'purchase-order-search',
+  selector: 'po-typeahead-input[control],po-typeahead-input[controlName]',
   templateUrl: './purchase-order-search.component.html',
   styleUrls: ['./purchase-order-search.component.scss']
 })
@@ -14,10 +13,13 @@ export class PurchaseOrderSearchComponent implements OnInit {
 
   @Input() control: FormControl | null = null;
   @Input() controlName: string = '';
-  @Input() path = '/purchase-orders';
   @Input() customId: string | undefined;
 
-  constructor() { }
+  path: string;
+
+  constructor(private httpService: HttpService) {
+    this.path = httpService.endpoint.purchaseOrders
+  }
 
   ngOnInit(): void {
   }

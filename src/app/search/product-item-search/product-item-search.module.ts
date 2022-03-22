@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PurchaseOrderSearchComponent } from './purchase-order-search.component';
+import { ProductItemSearchComponent } from './product-item-search.component';
 import {
   TypeaheadSearchInputModule
 } from '../typeahead-search-input/typeahead-search-input.module';
@@ -8,15 +8,13 @@ import {
 
 @NgModule({
   declarations: [
-    PurchaseOrderSearchComponent
+    ProductItemSearchComponent
   ],
   imports: [
     CommonModule,
     TypeaheadSearchInputModule,
-    TypeaheadSearchInputModule,
+    TypeaheadSearchInputModule
   ],
-  exports: [
-    PurchaseOrderSearchComponent
-  ]
+  exports: [ProductItemSearchComponent]
 })
-export class PurchaseOrderSearchModule {}
+export class ProductItemSearchModule {}

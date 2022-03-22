@@ -1,29 +1,36 @@
 import { Component, Input, OnInit, } from '@angular/core';
 import { FormControl, } from '@angular/forms';
 import { ProductModel } from '../../models/product.model';
+import { HttpService } from '../../core/services/http.service';
 
 @Component({
-  selector: 'product-search-input[control],product-search-input[controlName]',
-  templateUrl: './product-search-input.component.html',
-  styleUrls: ['./product-search-input.component.scss']
+  selector: 'product-typeahead-input[control],product-typeahead-input[controlName]',
+  templateUrl: './product-search.component.html',
+  styleUrls: ['./product-search.component.scss']
 })
-export class ProductSearchInputComponent implements OnInit {
+export class ProductSearchComponent implements OnInit {
 
   @Input() control: FormControl | null = null;
   @Input() controlName: string = '';
 
-  @Input() path = '/products/items'; //TODO replace with correct endpoint
   @Input() placeholder = 'Type to search';
   @Input() parent: ProductModel | null = null; //TODO use parent to filter
   @Input() customId?: string;
 
-  constructor() {
+
+  constructor(private httpService: HttpService) {
+  }
+
+  get path() {
+    return this.parent
+      ? `${this.httpService.endpoint.productCategories}/2`
+      : `${this.httpService.endpoint.productCategories}/1`
   }
 
   ngOnInit(): void {
   }
 
-  get outputFormatter(): (item:  ProductModel) => string {
+  get outputFormatter(): (item: ProductModel) => string {
     return (item) => {
       return `${item.item_code} | ${item.mpn}`
     }

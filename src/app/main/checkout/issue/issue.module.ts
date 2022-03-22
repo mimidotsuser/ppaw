@@ -6,8 +6,8 @@ import { SharedModule } from '../../../shared/shared.module';
 import { CreateComponent } from './create/create.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
-  ProductSerialSearchModule
-} from '../../../search/product-serial-search/product-serial-search.module';
+  ProductItemSearchModule
+} from '../../../search/product-item-search/product-item-search.module';
 import { Actions, Resources } from '../../../utils/permissions';
 
 
@@ -35,7 +35,7 @@ import { Actions, Resources } from '../../../utils/permissions';
       }]),
     SharedModule,
     FontAwesomeModule,
-    ProductSerialSearchModule
+    ProductItemSearchModule
   ]
 })
 export class IssueModule {}

@@ -1,7 +1,7 @@
-<app-search-input [path]="path" [resultTemplate]="resultTemplate" [queryParams]="this.queryParams"
+<typeahead-input [path]="path" [resultTemplate]="resultTemplate" [queryParams]="this.queryParams"
                   [controlName]="controlName" [control]="control" [customId]="customId"
                   [outputFormatter]="outputFormatter">
-</app-search-input>
+</typeahead-input>
 
 <ng-template let-results="result" #resultTemplate>
   <ng-container *ngIf="results;else noResultsTemplate">

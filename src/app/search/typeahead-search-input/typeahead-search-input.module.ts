@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { SearchInputComponent } from './search-input.component';
+import { TypeaheadSearchInputComponent } from './typeahead-search-input.component';
 
 
 @NgModule({
   declarations: [
-    SearchInputComponent
+    TypeaheadSearchInputComponent
   ],
   imports: [
     CommonModule,
@@ -18,7 +18,7 @@ import { SearchInputComponent } from './search-input.component';
     ReactiveFormsModule,
   ],
   exports: [
-    SearchInputComponent
+    TypeaheadSearchInputComponent
   ]
 })
-export class SearchInputModule {}
+export class TypeaheadSearchInputModule {}

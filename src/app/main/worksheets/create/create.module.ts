@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CreateComponent } from './create.component';
 import { SharedModule } from '../../../shared/shared.module';
-import { ClientSearchModule } from '../../../search/client-search/client-search.module';
+import { CustomerSearchModule } from '../../../search/customer-search/customer-search.module';
 import {ProductSearchModule} from "../../../search/product-search/product-search.module";
 
 
@@ -17,7 +17,7 @@ import {ProductSearchModule} from "../../../search/product-search/product-search
         RouterModule.forChild([{path: '', component: CreateComponent}]),
         SharedModule,
         NgSelectModule,
-        ClientSearchModule,
+        CustomerSearchModule,
         ProductSearchModule
     ]
 })

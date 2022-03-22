@@ -131,16 +131,16 @@
         <label for="parent" class="form-label">
           Machine Model
         </label>
-        <product-search-input customId="parent" controlName="parent" [parent]="null">
-        </product-search-input>
+        <product-typeahead-input customId="parent" controlName="parent" [parent]="null">
+        </product-typeahead-input>
       </div>
       <div class="col-md-6 mb-3">
         <label for="product" class="form-label required">
           Spare Part
         </label>
-        <product-search-input customId="product" controlName="product"
+        <product-typeahead-input customId="product" controlName="product"
                               [parent]="this.form.get('parent')?.value">
-        </product-search-input>
+        </product-typeahead-input>
       </div>
     </ng-container>
 
@@ -149,8 +149,8 @@
         <label for="machine_id" class="form-label required">
           Machine Model
         </label>
-        <product-search-input customId="machine_id" controlName="product" [parent]="null">
-        </product-search-input>
+        <product-typeahead-input customId="machine_id" controlName="product" [parent]="null">
+        </product-typeahead-input>
       </div>
 
     </ng-container>
@@ -167,8 +167,8 @@
 
     <div class="mb-3 col-md-6">
       <label for="client" class="form-label required">Client/Branch</label>
-      <client-search-input customId="client" controlName="client">
-      </client-search-input>
+      <customer-typeahead-input customId="client" controlName="client">
+      </customer-typeahead-input>
     </div>
 
     <div class="mb-3 col-md-6">
@@ -179,9 +179,9 @@
     <ng-container *ngIf="form.get('type')?.value === itemType.spare">
       <div class="col-md-6 mb-3">
         <label for="worksheet" class="form-label">Referenced Worksheet</label>
-        <search-worksheet customId="worksheet" controlName="worksheet"
+        <worksheet-typeahead-input customId="worksheet" controlName="worksheet"
                           [client]="form.get('client')?.value">
-        </search-worksheet>
+        </worksheet-typeahead-input>
       </div>
     </ng-container>
 

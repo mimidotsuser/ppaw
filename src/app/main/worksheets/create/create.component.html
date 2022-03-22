@@ -4,8 +4,8 @@
     <div class="row">
       <div class="col-md-4 mb-3">
         <label for="client" class="form-label required">Client</label>
-        <client-search-input controlName="client" customId="client" (change)="onClientSelection()">
-        </client-search-input>
+        <customer-typeahead-input controlName="client" customId="client" (change)="onClientSelection()">
+        </customer-typeahead-input>
       </div>
       <div class="col-md-4 mb-3">
         <label for="reference" class="form-label required">Worksheet Number</label>
@@ -143,8 +143,8 @@
             </div>
             <div class="col-md-6 mb-3">
               <label for="item-" class="form-label">Item</label>
-              <product-search-input controlName="item">
-              </product-search-input>
+              <product-typeahead-input controlName="item">
+              </product-typeahead-input>
             </div>
             <div class="col-md-6"></div>
             <div class="col-md-6 mb-3">
