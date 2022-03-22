@@ -3,12 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SidePopupComponent } from './components/side-popup/side-popup.component';
-import { ActivityTimelineComponent } from './components/activity-timeline/activity-timeline.component';
+import {
+  ActivityTimelineComponent
+} from './components/activity-timeline/activity-timeline.component';
+import { FilterPipe } from './pipes/filter.pipe';
 
 @NgModule({
   declarations: [
     SidePopupComponent,
     ActivityTimelineComponent,
+    FilterPipe,
   ],
   imports: [
     CommonModule,
@@ -21,7 +25,8 @@ import { ActivityTimelineComponent } from './components/activity-timeline/activi
     ReactiveFormsModule,
     SidePopupComponent,
     FontAwesomeModule,
-    ActivityTimelineComponent
+    ActivityTimelineComponent,
+    FilterPipe
   ],
 })
 export class SharedModule {}
