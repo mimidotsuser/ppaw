@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { faShoppingCart, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { SearchService } from '../../../shared/services/search.service';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
 import { PurchaseRequisitionService } from '../services/purchase-requisition.service';
@@ -16,7 +16,7 @@ import { ProductModel } from '../../../models/product.model';
 export class CreateComponent implements OnInit {
 
 
-  searchInput = new FormControl();
+  searchInput: FormControl;
   _itemBalance: Observable<ProductBalanceModel[]> = new Observable();
   faShoppingCart = faShoppingCart
   faFilter = faFilter
@@ -32,10 +32,10 @@ export class CreateComponent implements OnInit {
               private prService: PurchaseRequisitionService) {
 
     this._itemBalance = this.prService.productBalances(this.pagination.page, this.pagination.perPage);
-
+    this.searchInput = this.fb.control('');
     this.form = this.fb.group({
-      cart_items: new FormArray([]),
-      remarks: new FormControl(null, {validators: [Validators.required]})
+      cart_items: this.fb.array([]),
+      remarks: this.fb.control(null, {validators: [Validators.required]})
     });
 
   }
@@ -58,9 +58,9 @@ export class CreateComponent implements OnInit {
 
   createFormGroup(productBalance: ProductBalanceModel) {
     return this.fb.group({
-      physical_qty: new FormControl(productBalance.physical_balance),
-      product: new FormControl(productBalance.product),
-      request_qty: new FormControl(productBalance.product.eoq,
+      physical_qty: this.fb.control(productBalance.physical_balance),
+      product: this.fb.control(productBalance.product),
+      request_qty: this.fb.control(productBalance.product.eoq,
         {validators: [Validators.min(1), Validators.required]})
     })
   }

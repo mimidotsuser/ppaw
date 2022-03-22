@@ -15,7 +15,7 @@ import { SharedModule } from '../../../shared/shared.module';
     RouterModule.forChild([{
       path: '',
       component: CreateComponent,
-      data: {resource: Resources.checkin, action: Actions.create}
+      data: {resource: Resources.checkin, action: Actions.create, title: 'Products CheckIn'}
     }]),
     SharedModule,
   ]

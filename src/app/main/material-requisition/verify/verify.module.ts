@@ -15,7 +15,11 @@ import { CreateComponent } from './create/create.component';
   imports: [
     CommonModule,
     RouterModule.forChild([
-      {path: '', component: IndexComponent}, {path: ':id', component: CreateComponent}
+      {path: '', component: IndexComponent},
+      {
+        path: ':id', component: CreateComponent,
+        data: {title: 'Material Requisition Verification', breadcrumb: 'Verify'}
+      }
     ]),
     SharedModule,
     FontAwesomeModule,

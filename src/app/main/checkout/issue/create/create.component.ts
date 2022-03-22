@@ -1,12 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { faCartPlus } from '@fortawesome/free-solid-svg-icons';
 import { faWindowClose } from '@fortawesome/free-regular-svg-icons';
@@ -51,11 +45,11 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
 
     this.machineAllocationFormGroup = this.fb.group({
-      machineOrderItems: new FormArray([])
+      machineOrderItems: this.fb.array([])
     });
 
     this.spareAllocationFormGroup = this.fb.group({
-      allottedSpares: new FormArray([])
+      allottedSpares: this.fb.array([])
     })
 
   }
@@ -121,8 +115,6 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
 
-
-
   /** Forms and submission **/
 
   //1 Machines
@@ -132,12 +124,12 @@ export class CreateComponent implements OnInit, OnDestroy {
    *     x = this.fb.group({
    *       machineOrderItems: new FormArray([
    *         this.fb.group({
-   *           order_item: new FormControl('abc'),
+   *           order_item: this.fb.control('abc'),
    *           allotted_machines: new FormArray([
    *             this.fb.group({
-   *               product_serial: new FormControl(null, {validators: [Validators.required]}),
-   *               warrant_start: new FormControl(this.defaultWarrantStartDate),
-   *               warrant_end: new FormControl(this.defaultWarrantEndDate),
+   *               product_serial: this.fb.control(null, {validators: [Validators.required]}),
+   *               warrant_start: this.fb.control(this.defaultWarrantStartDate),
+   *               warrant_end: this.fb.control(this.defaultWarrantEndDate),
    *             })
    *           ])
    *         }),
@@ -156,9 +148,9 @@ export class CreateComponent implements OnInit, OnDestroy {
     if (!group) {
       //create the group if not exist
       group = this.fb.group({
-        order_item_id: new FormControl(orderItem.id),
-        product_id: new FormControl(orderItem.product_id),
-        allotted_machines: new FormArray([])
+        order_item_id: this.fb.control(orderItem.id),
+        product_id: this.fb.control(orderItem.product_id),
+        allotted_machines: this.fb.array([])
       });
 
       this.machineOrderItemsFormArray.push(group);
@@ -172,15 +164,15 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   private createMachineAllotmentForm(): FormGroup {
     return this.fb.group({
-      product_serial: new FormControl(null,
+      product_serial: this.fb.control(null,
         {
           validators: [
             Validators.required,
             uniqueProductSerial(this.selectedProductSerials.bind(this))
           ]
         }),
-      warrant_start: new FormControl(this.defaultWarrantStartDate.toISOString().slice(0, 10)),
-      warrant_end: new FormControl(this.defaultWarrantEndDate.toISOString().slice(0, 10)),
+      warrant_start: this.fb.control(this.defaultWarrantStartDate.toISOString().slice(0, 10)),
+      warrant_end: this.fb.control(this.defaultWarrantEndDate.toISOString().slice(0, 10)),
     });
   }
 
@@ -241,16 +233,16 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   createSpareAllotmentForm(orderItem: MRFOrderItemModel) {
     return this.fb.group({
-      order_item_id: new FormControl(orderItem.id),
-      product_id: new FormControl(orderItem.product_id),
-      unused_total: new FormControl(orderItem.qty_approved || 0,
+      order_item_id: this.fb.control(orderItem.id),
+      product_id: this.fb.control(orderItem.product_id),
+      unused_total: this.fb.control(orderItem.qty_approved || 0,
         {
           validators: [
             Validators.required, Validators.min(0),
             Validators.max(orderItem.qty_approved || 0)
           ]
         }),
-      used_total: new FormControl(0,
+      used_total: this.fb.control(0,
         {
           validators: [
             Validators.required, Validators.min(0),

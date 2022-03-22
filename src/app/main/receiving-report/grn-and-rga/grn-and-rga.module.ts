@@ -19,8 +19,13 @@ import { Actions, Resources } from '../../../utils/permissions';
         data: {resource: Resources.receivingReport, action: Actions.approve}
       },
       {
-        path: 'create', component: CreateComponent,
-        data: {resource: Resources.receivingReport, action: Actions.approve}
+        path: ':id/create', component: CreateComponent,
+        data: {
+          resource: Resources.receivingReport,
+          action: Actions.approve,
+          title: 'GRN & RGA Approval',
+          breadcrumb: 'Approval Form'
+        }
       }
     ]),
   ]

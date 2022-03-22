@@ -11,11 +11,12 @@ const routes: Routes = [
       {
         path: 'issue-requests',
         loadChildren: () => import('./issue/issue.module').then(m => m.IssueModule),
+        data: {title: 'Material Requisition Checkout', breadcrumb: 'Checkout'}
       },
       {
         path: 'history',
         loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
-        data: {resource: Resources.checkout, action: Actions.view}
+        data: {resource: Resources.checkout, action: Actions.view, title: 'Checkout History'}
       },
     ]
   },

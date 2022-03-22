@@ -7,22 +7,40 @@ const routes: Routes = [{
   path: '', component: PurchaseRequisitionComponent,
   children: [
     {
-      path: '', loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
-      data: {resource: Resources.purchaseRequisition, action: Actions.view}
-   },
+      path: 'history', loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
+      data: {
+        resource: Resources.purchaseRequisition, action: Actions.view,
+        title: 'All Purchase Requests',
+        breadcrumb: 'Purchase Request Forms'
+      }
+    },
     {
       path: 'create',
       loadChildren: () => import('./create/create.module').then(m => m.CreateModule),
-      data: {resource: Resources.purchaseRequisition, action: Actions.create}
+      data: {
+        resource: Resources.purchaseRequisition,
+        action: Actions.create,
+        title: 'Create Purchase Request',
+        breadcrumb: 'Purchase Request Form'
+      }
     },
     {
       path: 'check',
       loadChildren: () => import('./appraisal/appraisal.module').then(m => m.AppraisalModule),
-      data: {resource: Resources.purchaseRequisition, action: Actions.verify}
+      data: {
+        resource: Resources.purchaseRequisition, action: Actions.verify,
+        title: 'Check Purchase Request',
+        breadcrumb: 'Purchase Request Forms'
+      }
     },
     {
       path: 'approve',
-      loadChildren: () => import('./approval/approval.module').then(m => m.ApprovalModule)
+      loadChildren: () => import('./approval/approval.module').then(m => m.ApprovalModule),
+      data: {
+        resource: Resources.purchaseRequisition, action: Actions.verify,
+        title: 'Purchase Request Approval',
+        breadcrumb: 'Purchase Request Forms'
+      }
     }]
 }];
 

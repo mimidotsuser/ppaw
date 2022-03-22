@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { IndexComponent } from './index/index.component';
-import { Actions, Resources } from '../../../utils/permissions';
 import { CreateComponent } from './create/create.component';
 import { SharedModule } from '../../../shared/shared.module';
 
@@ -17,12 +16,11 @@ import { SharedModule } from '../../../shared/shared.module';
       {
         path: '',
         component: IndexComponent,
-        data: {resource: Resources.purchaseRequisition, action: Actions.approve}
       },
       {
-        path: '',
+        path: ':id',
         component: CreateComponent,
-        data: {resource: Resources.purchaseRequisition, action: Actions.approve}
+        data: {title: 'Purchase Request Approval', breadcrumb: 'Approve'}
       }
     ]),
     SharedModule,

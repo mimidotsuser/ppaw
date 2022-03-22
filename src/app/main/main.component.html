@@ -1,21 +1,13 @@
-<nav class="main-navbar navbar navbar-expand-md navbar-light bg-light">
-  <div class="container-fluid  flex-nowrap">
-    <div class="collapse-button navbar-burger d-md-block d-lg-none" role="button"
+<nav class="main-navbar navbar navbar-expand-sm navbar-light bg-light">
+  <div class="container-fluid  flex-nowrap justify-content-between">
+    <div class="collapse-button navbar-burger d-md-block d-lg-none ps-2 pe-3 ms-0" role="button"
          (click)="toggleSidebar()">
       <span></span><span></span><span></span>
     </div>
-    <a routerLink="home" routerLinkActive="active" class="navbar-brand">
+    <a routerLink="home" routerLinkActive="active" class="navbar-brand w-100">
       {{this.appName}}
     </a>
-    <div class="collapse navbar-collapse d-sm-none">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a routerLinkActive="active" class="nav-link"></a>
-        </li>
-      </ul>
-    </div>
     <ul class="navbar-nav">
-
       <li class="nav-item" ngbDropdown display="dynamic">
         <a class="nav-link" ngbDropdownToggle role="button">Account</a>
         <div ngbDropdownMenu>
@@ -63,6 +55,28 @@
       </div>
     </aside>
     <main class="main-content col-sm-12 col-lg-10">
+      <ng-container *ngIf="breadcrumbList.length>0">
+        <header
+          class="page-header-container flex-wrap d-flex align-items-center justify-content-between">
+          <h1>{{pageTitle}}</h1>
+          <div class="breadcrumb-container">
+            <ol class="breadcrumb">
+              <li *ngFor="let item of breadcrumbList; let i =index"
+                  class="breadcrumb-item" [ngClass]="{'active': item.active}">
+                <ng-container *ngIf="!item.active;else noLinkBreadcrumb">
+                  <a [routerLink]="item.path">
+                    {{item.label}}
+                  </a>
+                </ng-container>
+                <ng-template #noLinkBreadcrumb>{{item.label}}</ng-template>
+              </li>
+            </ol>
+          </div>
+        </header>
+
+      </ng-container>
+
+
       <router-outlet></router-outlet>
     </main>
   </div>

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, ActivationEnd, NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription, tap } from 'rxjs';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -20,6 +20,7 @@ import {
 import { environment } from '../../environments/environment';
 import { HttpService } from '../core/services/http.service';
 import { StorageService } from '../core/services/storage.service';
+import { MetaService } from '../core/services/meta.service';
 
 @Component({
   selector: 'app-main',
@@ -77,7 +78,7 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faShoppingBasket,
       items: [
         {title: 'New Requests', url: 'purchase-requisition/create', display: true},
-        {title: 'My Requests', url: 'purchase-requisition', display: true},
+        {title: 'My Requests', url: 'purchase-requisition/history', display: true},
         {
           title: 'Requests Checking',
           url: 'purchase-requisition/check',
@@ -97,7 +98,7 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faFileInvoiceDollar,
       items: [
         {title: 'New RFQ', url: 'request-for-quotations/create', display: true, exact: false},
-        {title: 'All RFQ\'s', url: 'request-for-quotations', display: true},
+        {title: 'All RFQ\'s', url: 'request-for-quotations/history', display: true},
       ]
     },
     lpo: {
@@ -173,7 +174,7 @@ export class MainComponent implements OnInit, OnDestroy {
           title: 'New Worksheet', url: 'worksheets/create',
           display: true
         }, {
-          title: 'All Worksheets', url: 'worksheets',
+          title: 'All Worksheets', url: 'worksheets/history',
           display: true
         },
       ]
@@ -200,8 +201,9 @@ export class MainComponent implements OnInit, OnDestroy {
       items: [
         {
           title: 'Inventory Products',
-          url: 'products/machines',
-          display: true
+          url: 'products',
+          display: true,
+          exact: false
         },
         {
           title: 'Staff Accounts', url: 'users',
@@ -216,16 +218,27 @@ export class MainComponent implements OnInit, OnDestroy {
 
   }
 
+  pageTitle: string = '';
+  private _breadcrumbList: { label: string, title: string, path: string, active: boolean }[] = [];
+  breadcrumbList: { label: string, title: string, path: string, active: boolean }[] = [];
+
   constructor(private router: Router, private httpService: HttpService,
-              private storageService: StorageService) {
+              private storageService: StorageService, private titleService: MetaService,) {
+
     this.subSink = this.router.events
       .pipe(filter((evt) => evt instanceof NavigationEnd))
       .pipe(tap(() => this.collapseSidebar = false))
       .subscribe()
 
+    this.subSink = this.router.events
+      .pipe(filter((evt) => evt instanceof ActivationEnd || evt instanceof NavigationEnd))
+      .subscribe((evt) => {
+        this.resolveBreadcrumb(evt as ActivationEnd | NavigationEnd);
+      })
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   set subSink(value: Subscription) {
     this._subscriptions.push(value);
@@ -239,12 +252,55 @@ export class MainComponent implements OnInit, OnDestroy {
     return Object.keys(this.menuList);
   }
 
+
+  resolveBreadcrumb(evt: ActivationEnd | NavigationEnd) {
+
+    if (evt instanceof ActivationEnd) {
+
+      if (evt.snapshot.url.length == 0) {return}
+
+      this._breadcrumbList = this._breadcrumbList.map((e) => {
+        e.path = `/${evt.snapshot.url[ 0 ].path}${e.path}`;
+        return e;
+      });
+
+      if (evt.snapshot.data && (evt.snapshot.data[ 'title' ] || evt.snapshot.data[ 'breadcrumb' ])) {
+        const label = evt.snapshot.data[ 'breadcrumb' ] ||
+          evt.snapshot.data[ 'title' ] || evt.snapshot.url[ 0 ].path;
+        const title = evt.snapshot.data[ 'title' ] || evt.snapshot.data[ 'breadcrumb' ] || '';
+
+        this._breadcrumbList.unshift({
+          title: this.resolveSegment(title, evt.snapshot),
+          label: this.resolveSegment(label, evt.snapshot),
+          path: `/${evt.snapshot.url[ 0 ].path}`,
+          active: false
+        });
+      }
+    }
+    if (evt instanceof NavigationEnd) {
+      this._breadcrumbList[ this._breadcrumbList.length - 1 ].active = true;
+      this.pageTitle = this._breadcrumbList[ this._breadcrumbList.length - 1 ].title;
+      this.breadcrumbList = this._breadcrumbList;
+      this.titleService.title = this.pageTitle;
+      this._breadcrumbList = []; //reset local breadcrumb list
+    }
+  }
+
+  resolveSegment(segment: string, route: ActivatedRouteSnapshot) {
+    if (segment.includes(':')) {
+      Object.entries(route.params).map(([key, value]) => {
+        segment = segment.replace(new RegExp(`:${key}`, 'g'), value)
+      })
+    }
+    return segment;
+  }
+
   logout() {
     this.subSink = this.httpService.post('/auth/logout', {})
       .subscribe(() => {
         this.storageService.user = null; //reset the local storage user
         this.router.navigateByUrl('/');// route out of the main application
-      })
+      });
   }
 
   ngOnDestroy(): void {

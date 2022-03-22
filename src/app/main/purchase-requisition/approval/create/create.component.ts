@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import {
@@ -27,8 +27,8 @@ export class CreateComponent implements OnInit {
       .subscribe((value => this.model = value));
 
     this.form = this.fb.group({
-      remarks: new FormControl(),
-      accepted: new FormArray([])
+      remarks: this.fb.control(null),
+      accepted: this.fb.array([])
     });
 
     this.subscriptions.push(x);
@@ -72,8 +72,8 @@ export class CreateComponent implements OnInit {
     //create and push it to the form array
 
     this.allocationForm.push(this.fb.group({
-      item_id: new FormControl(item.id),
-      qty_approved: new FormControl(item.qty_verified, {
+      item_id: this.fb.control(item.id),
+      qty_approved: this.fb.control(item.qty_verified, {
         validators: [Validators.required, Validators.min(0), Validators.max(item.qty_verified)]
       })
     }));

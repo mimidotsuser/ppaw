@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import {
   PurchaseRequestItemModel,
   PurchaseRequestModel
@@ -13,13 +13,14 @@ import { PurchaseRequisitionService } from '../../services/purchase-requisition.
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit, OnDestroy {
-  searchInput = new FormControl();
+  searchInput: FormControl;
   _purchaseRequests: PurchaseRequestModel[] = [];
   subscriptions: Subscription[] = [];
 
-  constructor(private prService: PurchaseRequisitionService) {
+  constructor(private prService: PurchaseRequisitionService, private fb: FormBuilder) {
     this.prService.fetchPendingVerification()
       .subscribe((model) => this._purchaseRequests.push(...model))
+    this.searchInput = this.fb.control('');
   }
 
   ngOnInit(): void {

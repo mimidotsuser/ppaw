@@ -18,12 +18,16 @@ import { Actions, Resources } from '../../../utils/permissions';
       {
         path: '',
         component: IndexComponent,
-        data: {resource: Resources.purchaseRequisition, action: Actions.verify}
       },
       {
-        path: '',
+        path: ':id',
         component: CreateComponent,
-        data: {resource: Resources.purchaseRequisition, action: Actions.verify}
+        data: {
+          resource: Resources.purchaseRequisition,
+          action: Actions.verify,
+          title: 'Check Purchase Request',
+          breadcrumb: 'verify'
+        }
       }
     ]),
     SharedModule,

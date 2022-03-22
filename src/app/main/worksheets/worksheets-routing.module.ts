@@ -5,15 +5,24 @@ import { Actions, Resources } from '../../utils/permissions';
 
 const routes: Routes = [{
   path: '', component: WorksheetsComponent,
-  children: [{
-    path: '',
-    loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
-    data: {resource: Resources.worksheet, action: Actions.view}
-  },
+  children: [
+    {path: '', pathMatch: 'exact', redirectTo: 'history'},
+    {
+      path: 'history',
+      loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
+      data: {
+        resource: Resources.worksheet, action: Actions.view,
+        title: 'All Worksheets', breadcrumb: 'All Worksheets'
+      }
+
+    },
     {
       path: 'create',
       loadChildren: () => import('./create/create.module').then(m => m.CreateModule),
-      data: {resource: Resources.worksheet, action: Actions.create}
+      data: {
+        resource: Resources.worksheet, action: Actions.create,
+        title: 'New Worksheet', breadcrumb: 'Worksheet Form'
+      }
     }]
 }];
 

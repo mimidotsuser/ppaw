@@ -19,12 +19,19 @@ import { Actions, Resources } from '../../../utils/permissions';
       {
         path: ':id',
         component: CreateComponent,
-        data: {resource: Resources.checkout, action: Actions.create}
+        data: {
+          resource: Resources.checkout,
+          action: Actions.create,
+          title: 'Material Request :id Checkout'
+        }
       },
       {
         path: '',
         component: IndexComponent,
-        data: {resource: Resources.checkout, action: Actions.create}
+        data: {
+          resource: Resources.checkout, action: Actions.create,
+          title: 'Material Requests Checkout'
+        }
       }]),
     SharedModule,
     FontAwesomeModule,

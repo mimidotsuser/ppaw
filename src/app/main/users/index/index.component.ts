@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Observable, startWith, switchMap } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { UserModel } from '../../../models/user.model';
@@ -17,14 +17,15 @@ export class IndexComponent implements OnInit {
 
   faEllipsisV = faEllipsisV;
 
-  usersSearchInput = new FormControl('');
+  usersSearchInput: FormControl;
   model: UserModel | null = null;
   showUserFormPopup = false;
   _users$!: Observable<UserModel[]>;
 
   constructor(private userService: UserService, private searchService: SearchService<UserModel>,
-              private roleService: RoleService) {
+              private roleService: RoleService, private fb: FormBuilder) {
     this.searchService.setFields(['first_name', 'last_name', 'role.name']);
+    this.usersSearchInput = this.fb.control('');
   }
 
   ngOnInit(): void {

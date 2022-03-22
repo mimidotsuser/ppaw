@@ -7,15 +7,22 @@ const routes: Routes = [{
   path: '',
   component: ProductsComponent,
   children: [
+    {path: '', pathMatch: 'exact', redirectTo: 'machines'},
     {
       path: 'spares',
       loadChildren: () => import('./spares/spares.module').then((m) => m.SparesModule),
-      data: {resource: Resources.products, action: Actions.view}
+      data: {
+        resource: Resources.products, action: Actions.view,
+        title: 'All Spare Items', breadcrumb: 'Products'
+      }
     },
     {
       path: 'machines',
       loadChildren: () => import('./machines/machines.module').then((m) => m.MachinesModule),
-      data: {resource: Resources.products, action: Actions.view}
+      data: {
+        resource: Resources.products, action: Actions.view,
+        title: 'All Machine Items', breadcrumb: 'Products'
+      }
     }
   ]
 }];

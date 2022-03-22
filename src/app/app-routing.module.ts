@@ -7,6 +7,7 @@ const routes: Routes = [
   {
     path: 'main',
     canActivate: [AuthGuard],
+    data: {title: 'Home'},
     loadChildren: () => import('./main/main.module').then(m => m.MainModule)
   },
   {path: '', loadChildren: () => PublicModule},

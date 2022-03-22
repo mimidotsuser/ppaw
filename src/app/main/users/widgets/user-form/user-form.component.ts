@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { UserModel } from '../../../../models/user.model';
 import { RoleModel } from '../../../../models/role.model';
@@ -19,10 +19,10 @@ export class UserFormComponent implements OnInit {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      'first_name': new FormControl(''),
-      'last_name': new FormControl(''),
-      'email': new FormControl(''),
-      'role_id': new FormControl(''),
+      'first_name': this.fb.control(''),
+      'last_name': this.fb.control(''),
+      'email': this.fb.control(''),
+      'role_id': this.fb.control(''),
     });
   }
 
@@ -41,15 +41,15 @@ export class UserFormComponent implements OnInit {
       }
     }
     this.form = this.fb.group({
-      'first_name': new FormControl(model?.first_name,
+      'first_name': this.fb.control(model?.first_name,
         {validators: [Validators.required, Validators.maxLength(100)]}),
-      'last_name': new FormControl(model?.last_name,
+      'last_name': this.fb.control(model?.last_name,
         {validators: [Validators.maxLength(100)]}),
-      'email': new FormControl(model?.email,
+      'email': this.fb.control(model?.email,
         {
           validators: [Validators.required, Validators.email, Validators.maxLength(100)]
         }),
-      'role_id': new FormControl(model?.role_id,
+      'role_id': this.fb.control(model?.role_id,
         {validators: [Validators.required]}),
     });
   }

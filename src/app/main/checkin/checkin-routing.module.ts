@@ -7,10 +7,12 @@ const routes: Routes = [{
     {
       path: 'purchased-products',
       loadChildren: () => import('./purchased-products/purchased-products.module').then(m => m.PurchasedProductsModule),
+      data: {title: 'Products CheckIn'}
     },
     {
       path: 'standby-reminder',
       loadChildren: () => import('./standby-products/standby-products.module').then(m => m.StandbyProductsModule),
+      data: {title: 'Standby Reminder CheckIn', breadcrumb: 'Products CheckIn'}
     }]
 }];
 

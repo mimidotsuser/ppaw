@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import {
   PRStage,
   PurchaseRequestItemModel,
@@ -15,13 +15,14 @@ import { PurchaseRequisitionService } from '../../services/purchase-requisition.
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit {
-  searchInput = new FormControl();
+  searchInput: FormControl;
   _purchaseRequests: PurchaseRequestModel[] = [];
   subscriptions: Subscription[] = [];
 
-  constructor(private prService: PurchaseRequisitionService) {
+  constructor(private prService: PurchaseRequisitionService, private fb: FormBuilder) {
     this.prService.fetchPendingApproval()
       .subscribe((model) => this._purchaseRequests.push(...model))
+    this.searchInput = this.fb.control('');
   }
 
   ngOnInit(): void {

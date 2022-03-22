@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RoleModel } from '../../../../models/role.model';
 import { PermissionModel } from '../../../../models/permission.model';
 
@@ -31,8 +31,8 @@ export class RoleFormComponent implements OnInit, OnDestroy {
     }
 
     this.form = this.fb.group({
-      name: new FormControl(this.model.name, {validators: [Validators.required]}),
-      description: new FormControl(this.model.description),
+      name: this.fb.control(this.model.name, {validators: [Validators.required]}),
+      description: this.fb.control(this.model.description),
       permissions: this.fb.array([])
     });
 

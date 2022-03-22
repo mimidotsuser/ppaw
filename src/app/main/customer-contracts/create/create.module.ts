@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { CreateRoutingModule } from './create-routing.module';
+import { RouterModule } from '@angular/router';
 import { CreateComponent } from './create.component';
 
 
@@ -11,7 +10,7 @@ import { CreateComponent } from './create.component';
   ],
   imports: [
     CommonModule,
-    CreateRoutingModule
+    RouterModule.forChild([{path: '', component: CreateComponent}])
   ]
 })
-export class CreateModule { }
+export class CreateModule {}

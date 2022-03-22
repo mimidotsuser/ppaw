@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CustomerService } from '../services/customer.service';
 import { Observable } from 'rxjs';
 import { CustomerModel } from '../../../models/customerModel';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -13,11 +13,13 @@ import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 export class IndexComponent implements OnInit {
 
   faEllipsisV = faEllipsisV;
-  clientSearchInput = new FormControl();
+  clientSearchInput: FormControl;
   openFormSidePopup = false;
   model: null | CustomerModel = null;
 
-  constructor(private clientService: CustomerService) { }
+  constructor(private clientService: CustomerService, private fb: FormBuilder) {
+    this.clientSearchInput = this.fb.control('');
+  }
 
   ngOnInit(): void {
   }

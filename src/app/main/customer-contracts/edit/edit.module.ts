@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { EditRoutingModule } from './edit-routing.module';
+import { RouterModule } from '@angular/router';
 import { EditComponent } from './edit.component';
 
 
@@ -11,7 +10,7 @@ import { EditComponent } from './edit.component';
   ],
   imports: [
     CommonModule,
-    EditRoutingModule
+    RouterModule.forChild([{path: '', component: EditComponent}])
   ]
 })
-export class EditModule { }
+export class EditModule {}

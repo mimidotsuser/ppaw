@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { Observable, startWith, switchMap } from 'rxjs';
 import { MRFModel, MRFStage } from '../../../../models/m-r-f.model';
 import { SearchService } from '../../../../shared/services/search.service';
@@ -13,14 +13,15 @@ import { CheckoutService } from '../../services/checkout.service';
 })
 export class IndexComponent implements OnInit {
 
-  requestSearchInput = new FormControl();
+  requestSearchInput: FormControl;
   private requests$!: Observable<MRFModel[]>;
 
-  constructor(private checkoutService: CheckoutService,
+  constructor(private checkoutService: CheckoutService, private fb: FormBuilder,
               private searchService: SearchService<MRFModel>) {
 
     this.searchService.setFields(['created_by.first_name', 'created_by.last_name',
       'created_at', 'order_id',]);
+    this.requestSearchInput = this.fb.control('');
   }
 
   ngOnInit(): void {

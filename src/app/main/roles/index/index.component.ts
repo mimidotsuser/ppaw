@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { RoleService } from '../services/role.service';
 import { SearchService } from '../../../shared/services/search.service';
 import { RoleModel } from '../../../models/role.model';
@@ -20,10 +20,12 @@ export class IndexComponent implements OnInit {
   ];
 
   filteredRoles: Observable<RoleModel[]> = new Observable<RoleModel[]>();
-  roleFilterControl = new FormControl('');
+  roleFilterControl: FormControl;
 
-  constructor(private roleService: RoleService, private roleSearch: SearchService<RoleModel>) {
-    this.roleSearch.setFields(['name', 'description', 'permissions.name'])
+  constructor(private roleService: RoleService, private roleSearch: SearchService<RoleModel>,
+              private fb: FormBuilder) {
+    this.roleSearch.setFields(['name', 'description', 'permissions.name']);
+    this.roleFilterControl = this.fb.control('');
   }
 
   ngOnInit(): void {

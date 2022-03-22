@@ -16,7 +16,10 @@ import { CreateComponent } from './create/create.component';
     CommonModule,
     RouterModule.forChild([
       {path: '', component: IndexComponent},
-      {path: ':id', component: CreateComponent}
+      {
+        path: ':id', component: CreateComponent,
+        data: {title: 'Material Requisition Approval', breadcrumb: 'Approve'}
+      }
     ]),
     SharedModule,
     FontAwesomeModule,
