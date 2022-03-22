@@ -64,11 +64,12 @@ export class AccountRecoveryComponent implements OnInit {
     if (this.form.invalid) {return}
 
     this.submitting = true;
-    this.subSink = this.httpService.get('/csrf-cookie')
+    this.subSink = this.httpService.get(this.httpService.endpoint.csrf)
       .subscribe({
         next: () => {
           const token = this.route.snapshot.params[ 'token' ];
-          this.subSink = this.httpService.post(`/auth/reset-password/${token}`, this.form.value)
+          this.subSink = this.httpService
+            .post(`${this.httpService.endpoint.resetPassword}/${token}`, this.form.value)
             .subscribe({
               next: () => {
                 this.submitting = false;

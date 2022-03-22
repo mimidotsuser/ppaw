@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { StorageService } from './storage.service';
 import { environment } from '../../../environments/environment';
+import { V1Endpoints } from '../../utils/api-endpoints';
 
 @Injectable()
 export class HttpService {
@@ -13,6 +13,9 @@ export class HttpService {
 
   }
 
+  get endpoint() {
+    return V1Endpoints;
+  }
 
   /**
    * Get a resource

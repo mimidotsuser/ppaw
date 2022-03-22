@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   submitting = false;
 
   constructor(private meta: MetaService, private fb: FormBuilder, private route: ActivatedRoute,
-              private router: Router, private http: HttpService,
+              private router: Router, private httpService: HttpService,
               private storageService: StorageService) {
     this.meta.title = 'Login'
     this.form = this.fb.group({
@@ -47,9 +47,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.flashMessage = null;
     this.submitting = true;
 
-    this.http.get('/csrf-cookie').subscribe({
+    this.httpService.get(this.httpService.endpoint.csrf).subscribe({
       next: () => {
-        this.subSink = this.http.post('/auth/login', this.form.value)
+        this.subSink = this.httpService.post(this.httpService.endpoint.login, this.form.value)
           .subscribe(
             {
               next: (res: { data: UserModel }) => {
@@ -86,6 +86,5 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._subscriptions.map((sub) => sub.unsubscribe());
   }
-
 
 }

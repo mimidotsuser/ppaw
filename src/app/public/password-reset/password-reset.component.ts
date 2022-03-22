@@ -38,10 +38,10 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
       return;
     }
     this.submitting = true;
-    this.subSink = this.httpService.get('/csrf-cookie')
+    this.subSink = this.httpService.get(this.httpService.endpoint.csrf)
       .subscribe({
         next: () => {
-          this.subSink = this.httpService.post('/auth/forgot-password',
+          this.subSink = this.httpService.post(this.httpService.endpoint.forgotPassword,
             {username: this.emailFormControl.value})
             .subscribe({
               next: () => {

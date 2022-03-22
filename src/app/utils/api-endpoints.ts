@@ -1,0 +1,22 @@
+export enum V1Endpoints {
+  csrf = '/csrf-cookie',
+  login = '/auth/login',
+  logout = '/auth/logout',
+  authenticated = '/auth/is-authenticated',
+  forgotPassword = '/auth/forgot-password',
+  resetPassword = '/auth/reset-password',
+
+  permissions = '/permissions',
+  roles = '/roles',
+  users = '/users',
+  customers = '/customers',
+  products = '/products',
+  productCategories = '/product-categories',
+  warehouses = '/warehouses',
+  stockBalances = '/stock-balances',
+  worksheets = '/worksheets',
+  productItems = '/product-items',
+  purchaseOrders = '/purchase-orders',
+  purchaseRequests = '/purchase-requests',
+  rfqs = 'rfqs',
+}
