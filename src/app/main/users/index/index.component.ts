@@ -39,7 +39,7 @@ export class IndexComponent implements OnInit {
   }
 
   get roles(): Observable<RoleModel[]> {
-    return this.roleService.roles;
+    return this.roleService.fetchAll;
   }
 
   resolveUserStatus(id: number) {

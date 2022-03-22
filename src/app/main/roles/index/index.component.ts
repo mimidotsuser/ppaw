@@ -1,44 +1,68 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { faAngleRight, faAngleUp, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { RoleService } from '../services/role.service';
-import { SearchService } from '../../../shared/services/search.service';
 import { RoleModel } from '../../../models/role.model';
-import { debounceTime, Observable, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss'],
-  providers: [SearchService]
+  providers: []
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent implements OnInit, OnDestroy {
 
-  columns = [
-    {id: 'name', title: 'Name', display: true},
-    {id: 'description', title: 'Description', display: true},
-    {id: 'permissions', title: 'Permissions', display: true},
-  ];
+  private _roles: RoleModel[] = [];
+  private _subscriptions: Subscription[] = [];
+  searchControl: FormControl;
+  faAngleRight = faAngleRight;
+  faAngleUp = faAngleUp;
+  faEllipsisV = faEllipsisV;
 
-  filteredRoles: Observable<RoleModel[]> = new Observable<RoleModel[]>();
-  roleFilterControl: FormControl;
-
-  constructor(private roleService: RoleService, private roleSearch: SearchService<RoleModel>,
-              private fb: FormBuilder) {
-    this.roleSearch.setFields(['name', 'description', 'permissions.name']);
-    this.roleFilterControl = this.fb.control('');
+  constructor(private roleService: RoleService, private fb: FormBuilder) {
+    this.searchControl = this.fb.control('');
   }
 
   ngOnInit(): void {
-    this.filteredRoles = this.roleFilterControl.valueChanges
-      .pipe(debounceTime(200),
-        switchMap((value) => this.roleSearch.find(value, this.roles)))
+    this.subSink = this.roleService.fetchAll
+      .subscribe((roles) => this._roles = roles);
   }
 
-  get roles(): Observable<RoleModel[]> {
-    return this.roleService.roles;
+  set subSink(value: Subscription) {
+    this._subscriptions.push(value);
+  }
+
+  get roles(): RoleModel[] {
+    return this._roles;
   }
 
   get isSearching() {
-    return this.roleFilterControl.value.trim().length > 0;
+    return this.searchControl.value.trim().length > 0;
+  }
+
+  ngOnDestroy(): void {
+    this._subscriptions.map((sub) => sub.unsubscribe())
+  }
+
+  togglePermissions($event: Event) {
+    const target = ($event.target as HTMLButtonElement).closest('tr');
+    const sibling = target?.nextElementSibling;
+    if (!sibling) {return}
+
+    if (target.closest('tbody')?.rows) { //hide any opened row
+      const rows = target.closest('tbody')!.rows!;
+      for (let i = 0; i < rows.length; i++) {
+        rows.item(0)?.classList.remove('show')
+      }
+    }
+
+    if (sibling.classList.contains('show')) {
+      sibling.classList.remove('show');
+      target.classList.remove('permissions-expanded')
+    } else {
+      sibling.classList.add('show');
+      target.classList.add('permissions-expanded')
+    }
   }
 }

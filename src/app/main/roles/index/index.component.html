@@ -3,7 +3,7 @@
   <div class="d-flex justify-content-between align-items-center my-3 gap-2 flex-wrap-reverse">
     <div class="col-sm-6 col-md-4 data-filters">
       <input type="text" class="form-control search" placeholder="Filter"
-             [formControl]="roleFilterControl">
+             [formControl]="searchControl">
     </div>
 
     <div class="d-md-block">
@@ -14,45 +14,66 @@
 
 </div>
 <div class="container-md-fluid">
-  <table class="table table-hover table-block-sm">
+  <table class="table table-hover">
     <thead>
     <tr>
+      <td></td>
       <th>Name</th>
       <th>Description</th>
-      <th>Permissions</th>
       <th></th>
     </tr>
     </thead>
-    <tbody>
-    <tr *ngFor="let role of (this.isSearching? this.filteredRoles: roles)|async; let i=index">
+    <tbody *ngIf="(roles|filter:this.searchControl.value) as data">
+    <ng-container *ngFor="let role of data; let i=index">
 
-      <td>
-        <span class="td-inline-label">Name</span>
-        {{role.name}}
-      </td>
-      <td>
-        <span class="td-inline-label">Description</span>
-        {{role.description}}
-      </td>
-      <td>
-        <span class="td-inline-label">Permission</span>
-        <div class="permissions-cell d-flex flex-wrap gap-2 w-100">
-        <span *ngFor="let p of role.permissions" class="badge bg-secondary permission-badge">
-          {{p.name}}
-        </span>
-        </div>
-      </td>
-      <td>
-        <div class="d-flex gap-2 justify-content-end w-100">
-          <a routerLink="edit/{{role.id}}" class="btn btn-sm btn-outline-primary">Edit</a>
-          <button class="btn btn-sm btn-outline-danger">Delete</button>
-        </div>
-      </td>
-    </tr>
+      <tr>
+        <td>
+          <button class="btn w-100 h-100 border-0" type="button"
+                  (click)="togglePermissions($event)">
+            <fa-icon [icon]="faAngleRight" class="icon-collapsed"></fa-icon>
+            <fa-icon [icon]="faAngleUp" class="d-none icon-expanded"></fa-icon>
+          </button>
+        </td>
+        <td>
+          <span class="td-inline-label">Name</span>
+          {{role.name}}
+        </td>
+        <td>
+          <span class="td-inline-label">Description</span>
+          {{role.description}}
+        </td>
+        <td>
+          <div class="d-flex gap-2 justify-content-end w-100">
+            <div ngbDropdown class="d-inline-block">
+              <button class="btn btn-outline-secondary hide-dropdown-toggle border-0" id="dp"
+                      ngbDropdownToggle>
+                <fa-icon [icon]="faEllipsisV"></fa-icon>
+              </button>
+              <div ngbDropdownMenu aria-labelledby="dp">
+                <a routerLink="edit/{{role.id}}" ngbDropdownItem>Edit</a>
+                <button type="button" ngbDropdownItem>Delete</button>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr class="d-none permissions-collapsible">
+        <td colspan="5">
+          <div class="title w-100 py-3">
+            Permissions
+          </div>
+          <div class="d-flex flex-wrap gap-2 w-100 pb-2 px-2">
+              <span *ngFor="let p of role.permissions" class="badge bg-secondary permission-badge">
+                {{p.name}}
+              </span>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
 
-    <ng-container *ngIf="isSearching && (this.filteredRoles|async)?.length===0;">
+    <ng-container *ngIf="isSearching && data.length==0">
       <tr class="no-data">
-        <td colspan="4" class="py-3"> No data matching the criteria</td>
+        <td colspan="4" class="py-3 text-center"> No data matching the search criteria</td>
       </tr>
     </ng-container>
     </tbody>

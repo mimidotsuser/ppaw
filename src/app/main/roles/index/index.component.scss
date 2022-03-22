@@ -1,9 +1,37 @@
 .table {
-  .permissions-cell {
+
+  tr td:first-of-type {
+    width: 80px;
+  }
+
+  .permissions-expanded {
+    .icon-collapsed {
+      display: none !important;
+    }
+
+    .icon-expanded {
+      display: block !important;
+    }
+  }
+
+  .permissions-collapsible {
+    .title {
+      font-weight: 600;
+    }
+
     .permission-badge {
       font-size: 11px;
       font-weight: normal;
       padding: 2px;
     }
+
+    &.show {
+      display: table-row !important;
+    }
+
+    &:hover > * {
+      --bs-table-hover-bg: none;
+    }
   }
+
 }
