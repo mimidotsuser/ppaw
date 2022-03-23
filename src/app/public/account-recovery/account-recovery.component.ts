@@ -21,6 +21,7 @@ export class AccountRecoveryComponent implements OnInit {
   resetPasswordComplete = false;
   flashErrorMessage: null | string = null;
   formTitle = 'Account Password Recovery';
+  submitButtonLabel = 'Reset Password'
 
   constructor(private meta: MetaService, private fb: FormBuilder, private route: ActivatedRoute,
               private httpService: HttpService, private router: Router) {
@@ -43,6 +44,7 @@ export class AccountRecoveryComponent implements OnInit {
   ngOnInit(): void {
     if (this.route.snapshot.queryParams[ 'invite' ]) {
       this.formTitle = 'Setup Account Password';
+      this.submitButtonLabel = 'Set Password'
     }
 
     this.form.get('password')!.valueChanges

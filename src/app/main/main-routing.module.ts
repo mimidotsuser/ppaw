@@ -90,7 +90,8 @@ const routes: Routes = [
       },
       {
         path: 'not-authorized',
-        loadChildren: () => import('./not-authorized/not-authorized.module').then(m => m.NotAuthorizedModule)
+        loadChildren: () => import('./not-authorized/not-authorized.module').then(m => m.NotAuthorizedModule),
+        data: {title: 'Not Authorized', breadcrumb: 'Access Denies'}
       },
       {path: '', redirectTo: 'home', pathMatch: 'exact'},
       {
