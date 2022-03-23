@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomerService } from '../services/customer.service';
 import { Observable } from 'rxjs';
-import { CustomerModel } from '../../../models/customerModel';
+import { CustomerModel } from '../../../models/customer.model';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 

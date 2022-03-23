@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CustomersModule } from '../customers.module';
 import { HttpService } from '../../../core/services/http.service';
-import { CustomerModel } from '../../../models/customerModel';
+import { CustomerModel } from '../../../models/customer.model';
 
 @Injectable({
   providedIn: CustomersModule

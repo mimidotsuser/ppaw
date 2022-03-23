@@ -1,5 +1,5 @@
 import { UserModel } from './user.model';
-import { CustomerModel } from './customerModel';
+import { CustomerModel } from './customer.model';
 import { ActivityDescriptionModel } from './activity-description.model';
 import { ProductItemModel } from './product-item.model';
 

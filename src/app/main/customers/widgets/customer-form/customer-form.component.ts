@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CustomerModel } from '../../../../models/customerModel';
+import { CustomerModel } from '../../../../models/customer.model';
 
 @Component({
   selector: 'app-customer-form',

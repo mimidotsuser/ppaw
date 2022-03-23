@@ -5,7 +5,7 @@ import { faWindowClose } from '@fortawesome/free-solid-svg-icons';
 import { WorkCategory } from '../../../models/worksheet.model';
 import { ProductItemModel } from '../../../models/product-item.model';
 import { WorksheetService } from '../services/worksheet.service';
-import { CustomerModel } from '../../../models/customerModel';
+import { CustomerModel } from '../../../models/customer.model';
 
 @Component({
   selector: 'app-create',

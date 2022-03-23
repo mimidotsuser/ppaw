@@ -1,7 +1,7 @@
 import { UserModel } from './user.model';
 
 export interface ProductModel {
-  id: string;
+  id: number;
   parent_id?: string;
   parent?: ProductModel;
   item_code: string;

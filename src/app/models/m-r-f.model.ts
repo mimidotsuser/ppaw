@@ -1,6 +1,6 @@
 import { UserModel } from './user.model';
 import { ProductModel } from './product.model';
-import { CustomerModel } from './customerModel';
+import { CustomerModel } from './customer.model';
 
 export enum MRFPurpose {
   CLIENT_DEMO = 'CLIENT_DEMO',

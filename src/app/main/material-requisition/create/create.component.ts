@@ -4,7 +4,7 @@ import { map, Observable, of, startWith, Subscription, tap } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { MRFPurpose } from '../../../models/m-r-f.model';
 import { WorksheetModel } from '../../../models/worksheet.model';
-import { CustomerModel } from '../../../models/customerModel';
+import { CustomerModel } from '../../../models/customer.model';
 import { SearchService } from '../../../shared/services/search.service';
 import { ProductModel } from '../../../models/product.model';
 

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { WorksheetModel } from '../../models/worksheet.model';
-import { CustomerModel } from '../../models/customerModel';
+import { CustomerModel } from '../../models/customer.model';
 import { HttpService } from '../../core/services/http.service';
 
 @Component({

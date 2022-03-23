@@ -1,7 +1,7 @@
 import { ProductModel } from './product.model';
 import { UserModel } from './user.model';
-import { CustomerModel } from './customerModel';
-import { ContractModel } from './contract.model';
+import { CustomerModel } from './customer.model';
+import { CustomerContractModel } from './customer-contract.model';
 import { ActivityDescriptionModel } from './activity-description.model';
 
 export enum ProductItemLogCategory {
@@ -18,7 +18,7 @@ export interface ProductItemLogModel {
   client_id: string;
   client?: CustomerModel;
   contract_id: string;
-  contract?: ContractModel;
+  contract?: CustomerContractModel;
   activity_description_id: string;
   activity_description: ActivityDescriptionModel;
   event_id: string;

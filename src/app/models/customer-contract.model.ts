@@ -1,7 +1,7 @@
-import { CustomerModel } from './customerModel';
+import { CustomerModel } from './customer.model';
 import { UserModel } from './user.model';
 
-export interface ContractModel {
+export interface CustomerContractModel {
   id: string;
   reference: string;
   client_id: string;
