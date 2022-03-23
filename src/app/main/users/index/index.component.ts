@@ -22,6 +22,11 @@ export class IndexComponent implements OnInit, OnDestroy {
   _users: UserModel[] = [];
   _roles: RoleModel[] = [];
   private _subscriptions: Subscription[] = [];
+  pagination = {
+    limit: 15,
+    total: 0,
+    page: 1
+  };
 
   constructor(private userService: UserService, private roleService: RoleService,
               private fb: FormBuilder) {

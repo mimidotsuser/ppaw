@@ -26,8 +26,8 @@
       <th></th>
     </tr>
     </thead>
-    <tbody>
-    <tr *ngFor="let user of users">
+    <tbody *ngIf="(users|filter:this.searchControl.value) as data">
+    <tr *ngFor="let user of data|paginate:pagination">
 
       <td>
         <span class="td-inline-label">Name</span>
@@ -43,7 +43,8 @@
       </td>
       <td>
         <span class="td-inline-label">Status</span>
-       <span class="badge badge-status me-1" [ngClass]="resolveStatusIconClass(user.status)"></span>
+        <span class="badge badge-status me-1"
+              [ngClass]="resolveStatusIconClass(user.status)"></span>
         {{resolveUserStatus(user.status)}}
       </td>
       <td>
@@ -75,9 +76,17 @@
       </td>
     </tr>
 
-
+    <ng-container *ngIf="this.searchControl.value && data.length==0">
+      <tr class="no-data">
+        <td colspan="4" class="py-3 text-center"> No data matching the searched criteria</td>
+      </tr>
+    </ng-container>
     </tbody>
   </table>
+
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination"></pagination>
+  </div>
 
 
 </div>
