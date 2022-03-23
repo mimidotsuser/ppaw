@@ -1,4 +1,3 @@
-
 <div class="container-fluid">
   <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
     <div class="data-filters d-flex gap-2 col-6">
@@ -61,41 +60,41 @@
         <td>
           <span class="td-inline-label">Item</span>
           <div class="d-flex flex-column">
-            {{item.product.item_code}}
+            {{item?.product?.item_code}}
             <small class="text-muted">
-              {{item.product.local_description || item.product.description}}
+              {{item?.product?.local_description || item?.product?.description}}
             </small>
           </div>
         </td>
         <td>
           <span class="td-inline-label">M-PN</span>
-          {{item.product.mpn}}
+          {{item.product?.manufacturer_part_number}}
         </td>
         <td>
           <span class="td-inline-label">EOQ</span>
-          {{item.product?.eoq}}
+          {{item.product?.economic_order_qty}}
         </td>
         <td>
           <span class="td-inline-label">MIN-L</span>
-          {{item.product.minl}}
+          {{item.product?.min_level}}
         </td>
         <td>
           <span class="td-inline-label">RO-L</span>
-          {{item.product.rol}}
+          {{item.product?.reorder_level}}
         </td>
         <td>
           <span class="td-inline-label">MAX-L</span>
-          {{item.product?.maxl}}
+          {{item.product?.max_level}}
         </td>
         <td>
           <span class="td-inline-label">Physical Bal</span>
-          {{item?.physical_balance}}
+          {{item?.stock_balance}}
         </td>
 
         <td class="cart-actions-column">
           <div class="d-flex gap-2 justify-content-center w-100 cart-actions">
 
-            <ng-container *ngIf="!requestForm(item.product);else requestTemplate">
+            <ng-container *ngIf="!requestForm(item.product!);else requestTemplate">
               <button type="button" class="btn btn-outline-primary"
                       (click)="addToCart(item)">
                 <fa-icon [icon]="faShoppingCart"></fa-icon>
@@ -103,7 +102,7 @@
             </ng-container>
 
             <ng-template #requestTemplate>
-              <div class="input-group" [formGroup]="requestForm(item.product)!">
+              <div class="input-group" [formGroup]="requestForm(item.product!)!">
                 <button class="input-group-text" (click)="updateOrderQty(item)">+</button>
                 <input type="number" min="1" class="form-control" formControlName="request_qty">
                 <button class="input-group-text" (click)="updateOrderQty(item,-10)">-

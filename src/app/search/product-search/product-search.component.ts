@@ -32,13 +32,13 @@ export class ProductSearchComponent implements OnInit {
 
   get outputFormatter(): (item: ProductModel) => string {
     return (item) => {
-      return `${item.item_code} | ${item.mpn}`
+      return `${item.item_code} | ${item.manufacturer_part_number}`
     }
   }
 
   get queryParams(): { [ key: string ]: string } {
     if (this.parent) {
-      return {search: '%s', parent_id: this.parent.id}
+      return {search: '%s', parent_id: this.parent.id.toString()}
     } else {
       return {search: '%s'}
     }

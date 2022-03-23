@@ -58,9 +58,9 @@ export class CreateComponent implements OnInit {
 
   createFormGroup(productBalance: ProductBalanceModel) {
     return this.fb.group({
-      physical_qty: this.fb.control(productBalance.physical_balance),
+      physical_qty: this.fb.control(productBalance.stock_balance),
       product: this.fb.control(productBalance.product),
-      request_qty: this.fb.control(productBalance.product.eoq,
+      request_qty: this.fb.control(productBalance.product?.economic_order_qty,
         {validators: [Validators.min(1), Validators.required]})
     })
   }
@@ -76,7 +76,7 @@ export class CreateComponent implements OnInit {
   }
 
   updateOrderQty(productBalance: ProductBalanceModel, by = 10) {
-    const subForm = this.requestForm(productBalance.product)!;
+    const subForm = this.requestForm(productBalance.product!)!;
 
     if (Number(subForm.get('request_qty')?.value) + by < 1) {
       //remove the form group from cart

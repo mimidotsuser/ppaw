@@ -51,28 +51,9 @@ export class PurchaseRequestSearchComponent implements OnInit {
           });
 
           return this.httpService.get('/stock-balances?', {params})
-            .pipe(map((rs: { data: ProductBalanceModel[] }) => rs.data))
-            .pipe(map((m: ProductBalanceModel[]) => {
-              return this.demoDataMap(prs, m);
-            }))
 
         }))
     }
-  }
-
-  //TODO remove this after backend implementation
-  demoDataMap(requests: PurchaseRequestModel[], balances: ProductBalanceModel[]): PurchaseRequestModel[] {
-    requests.map((request) => {
-      request.items.map((item) => {
-        const bal = balances.find((x) => x.product_id === item.product_id);
-        if (bal) {
-          item.product = bal.product;
-          item.product.physical_balance = bal.physical_balance;
-        }
-      })
-    })
-
-    return requests;
   }
 
 }

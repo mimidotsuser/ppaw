@@ -58,28 +58,6 @@ export class PurchaseRequisitionService {
     return this.http.get(`/purchase-requests/${id}`, {
       params: {_expand: 'created_by'}
     })
-      .pipe(mergeMap((pr: PurchaseRequestModel) => {
-        let params = new HttpParams();
-        params = params.append('_expand', 'product');
-
-        pr.items.map((v) => params = params.append('product_id', v.product_id));
-
-        return this.http.get('/stock-balances?', {params})
-          .pipe(map((rs: { data: ProductBalanceModel[] }) => rs.data))
-          .pipe(map((m: ProductBalanceModel[]) => {
-            return this.demoDataMap(pr, m);
-          }))
-      }));
   }
 
-  demoDataMap(request: PurchaseRequestModel, balances: ProductBalanceModel[]): PurchaseRequestModel {
-    request.items.map((item) => {
-      const bal = balances.find((x) => x.product_id === item.product_id);
-      if (bal) {
-        item.product = bal.product;
-        item.product.physical_balance = bal.physical_balance;
-      }
-    });
-    return request;
-  }
 }
