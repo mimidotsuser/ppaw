@@ -41,8 +41,18 @@ export class IndexComponent implements OnInit, OnDestroy {
     return this.searchControl.value.trim().length > 0;
   }
 
-  ngOnDestroy(): void {
-    this._subscriptions.map((sub) => sub.unsubscribe())
+
+  deleteRole(role: RoleModel) {
+    this.subSink = this.roleService.destroy(role.id)
+      .subscribe({
+        next: () => {
+          const index = this.roles.findIndex((row) => row.id === role.id);
+          if (index > -1) {
+            this.roles.splice(index, 1);
+          }
+        },
+        error: (err) => {}
+      })
   }
 
   togglePermissions($event: Event) {
@@ -65,4 +75,9 @@ export class IndexComponent implements OnInit, OnDestroy {
       target.classList.add('permissions-expanded')
     }
   }
+
+  ngOnDestroy(): void {
+    this._subscriptions.map((sub) => sub.unsubscribe())
+  }
+
 }

@@ -33,4 +33,9 @@ export class RoleService {
       {params: {include: 'permissions'}})
       .pipe(map((res: { data: RoleModel }) => res.data))
   }
+
+  destroy(id: number) {
+    return this.httpService.destroy(`${this.httpService.endpoint.roles}/${id}`,
+      {observe: 'response'})
+  }
 }

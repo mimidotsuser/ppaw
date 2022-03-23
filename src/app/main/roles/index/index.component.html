@@ -51,7 +51,7 @@
               </button>
               <div ngbDropdownMenu aria-labelledby="dp">
                 <a routerLink="edit/{{role.id}}" ngbDropdownItem>Edit</a>
-                <button type="button" ngbDropdownItem>Delete</button>
+                <button type="button" ngbDropdownItem (click)="deleteRole(role)">Delete</button>
               </div>
             </div>
           </div>

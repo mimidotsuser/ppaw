@@ -62,9 +62,9 @@ export class HttpService {
    * @param  uri: URI to the resource
    * @param httpOptions: http request options
    */
-  destroy(uri: string, httpOptions?: {}): Observable<any> {
+  destroy(uri: string, httpOptions?: HTTPOptions): Observable<any> {
 
-    return this.httpClient.delete(this.baseUrl + uri, httpOptions);
+    return this.httpClient.delete(this.baseUrl + uri, this.buildHttpOptions(httpOptions));
   }
 
 
