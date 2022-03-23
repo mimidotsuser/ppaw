@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
   selector: 'app-role-form[permissions]',
   templateUrl: './role-form.component.html',
   styleUrls: ['./role-form.component.scss'],
-  providers: [FilterPipe, SlicePipe]
+  providers: [FilterPipe]
 })
 export class RoleFormComponent implements OnInit, OnDestroy {
 
@@ -35,8 +35,7 @@ export class RoleFormComponent implements OnInit, OnDestroy {
   }
   private _subscriptions: Subscription[] = [];
 
-  constructor(private fb: FormBuilder, private filterPipe: FilterPipe<AbstractControl>,
-              private slicePipe: SlicePipe) {
+  constructor(private fb: FormBuilder, private filterPipe: FilterPipe<AbstractControl>) {
     this.searchControl = this.fb.control('');
 
     this.form = this.fb.group({
@@ -62,14 +61,7 @@ export class RoleFormComponent implements OnInit, OnDestroy {
       this.searchControl.value,
       ['value.title', 'value.description', 'value.searchStatus']);
 
-    this.pagination.total = filtered.length;
-
-    filtered = this.slicePipe.transform(filtered,
-      (this.pagination.page - 1) * this.pagination.limit,
-      this.pagination.page * this.pagination.limit);
-
     return filtered as FormGroup[];
-
   }
 
   updateAllFormValues(model: RoleModel | null) {

@@ -1,0 +1,17 @@
+<ngb-pagination [(page)]="meta.page" [pageSize]="meta.limit"
+                [collectionSize]="meta.total" (pageChange)="onPageChange($event)">
+  <ng-template ngbPaginationPrevious>
+    Previous
+  </ng-template>
+  <ng-template ngbPaginationPages>
+    <div
+      class="pagination-info d-flex align-items-center disabled page-item">
+          <span class="page-link">
+            {{currentPageStartCount}} - {{currentPageStopCount}} of {{meta.total}}
+          </span>
+    </div>
+  </ng-template>
+  <ng-template ngbPaginationNext>
+    Next
+  </ng-template>
+</ngb-pagination>

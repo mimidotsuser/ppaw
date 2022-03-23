@@ -34,7 +34,8 @@
       </tr>
       </thead>
       <tbody formArrayName="permissions">
-      <ng-container *ngFor="let group of filteredPermissionGroups; let i =index">
+      <ng-container
+        *ngFor="let group of filteredPermissionGroups|paginate:pagination; let i =index">
         <tr [formGroup]="group">
           <td>
             <input type="checkbox" class="form-check-input" id="perm-{{i}}"
@@ -63,24 +64,7 @@
       </tbody>
     </table>
     <div class="pagination-col d-flex justify-content-end w-100 pr-5">
-      <ngb-pagination [(page)]="pagination.page" [pageSize]="pagination.limit"
-                      [collectionSize]="pagination.total" (pageChange)="paginationShow($event)">
-        <ng-template ngbPaginationPrevious>
-          Previous
-        </ng-template>
-        <ng-template ngbPaginationPages>
-          <div
-            class="pagination-info d-flex align-items-center disabled page-item">
-          <span class="page-link">
-          {{(pagination.limit * pagination.page) - pagination.limit + 1}} -
-            {{pagination.page * pagination.limit}} of {{pagination.total}}
-            </span>
-          </div>
-        </ng-template>
-        <ng-template ngbPaginationNext>
-          Next
-        </ng-template>
-      </ngb-pagination>
+      <pagination [meta]="pagination"></pagination>
     </div>
   </div>
 

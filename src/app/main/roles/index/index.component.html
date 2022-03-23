@@ -24,7 +24,7 @@
     </tr>
     </thead>
     <tbody *ngIf="(roles|filter:this.searchControl.value) as data">
-    <ng-container *ngFor="let role of data; let i=index">
+    <ng-container *ngFor="let role of data|paginate:pagination; let i=index">
 
       <tr>
         <td>
@@ -78,6 +78,8 @@
     </ng-container>
     </tbody>
   </table>
-
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination"></pagination>
+  </div>
 
 </div>

@@ -19,6 +19,11 @@ export class IndexComponent implements OnInit, OnDestroy {
   faAngleRight = faAngleRight;
   faAngleUp = faAngleUp;
   faEllipsisV = faEllipsisV;
+  pagination = {
+    page: 1,
+    limit: 15,
+    total: 0
+  };
 
   constructor(private roleService: RoleService, private fb: FormBuilder) {
     this.searchControl = this.fb.control('');
