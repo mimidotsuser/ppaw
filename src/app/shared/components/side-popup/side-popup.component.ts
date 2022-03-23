@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {  faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-import { faWindowClose, faWindowMaximize,faWindowRestore } from '@fortawesome/free-regular-svg-icons';
+import {
+  faTimesCircle,
+  faWindowMaximize,
+  faWindowRestore
+} from '@fortawesome/free-regular-svg-icons';
 
 @Component({
   selector: 'app-side-popup',

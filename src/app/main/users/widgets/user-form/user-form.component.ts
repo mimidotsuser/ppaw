@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
 import { UserModel } from '../../../../models/user.model';
 import { RoleModel } from '../../../../models/role.model';
 
@@ -11,47 +10,31 @@ import { RoleModel } from '../../../../models/role.model';
 })
 export class UserFormComponent implements OnInit {
 
-  @Input() roles!: Observable<RoleModel[]>;
+  @Input() roles: RoleModel[] = [];
 
-  @Input() set model(model: UserModel | null) {this.setForm(model)}
+  @Input() set model(model: UserModel | null) {model ? this.updateFormValues(model) : ''}
 
   form: FormGroup;
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      'first_name': this.fb.control(''),
-      'last_name': this.fb.control(''),
-      'email': this.fb.control(''),
-      'role_id': this.fb.control(''),
+      first_name: this.fb.control(null,
+        {validators: [Validators.required, Validators.maxLength(200)]}),
+      last_name: this.fb.control(null,
+        {validators: [Validators.maxLength(200)]}),
+      email: this.fb.control(null,
+        {
+          validators: [Validators.required, Validators.email, Validators.maxLength(200)]
+        }),
+      role_id: this.fb.control(null, {validators: [Validators.required]}),
     });
   }
 
   ngOnInit(): void {
   }
 
-  setForm(model: UserModel | null) {
-    if (!model) {
-      model = {
-        status: 0,
-        role_id: '',
-        last_name: '',
-        first_name: '',
-        id: '',
-        email: ''
-      }
-    }
-    this.form = this.fb.group({
-      'first_name': this.fb.control(model?.first_name,
-        {validators: [Validators.required, Validators.maxLength(100)]}),
-      'last_name': this.fb.control(model?.last_name,
-        {validators: [Validators.maxLength(100)]}),
-      'email': this.fb.control(model?.email,
-        {
-          validators: [Validators.required, Validators.email, Validators.maxLength(100)]
-        }),
-      'role_id': this.fb.control(model?.role_id,
-        {validators: [Validators.required]}),
-    });
+  updateFormValues(model: UserModel) {
+    this.form.patchValue(model)
   }
 
 

@@ -9,6 +9,7 @@ export enum V1Endpoints {
   permissions = '/permissions',
   roles = '/roles',
   users = '/users',
+  resentInvite = '/users/:id/resend-invite',
   customers = '/customers',
   products = '/products',
   productCategories = '/product-categories',

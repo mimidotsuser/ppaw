@@ -1,73 +1,161 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Observable, startWith, switchMap } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { UserModel } from '../../../models/user.model';
+import { UserAccountStatus, UserModel } from '../../../models/user.model';
 import { UserService } from '../services/user.service';
-import { SearchService } from '../../../shared/services/search.service';
 import { RoleService } from '../../roles/services/role.service';
 import { RoleModel } from '../../../models/role.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss']
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent implements OnInit, OnDestroy {
 
   faEllipsisV = faEllipsisV;
 
-  usersSearchInput: FormControl;
-  model: UserModel | null = null;
+  searchControl: FormControl;
+  selectedModel: UserModel | null = null;
   showUserFormPopup = false;
-  _users$!: Observable<UserModel[]>;
+  _users: UserModel[] = [];
+  _roles: RoleModel[] = [];
+  private _subscriptions: Subscription[] = [];
 
-  constructor(private userService: UserService, private searchService: SearchService<UserModel>,
-              private roleService: RoleService, private fb: FormBuilder) {
-    this.searchService.setFields(['first_name', 'last_name', 'role.name']);
-    this.usersSearchInput = this.fb.control('');
+  constructor(private userService: UserService, private roleService: RoleService,
+              private fb: FormBuilder) {
+    this.searchControl = this.fb.control('');
   }
 
   ngOnInit(): void {
-    this._users$ = this.usersSearchInput.valueChanges.pipe(
-      startWith(''),
-      switchMap((value: any) => this.searchService.find(value, this.userService.users)))
+
+    this.subSink = this.userService.fetchAll
+      .subscribe((users) => this._users = users)
+
+    this.subSink = this.roleService.fetchAll
+      .subscribe((roles) => this._roles = roles)
   }
 
   get users() {
-    return this._users$
+    return this._users
   }
 
-  get roles(): Observable<RoleModel[]> {
-    return this.roleService.fetchAll;
+  get roles(): RoleModel[] {
+    return this._roles;
   }
 
-  resolveUserStatus(id: number) {
-    return this.userService.resolveUserStatus(id);
+  set subSink(v: Subscription) {
+    this._subscriptions.push(v);
+  }
+
+  resolveUserStatus(code: keyof typeof UserAccountStatus): string {
+    return this.statuses[ code ] || 'Unknown';
+  }
+
+  resolveStatusIconClass(status: keyof typeof UserAccountStatus) {
+    if (status == 'SUSPENDED') {
+      return 'bg-danger'
+    }
+    if (status == 'ACTIVE') {
+      return 'bg-success'
+    }
+    if (status == 'PENDING_ACTIVATION') {
+      return 'bg-warning'
+    }
+    return 'bg-secondary';
+  }
+
+  get statuses() {
+    return UserAccountStatus;
   }
 
   showCreateUserPopup() {
+    this.selectedModel = null;
     this.showUserFormPopup = true;
-    this.model = null;
   }
 
   showEditForm(model: UserModel) {
-    this.model = {...model};
+    this.selectedModel = {...model};
     this.showUserFormPopup = true;
   }
 
   closeFormPopup(form: FormGroup) {
-    if (form.dirty) {
-      //TODO warn the user
+    if (form.dirty && !window.confirm('You will loose all unsaved data.')) {
+      return;
     }
+    form.reset();
     this.showUserFormPopup = false;
   }
 
-  resendInvite(user: UserModel) {/*Todo*/}
 
-  updateStatus(user: UserModel, suspend = true) {/*Todo*/}
+  saveUserForm(form: FormGroup) {
+    form.markAllAsTouched();
+    if (form.invalid) {return}
 
-  deleteUser(user: UserModel) {/*Todo*/}
+    if (this.selectedModel?.id) {
+      this.subSink = this.userService.update(this.selectedModel!.id, form.value)
+        .subscribe((user) => {
+          const index = this.users.findIndex((u) => u.id === user.id);
+          if (index > -1) {
+            this.users[ index ] = user;
+          }
+          form.reset();
+          this.showUserFormPopup = false;
+        });
+      return;
+    }
 
-  saveUserForm(form: FormGroup) { /*TODO*/}
+    this.subSink = this.userService.create(form.value)
+      .subscribe({
+        next: (user) => {
+          this.users.unshift(user);
+          form.reset();
+          this.showUserFormPopup = false;
+        }
+      })
+  }
+
+  resendInvite(user: UserModel) {
+    this.subSink = this.userService.resendInvite(user)
+      .subscribe({
+        next: () => {alert('Invite sent successfully')}
+      })
+  }
+
+  updateStatus(model: UserModel, suspend = true) {
+    model.status = suspend ? 'SUSPENDED' : 'ACTIVE';
+    this.subSink = this.userService.update(model.id, model)
+      .subscribe({
+        next: (user) => {
+          const index = this.users.findIndex((u) => u.id === user.id);
+          if (index > -1) {
+            this.users[ index ] = user;
+          }
+
+          alert('User status updated successfully');
+        }
+      })
+  }
+
+  deleteUser(model: UserModel) {
+    this.subSink = this.userService.destroy(model.id)
+      .subscribe({
+        next: () => {
+          const index = this.users.findIndex((u) => u.id === model.id);
+          if (index > -1) {
+            this.users.splice(index, 1);
+          }
+
+          alert('User account deleted successfully');
+        }
+      })
+  }
+
+
+  ngOnDestroy(): void {
+    this._subscriptions.map((sub) => sub.unsubscribe())
+  }
+
+
 }

@@ -1,7 +1,7 @@
 <form class="row" *ngIf="true" [formGroup]="form">
   <div class="col-md-6 mb-3">
     <label for="first_name" class="form-label required">First Name</label>
-    <input type="text" id="first_name" class="form-control" formControlName="last_name">
+    <input type="text" id="first_name" class="form-control" formControlName="first_name">
   </div>
 
   <div class="col-md-6 mb-3">
@@ -17,7 +17,7 @@
   <div class="col-md-6 mb-3">
     <label for="role" class="form-label required">Role</label>
     <select name="role" id="role" class="form-select" formControlName="role_id">
-      <option *ngFor="let role of roles|async" value="{{role.id}}">{{role.name}}</option>
+      <option *ngFor="let role of roles" value="{{role.id}}">{{role.name}}</option>
     </select>
   </div>
   <ng-content></ng-content>
