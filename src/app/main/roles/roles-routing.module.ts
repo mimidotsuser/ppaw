@@ -15,11 +15,11 @@ const routes: Routes = [{
     {
       path: 'create',
       loadChildren: () => import('./create/create.module').then(m => m.CreateModule),
-      data: {resource: Resources.roles, action: Actions.create}
+      data: {resource: Resources.roles, action: Actions.create, title: 'Create Role'}
     },
     {
       path: 'edit/:id', loadChildren: () => import('./edit/edit.module').then(m => m.EditModule),
-      data: {resource: Resources.roles, action: Actions.edit}
+      data: {resource: Resources.roles, action: Actions.edit, title: 'Edit Role'}
 
     }
   ]

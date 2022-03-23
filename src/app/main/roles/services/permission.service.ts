@@ -13,7 +13,7 @@ export class PermissionService {
   constructor(private httpService: HttpService) {
   }
 
-  get permissions(): Observable<PermissionModel[]> {
+  get fetchAll(): Observable<PermissionModel[]> {
     return this.httpService.get(this.httpService.endpoint.permissions)
       .pipe(map((res: { data: PermissionModel[] }) => res.data));
   }

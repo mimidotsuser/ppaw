@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { RoleFormComponent } from './role-form/role-form.component';
 import { SharedModule } from '../../../shared/shared.module';
 
@@ -10,7 +11,8 @@ import { SharedModule } from '../../../shared/shared.module';
   ],
   imports: [
     CommonModule,
-    SharedModule
+    SharedModule,
+    NgbPaginationModule,
   ],
   exports: [
     RoleFormComponent

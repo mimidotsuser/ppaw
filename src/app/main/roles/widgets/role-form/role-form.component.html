@@ -16,8 +16,14 @@
   </div>
 
   <div class="col-lg-10">
-    <div class="table-controls d-flex">
-
+    <div class="table-controls d-flex justify-content-end">
+      <div class="mb-3 col-lg-4 col-md-7 col-sm-12">
+        <small class="help-text">
+          Type 'selected' to filter only the selected ({{selectedTotal}})
+        </small>
+        <input type="search" placeholder="Search by name or description"
+               class="form-control" [formControl]="searchControl">
+      </div>
     </div>
     <table class="table table-bordered table-striped">
       <thead>
@@ -28,22 +34,54 @@
       </tr>
       </thead>
       <tbody formArrayName="permissions">
-      <ng-container *ngFor="let control of this._permissions.controls;let i =index">
-        <tr [formGroupName]="i">
+      <ng-container *ngFor="let group of filteredPermissionGroups; let i =index">
+        <tr [formGroup]="group">
           <td>
             <input type="checkbox" class="form-check-input" id="perm-{{i}}"
                    formControlName="selected">
           </td>
           <td>
-            <label for="perm-{{i}}">{{control.value.title}} </label>
+            <label for="perm-{{i}}">{{group.value.title}} </label>
           </td>
           <td>
-            <label for="perm-{{i}}"> {{control.value.description}} </label>
+            <label for="perm-{{i}}"> {{group.value.description}} </label>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="filteredPermissionGroups.length===0">
+        <tr>
+          <td class="text-center py-3" colspan="3">
+            <ng-container *ngIf="!searchControl.value;else noResults">
+              There is no permissions available at the moment.
+            </ng-container>
+            <ng-template #noResults>
+              No permissions matching the filtered criteria
+            </ng-template>
           </td>
         </tr>
       </ng-container>
       </tbody>
     </table>
+    <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+      <ngb-pagination [(page)]="pagination.page" [pageSize]="pagination.limit"
+                      [collectionSize]="pagination.total" (pageChange)="paginationShow($event)">
+        <ng-template ngbPaginationPrevious>
+          Previous
+        </ng-template>
+        <ng-template ngbPaginationPages>
+          <div
+            class="pagination-info d-flex align-items-center disabled page-item">
+          <span class="page-link">
+          {{(pagination.limit * pagination.page) - pagination.limit + 1}} -
+            {{pagination.page * pagination.limit}} of {{pagination.total}}
+            </span>
+          </div>
+        </ng-template>
+        <ng-template ngbPaginationNext>
+          Next
+        </ng-template>
+      </ngb-pagination>
+    </div>
   </div>
 
   <ng-content></ng-content>

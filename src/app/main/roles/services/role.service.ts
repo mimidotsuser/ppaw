@@ -18,13 +18,19 @@ export class RoleService {
       .pipe(map((res: { data: RoleModel[] }) => res.data))
   }
 
-  createRole(data: { name: string, description: string, permissions: string[] }): Observable<RoleModel> {
+  create(data: { name: string, description: string, permissions: string[] }): Observable<RoleModel> {
     return this.httpService.post(this.httpService.endpoint.roles, data)
       .pipe(map((res: { data: RoleModel }) => res.data))
   }
 
-  findRoleById(id: string): Observable<RoleModel | null> {
-    return this.httpService.get(`${this.httpService.endpoint.roles}/${id}`)
+  update(id: number, data: { name: string, description: string, permissions: string[] }): Observable<RoleModel> {
+    return this.httpService.patch(`${this.httpService.endpoint.roles}/${id}`, data)
+      .pipe(map((res: { data: RoleModel }) => res.data))
+  }
+
+  findRoleById(id: number): Observable<RoleModel> {
+    return this.httpService.get(`${this.httpService.endpoint.roles}/${id}`,
+      {params: {include: 'permissions'}})
       .pipe(map((res: { data: RoleModel }) => res.data))
   }
 }
