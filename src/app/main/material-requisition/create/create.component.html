@@ -1,4 +1,3 @@
-
 <div class="container-fluid">
   <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
     <div class="col-sm-6 col-md-3 data-filters">
@@ -131,16 +130,18 @@
         <label for="parent" class="form-label">
           Machine Model
         </label>
-        <product-typeahead-input customId="parent" controlName="parent" [parent]="null">
-        </product-typeahead-input>
+        <!--        <product-typeahead-input customId="parent" controlName="parent" [parent]="null"-->
+        <!--                                 [category]="machineCategory">-->
+        <!--        </product-typeahead-input>-->
       </div>
       <div class="col-md-6 mb-3">
         <label for="product" class="form-label required">
           Spare Part
         </label>
-        <product-typeahead-input customId="product" controlName="product"
-                              [parent]="this.form.get('parent')?.value">
-        </product-typeahead-input>
+        <!--        <product-typeahead-input customId="product" controlName="product"-->
+        <!--                                 [parent]="this.form.get('parent')?.value"-->
+        <!--                                 [category]="selectedCategory">-->
+        <!--        </product-typeahead-input>-->
       </div>
     </ng-container>
 
@@ -149,8 +150,9 @@
         <label for="machine_id" class="form-label required">
           Machine Model
         </label>
-        <product-typeahead-input customId="machine_id" controlName="product" [parent]="null">
-        </product-typeahead-input>
+<!--        <product-typeahead-input customId="machine_id" controlName="product" [parent]="null"-->
+<!--                                 [category]="selectedCategory">-->
+<!--        </product-typeahead-input>-->
       </div>
 
     </ng-container>
@@ -180,7 +182,7 @@
       <div class="col-md-6 mb-3">
         <label for="worksheet" class="form-label">Referenced Worksheet</label>
         <worksheet-typeahead-input customId="worksheet" controlName="worksheet"
-                          [client]="form.get('client')?.value">
+                                   [client]="form.get('client')?.value">
         </worksheet-typeahead-input>
       </div>
     </ng-container>

@@ -3,7 +3,8 @@ import {
   ControlContainer,
   ControlValueAccessor,
   FormControl,
-  FormControlDirective, NG_VALUE_ACCESSOR
+  FormControlDirective,
+  NG_VALUE_ACCESSOR
 } from '@angular/forms';
 import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -11,7 +12,9 @@ import {
   debounceTime,
   distinctUntilChanged,
   map,
-  Observable, of, switchMap,
+  Observable,
+  of,
+  switchMap,
   takeWhile,
   tap
 } from 'rxjs';
@@ -88,7 +91,7 @@ export class TypeaheadSearchInputComponent<T> implements OnInit, ControlValueAcc
 
   private parsedQueryParams(searchTerm: string): { [ key: string ]: any } {
     if (!this.queryParams) {
-      return {search: searchTerm}
+      return {search: searchTerm, limit: 10}
     }
 
     return Object.keys(this.queryParams).reduce((acc: { [ key: string ]: any }, key) => {
@@ -98,7 +101,7 @@ export class TypeaheadSearchInputComponent<T> implements OnInit, ControlValueAcc
         acc[ key ] = this.queryParams![ key ];
       }
       return acc;
-    }, {})
+    }, {limit: 10})
   }
 
   private _backendSearch(searchTerm: string): Observable<T[] | [] | [null]> {

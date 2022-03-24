@@ -2,9 +2,10 @@ import { Component, Input, OnInit, } from '@angular/core';
 import { FormControl, } from '@angular/forms';
 import { ProductModel } from '../../models/product.model';
 import { HttpService } from '../../core/services/http.service';
+import { ProductCategoryModel } from '../../models/product-category.model';
 
 @Component({
-  selector: 'product-typeahead-input[control],product-typeahead-input[controlName]',
+  selector: 'product-typeahead-input[control][category],product-typeahead-input[controlName][category]',
   templateUrl: './product-search.component.html',
   styleUrls: ['./product-search.component.scss']
 })
@@ -12,9 +13,9 @@ export class ProductSearchComponent implements OnInit {
 
   @Input() control: FormControl | null = null;
   @Input() controlName: string = '';
-
+  @Input() category: ProductCategoryModel | null = null;
   @Input() placeholder = 'Type to search';
-  @Input() parent: ProductModel | null = null; //TODO use parent to filter
+  @Input() parent: ProductModel | null = null;
   @Input() customId?: string;
 
 
@@ -22,9 +23,10 @@ export class ProductSearchComponent implements OnInit {
   }
 
   get path() {
-    return this.parent
-      ? `${this.httpService.endpoint.productCategories}/2`
-      : `${this.httpService.endpoint.productCategories}/1`
+    return this.category ?
+      `${this.httpService.endpoint.productCategories}/${this.category.id}/products` :
+      this.httpService.endpoint.products
+      ;
   }
 
   ngOnInit(): void {
@@ -32,7 +34,7 @@ export class ProductSearchComponent implements OnInit {
 
   get outputFormatter(): (item: ProductModel) => string {
     return (item) => {
-      return `${item.item_code} | ${item.manufacturer_part_number}`
+      return `${item.item_code} | ${item.manufacturer_part_number || item.local_description || item.description}`
     }
   }
 

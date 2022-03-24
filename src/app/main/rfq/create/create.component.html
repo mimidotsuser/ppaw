@@ -4,7 +4,7 @@
       <div class="col-md-3 mb-3">
         <label for="purchase_request" class="form-label required">Purchase Request</label>
         <pr-typeahead-input controlName="purchase_request" customId="purchase_request"
-                                 (change)="onPurchaseRequestSelected()">
+                            (change)="onPurchaseRequestSelected()">
 
         </pr-typeahead-input>
       </div>
@@ -130,7 +130,7 @@
 
     <div class="mb-3 col-md-6">
       <label for="product" class="form-label">Product</label>
-      <product-typeahead-input customId="product" controlName="product">
+      <product-typeahead-input customId="product" controlName="product" [category]="null">
       </product-typeahead-input>
     </div>
     <div class="mb-3 col-md-6">

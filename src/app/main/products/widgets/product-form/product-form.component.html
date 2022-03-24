@@ -2,7 +2,7 @@
   <ng-container *ngIf="hasParent">
     <div class="col-md-6 mb-3">
       <label for="parent_id" class="form-label required">Parent Machine</label>
-      <product-typeahead-input customId="parent_id" controlName="parent">
+      <product-typeahead-input customId="parent_id" controlName="parent" [category]="category">
       </product-typeahead-input>
     </div>
   </ng-container>
@@ -13,7 +13,7 @@
   </div>
   <div class="col-md-6 mb-3">
     <label for="mpn" class="form-label">Manufacturer Part Number</label>
-    <input id="mpn" type="text" class="form-control" formControlName="mpn">
+    <input id="mpn" type="text" class="form-control" formControlName="manufacturer_part_number">
   </div>
   <div class="col-md-6 mb-3">
     <label for="description" class="form-label required">Description</label>
@@ -26,20 +26,20 @@
   </div>
 
   <div class="col-md-6 mb-3">
-    <label for="eoq" class="form-label required">EOQ</label>
-    <input type="number" id="eoq" class="form-control" formControlName="eoq">
+    <label for="eoq" class="form-label required">Economic Order Qty</label>
+    <input type="number" id="eoq" class="form-control" formControlName="economic_order_qty">
   </div>
   <div class="col-md-6 mb-3">
-    <label for="minl" class="form-label required">MIN-L</label>
-    <input type="number" id="minl" class="form-control" formControlName="minl">
+    <label for="minl" class="form-label required">Min Level</label>
+    <input type="number" id="minl" class="form-control" formControlName="min_level">
   </div>
   <div class="col-md-6 mb-3">
-    <label for="rol" class="form-label required">RO-L</label>
-    <input type="number" id="rol" class="form-control" formControlName="rol">
+    <label for="rol" class="form-label required">Reorder Level</label>
+    <input type="number" id="rol" class="form-control" formControlName="reorder_level">
   </div>
   <div class="col-md-6 mb-3">
-    <label for="maxl" class="form-label required">MAX-L</label>
-    <input type="number" id="maxl" class="form-control" formControlName="maxl">
+    <label for="maxl" class="form-label required">Max Level</label>
+    <input type="number" id="maxl" class="form-control" formControlName="max_level">
   </div>
 
   <div class="col-md-6 mb-3">

@@ -3,7 +3,7 @@
   <div class="d-flex justify-content-between align-items-center my-3 gap-2 flex-wrap-reverse">
     <div class="col-sm-6 col-md-4 data-filters">
       <input type="text" class="form-control search" placeholder="Filter"
-             [formControl]="productSearchInput">
+             [formControl]="searchControl">
     </div>
 
     <div class="d-md-block">
@@ -30,15 +30,19 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let prod of products|async">
-
+    <tr *ngFor="let prod of products">
       <td>
         <span class="td-inline-label">Item Code</span>
-        {{prod.item_code}}
+        <div class="d-flex flex-column">
+          {{prod.item_code}}
+          <small class="text-muted">
+            {{prod.local_description}}
+          </small>
+        </div>
       </td>
       <td>
         <span class="td-inline-label">M-PN</span>
-        {{prod.mpn}}
+        {{prod.manufacturer_part_number}}
       </td>
       <td>
         <span class="td-inline-label">Description</span>
@@ -46,24 +50,24 @@
       </td>
       <td data-label="EOQ">
         <span class="td-inline-label">EOQ</span>
-        {{prod.eoq}}
+        {{prod.economic_order_qty}}
       </td>
       <td>
         <span class="td-inline-label">MIN-L</span>
-        {{prod.minl}}
+        {{prod.min_level}}
       </td>
       <td>
         <span class="td-inline-label">RO-L</span>
-        {{prod.rol}}
+        {{prod.reorder_level}}
       </td>
       <td>
         <span class="td-inline-label">MAX-L</span>
-        {{prod.maxl}}
+        {{prod.max_level}}
       </td>
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
           <div ngbDropdown class="d-inline-block">
-            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp"
+            <button class="btn btn-outline-secondary hide-dropdown-toggle border-0" id="dp"
                     ngbDropdownToggle>
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
@@ -77,31 +81,45 @@
       </td>
     </tr>
 
+    <ng-container *ngIf="products.length===0">
+      <tr class="no-data">
+        <td class="text-center py-4" colspan="7">
+          There is no data at the moment yet.
+          <a role="button" class="text-decoration-none" (click)="showCreateProductFormPopup()">
+            Add new item
+          </a>
+        </td>
+      </tr>
+    </ng-container>
 
     </tbody>
   </table>
-
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination"></pagination>
+  </div>
 </div>
 
-<app-side-popup [(show)]="showMachineFormPopup"
-                [title]="this.model?.id?'Update Machine Item':'Create Machine Item'">
+<app-side-popup [(show)]="showProductFormPopup"
+                [title]="this.selectedModel?.id?'Update Machine Item':'Create Machine Item'">
 
-  <app-product-form [model]="this.model" [hasParent]="false" #machineFormComponent>
-    <div class="d-flex gap-2">
+  <ng-container *ngIf="machineCategory">
+    <app-product-form [model]="this.selectedModel" [hasParent]="false" [category]="machineCategory"
+                      #machineFormComponent>
+      <div class="d-flex gap-2">
 
-      <button type="submit" class="btn btn-primary" *ngIf="!this.model?.id"
-              (click)="saveProductForm(machineFormComponent.form)">
-        CREATE
-      </button>
-      <button type="submit" class="btn btn-primary" *ngIf="this.model?.id"
-              (click)="saveProductForm(machineFormComponent.form)">
-        UPDATE
-      </button>
-      <button type="button" class="btn btn-cancel"
-              (click)="this.closeProductFormPopup(machineFormComponent.form)">
-        CANCEL
-      </button>
-    </div>
-  </app-product-form>
-
+        <button type="submit" class="btn btn-primary" *ngIf="!this.selectedModel?.id"
+                (click)="saveProductForm(machineFormComponent.form)">
+          CREATE
+        </button>
+        <button type="submit" class="btn btn-primary" *ngIf="this.selectedModel?.id"
+                (click)="saveProductForm(machineFormComponent.form)">
+          UPDATE
+        </button>
+        <button type="button" class="btn btn-cancel"
+                (click)="this.closeProductFormPopup(machineFormComponent.form)">
+          CANCEL
+        </button>
+      </div>
+    </app-product-form>
+  </ng-container>
 </app-side-popup>

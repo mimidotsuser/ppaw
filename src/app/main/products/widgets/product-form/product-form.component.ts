@@ -2,9 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductModel } from '../../../../models/product.model';
 import { requiredIf } from '../../../../utils/validators/required-if';
+import { ProductCategoryModel } from '../../../../models/product-category.model';
 
 @Component({
-  selector: 'app-product-form',
+  selector: 'app-product-form[category]',
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.scss']
 })
@@ -15,9 +16,12 @@ export class ProductFormComponent implements OnInit {
     this.initForm(model);
   }
 
+  @Input() set category(category: ProductCategoryModel) {this._category = category}
+
   @Input() hasParent = false
 
   form!: FormGroup;
+  private _category!: ProductCategoryModel;
 
   constructor(private fb: FormBuilder) { }
 
@@ -29,41 +33,26 @@ export class ProductFormComponent implements OnInit {
     this.form = this.fb.group({
       parent: this.fb.control(model?.parent,
         {validators: [requiredIf(this.hasParent)]}),
-      item_code: this.fb.control(model?.item_code,
-        {
-          validators: [Validators.required]
-        }),
-      mpn: this.fb.control(model?.mpn,
-        {validators: [Validators.required]}),
+      item_code: this.fb.control(model?.item_code, {validators: [Validators.required]}),
+      manufacturer_part_number: this.fb.control(model?.manufacturer_part_number),
       description: this.fb.control(model?.description,
-        {
-          validators: [Validators.required, Validators.maxLength(230)]
-        }),
+        {validators: [Validators.required, Validators.maxLength(230)]}),
       local_description: this.fb.control(model?.local_description,
-        {
-          validators: [Validators.maxLength(230)]
-        }),
+        {validators: [Validators.maxLength(230)]}),
       chinese_description: this.fb.control(model?.chinese_description,
-        {
-          validators: [Validators.maxLength(230)]
-        }),
-      eoq: this.fb.control(model?.eoq,
-        {
-          validators: [Validators.required, Validators.min(0)]
-        }),
-      minl: this.fb.control(model?.minl,
-        {
-          validators: [Validators.required, Validators.min(0)]
-        }),
-      rol: this.fb.control(model?.rol,
-        {
-          validators: [Validators.required, Validators.min(0)]
-        }),
-      maxl: this.fb.control(model?.maxl,
-        {
-          validators: [Validators.required, Validators.min(0)]
-        }),
+        {validators: [Validators.maxLength(230)]}),
+      economic_order_qty: this.fb.control(model?.economic_order_qty,
+        {validators: [Validators.required, Validators.min(0)]}),
+      min_level: this.fb.control(model?.min_level,
+        {validators: [Validators.required, Validators.min(0)]}),
+      reorder_level: this.fb.control(model?.reorder_level,
+        {validators: [Validators.required, Validators.min(0)]}),
+      max_level: this.fb.control(model?.max_level,
+        {validators: [Validators.required, Validators.min(0)]}),
     });
   }
 
+  get category(): ProductCategoryModel {
+    return this._category;
+  }
 }
