@@ -30,7 +30,7 @@ export class SearchWorksheetComponent implements OnInit {
     if (this.client) {
       return {
         search: '%s',
-        client_id: this.client.id
+        client_id: this.client.id.toString()
       }
     }
     return {search: '%s'}

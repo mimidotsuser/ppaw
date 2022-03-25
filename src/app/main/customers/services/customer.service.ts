@@ -1,99 +1,36 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { CustomersModule } from '../customers.module';
 import { HttpService } from '../../../core/services/http.service';
 import { CustomerModel } from '../../../models/customer.model';
+import { PaginationModel } from '../../../models/pagination.model';
+import { HttpResponseModel } from '../../../models/response.model';
 
 @Injectable({
   providedIn: CustomersModule
 })
 export class CustomerService {
 
-  private clients$ = new BehaviorSubject<CustomerModel[]>([]);
 
-  constructor(private http: HttpService) {
-    this.clients$.next([
-      {
-        id: 'Em34PuZA0jbs04',
-        parent_id: null,
-        name: 'Cooperative Bank',
-        branch: 'HQ-Co-operative House',
-        location: 'Haile Selassie Avenue, Nairobi',
-        region: 'Nairobi',
-        contracts_total: 3,
-        created_by_id: '',
-        created_at: new Date().toLocaleDateString()
-      },
-      {
-        id: '6mKy1FhLWuQVZ0O',
-        parent_id: 'Em34PuZA0jbs04',
-        name: 'Cooperative Bank',
-        branch: 'Mlolongo',
-        location: '',
-        region: 'Nairobi',
-        contracts_total: 3,
-        created_by_id: '',
-        created_at: new Date().toLocaleDateString()
-      },
-      {
-        id: 'OZvFAdU1nkYWl6Vb',
-        parent_id: 'Em34PuZA0jbs04',
-        name: 'Cooperative Bank',
-        branch: 'Athi river',
-        location: '',
-        region: 'Nairobi',
-        contracts_total: 3,
-        created_by_id: '',
-        created_at: new Date().toLocaleDateString()
-      },
-      {
-        id: 'FNP40i8fecjaZON3',
-        parent_id: null,
-        name: 'National Bank',
-        branch: 'Head Office',
-        location: 'National Bank Building, Harambee Avenue',
-        region: 'Nairobi',
-        contracts_total: 0,
-        created_by_id: '',
-        created_at: new Date().toLocaleDateString()
-      },
-      {
-        id: 'ZGqPFhVBNmv0dqAv',
-        parent_id: 'FNP40i8fecjaZON3',
-        name: 'National Bank',
-        branch: 'Kitengela',
-        location: '',
-        region: 'Nairobi',
-        contracts_total: 0,
-        created_by_id: '',
-        created_at: new Date().toLocaleDateString()
-      },
-      {
-        id: 'hMu91M6IeGHTJGQi',
-        parent_id: 'FNP40i8fecjaZON3',
-        name: 'National Bank',
-        branch: 'Karatina',
-        location: '',
-        region: 'Thika',
-        contracts_total: 0,
-        created_by_id: '',
-        created_at: new Date().toLocaleDateString()
-      },
-      {
-        id: '54CAQUC07cRAWwI1',
-        parent_id: 'FNP40i8fecjaZON3',
-        name: 'National Bank',
-        branch: 'Nyeri',
-        location: '',
-        region: 'Central East',
-        contracts_total: 0,
-        created_by_id: '',
-        created_at: new Date().toLocaleDateString()
-      },
-    ]);
+  constructor(private httpService: HttpService) {
   }
 
-  get clients(): Observable<CustomerModel[]> {
-    return this.clients$;
+  fetch(meta: PaginationModel): Observable<HttpResponseModel<CustomerModel>> {
+    return this.httpService
+      .get(this.httpService.endpoint.customers, {params: {...meta, include: 'parent'}});
+  }
+
+  create(model: CustomerModel): Observable<CustomerModel> {
+    return this.httpService.post(this.httpService.endpoint.customers, model)
+      .pipe(map((res: { data: CustomerModel }) => res.data))
+  }
+
+  update(id: number, model: CustomerModel): Observable<CustomerModel> {
+    return this.httpService.patch(`${this.httpService.endpoint.customers}/${id}`, model)
+      .pipe(map((res: { data: CustomerModel }) => res.data))
+  }
+
+  destroy(id: number): Observable<null> {
+    return this.httpService.destroy(`${this.httpService.endpoint.customers}/${id}`)
   }
 }

@@ -11,28 +11,14 @@ export class CustomerFormComponent implements OnInit {
 
   form!: FormGroup;
 
-  @Input() set model(model: null | CustomerModel) {this.initForm(model)};
+  @Input() set model(model: CustomerModel) {this.initForm(model)};
 
-  constructor(private fb: FormBuilder) {
-    this.initForm();
-  }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
   }
 
-  initForm(model: null | CustomerModel = null) {
-    if (!model) {
-      model = {
-        id: '',
-        name: '',
-        region: '',
-        location: '',
-        branch: '',
-        parent_id: '',
-        parent: undefined,
-        created_at: ''
-      }
-    }
+  initForm(model: CustomerModel) {
 
     this.form = this.fb.group({
       id: this.fb.control(model.id),
@@ -59,7 +45,7 @@ export class CustomerFormComponent implements OnInit {
     if ((this.form.get('name')?.touched && !this.form.get('name')?.value) ||
       !this.form.get('name')?.touched) {
       const parent = (this.form.get('parent')?.value as CustomerModel);
-      this.form.get('name')?.patchValue(parent?.name ? parent.name + ' branch ' : '');
+      this.form.get('name')?.patchValue(parent?.name || '');
     }
   }
 }

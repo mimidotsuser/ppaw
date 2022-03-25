@@ -11,7 +11,7 @@ export class WorksheetService {
 
   constructor(private http: HttpService) { }
 
-  fetchClientMachines(client_id: string): Observable<ProductItemModel[]> {
+  fetchClientMachines(client_id: number): Observable<ProductItemModel[]> {
     return this.http.get('/product-serials', {params: {client_id}})
       .pipe(map((val: { data: ProductItemModel[] }) => val.data))
   }

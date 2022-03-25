@@ -3,7 +3,7 @@
   <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
     <div class="col-sm-6 col-md-3 data-filters">
       <input type="text" class="form-control search" placeholder="Filter"
-             [formControl]="clientSearchInput">
+             [formControl]="searchControl">
     </div>
 
     <div class="d-md-block">
@@ -24,60 +24,72 @@
       <th>Branch</th>
       <th>Region</th>
       <th>Location</th>
-      <th>Contracts</th>
       <th></th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let client of clients|async">
+    <tr *ngFor="let customer of customers|slice:tableCountStart:tableCountEnd">
 
       <td>
         <span class="td-inline-label">Name</span>
-        {{client.name}}
+        {{customer.name}}
       </td>
       <td>
         <span class="td-inline-label">Branch</span>
-        {{client.branch}}
+        {{customer.branch}}
       </td>
       <td>
         <span class="td-inline-label">Region</span>
-        {{client.region}}
+        {{customer.region}}
       </td>
       <td>
         <span class="td-inline-label">Location</span>
-        {{client.location}}
-      </td>
-      <td>
-        <span class="td-inline-label">Contracts Total</span>
-        <a routerLink="{{client.id}}/contracts" class="text-decoration-none">
-          {{client.contracts_total}}
-        </a>
+        {{customer.location}}
       </td>
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
           <div ngbDropdown class="d-inline-block">
-            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp"
+            <button class="btn btn-outline-secondary hide-dropdown-toggle border-0" id="dp"
                     ngbDropdownToggle>
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
 
-              <button ngbDropdownItem *ngIf="!client.parent_id" (click)="showCreateForm(client)">
+              <button ngbDropdownItem *ngIf="!customer.parent_id"
+                      (click)="showCreateForm(customer)">
                 Add Branch
               </button>
-              <button ngbDropdownItem (click)="showEditForm(client)">Edit</button>
-              <button ngbDropdownItem (click)="deleteClient(client)">Delete</button>
+              <button ngbDropdownItem (click)="showEditForm(customer)">Edit</button>
+              <button ngbDropdownItem (click)="deleteCustomer(customer)">Delete</button>
             </div>
           </div>
         </div>
       </td>
     </tr>
+    <ng-container *ngIf="customers.length===0">
+      <tr>
+        <td class="text-center py-3" colspan="9">
+          <ng-container *ngIf="!searchControl.value;else noResults">
+            There is no customers.&nbsp;
+            <a class="text-decoration-none" (click)="showCreateForm()">
+              Click to add new item
+            </a>
+          </ng-container>
+          <ng-template #noResults>
+            No data matching filters criteria
+          </ng-template>
+        </td>
+      </tr>
+    </ng-container>
     </tbody>
   </table>
-
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination" (pageChange)="loadCustomers()">
+    </pagination>
+  </div>
 </div>
-<app-side-popup [(show)]="openFormSidePopup"
-                [title]="this.model?.id?'Update Client Details':'Add Client Details'">
+<app-side-popup [(show)]="showCustomerFormPopup"
+                [title]="this.model?.id?'Update Customer Details':'Create New Customer'">
 
   <app-customer-form [model]="this.model" #clientFormComponent>
     <div class="d-flex gap-2">
@@ -91,7 +103,7 @@
         UPDATE
       </button>
       <button type="button" class="btn btn-cancel"
-              (click)="this.closeFormPopup(clientFormComponent.form)">
+              (click)="this.closeCustomerFormPopup(clientFormComponent.form)">
         CANCEL
       </button>
     </div>
