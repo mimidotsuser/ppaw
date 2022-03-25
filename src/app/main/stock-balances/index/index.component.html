@@ -67,7 +67,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of itemsBalances">
+    <tr *ngFor="let item of itemsBalances|slice:tableCountStart:tableCountEnd">
       <td>
         <span class="td-inline-label">Item</span>
         <div class="d-flex flex-column">
@@ -109,16 +109,13 @@
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
           <div ngbDropdown class="d-inline-block">
-            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="adp"
+            <button class="btn btn-outline-secondary hide-dropdown-toggle border-0" id="adp"
                     ngbDropdownToggle>
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="adp">
-              <button ngbDropdownItem>
+              <button ngbDropdownItem (click)="showBalanceAdjustmentForm(item)">
                 Adjust Balance
-              </button>
-              <button ngbDropdownItem>
-                Edit Item
               </button>
             </div>
           </div>
@@ -144,24 +141,41 @@
     </tbody>
   </table>
   <div class="pagination-col d-flex justify-content-end w-100 pr-5">
-    <ngb-pagination [(page)]="pagination.page" [pageSize]="pagination.perPage"
-                    [collectionSize]="100" (pageChange)="loadProductBalances($event)">
-      <ng-template ngbPaginationPrevious>
-        Previous
-      </ng-template>
-      <ng-template ngbPaginationPages>
-        <div
-          class="pagination-info d-flex align-items-center disabled page-item">
-          <span class="page-link">
-          {{(pagination.perPage * pagination.page) - pagination.perPage + 1}} -
-            {{pagination.page * pagination.perPage}} of 100
-            </span>
-        </div>
-
-      </ng-template>
-      <ng-template ngbPaginationNext>
-        Next
-      </ng-template>
-    </ngb-pagination>
+    <pagination [meta]="pagination" (pageChange)="loadProductBalances()">
+    </pagination>
   </div>
 </div>
+
+<app-side-popup [(show)]="showAdjustmentFormPopup" title="Adjust Product Quantity Stock Count">
+
+  <div class="row" [formGroup]="form">
+
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Item code</label>
+      <input type="text" class="form-control" formControlName="item_code">
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Manufacturer Part Number</label>
+      <input type="text" class="form-control" formControlName="manufacturer_part_number">
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">System Current Balance</label>
+      <input type="number" class="form-control" formControlName="stock_balance">
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Stock on Hand</label>
+      <input type="number" class="form-control" formControlName="total_qty_in">
+    </div>
+
+  </div>
+
+  <div class="d-flex gap-2">
+    <button type="button" class="btn btn-primary" (click)="updateBalance()">
+      UPDATE
+    </button>
+    <button type="button" class="btn btn-cancel"
+            (click)="showAdjustmentFormPopup=false">
+      CANCEL
+    </button>
+  </div>
+</app-side-popup>

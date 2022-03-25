@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { faFilter, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisV, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
 import { StockBalanceService } from '../services/stock-balance.service';
+import { PaginationModel } from '../../../models/pagination.model';
 
 @Component({
   selector: 'app-index',
@@ -11,38 +12,97 @@ import { StockBalanceService } from '../services/stock-balance.service';
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit, OnDestroy {
-
   searchInput: FormControl;
+  form: FormGroup;
   faFilter = faFilter
   faEllipsisV = faEllipsisV;
-  itemsBalances: ProductBalanceModel[] = []
-  private subscriptions: Subscription[] = []
-  pagination = {
-    perPage: 15,
-    page: 1
+  private _itemsBalances: ProductBalanceModel[] = []
+  private _subscriptions: Subscription[] = []
+  pagination: PaginationModel = {
+    total: 0,
+    page: 1,
+    limit: 5
   }
+  showAdjustmentFormPopup = false;
 
-  constructor(private ledgerService: StockBalanceService, private fb: FormBuilder) {
+  constructor(private stockBalanceService: StockBalanceService, private fb: FormBuilder) {
+
     this.searchInput = this.fb.control(null);
+
+    this.form = fb.group({
+      id: fb.control({value: null, disabled: true}),
+      item_code: fb.control({value: null, disabled: true}),
+      manufacturer_part_number: fb.control({value: null, disabled: true}),
+      stock_balance: fb.control({value: 0, disabled: true}),
+      total_qty_in: fb.control(0),
+    });
   }
 
   ngOnInit(): void {
-    //load initial items on page load
-    const x = this.ledgerService.fetchAll(this.pagination)
-      .subscribe((val) => this.itemsBalances = val);
-    this.subscriptions.push(x)
+    this.loadProductBalances();
   }
 
-  loadProductBalances(page: number) {
-    this.pagination.page = page;
-    const x = this.ledgerService
-      .fetchAll({page: this.pagination.page, perPage: this.pagination.perPage})
-      .subscribe((val) => this.itemsBalances = val);
+  set subSink(value: Subscription) {
+    this._subscriptions.push(value);
+  }
 
-    this.subscriptions.push(x)
+  get itemsBalances(): ProductBalanceModel[] {
+    return this._itemsBalances;
+  }
+
+  loadProductBalances() {
+    //if data has already been loaded, don't re-fetch it
+    if (this.tableCountEnd <= this._itemsBalances.length) {
+      return;
+    }
+
+    this.subSink = this.stockBalanceService.fetchAll(this.pagination)
+      .subscribe({
+        next: (res) => {
+          this._itemsBalances = this._itemsBalances.concat(res.data);
+          this.pagination.total = res.total;
+        }
+      })
+
+  }
+
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
+  }
+
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
+  }
+
+  showBalanceAdjustmentForm(model: ProductBalanceModel) {
+    this.form.patchValue({
+      id: model.id,
+      item_code: model.product?.item_code || '',
+      manufacturer_part_number: model.product?.manufacturer_part_number || '',
+      stock_balance: model.stock_balance,
+      total_qty_in: model.stock_balance,
+    })
+    this.showAdjustmentFormPopup = true;
+  }
+
+  updateBalance() {
+    this.form.markAllAsTouched();
+    if (this.form.invalid) {return}
+    if (!this.form.dirty) {this.showAdjustmentFormPopup = false;}
+
+    const payload={total_qty_in: this.form.get('total_qty_in')?.value}
+    this.subSink = this.stockBalanceService
+      .update(this.form.get('id')?.value as number, payload)
+      .subscribe((model) => {
+        const index = this.itemsBalances.findIndex((b) => b.id === model.id);
+        if (index > -1) {
+          this.itemsBalances[ index ] = model;
+        }
+        this.showAdjustmentFormPopup = false;
+      })
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.map((sub) => sub.unsubscribe());
+    this._subscriptions.map((sub) => sub.unsubscribe());
   }
 }
