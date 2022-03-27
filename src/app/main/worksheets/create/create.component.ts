@@ -36,7 +36,7 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   get workCategories(): { code: (keyof typeof WorkCategory), title: WorkCategory }[] {
     return [
-      {code: 'MACHINE_REPAIR', title: WorkCategory.MACHINE_REPAIR},
+      {code: 'REPAIR', title: WorkCategory.REPAIR},
       {code: 'GENERAL_SERVICING', title: WorkCategory.GENERAL_SERVICING},
       {code: 'DELIVERY_AND_INSTALLATION', title: WorkCategory.DELIVERY_AND_INSTALLATION},
       {code: 'TECHNICAL_REPORT', title: WorkCategory.TECHNICAL_REPORT},

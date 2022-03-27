@@ -1,1 +1,196 @@
-<p>index works!</p>
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+    <div class="data-filters d-flex gap-2 col-md-6">
+      <div class="col-md-5 mb-1">
+        <input type="text" class="form-control search" [formControl]="searchInput"
+               placeholder="Search by serial number">
+      </div>
+      <div class="col-md-4 mb-1">
+
+      </div>
+    </div>
+
+    <div class="col-md-5 gap-2 justify-content-end d-flex">
+      <div class="d-md-block">
+        <button type="button" class="btn btn-outline-primary"
+                (click)="openCreateForm()">
+          + New Product Item
+        </button>
+      </div>
+      <div class="d-md-block ">
+        <a type="button" class="btn btn-outline-success d-none" routerLink="create">
+          + Bulk Items Entry
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="container-md-fluid mt-3">
+  <table class="table table-hover table-block-sm table-bordered">
+    <thead>
+    <tr>
+      <th class="product-column">Item</th>
+      <th>Serial Number</th>
+      <th>Location</th>
+      <th>Warrant</th>
+      <th>Status</th>
+      <th class="actions-column"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of productItems|slice:tableCountStart:tableCountEnd">
+      <td>
+        <span class="td-inline-label">Item</span>
+        <div class="d-flex flex-column">
+          {{item?.product?.item_code}}
+          <small class="text-muted">
+            {{item?.product?.local_description || item?.product?.description}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Serial Number</span>
+        {{item.serial_number}}
+      </td>
+      <td>
+        <span class="td-inline-label">Location</span>
+        {{item?.latest_entry_log?.location?.name || ''}}
+      </td>
+      <td>
+        <span class="td-inline-label">Warrant</span>
+        <div class="d-flex flex-column">
+          <small>{{item?.latest_entry_log?.warrant?.warrant_start|date}}</small>
+          <small *ngIf="item?.latest_entry_log?.warrant" class="text-muted">to</small>
+          <small>{{item?.latest_entry_log?.warrant?.warrant_end|date}}</small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Status</span>
+        {{item.out_of_order ? 'Out of order' : 'Good condition'}}
+      </td>
+      <td>
+        <div class="d-flex flex-column gap-2">
+        </div>
+        <div class="d-flex gap-2 justify-content-end w-100">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary border-0 hide-dropdown-toggle border-0"
+                    ngbDropdownToggle>
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dp">
+              <a routerLink="{{item.id}}/history" ngbDropdownItem>
+                View all activity logs
+              </a>
+              <a ngbDropdownItem *ngIf="item.purchase_order_id"> View purchase order</a>
+              <a ngbDropdownItem *ngIf="item?.latest_entry_log?.customer_contract_id">
+                View contract
+              </a>
+              <button ngbDropdownItem class="d-none">Edit Item</button>
+            </div>
+          </div>
+        </div>
+      </td>
+
+    </tr>
+
+    <ng-container *ngIf="productItems.length===0">
+      <tr>
+        <td class="text-center py-3" colspan="9">
+          <ng-container *ngIf="!searchInput.value;else noResults">
+            There is no product items.&nbsp;
+            <a class="text-decoration-none" (click)="openCreateForm()">
+              Click to add a new item
+            </a>
+          </ng-container>
+          <ng-template #noResults>
+            No data matching filtered criteria
+          </ng-template>
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination"></pagination>
+  </div>
+</div>
+
+<app-side-popup [(show)]="showProductItemFormPopup"
+                [title]="form.value.id?'Update Machine Item Details':'Add Machine Item Details'">
+
+  <div class="row" [formGroup]="form">
+    <div class="mb-3 col-6">
+      <label class="form-label required">Machine Item Mode</label>
+      <ng-container *ngIf="machineCategory">
+        <product-typeahead-input customId="parent" controlName="product"
+                                 [category]="machineCategory">
+        </product-typeahead-input>
+      </ng-container>
+    </div>
+    <div class="mb-3 col-6">
+      <label class="form-label required">Serial Number</label>
+      <input type="text" class="form-control" formControlName="serial_number">
+    </div>
+    <div class="mb-3 col-md-6">
+      <label class="form-label required">Current Location</label>
+      <select class="form-select" (change)="locationFormChange($event)">
+        <option *ngFor="let loc of productItemLocations" [value]="loc.value">
+          {{loc.title}}
+        </option>
+      </select>
+    </div>
+    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse">
+      <label class="form-label required" for="customer">Customer</label>
+      <customer-typeahead-input controlName="customer" customId="customer">
+      </customer-typeahead-input>
+    </div>
+    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse">
+      <label class="form-label">Current contract</label>
+      <select class="form-select" formControlName="contract">
+
+      </select>
+    </div>
+    <div class="mb-3 col-md-6" *ngIf="!this.itemOutsideWarehouse">
+      <label class="form-label required" id="warehouse">Warehouse</label>
+      <select class="form-select" formControlName="warehouse">
+        <option *ngFor="let warehouse of warehouses" [ngValue]="warehouse">
+          {{warehouse.name}}
+        </option>
+      </select>
+    </div>
+
+    <div class="mb-3 col-md-6">
+      <label class="form-label">Purchase Order</label>
+      <po-typeahead-input controlName="purchase_order" customId="purchase_order">
+      </po-typeahead-input>
+    </div>
+
+    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse">
+      <label class="form-label">Warrant Start</label>
+      <input type="date" class="form-control" formControlName="warrant_start">
+    </div>
+    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse">
+      <label class="form-label">Warrant End</label>
+      <input type="date" class="form-control" formControlName="warrant_end"
+             [min]="minAllowedWarrantEndDate">
+    </div>
+    <div class="mb-3 col-md-6" *ngIf="!this.itemOutsideWarehouse">
+      <label class="form-label">Working Status</label>
+      <select class="form-select" formControlName="out_of_order">
+        <option [ngValue]="false">In good condition</option>
+        <option [ngValue]="true">Out of order</option>
+      </select>
+    </div>
+  </div>
+  <div class="d-flex gap-2 mt-2">
+
+    <button type="button" class="btn btn-primary" (click)="submitForm()">
+      CREATE
+    </button>
+
+    <button type="button" class="btn btn-cancel" (click)="this.closeProductItemFormPopup()">
+      CANCEL
+    </button>
+  </div>
+</app-side-popup>

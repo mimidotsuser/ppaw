@@ -3,10 +3,11 @@ import { ProductBalanceModel } from './product-balance.model';
 
 export interface ProductModel {
   id: number;
-  parent_id?: string;
+  parent_id?: number;
   parent?: ProductModel;
-  variant_of_id?: string;
+  variant_of_id?: number;
   variant_of?: ProductModel;
+  variants?: ProductModel[];
   item_code: string;
   manufacturer_part_number?: string;
   description: string;

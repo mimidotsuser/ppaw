@@ -6,7 +6,7 @@ import { ProductItemModel } from './product-item.model';
 export enum WorkCategory {
   DELIVERY_AND_INSTALLATION = 'Delivery and Installation',
   TRAINING_AND_INSTALLATION = 'Training and Installation',
-  MACHINE_REPAIR = 'Machine Repair',
+  REPAIR = 'Machine Repair',
   GENERAL_SERVICING = 'Service and Maintenance',
   TECHNICAL_REPORT = 'Technical Report',
   OTHER = 'Other'
