@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import { MRFModel, MRFOrderItemModel, MRFStage } from '../../../../models/m-r-f.model';
+import { MRFItemModel, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
 import { MaterialRequisitionService } from '../../services/material-requisition.service';
 
 @Component({
@@ -34,11 +34,8 @@ export class CreateComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  formatOrderId(order: number) {
-    return this.crService.formatOrderId(order);
-  }
 
-  aggregateQty(items: MRFOrderItemModel[]) {
+  aggregateQty(items: MRFItemModel[]) {
     return this.crService.aggregateQty(items);
   }
 
@@ -47,15 +44,15 @@ export class CreateComponent implements OnInit {
   }
 
   get requesterRemarks() {
-    const log = this.model?.logs ?
-      this.model?.logs.find((log) => log?.stage === MRFStage.CREATE) : null;
+    const log = this.model?.activities ?
+      this.model?.activities.find((log) => log?.stage === MRFStage.REQUEST_CREATED) : null;
 
     return log ? log.remarks : '';
   }
 
   get verifierRemarks() {
-    const log = this.model?.logs ?
-      this.model?.logs.find((log) => log?.stage === MRFStage.VERIFY) : null;
+    const log = this.model?.activities ?
+      this.model?.activities.find((log) => log?.stage === MRFStage.VERIFIED_OKAYED) : null;
 
     return log ? log.remarks : '';
   }

@@ -23,12 +23,12 @@
     <tr *ngFor="let request of checkoutRequests|async">
       <td>
         <span class="td-inline-label">Request No.</span>
-        <a [routerLink]="request.id"
-           class="text-decoration-none">{{formatOrderId(request.order_id)}} </a>
+        <a [routerLink]="request.id.toString()"
+           class="text-decoration-none">{{request.sn}} </a>
       </td>
       <td>
         <span class="td-inline-label">Total Items</span>
-        {{aggregateQty(request.order_items).requested}}
+        {{aggregateQty(request.items).requested}}
       </td>
 
       <td>

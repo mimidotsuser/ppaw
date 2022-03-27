@@ -24,8 +24,8 @@
     <tr *ngFor="let request of requests|async">
       <td>
         <span class="td-inline-label">Request No.</span>
-        <a [routerLink]="request.id" class="text-decoration-none">
-          {{formatOrderId(request.order_id)}}
+        <a [routerLink]="request.id.toString()" class="text-decoration-none">
+          {{request.sn}}
         </a>
       </td>
 

@@ -7,7 +7,7 @@
     <div class="col-md-4 mb-3">
       <label for="request_id" class="form-label">Request No.</label>
       <input type="text" class="form-control" disabled id="request_id"
-             [value]="formatOrderId(requestModel?.order_id||0)">
+             [value]="requestModel?.sn">
     </div>
 
     <div class="col-md-4 mb-3">
@@ -55,8 +55,8 @@
     </tr>
     </thead>
     <tbody>
-    <ng-container *ngFor="let item of requestModel?.order_items">
-      <tr *ngIf="item?.qty_approved!>0">
+    <ng-container *ngFor="let item of requestModel?.items">
+      <tr *ngIf="item?.approved_qty!>0">
         <td>
           <span class="td-inline-label">Item</span>
           <div class="d-flex flex-column">
@@ -68,26 +68,26 @@
         </td>
         <td>
           <span class="td-inline-label">Purpose</span>
-          {{item.purpose}}
+          {{item.purpose_title}}
         </td>
         <td>
           <span class="td-inline-label">Client</span>
           <div class="d-flex flex-column">
-            {{item?.client?.name}}
+            {{item?.customer?.name}}
             <small class="text-muted">
-              {{item?.client?.branch || item?.client?.region}}
+              {{item?.customer?.branch || item?.customer?.region}}
             </small>
           </div>
         </td>
         <td>
           <span class="td-inline-label">Qty Approved</span>
-          <div class="text-sm-center"> {{item.qty_approved}}</div>
+          <div class="text-sm-center"> {{item.approved_qty}}</div>
         </td>
         <td>
           <span class="td-inline-label">Qty Issued</span>
           <div class="text-sm-center"
-               [ngClass]="(item?.qty_approved||0) > (item?.qty_issued||0)?'text-danger':'text-success'">
-            {{item?.qty_issued || 0}}
+               [ngClass]="(item?.approved_qty||0) > (item?.issued_qty||0)?'text-danger':'text-success'">
+            {{item?.issued_qty || 0}}
           </div>
         </td>
 

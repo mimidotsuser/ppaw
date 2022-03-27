@@ -4,7 +4,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { faCartPlus } from '@fortawesome/free-solid-svg-icons';
 import { faWindowClose } from '@fortawesome/free-regular-svg-icons';
-import { MRFModel, MRFOrderItemModel, MRFStage } from '../../../../models/m-r-f.model';
+import { MRFItemModel, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
 import { CheckoutService } from '../../services/checkout.service';
 import { SearchService } from '../../../../shared/services/search.service';
 import { ProductSerialModel } from '../../../../models/product-serial.model';
@@ -25,7 +25,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   faWindowClose = faWindowClose;
   showIssueFormPopup = false;
   issueFormPopupFullscreen = false;
-  selectedOrderItem: MRFOrderItemModel | null = null;
+  selectedOrderItem: MRFItemModel | null = null;
 
   defaultWarrantStartDate = new Date();
   defaultWarrantEndDate = addDaysToDate(this.defaultWarrantStartDate, 365);
@@ -57,37 +57,33 @@ export class CreateComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
   }
 
-  formatOrderId(order: number): string {
-    return this.checkoutService.formatOrderId(order);
-  }
-
   get name() {
     return `${this.requestModel?.created_by?.first_name || ''} ${this.requestModel?.created_by?.last_name || ''}`
   }
 
   get requesterRemarks() {
-    const log = this.requestModel?.logs ?
-      this.requestModel?.logs.find((log) => log?.stage === MRFStage.CREATE) : null;
+    const log = this.requestModel?.activities ?
+      this.requestModel?.activities.find((log) => log?.stage === MRFStage.REQUEST_CREATED) : null;
 
     return log ? log.remarks : '';
   }
 
   get verifierRemarks() {
-    const log = this.requestModel?.logs ?
-      this.requestModel?.logs.find((log) => log?.stage === MRFStage.VERIFY) : null;
+    const log = this.requestModel?.activities ?
+      this.requestModel?.activities.find((log) => log?.stage === MRFStage.VERIFIED_OKAYED) : null;
 
     return log ? log.remarks : '';
   }
 
   get approverRemarks() {
-    const log = this.requestModel?.logs ?
-      this.requestModel?.logs.find((log) => log?.stage === MRFStage.APPROVE) : null;
+    const log = this.requestModel?.activities ?
+      this.requestModel?.activities.find((log) => log?.stage === MRFStage.APPROVAL_OKAYED) : null;
 
     return log ? log.remarks : '';
   }
 
   get selectedOrderItemIsSpare() {
-    return this.selectedOrderItem?.type === 'spare';
+    return !this.selectedOrderItem?.product?.parent_id;
   }
 
   get issueFormPopupTitle() {
@@ -101,7 +97,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  openIssuePopupForm(item: MRFOrderItemModel) {
+  openIssuePopupForm(item: MRFItemModel) {
     this.selectedOrderItem = item;
     if (this.selectedOrderItemIsSpare) {
     } else {
@@ -142,7 +138,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     return (this.machineAllocationFormGroup.get('machineOrderItems') as FormArray)
   }
 
-  addMachineOrderItemsFormGroup(orderItem: MRFOrderItemModel) {
+  addMachineOrderItemsFormGroup(orderItem: MRFItemModel) {
     //check if group exists
     let group = this.machineOrderItemsFormGroup(orderItem.id);
     if (!group) {
@@ -157,7 +153,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  machineOrderItemsFormGroup(itemId: string): FormGroup | undefined {
+  machineOrderItemsFormGroup(itemId: number): FormGroup | undefined {
     return (this.machineOrderItemsFormArray.controls as FormGroup[])
       .find((group: FormGroup) => group.get('order_item_id')?.value === itemId)
   }
@@ -176,7 +172,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     });
   }
 
-  machineAllottedItemsForm(orderItem: MRFOrderItemModel): FormArray {
+  machineAllottedItemsForm(orderItem: MRFItemModel): FormArray {
     const root = this.machineOrderItemsFormGroup(orderItem.id);
     if (!root) {
       throw new Error('Trying to access machine allocation group from un-initialized array')
@@ -186,21 +182,21 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
 
-  addMachineAllottedItemFormGroup(orderItem: MRFOrderItemModel) {
+  addMachineAllottedItemFormGroup(orderItem: MRFItemModel) {
     const allottedMachinesForm = this.createMachineAllotmentForm();
     this.machineAllottedItemsForm(orderItem).push(allottedMachinesForm);
   }
 
-  removeMachineAllottedItemFormGroup(orderItem: MRFOrderItemModel, index: number) {
+  removeMachineAllottedItemFormGroup(orderItem: MRFItemModel, index: number) {
     this.machineAllottedItemsForm(orderItem).removeAt(index);
   }
 
-  canAddMachineAllottedItemForm(orderItem: MRFOrderItemModel) {
-    return this.machineAllottedItemsForm(orderItem).length < (orderItem.qty_approved || 0);
+  canAddMachineAllottedItemForm(orderItem: MRFItemModel) {
+    return this.machineAllottedItemsForm(orderItem).length < (orderItem.approved_qty || 0);
   }
 
 
-  saveOrderItemMachineIssue(orderItem: MRFOrderItemModel) {
+  saveOrderItemMachineIssue(orderItem: MRFItemModel) {
     // get the form
     const form = this.machineAllottedItemsForm(orderItem);
     form.markAllAsTouched();
@@ -209,7 +205,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       return
     }
     //update the quantity issued
-    orderItem.qty_issued = form.length;
+    orderItem.issued_qty = form.length;
     this.showIssueFormPopup = false;
   }
 
@@ -231,29 +227,29 @@ export class CreateComponent implements OnInit, OnDestroy {
     return this.spareAllocationFormGroup.get('allottedSpares') as FormArray
   }
 
-  createSpareAllotmentForm(orderItem: MRFOrderItemModel) {
+  createSpareAllotmentForm(orderItem: MRFItemModel) {
     return this.fb.group({
       order_item_id: this.fb.control(orderItem.id),
       product_id: this.fb.control(orderItem.product_id),
-      unused_total: this.fb.control(orderItem.qty_approved || 0,
+      unused_total: this.fb.control(orderItem.approved_qty || 0,
         {
           validators: [
             Validators.required, Validators.min(0),
-            Validators.max(orderItem.qty_approved || 0)
+            Validators.max(orderItem.approved_qty || 0)
           ]
         }),
       used_total: this.fb.control(0,
         {
           validators: [
             Validators.required, Validators.min(0),
-            Validators.max(orderItem.qty_approved || 0)
+            Validators.max(orderItem.approved_qty || 0)
           ],
           updateOn: 'blur'
         }),
     });
   }
 
-  spareAllotmentForm(orderItem: MRFOrderItemModel): FormGroup {
+  spareAllotmentForm(orderItem: MRFItemModel): FormGroup {
     //check if form exists first
     let group = (this.spareAllottedItemsForm.controls as FormGroup[])
       .find((group: FormGroup) => group.get('order_item_id')?.value === orderItem.id);
@@ -267,7 +263,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     return group;
   }
 
-  registerSpareControlSynchrony(orderItem: MRFOrderItemModel) {
+  registerSpareControlSynchrony(orderItem: MRFItemModel) {
     // get the form group
     const group = this.spareAllotmentForm(orderItem);
     if (!group || !group.get('used_total') || !group.get('unused_total')) {
@@ -275,15 +271,15 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
 
     const b = group.get('used_total')!.valueChanges.subscribe((value) => {
-      if ((orderItem.qty_approved || 0) - value > -1) {
-        group.get('unused_total')?.patchValue((orderItem.qty_approved || 0) - value)
+      if ((orderItem.approved_qty || 0) - value > -1) {
+        group.get('unused_total')?.patchValue((orderItem.approved_qty || 0) - value)
       }
     });
 
     this.subscriptions.push(b)
   }
 
-  saveOrderItemSpareIssue(orderItem: MRFOrderItemModel) {
+  saveOrderItemSpareIssue(orderItem: MRFItemModel) {
     // get the form
     const form = this.spareAllotmentForm(orderItem);
     form.markAllAsTouched();
@@ -292,7 +288,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       return
     }
     //update the quantity issued (extra step approach)
-    orderItem.qty_issued = (form.get('used_total')?.value || 0) +
+    orderItem.issued_qty = (form.get('used_total')?.value || 0) +
       (form.get('unused_total')?.value || 0)
     this.showIssueFormPopup = false;
 
@@ -300,8 +296,8 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   submitOrderFulfillment() {
     //verify all items have been issued
-    const notIssued = this.requestModel!.order_items
-      .find((item) => (item.qty_approved || 0) > (item.qty_issued || 0));
+    const notIssued = this.requestModel!.items
+      .find((item) => (item.approved_qty || 0) > (item.issued_qty || 0));
 
     if (notIssued) {
       alert('You have not issued all the items');

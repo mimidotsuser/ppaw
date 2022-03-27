@@ -1,4 +1,3 @@
-
 <div class="container-fluid">
   <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
 
@@ -8,7 +7,7 @@
     <div class="col-md-3 mb-3">
       <label for="request_id" class="form-label">Request No.</label>
       <input type="text" class="form-control" disabled id="request_id"
-             [value]="formatOrderId(model?.order_id||0)">
+             [value]="model?.sn||''">
     </div>
 
     <div class="col-md-3 mb-3">
@@ -42,7 +41,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of model?.order_items">
+    <tr *ngFor="let item of model?.items">
       <td>
         <span class="td-inline-label">Item</span>
         <div class="d-flex flex-column">
@@ -54,14 +53,14 @@
       </td>
       <td>
         <span class="td-inline-label">Purpose</span>
-        {{item.purpose}}
+        {{item.purpose_title}}
       </td>
       <td>
-        <span class="td-inline-label">Client</span>
+        <span class="td-inline-label">Customer</span>
         <div class="d-flex flex-column">
-          {{item?.client?.name}}
+          {{item?.customer?.name}}
           <small class="text-muted">
-            {{item?.client?.branch || item?.client?.region}}
+            {{item?.customer?.branch || item?.customer?.region}}
           </small>
         </div>
       </td>
@@ -74,12 +73,12 @@
       </td>
       <td>
         <span class="td-inline-label">Qty Requested</span>
-        <div class="text-sm-center"> {{item.qty_requested}}</div>
+        <div class="text-sm-center"> {{item.requested_qty}}</div>
       </td>
       <td class="qty-cell">
         <span class="td-inline-label">Qty Verified</span>
-        <input type="number" class="form-control" min="0" max="{{item.qty_requested}}"
-               [value]="item.qty_requested">
+        <input type="number" class="form-control" min="0" max="{{item.requested_qty}}"
+               [value]="item.requested_qty">
       </td>
     </tr>
     </tbody>

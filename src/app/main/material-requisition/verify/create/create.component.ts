@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { MaterialRequisitionService } from '../../services/material-requisition.service';
-import { MRFModel, MRFOrderItemModel, MRFStage } from '../../../../models/m-r-f.model';
+import { MRFItemModel, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
 
 @Component({
   selector: 'app-verify',
@@ -33,11 +33,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
   }
 
-  formatOrderId(order: number) {
-    return this.crService.formatOrderId(order);
-  }
 
-  aggregateQty(items: MRFOrderItemModel[]) {
+  aggregateQty(items: MRFItemModel[]) {
     return this.crService.aggregateQty(items);
   }
 
@@ -46,8 +43,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   get requesterRemarks() {
-    const log = this.model?.logs ?
-      this.model?.logs.find((log) => log?.stage === MRFStage.CREATE) : null;
+    const log = this.model?.activities ?
+      this.model?.activities.find((log) => log?.stage === MRFStage.REQUEST_CREATED) : null;
 
     return log ? log.remarks : '';
   }

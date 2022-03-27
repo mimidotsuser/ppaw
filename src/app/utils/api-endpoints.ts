@@ -19,5 +19,16 @@ export enum V1Endpoints {
   productItems = '/product-items',
   purchaseOrders = '/purchase-orders',
   purchaseRequests = '/purchase-requests',
-  rfqs = 'rfqs',
+  rfqs = '/rfqs',
+
+  materialRequests = '/material-requisitions',
+
+  materialRequestVerification = '/material-requisitions/:id/verification',
+  materialRequestsPendingVerification = '/material-requisitions/verification',
+
+  materialRequestApproval = '/material-requisitions/:id/approval',
+  materialRequestsPendingApproval = '/material-requisitions/approval',
+
+  materialRequestIssue = '/material-requisitions/:id/issue',
+  materialRequestsPendingIssue = '/material-requisitions/issue',
 }

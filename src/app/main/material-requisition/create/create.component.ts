@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { map, Observable, of, startWith, Subscription, tap } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { MRFPurpose } from '../../../models/m-r-f.model';
+import { MRFPurposeCode } from '../../../models/m-r-f.model';
 import { WorksheetModel } from '../../../models/worksheet.model';
 import { CustomerModel } from '../../../models/customer.model';
 import { SearchService } from '../../../shared/services/search.service';
@@ -86,19 +86,19 @@ export class CreateComponent implements OnInit, OnDestroy {
       }));
   }
 
-  get purposes(): { id: MRFPurpose, title: string }[] {
+  get purposes(): { id: MRFPurposeCode, title: string }[] {
     const requestPurposes = [
-      {id: MRFPurpose.CLIENT_PURCHASE, title: 'Client Sale'},
-      {id: MRFPurpose.CLIENT_STANDBY, title: 'Standby'},
+      {id: MRFPurposeCode.CLIENT_PURCHASE, title: 'Client Sale'},
+      {id: MRFPurposeCode.CLIENT_STANDBY, title: 'Standby'},
     ];
 
     if (this.form.get('type')?.value === this.itemType.machine) {
       requestPurposes.push(
-        {id: MRFPurpose.CLIENT_DEMO, title: 'Client Demo'},
-        {id: MRFPurpose.CLIENT_LEASE, title: 'Client Lease'}
+        {id: MRFPurposeCode.CLIENT_DEMO, title: 'Client Demo'},
+        {id: MRFPurposeCode.CLIENT_LEASE, title: 'Client Lease'}
       )
     } else {
-      requestPurposes.unshift({id: MRFPurpose.CLIENT_REPAIR, title: 'Machine Repair'})
+      requestPurposes.unshift({id: MRFPurposeCode.CLIENT_REPAIR, title: 'Machine Repair'})
     }
 
     return requestPurposes;
@@ -178,7 +178,7 @@ interface FormModel {
   type: string;
   parent: null | ProductModel;
   product: ProductModel;
-  purpose: MRFPurpose;
+  purpose: MRFPurposeCode;
   client: CustomerModel;
   worksheet: null | WorksheetModel;
   qty: number;

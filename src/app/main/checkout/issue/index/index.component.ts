@@ -35,18 +35,14 @@ export class IndexComponent implements OnInit {
     return this.requests$;
   }
 
-  formatOrderId(order: number): string {
-    return this.checkoutService.formatOrderId(order);
-  }
-
 
   approvedOn(item: MRFModel): string {
-    const x = item?.logs?.find((log) => log.stage === MRFStage.APPROVE);
+    const x = item?.activities?.find((log) => log.stage === MRFStage.APPROVAL_OKAYED);
     return x ? x.created_at : '';
   }
 
   approver(item: MRFModel): string {
-    const x = item?.logs?.find((log) => log.stage === MRFStage.APPROVE);
+    const x = item?.activities?.find((log) => log.stage === MRFStage.APPROVAL_OKAYED);
     return x ? `${x.created_by?.first_name || ''} ${x.created_by?.last_name || ''}` : '---';
 
   }
