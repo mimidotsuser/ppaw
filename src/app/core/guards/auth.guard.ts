@@ -21,7 +21,10 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean |
     UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return !!this.authService.user && this.httpService
+    if (!this.authService.user) {
+      return this.router.parseUrl(`/login?src=${state.url}`)
+    }
+    return this.httpService
       .post(this.httpService.endpoint.authenticated, {}, {observe: 'response'})
       .pipe(map((res: HttpResponse<Object>) => res.status == 200))
       .pipe(catchError(x => of(this.router.parseUrl(`/login?src=${state.url}`))));
