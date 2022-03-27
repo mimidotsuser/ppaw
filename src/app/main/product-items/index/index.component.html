@@ -39,7 +39,8 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of productItems|slice:tableCountStart:tableCountEnd">
+    <tr
+      *ngFor="let item of productItems|slice:tableCountStart:tableCountEnd|filter:this.searchInput.value">
       <td>
         <span class="td-inline-label">Item</span>
         <div class="d-flex flex-column">
