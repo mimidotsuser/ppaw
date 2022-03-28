@@ -31,12 +31,12 @@
       <label for="password" class="form-label">New password</label>
       <input type="password" class="form-control" id="password" formControlName="password"
              autocomplete="new-password">
-      <small class="help-text text-danger d-block" *ngIf="form.get('password')!.touched &&
-            form!.get('password')!.hasError('maxlength')">
+      <small class="help-text text-danger d-block" *ngIf="form.get('password')?.touched &&
+            form.get('password')?.hasError('maxlength')">
         Password cannot exceed 17 characters
       </small>
-      <small class="help-text" [ngClass]="{'text-danger':form.get('password')!.touched &&
-            form!.get('password')!.hasError('pattern')}">
+      <small class="help-text" [ngClass]="{'text-danger':form.get('password')?.touched &&
+            form!.get('password')?.hasError('pattern')}">
         Must contain
         <span [ngClass]="{'text-del':validationStatus.lengthOk}"> at least eight characters</span>
         , with <span [ngClass]="{'text-del':validationStatus.hasLetters}"> at least 1 letter</span>
@@ -51,8 +51,8 @@
       <input type="password" class="form-control" id="password-confirm"
              formControlName="password_confirmation" autocomplete="new-password">
       <small class="error-text text-danger" *ngIf="form.get('password')!.touched  &&
-    form.get('confirm_password')!.touched &&
-       form!.get('confirm_password')!.hasError('noMatch')">
+    form.get('password_confirmation')?.touched &&
+       form.get('password_confirmation')?.hasError('noMatch')">
         Passwords don't match!
       </small>
     </div>
