@@ -104,7 +104,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   get selectedItemIsSpare(): boolean {
-    return !this.selectedOrderItem?.product?.parent_id;
+    return !!this.selectedOrderItem?.product?.parent_id;
   }
 
   get issueFormPopupTitle() {
