@@ -139,7 +139,7 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.showProductItemFormPopup = true;
   }
 
-  locationFormChange(evt: Event) {
+  locationFormChange() {
     this.itemOutsideWarehouse = !this.itemOutsideWarehouse;
     if (this.itemOutsideWarehouse) {
       this.form.get('customer')?.addValidators([Validators.required])
@@ -197,7 +197,8 @@ export class IndexComponent implements OnInit, OnDestroy {
       }
       this.updateProductItem(this.form.value.id, payload);
     } else {
-      if (!payload[ 'out_of_order' ] && payload[ 'purchase_order_id' ]) {
+      //if the item is in good condition and there is no purchase order,
+      if (!payload[ 'out_of_order' ] && !payload[ 'purchase_order_id' ]) {
         payload[ 'increment_stock_by' ] = 1;
       }
       this.createProductItem(payload);

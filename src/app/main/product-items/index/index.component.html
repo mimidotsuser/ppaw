@@ -177,7 +177,7 @@
              [min]="minAllowedWarrantEndDate">
     </div>
     <div class="mb-3 col-md-6" *ngIf="!this.itemOutsideWarehouse">
-      <label class="form-label">Working Status</label>
+      <label class="form-label required">Working Status</label>
       <select class="form-select" formControlName="out_of_order">
         <option [ngValue]="false">In good condition</option>
         <option [ngValue]="true">Out of order</option>
