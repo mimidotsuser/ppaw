@@ -92,7 +92,6 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   submitForm() {
-    return;
     this.form.markAllAsTouched();
     if (this.form.invalid) {return}
 
