@@ -135,7 +135,7 @@
     </div>
     <div class="mb-3 col-md-6">
       <label class="form-label required">Current Location</label>
-      <select class="form-select" (change)="locationFormChange($event)">
+      <select class="form-select" (change)="locationFormChange()">
         <option *ngFor="let loc of productItemLocations" [value]="loc.value">
           {{loc.title}}
         </option>
