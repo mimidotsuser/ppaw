@@ -35,8 +35,9 @@ export class MaterialRequisitionService {
     return this.httpService.get(this.httpService.endpoint.materialRequests, {params});
   }
 
-  requestsPendingVerification(meta: PaginationModel): Observable<HttpResponseModel<MRFModel>> {
-    return this.httpService.get(this.httpService.endpoint.materialRequestsPendingVerification);
+  fetchRequestsPendingVerification(meta: PaginationModel): Observable<HttpResponseModel<MRFModel>> {
+    return this.httpService
+      .get(this.httpService.endpoint.materialRequestsPendingVerification, {params: {...meta}});
   }
 
   requestsPendingApproval(meta: PaginationModel): Observable<HttpResponseModel<MRFModel>> {
