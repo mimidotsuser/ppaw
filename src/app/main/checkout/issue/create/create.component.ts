@@ -25,7 +25,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   showIssueFormPopup = false;
   cartButtonBusy = false;
   private _subscriptions: Subscription[] = [];
-  pagination: PaginationModel = {total: 0, page: 1, limit: 15};
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25};
   warehouses: WarehouseModel[] = [];
   defaultWarrantStartDate: Date;
   defaultWarrantEndDate: Date;

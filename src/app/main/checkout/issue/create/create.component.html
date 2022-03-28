@@ -55,7 +55,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of requestItems">
+    <tr *ngFor="let item of requestItems|slice:tableCountStart:tableCountEnd">
       <td>
         <span class="td-inline-label">Item</span>
         <div class="d-flex flex-column">
@@ -109,6 +109,9 @@
     </tr>
     </tbody>
   </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination"></pagination>
+  </div>
   <div class="row">
     <div class="col-md-6 mb-3">
       <label for="remarks" class="form-label">Remarks</label>
