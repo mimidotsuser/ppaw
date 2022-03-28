@@ -55,57 +55,64 @@
     </tr>
     </thead>
     <tbody>
-    <ng-container *ngFor="let item of requestModel?.items">
-      <tr *ngIf="item?.approved_qty!>0">
-        <td>
-          <span class="td-inline-label">Item</span>
-          <div class="d-flex flex-column">
-            {{item.product?.item_code}}
-            <small class="text-muted">
-              {{item.product?.local_description || item?.product?.description}}
-            </small>
-          </div>
-        </td>
-        <td>
-          <span class="td-inline-label">Purpose</span>
-          {{item.purpose_title}}
-        </td>
-        <td>
-          <span class="td-inline-label">Client</span>
-          <div class="d-flex flex-column">
-            {{item?.customer?.name}}
-            <small class="text-muted">
-              {{item?.customer?.branch || item?.customer?.region}}
-            </small>
-          </div>
-        </td>
-        <td>
-          <span class="td-inline-label">Qty Approved</span>
-          <div class="text-sm-center"> {{item.approved_qty}}</div>
-        </td>
-        <td>
-          <span class="td-inline-label">Qty Issued</span>
-          <div class="text-sm-center"
-               [ngClass]="(item?.approved_qty||0) > (item?.issued_qty||0)?'text-danger':'text-success'">
-            {{item?.issued_qty || 0}}
-          </div>
-        </td>
+    <tr *ngFor="let item of requestItems">
+      <td>
+        <span class="td-inline-label">Item</span>
+        <div class="d-flex flex-column">
+          {{item.product?.item_code}}
+          <small class="text-muted">
+            {{item.product?.local_description || item?.product?.description}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Purpose</span>
+        {{item.purpose_title}}
+      </td>
+      <td>
+        <span class="td-inline-label">Client</span>
+        <div class="d-flex flex-column">
+          {{item?.customer?.name}}
+          <small class="text-muted">
+            {{item?.customer?.branch || item?.customer?.region}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Qty Approved</span>
+        <div class="text-sm-center"> {{item.approved_qty}}</div>
+      </td>
+      <td>
+        <span class="td-inline-label">Qty Issued</span>
+        <div class="text-sm-center"
+             [ngClass]="(item?.approved_qty||0) > (item?.issued_qty||0)?'text-danger':'text-success'">
+          {{item?.issued_qty || 0}}
+        </div>
+      </td>
 
-        <td>
+      <td>
+        <ng-container *ngIf="!this.cartButtonBusy;else cartBusy">
           <button type="button" class="btn btn-sm btn-outline-success"
                   (click)="openIssuePopupForm(item)">
             <fa-icon [icon]="faCartPlus"></fa-icon>
             Issue
           </button>
-        </td>
-      </tr>
-    </ng-container>
+        </ng-container>
+
+        <ng-template #cartBusy>
+          <button type="button" class="btn btn-sm btn-outline-success">
+            <fa-icon [icon]="faSpinner" [spin]="true"></fa-icon>
+            please wait..
+          </button>
+        </ng-template>
+      </td>
+    </tr>
     </tbody>
   </table>
   <div class="row">
     <div class="col-md-6 mb-3">
       <label for="remarks" class="form-label">Remarks</label>
-      <textarea id="remarks" class="form-control"></textarea>
+      <textarea id="remarks" class="form-control" [formControl]="remarksControl"></textarea>
     </div>
     <div class="col-12">
       <button type="button" class="btn btn-primary btn-lg btn-submit"
@@ -117,75 +124,93 @@
 </div>
 
 <app-side-popup [(show)]="showIssueFormPopup" [title]="issueFormPopupTitle"
-                [(isFullScreen)]="issueFormPopupFullscreen"
+                [isFullScreen]="!selectedItemIsSpare"
                 *ngIf="selectedOrderItem && showIssueFormPopup">
 
-  <ng-container *ngIf="selectedOrderItemIsSpare">
-    <div class="row" [formGroup]="spareAllotmentForm(selectedOrderItem)">
-      <div class="col-md-6 mb-3">
-        <label for="ns" class="form-label">Total new spare issued</label>
-        <input type="number" id="ns" min="0" class="form-control" formControlName="unused_total">
-      </div>
+  <ng-container *ngIf="selectedItemIsSpare">
+    <ng-container *ngIf="spareAllotmentForm(selectedOrderItem) as group">
+      <form class="row" [formGroup]="group">
+        <div class="col-md-6 mb-3">
+          <label for="ns" class="form-label">Total new spare issued</label>
+          <input type="number" id="ns" min="0" class="form-control" formControlName="unused_total">
+          <small class="text-danger"
+                 *ngIf="group.get('unused_total')?.touched &&
+                        group.get('unused_total')?.getError('max')">
+            Max quantity available/allowed is {{  group.get('unused_total')?.getError('max').max}}
+          </small>
+        </div>
 
-      <div class="col-md-6 mb-3">
-        <label for="os" class="form-label">Total old spare issued</label>
-        <input type="number" id="os" min="0" class="form-control" formControlName="used_total">
-      </div>
-      <div class="col-12 d-flex gap-2">
-        <button type="button" class="btn btn-primary"
-                (click)="saveOrderItemSpareIssue(selectedOrderItem)">
-          Done
-        </button>
+        <div class="col-md-6 mb-3">
+          <label for="os" class="form-label">Total old spare issued</label>
+          <input type="number" id="os" min="0" class="form-control" formControlName="used_total">
+          <small class="text-danger"
+                 *ngIf="group.get('used_total')?.touched &&
+                        group.get('used_total')?.getError('max')">
+            Max quantity available/allowed is {{  group.get('used_total')?.getError('max').max}}
+          </small>
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <button type="submit" class="btn btn-primary"
+                  (click)="saveOrderItemSpareIssue(selectedOrderItem)">
+            Done
+          </button>
 
-        <button type="button" class="btn btn-cancel" (click)="showIssueFormPopup=false">
-          Cancel
-        </button>
-      </div>
-    </div>
+          <button type="button" class="btn btn-cancel" (click)="showIssueFormPopup=false">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </ng-container>
   </ng-container>
 
-  <ng-container *ngIf="!selectedOrderItemIsSpare">
+  <ng-container *ngIf="!selectedItemIsSpare">
     <form [formGroup]="machineOrderItemsFormGroup(selectedOrderItem.id)!">
-      <div class="row" formArrayName="allotted_machines">
-        <div class="item-group mb-3"
-             *ngFor="let grp of this.machineAllottedItemsForm(selectedOrderItem)?.controls;let i=index"
-             [formGroupName]="i" [ngClass]="{'col-md-6':issueFormPopupFullscreen}">
-          <div class="card-group card card-body">
-            <div class="row">
-              <div class="group-header col-12">
-                <div class="action-group">
-                  <span class="icon-button btn-delete" role="button"
-                        (click)="removeMachineAllottedItemFormGroup(selectedOrderItem,i)">
-                <fa-icon [icon]="faWindowClose" class="text-danger"></fa-icon>
-              </span>
-                </div>
-              </div>
-              <div class="col-md-6 mb-2">
-                <label for="serial-{{i}}" class="form-label">Serial number</label>
-                <product-item-typeahead-input customId="serial-{{i}}" controlName="product_serial">
+
+      <table class="table table-bordered">
+        <tbody>
+        <tr>
+          <th>Serial Number</th>
+          <th>Warrant Start</th>
+          <th>Warrant End</th>
+          <th></th>
+        </tr>
+        </tbody>
+        <tbody formArrayName="allotted_machines">
+        <ng-container
+          *ngFor="let grp of this.machineAllottedItemsForm(selectedOrderItem)?.controls;let i=index">
+          <tr [formGroup]="$any(grp)">
+            <td>
+              <ng-container *ngIf="getWarehouseById(requestModel?.warehouse_id)">
+
+                <product-item-typeahead-input controlName="product_serial"
+                                              [warehouse]="getWarehouseById(requestModel!.warehouse_id!)!"
+                                              [outOfOrder]="false">
                 </product-item-typeahead-input>
-                <small class="help-text text-danger"
+
+                <small class="text-danger"
                        *ngIf="grp.get('product_serial')?.touched &&
                         grp.get('product_serial')?.getError('duplicated')">
-                  Duplicate serial number assignment
+                  Serial number already selected
                 </small>
-              </div>
-              <div class="col-12"></div>
-              <div class="col-md-6 mb-2">
-                <label for="warrant_start-{{i}}" class="form-label">Warrant start date</label>
-                <input type="date" id="warrant_start-{{i}}" class="form-control"
-                       formControlName="warrant_start">
-              </div>
+              </ng-container>
 
-              <div class="col-md-6 mb-2">
-                <label for="warrant_end-{{i}}" class="form-label">Warrant end date</label>
-                <input type="date" id="warrant_end-{{i}}" class="form-control"
-                       formControlName="warrant_end">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            </td>
+            <td>
+              <input type="date" class="form-control" formControlName="warrant_start">
+            </td>
+            <td>
+              <input type="date" class="form-control" formControlName="warrant_end">
+            </td>
+            <td>
+              <button type="button" class="btn btn-secondary"
+                      (click)="removeMachineAllottedItemFormGroup(selectedOrderItem,i)">
+                <fa-icon [icon]="faTrashAlt"></fa-icon>
+              </button>
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
 
       <div class="my-3 d-flex justify-content-end">
         <button class="btn btn-outline-success"
