@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { Observable, startWith, switchMap } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+
 import { MaterialRequisitionService } from '../../services/material-requisition.service';
-import { MRFModel, MRFItemModel, MRFStage } from '../../../../models/m-r-f.model';
-import { SearchService } from '../../../../shared/services/search.service';
+import { MRFModel } from '../../../../models/m-r-f.model';
+import { PaginationModel } from '../../../../models/pagination.model';
 
 @Component({
   selector: 'app-index',
@@ -12,36 +14,44 @@ import { SearchService } from '../../../../shared/services/search.service';
 })
 export class IndexComponent implements OnInit {
 
-  requestSearchInput: FormControl;
-  private requests$!: Observable<MRFModel[]>;
+  faEllipsisV = faEllipsisV;
+  requests: MRFModel[] = [];
+  private _subscriptions: Subscription[] = [];
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25};
+  searchInput: FormControl;
 
-  constructor(private crService: MaterialRequisitionService, private fb: FormBuilder) {
+  constructor(private requisitionService: MaterialRequisitionService, private fb: FormBuilder) {
 
-    this.requestSearchInput = this.fb.control('');
+    this.loadRequests();
+    this.searchInput = this.fb.control('');
   }
 
   ngOnInit(): void {
 
   }
 
-  get checkoutRequests(): Observable<MRFModel[]> {
-    return this.requests$;
+  set subSink(value: Subscription) {
+    this._subscriptions.push(value);
   }
 
-
-  aggregateQty(items: MRFItemModel[]) {
-    return this.crService.aggregateQty(items);
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
   }
 
-  approvedOn(item: MRFModel): string {
-    const x = item?.activities?.find((log) => log.stage === MRFStage.VERIFIED_OKAYED);
-    return x ? x.created_at : '';
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
   }
 
-  approver(item: MRFModel): string {
-    const x = item?.activities?.find((log) => log.stage === MRFStage.VERIFIED_OKAYED);
-    return x ? `${x.created_by?.first_name || ''} ${x.created_by?.last_name || ''}` : '---';
+  loadRequests() {
+    this.subSink = this.requisitionService.fetchRequestsPendingApproval(this.pagination)
+      .subscribe((res) => {
+        this.pagination.total = res.total;
+        this.requests = this.requests.concat(res.data);
+      })
+  }
 
+  ngOnDestroy(): void {
+    this._subscriptions.map((sub) => sub.unsubscribe());
   }
 
 }

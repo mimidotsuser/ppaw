@@ -36,8 +36,8 @@ export class MaterialRequisitionService {
   }
 
   fetchRequestsPendingVerification(meta: PaginationModel): Observable<HttpResponseModel<MRFModel>> {
-    return this.httpService
-      .get(this.httpService.endpoint.materialRequestsPendingVerification, {params: {...meta}});
+    return this.httpService.get(this.httpService.endpoint.materialRequestsPendingVerification,
+      {params: {...meta, include: 'latestActivity'}});
   }
 
   fetchRequestPendingVerification(id: number): Observable<MRFModel> {
@@ -57,9 +57,29 @@ export class MaterialRequisitionService {
       .pipe(map((res: { data: MRFModel }) => res.data));
   }
 
-  requestsPendingApproval(meta: PaginationModel): Observable<HttpResponseModel<MRFModel>> {
-    return this.httpService.get(this.httpService.endpoint.materialRequestsPendingApproval);
+  fetchRequestsPendingApproval(meta: PaginationModel): Observable<HttpResponseModel<MRFModel>> {
+    return this.httpService.get(this.httpService.endpoint.materialRequestsPendingApproval,
+      {params: {...meta, include: 'latestActivity'}});
   }
+
+  fetchRequestPendingApproval(id: number): Observable<MRFModel> {
+    const url = this.httpService.endpoint.materialRequestApproval
+      .replace(/:id/g, id.toString());
+
+    return this.httpService
+      .get(url, {params: {include: 'items,activities'}})
+      .pipe(map((res: { data: MRFModel }) => res.data));
+  }
+
+  createApprovalRequest(id: number, payload: object): Observable<MRFModel> {
+    const url = this.httpService.endpoint.materialRequestApproval
+      .replace(/:id/g, id.toString());
+
+    return this.httpService
+      .post(url, payload)
+      .pipe(map((res: { data: MRFModel }) => res.data));
+  }
+
 
   findById(id: string): Observable<MRFModel> {
     return this.httpService.get(`${this.httpService.endpoint.materialRequests}/${id}`)
