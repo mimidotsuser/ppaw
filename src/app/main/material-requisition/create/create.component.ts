@@ -1,12 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { map, Observable, of, startWith, Subscription, tap } from 'rxjs';
-import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { faEllipsisV, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { MRFPurposeCode } from '../../../models/m-r-f.model';
 import { WorksheetModel } from '../../../models/worksheet.model';
 import { CustomerModel } from '../../../models/customer.model';
 import { SearchService } from '../../../shared/services/search.service';
 import { ProductModel } from '../../../models/product.model';
+import { ProductCategoryModel } from '../../../models/product-category.model';
+import { MaterialRequisitionService } from '../services/material-requisition.service';
+import { WarehouseModel } from '../../../models/warehouse.model';
 
 @Component({
   selector: 'app-create',
@@ -16,97 +19,132 @@ import { ProductModel } from '../../../models/product.model';
 })
 export class CreateComponent implements OnInit, OnDestroy {
 
-  searchInput = this.fb.control('');
-  form: FormGroup;
-  showPopupForm = false;
-  itemType = {machine: 'Machine', spare: 'Spare'}
-  remarksControl = this.fb.control('', {validators: Validators.required});
   faEllipsisV = faEllipsisV;
-  subscriptions: Subscription[] = [];
+  faSpinner = faSpinner;
+  showPopupForm = false;
+  loadingProductMaxQty = false;
+  private _subscriptions: Subscription[] = [];
+  private _productCategories: ProductCategoryModel[] = [];
+  private _formModelOnEdit: FormModel | null = null;
+  private _formRequestItems: FormModel[] = [];
+  private _warehouses: WarehouseModel[] = [];
+  remarksControl: FormControl;
+  warehouseControl: FormControl;
 
-  private formModelOnEdit: FormModel | null = null;
-  private formModelItems: FormModel[] = [];
-  private filteredItems$: Observable<FormModel[]> = new Observable<FormModel[]>();
-  private searchFields = ['type', 'parent.local_description', 'parent.item_code',
-    'product.local_description', 'product.item_code', 'purpose', 'qty', 'client.name',
-    'client.branch', 'client.region'];
+  searchInput: FormControl;
+  form: FormGroup;
 
-  constructor(private fb: FormBuilder, private searchService: SearchService<FormModel>) {
+  constructor(private fb: FormBuilder, private requisitionService: MaterialRequisitionService) {
     this.form = this.fb.group({
-      type: this.fb.control(this.itemType.machine, {validators: [Validators.required]}),
+      category: this.fb.control(null, {validators: [Validators.required]}),
       parent: this.fb.control(null),
       product: this.fb.control(null, {validators: [Validators.required]}),
       purpose: this.fb.control(null, {validators: [Validators.required]}),
-      client: this.fb.control(null, {validators: [Validators.required]}),
+      customer: this.fb.control(null, {validators: [Validators.required]}),
       qty: this.fb.control(1,
         {validators: [Validators.required, Validators.min(1)]}),
-      worksheet: this.fb.control(null)
+      worksheet: this.fb.control(null),
+      maxQty: this.fb.control(0),
     });
+
+    this.searchInput = this.fb.control('');
+    this.remarksControl = this.fb.control('',
+      {validators: Validators.maxLength(200)});
+    this.warehouseControl = this.fb.control('',
+      {validators: Validators.required});
+
   }
 
   ngOnInit(): void {
+
+    this.subSink = this.requisitionService.fetchAllProductCategories
+      .subscribe((categories) => {
+        this._productCategories = categories;
+        this.form.get('category')?.patchValue(this.machineCategory);
+      });
+
+    this.subSink = this.requisitionService.fetchAllWarehouses
+      .subscribe((warehouses) => this._warehouses = warehouses)
+
     //on product category change,
-    const y = this.form.get('type')?.valueChanges!
-      .pipe(tap(() => {
+    this.subSink = this.form.get('category')!.valueChanges
+      .subscribe((val) => {
         //reset product
         this.form.get('product')?.reset();
+        this.form.get('maxQty')?.patchValue(0);
+
         //if spare, disable product input
-        if (this.form.get('type')?.value === this.itemType.spare) {
+        if (this.spareCategorySelected) {
           this.form.get('product')?.disable();
         } else {
           this.form.get('product')?.enable();
         }
-      })).subscribe();
+      });
 
-    const x = this.form.get('parent')?.valueChanges!.pipe(tap(() => {
-      if (this.form.get('type')?.value === this.itemType.spare && !this.form.get('parent')?.value) {
-        this.form.get('product')?.disable();
-      } else {
-        this.form.get('product')?.enable();
-      }
-      return true;
-    })).subscribe();
+    //On parent selection
+    this.subSink = this.form.get('parent')!.valueChanges
+      .subscribe((value) => {
+        if (this.spareCategorySelected && !value) {
+          this.form.get('product')?.disable();
+        } else {
+          this.form.get('product')?.enable();
+        }
+      });
 
-    if (x) {
-      this.subscriptions.push(x);
-    }
-    if (y) {
-      this.subscriptions.push(y);
-    }
+  }
 
+  set subSink(v: Subscription) {
+    this._subscriptions.push(v);
+  }
 
-    //search
-    this.filteredItems$ = this.searchInput.valueChanges
-      .pipe(startWith(''))
-      .pipe(map((searchTerm: string) => {
-        return this.formModelItems.filter((row: any) => {
-          return this.searchFields
-            .some((field: string) => this.searchService.hasHit(searchTerm.toLowerCase(), row, field))
-        })
-      }));
+  get warehouses() {
+    return this._warehouses;
   }
 
   get purposes(): { id: MRFPurposeCode, title: string }[] {
     const requestPurposes = [
-      {id: MRFPurposeCode.CLIENT_PURCHASE, title: 'Client Sale'},
-      {id: MRFPurposeCode.CLIENT_STANDBY, title: 'Standby'},
+      {id: MRFPurposeCode.SALE, title: 'Customer Sale'},
+      {id: MRFPurposeCode.STANDBY, title: 'Standby'},
     ];
 
-    if (this.form.get('type')?.value === this.itemType.machine) {
-      requestPurposes.push(
-        {id: MRFPurposeCode.CLIENT_DEMO, title: 'Client Demo'},
-        {id: MRFPurposeCode.CLIENT_LEASE, title: 'Client Lease'}
-      )
-    } else {
-      requestPurposes.unshift({id: MRFPurposeCode.CLIENT_REPAIR, title: 'Machine Repair'})
-    }
+    if (this.spareCategorySelected) {
+      requestPurposes.unshift({id: MRFPurposeCode.REPAIR, title: 'Machine Repair'})
 
+    } else {
+      requestPurposes.push(
+        {id: MRFPurposeCode.DEMO, title: 'Customer Demo'},
+        {id: MRFPurposeCode.LEASE, title: 'Customer Lease'})
+    }
     return requestPurposes;
   }
 
+  purposeOptionComparator(v1: { id: MRFPurposeCode }, v2: { id: MRFPurposeCode }) {
+    return v1 && v2 ? v1.id === v2.id : false;
+  }
+
+  get requestItems(): FormModel[] {
+    return this._formRequestItems;
+  }
+
+  get machineCategory(): ProductCategoryModel | undefined {
+    return this._productCategories.find((c) => {
+      return c.name.toLowerCase() === 'machine';
+    });
+  }
+
+  get spareCategory(): ProductCategoryModel | undefined {
+    return this._productCategories.find((c) => {
+      return c.name.toLowerCase() === 'spare';
+    });
+  }
+
+  get spareCategorySelected(): boolean {
+    return this.form.get('category')?.value === this.spareCategory;
+  }
+
   closePopup() {
-    if (this.formModelOnEdit) {
-      this.formModelItems.push(this.formModelOnEdit);
+    if (this._formModelOnEdit) {
+      this._formRequestItems.push(this._formModelOnEdit);
     }
     this.showPopupForm = false;
   }
@@ -114,63 +152,137 @@ export class CreateComponent implements OnInit, OnDestroy {
   showCreateForm(model: FormModel | null = null) {
     if (model) {
       this.form.patchValue(model);
-      this.formModelOnEdit = model;
+      this._formModelOnEdit = model;
       this.removeSelectedItem(model);
+
+      //can now update qty control validity
+      this.form.get('qty')?.clearValidators();
+      this.form.get('qty')?.addValidators([Validators.min(1),
+        Validators.max(this.maxAllowedQty)]);
+      this.form.get('qty')?.updateValueAndValidity();
     } else {
-      this.formModelOnEdit = null;
-      this.form.reset({type: this.itemType.machine});
+      this._formModelOnEdit = null;
+      this.form.reset({category: this.machineCategory});
+      this.form.get('maxQty')?.patchValue(0);
     }
     this.showPopupForm = true;
   }
 
-  get selectedItems(): Observable<FormModel[]> {
-    return this.searchInput.value ? this.filteredItems$ : of(this.formModelItems);
+
+  /***
+   * When a product is selected (on the form),
+   */
+  onProductModelSelected() {
+    //clear quantity field
+    this.form.get('qty')?.patchValue(0);
+    this.form.get('qty')?.clearValidators();
+
+    //retrieve merged stock balances  if there is product selected
+    if (!this.form.get('product')) {
+      this.form.get('maxQty')?.patchValue(0);
+      this.form.get('qty')?.addValidators([Validators.min(1)]);
+      this.form.get('qty')?.addValidators([Validators.max(0)]);
+      this.form.get('qty')?.updateValueAndValidity();
+
+      return
+    }
+    this.loadingProductMaxQty = true
+
+    this.subSink = this.requisitionService.fetchMaxAllowedRequestQty(this.form.value.product)
+      .subscribe({
+        next: (available) => {
+
+          this.loadingProductMaxQty = false;
+          this.form.get('maxQty')?.patchValue(available); //must be done before adding max validator
+          this.form.get('qty')?.addValidators([Validators.min(1)]);
+          this.form.get('qty')?.addValidators([Validators.max(this.maxAllowedQty)]);
+          this.form.get('qty')?.updateValueAndValidity();
+        },
+        error: () => this.loadingProductMaxQty = false
+      })
   }
 
-
   removeSelectedItem(model: FormModel) {
-    const index = this.formModelItems.findIndex((item) => {
+    const index = this._formRequestItems.findIndex((item) => {
       return item.purpose === model.purpose && item.product.id === model.product.id
-        && item.client.id === model.client.id;
+        && item.customer.id === model.customer.id;
     });
     if (index > -1) {
-      this.formModelItems.splice(index, 1);
+      this._formRequestItems.splice(index, 1);
     }
   }
 
   addItem() {
     this.form.markAllAsTouched();
-    if (!this.form.valid) {
-      return
-    }
+    if (this.form.invalid) {return}
+
     //check if it already exists
-    const item = this.form.value as FormModel;
-    const index = this.formModelItems.findIndex((model) => {
-      return model.client.id === item.client.id && model.purpose === item.purpose
-        && model.product.id === item.product.id && model.parent?.id === item.parent?.id;
+    const newItem = this.form.value as FormModel;
+
+    const index = this._formRequestItems.findIndex((model) => {
+      return model.customer.id === newItem.customer.id && model.purpose.id === newItem.purpose.id
+        && model.product.id === newItem.product.id;
     });
 
     if (index > -1) {
       //only update the qty
-      this.formModelItems[ index ].qty += item.qty;
+      this._formRequestItems[ index ].qty += newItem.qty;
     } else {
-      this.formModelItems.push(item);
+      this._formRequestItems.push(newItem);
     }
 
-    this.closePopup()
-
+    this.showPopupForm = false;
   }
 
-  submit() {
+  /**
+   * Calculate maximum allowed quantity for the product currently on the form.
+   * The maxQty must have been set beforehand
+   */
+  get maxAllowedQty() {
+    if (!this.form.value.product || this.form.value.maxQty == 0) {return 0}
+
+    const qtyAlreadyTaken = this._formRequestItems.reduce((acc, model) => {
+      if (this.form.value.product.id === model.product.id) {
+        acc += model.qty;
+      }
+      return acc;
+    }, 0);
+
+    return this.form.value.maxQty - qtyAlreadyTaken;
+  }
+
+  submitForm() {
     this.remarksControl.markAllAsTouched();
-    if (this.remarksControl.invalid) {
+    this.warehouseControl.markAllAsTouched();
+    if (this.remarksControl.invalid || this.warehouseControl.invalid) {
       return
     }
-    //TODO submit the form
+
+    const payload = {
+      warehouse_id: this.warehouseControl.value.id,
+      remarks: this.remarksControl.value,
+      items: this._formRequestItems.map((item) => {
+        return {
+          product_id: item.product.id,
+          customer_id: item.customer.id,
+          worksheet_id: item.worksheet?.id,
+          purpose_code: item.purpose.id,
+          requested_qty: item.qty
+        }
+      })
+    }
+
+    this.subSink = this.requisitionService.create(payload)
+      .subscribe({
+        next: () => {
+          this._formRequestItems = [];
+          this.remarksControl.reset();
+        }
+      })
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.map((sub) => sub.unsubscribe())
+    this._subscriptions.map((sub) => sub.unsubscribe())
   }
 }
 
@@ -178,8 +290,9 @@ interface FormModel {
   type: string;
   parent: null | ProductModel;
   product: ProductModel;
-  purpose: MRFPurposeCode;
-  client: CustomerModel;
+  purpose: { id: MRFPurposeCode, title: string };
+  customer: CustomerModel;
   worksheet: null | WorksheetModel;
   qty: number;
+  maxQty: number;
 }

@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
     <div class="col-sm-6 col-md-3 data-filters">
-      <input type="text" class="form-control search" placeholder="Filter"
+      <input type="text" class="form-control search" placeholder="Search added item"
              [formControl]="searchInput">
     </div>
 
@@ -19,60 +19,60 @@
     <tr>
       <th>Item</th>
       <th>Qty</th>
-      <th>Client</th>
+      <th>Customer</th>
       <th>Purpose</th>
       <th></th>
     </tr>
     </thead>
-    <tbody>
-    <ng-container *ngIf="(selectedItems|async)!.length>0;else noData">
-      <tr *ngFor="let item of selectedItems|async">
-        <td>
-          <span class="td-inline-label">Item</span>
-          <div class="d-flex flex-column">
-            {{item.product.item_code}}
-            <small class="text-muted">
-              {{item.product.local_description || item.product.description}}
-            </small>
-          </div>
-        </td>
-        <td>
-          <span class="td-inline-label">Quantity</span>
-          {{item.qty}}
-        </td>
-        <td>
-          <span class="td-inline-label">Client</span>
-          <div class="d-flex flex-column">
-            {{item.client.name}}
-            <small class="text-muted">
-              {{item.client.branch}} | {{item.client.region}}
-            </small>
-          </div>
-        </td>
-        <td>
-          <span class="td-inline-label">Purpose</span>
-          {{item.purpose}}
-        </td>
-        <td>
-          <div class="d-flex gap-2 justify-content-end w-100">
-            <div ngbDropdown class="d-inline-block">
-              <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp"
-                      ngbDropdownToggle>
-                <fa-icon [icon]="faEllipsisV"></fa-icon>
-              </button>
-              <div ngbDropdownMenu aria-labelledby="dp">
-                <button ngbDropdownItem (click)="showCreateForm(item)">Edit</button>
-                <button ngbDropdownItem (click)="removeSelectedItem(item)">Delete</button>
-              </div>
+    <tbody *ngIf=" requestItems|filter:this.searchInput.value as requests">
+    <tr *ngFor="let item of requests">
+      <td>
+        <span class="td-inline-label">Item</span>
+        <div class="d-flex flex-column">
+          {{item.product.item_code}}
+          <small class="text-muted">
+            {{item.product.local_description || item.product.description}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Quantity</span>
+        {{item.qty}}
+      </td>
+      <td>
+        <span class="td-inline-label">Customer</span>
+        <div class="d-flex flex-column">
+          {{item.customer.name}}
+          <small class="text-muted">
+            {{item.customer.branch}} | {{item.customer.region}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Purpose</span>
+        {{item.purpose.title}}
+      </td>
+      <td>
+        <div class="d-flex gap-2 justify-content-end w-100">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary hide-dropdown-toggle border-0" id="dp"
+                    ngbDropdownToggle>
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dp">
+              <button ngbDropdownItem (click)="showCreateForm(item)">Edit</button>
+              <button ngbDropdownItem (click)="removeSelectedItem(item)">Delete</button>
             </div>
           </div>
-        </td>
-      </tr>
-    </ng-container>
+        </div>
+      </td>
+    </tr>
 
-    <ng-template #noData>
+    <ng-container *ngIf="requests.length===0">
       <tr>
-        <td class="text-center py-3" colspan="5">
+        <td
+          class="py-5 w-100 text-center text-wrap d-md-table-cell d-flex flex-column d-flex gap-3 border-1 align-items-center "
+          colspan="5">
           <ng-container *ngIf="!searchInput.value;else noResults">
             There is no item added yet.&nbsp;
             <a type="button" class="text-decoration-none" (click)="showCreateForm()">
@@ -84,22 +84,37 @@
           </ng-template>
         </td>
       </tr>
-    </ng-template>
+    </ng-container>
     </tbody>
   </table>
-  <div class="d-flex justify-content-end mb-3" *ngIf="(selectedItems|async)!.length>0">
+  <div class="d-flex justify-content-end mb-3" *ngIf="requestItems!.length>0">
     <button type="button" class="btn btn-outline-primary" (click)="showCreateForm()">
       + New Item
     </button>
   </div>
   <div class="row">
+    <div class="col-md-4 mb-3">
+      <label for="collection_point" class="form-label required">Collection Point</label>
+      <select class="form-select" id="collection_point" [formControl]="warehouseControl">
+        <option *ngFor="let warehouse of warehouses"
+                [ngValue]="warehouse">
+          {{warehouse.name}}
+        </option>
+      </select>
+    </div>
+    <div class="col-12"></div>
     <div class="col-md-6 mb-3">
       <label for="remarks" class="form-label">Remarks</label>
-      <textarea id="remarks" class="form-control"></textarea>
+      <textarea id="remarks" class="form-control" [formControl]="remarksControl"></textarea>
+      <ng-container *ngIf="remarksControl.touched && remarksControl.hasError('maxlength')">
+        <small class="text-danger">Total characters
+          {{remarksControl.getError('maxlength')?.actualLength}} out of
+          {{remarksControl.getError('maxlength')?.requiredLength}} </small>
+      </ng-container>
     </div>
     <div class="col-12">
-      <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submit()"
-              [disabled]="(selectedItems|async)!.length===0">
+      <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submitForm()"
+              [disabled]="requestItems!.length==0 || warehouseControl.invalid|| remarksControl.invalid">
         Submit
       </button>
     </div>
@@ -112,77 +127,102 @@
     <div class="col-12 gap-5 mb-3">
       <label class="form-label">Item Category</label>
       <div class="col-12">
-        <div class="form-check form-check-inline">
-          <input type="radio" name="type" class="form-check-input" [value]="itemType.machine"
-                 formControlName="type" id="machine-type">
-          <label for="machine-type" class="form-check-label">Machine</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input type="radio" name="type" class="form-check-input" [value]="itemType.spare"
-                 formControlName="type" id="spare-type">
-          <label for="spare-type" class="form-check-label">Spare</label>
-        </div>
+
+        <ng-container *ngIf="machineCategory">
+          <div class="form-check form-check-inline">
+            <input type="radio" name="category" class="form-check-input"
+                   [value]="machineCategory"
+                   formControlName="category" id="machine_category">
+            <label for="machine_category" class="form-check-label">Machine</label>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="spareCategory">
+          <div class="form-check form-check-inline">
+            <input type="radio" name="category" class="form-check-input" [value]="spareCategory"
+                   formControlName="category" id="spare_category">
+            <label for="spare_category" class="form-check-label">Spare</label>
+          </div>
+        </ng-container>
       </div>
     </div>
 
-    <ng-container *ngIf="form.get('type')?.value === itemType.spare">
+    <ng-container *ngIf="spareCategorySelected">
       <div class="col-md-6 mb-3">
         <label for="parent" class="form-label">
           Machine Model
         </label>
-        <!--        <product-typeahead-input customId="parent" controlName="parent" [parent]="null"-->
-        <!--                                 [category]="machineCategory">-->
-        <!--        </product-typeahead-input>-->
+        <ng-container *ngIf="machineCategory">
+          <product-typeahead-input customId="parent" controlName="parent" [parent]="null"
+                                   [category]="machineCategory">
+          </product-typeahead-input>
+        </ng-container>
       </div>
       <div class="col-md-6 mb-3">
         <label for="product" class="form-label required">
           Spare Part
         </label>
-        <!--        <product-typeahead-input customId="product" controlName="product"-->
-        <!--                                 [parent]="this.form.get('parent')?.value"-->
-        <!--                                 [category]="selectedCategory">-->
-        <!--        </product-typeahead-input>-->
+        <ng-container *ngIf="spareCategory">
+          <product-typeahead-input customId="product" controlName="product"
+                                   [parent]="this.form.get('parent')?.value"
+                                   [category]="spareCategory" (change)="onProductModelSelected()">
+          </product-typeahead-input>
+        </ng-container>
       </div>
     </ng-container>
 
-    <ng-container *ngIf="form.get('type')?.value === itemType.machine">
+    <ng-container *ngIf="!spareCategorySelected">
       <div class="col-md-6 mb-3">
         <label for="machine_id" class="form-label required">
           Machine Model
         </label>
-<!--        <product-typeahead-input customId="machine_id" controlName="product" [parent]="null"-->
-<!--                                 [category]="selectedCategory">-->
-<!--        </product-typeahead-input>-->
+        <ng-container *ngIf="machineCategory">
+          <product-typeahead-input customId="machine_id" controlName="product" [parent]="null"
+                                   [category]="machineCategory" (change)="onProductModelSelected()">
+          </product-typeahead-input>
+        </ng-container>
       </div>
 
     </ng-container>
 
     <div class="mb-3 col-md-6">
       <label for="purpose" class="form-label required">Purpose</label>
-      <select id="purpose" class="form-select" formControlName="purpose">
+      <select id="purpose" class="form-select" formControlName="purpose"
+              [compareWith]="purposeOptionComparator">
         <option disabled selected></option>
-        <option *ngFor="let purpose of purposes" value="{{purpose.id}}">
+        <option *ngFor="let purpose of purposes" [ngValue]="purpose">
           {{purpose.title}}
         </option>
       </select>
     </div>
 
     <div class="mb-3 col-md-6">
-      <label for="client" class="form-label required">Client/Branch</label>
-      <customer-typeahead-input customId="client" controlName="client">
+      <label for="customer" class="form-label required">Customer/Branch</label>
+      <customer-typeahead-input customId="customer" controlName="customer">
       </customer-typeahead-input>
     </div>
 
     <div class="mb-3 col-md-6">
       <label for="qty" class="form-label required">Quantity</label>
-      <input type="number" id="qty" class="form-control" min="1" formControlName="qty">
+      <small class="help-text text-success">Max allowed qty is:
+        <ng-container *ngIf="!loadingProductMaxQty">
+          {{maxAllowedQty}}
+        </ng-container>
+        <fa-icon [icon]="faSpinner" *ngIf="loadingProductMaxQty" [spin]="true"></fa-icon>
+      </small>
+      <input type="number" id="qty" class="form-control" min="1" [max]="maxAllowedQty"
+             formControlName="qty">
+      <ng-container *ngIf="form.get('qty')!.touched && form.get('qty')!.invalid">
+        <small class="text-danger" *ngIf="form.get('qty')?.hasError('max')">
+          Cannot exceed {{form.get('qty')?.getError('max')?.max}}
+        </small>
+      </ng-container>
     </div>
 
-    <ng-container *ngIf="form.get('type')?.value === itemType.spare">
+    <ng-container *ngIf="spareCategorySelected">
       <div class="col-md-6 mb-3">
         <label for="worksheet" class="form-label">Referenced Worksheet</label>
         <worksheet-typeahead-input customId="worksheet" controlName="worksheet"
-                                   [client]="form.get('client')?.value">
+                                   [client]="form.get('customer')?.value">
         </worksheet-typeahead-input>
       </div>
     </ng-container>

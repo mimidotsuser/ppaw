@@ -21,6 +21,8 @@ export enum V1Endpoints {
   purchaseRequests = '/purchase-requests',
   rfqs = '/rfqs',
 
+  meldedBalances = '/products/:id/melded-balances',
+
   materialRequests = '/material-requisitions',
 
   materialRequestVerification = '/material-requisitions/:id/verification',

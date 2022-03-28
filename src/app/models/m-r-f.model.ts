@@ -3,11 +3,11 @@ import { ProductModel } from './product.model';
 import { CustomerModel } from './customer.model';
 
 export enum MRFPurposeCode {
-  CLIENT_DEMO = 'CLIENT_DEMO',
-  CLIENT_PURCHASE = 'CLIENT_PURCHASE',
-  CLIENT_LEASE = 'CLIENT_LEASE',
-  CLIENT_STANDBY = 'CLIENT_STANDBY',
-  CLIENT_REPAIR = 'CLIENT_REPAIR',
+  DEMO = 'DEMO',
+  SALE = 'SALE',
+  LEASE = 'LEASE',
+  STANDBY = 'STANDBY',
+  REPAIR = 'REPAIR',
 }
 
 export enum MRFStage {
