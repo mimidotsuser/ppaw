@@ -40,6 +40,23 @@ export class MaterialRequisitionService {
       .get(this.httpService.endpoint.materialRequestsPendingVerification, {params: {...meta}});
   }
 
+  fetchRequestPendingVerification(id: number): Observable<MRFModel> {
+    const url = this.httpService.endpoint.materialRequestVerification
+      .replace(/:id/g, id.toString());
+    return this.httpService
+      .get(url, {params: {include: 'items,activities'}})
+      .pipe(map((res: { data: MRFModel }) => res.data));
+
+  }
+
+  createVerificationRequest(id: number, payload: object): Observable<MRFModel> {
+    const url = this.httpService.endpoint.materialRequestVerification
+      .replace(/:id/g, id.toString());
+    return this.httpService
+      .post(url, payload)
+      .pipe(map((res: { data: MRFModel }) => res.data));
+  }
+
   requestsPendingApproval(meta: PaginationModel): Observable<HttpResponseModel<MRFModel>> {
     return this.httpService.get(this.httpService.endpoint.materialRequestsPendingApproval);
   }

@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { MaterialRequisitionService } from '../../services/material-requisition.service';
 import { MRFItemModel, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
+import { PaginationModel } from '../../../../models/pagination.model';
 
 @Component({
   selector: 'app-verify',
@@ -14,29 +15,44 @@ import { MRFItemModel, MRFModel, MRFStage } from '../../../../models/m-r-f.model
 export class CreateComponent implements OnInit, OnDestroy {
 
   faExternalLinkAlt = faExternalLinkAlt;
-  model: MRFModel | null = null;
-  subscriptions: Subscription[] = [];
+  model?: MRFModel;
+  private _subscriptions: Subscription[] = [];
+  pagination: PaginationModel = {total: 0, page: 1, limit: 15};
   form: FormGroup;
 
-  constructor(private route: ActivatedRoute, private fb: FormBuilder,
-              private crService: MaterialRequisitionService) {
-    const x = this.crService.findById(this.route.snapshot.params[ 'id' ])
-      .subscribe((v) => this.model = v);
+  constructor(private route: ActivatedRoute, private router: Router, private fb: FormBuilder,
+              private requisitionService: MaterialRequisitionService) {
 
-    if (x) {
-      this.subscriptions.push(x);
-    }
+    this.subSink = this.requisitionService
+      .fetchRequestPendingVerification(this.route.snapshot.params[ 'id' ])
+      .subscribe((v) => {
+        this.model = v;
+        this.pagination.total = v.items.length;
+        this.renderItemsForm();
+      });
 
-    this.form = this.fb.group({});
+
+    this.form = this.fb.group({
+      remarks: this.fb.control(''),
+      items: this.fb.array([])
+    });
   }
 
   ngOnInit(): void {
   }
 
-
-  aggregateQty(items: MRFItemModel[]) {
-    return this.crService.aggregateQty(items);
+  set subSink(value: Subscription) {
+    this._subscriptions.push(value);
   }
+
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
+  }
+
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
+  }
+
 
   get name() {
     return `${this.model?.created_by?.first_name || ''} ${this.model?.created_by?.last_name || ''}`
@@ -49,12 +65,56 @@ export class CreateComponent implements OnInit, OnDestroy {
     return log ? log.remarks : '';
   }
 
+  get itemsForm(): FormArray {
+    return this.form.get('items') as FormArray;
+  }
 
-  submit() {
-    //TODO
+  createItemFormGroup(item: MRFItemModel) {
+    return this.fb.group({
+      id: this.fb.control(item.id),
+      product_id: this.fb.control(item.product_id),
+      purpose_code: this.fb.control(item.purpose_code),
+      purpose_title: this.fb.control(item.purpose_title),
+      customer_id: this.fb.control(item.customer_id),
+      customer: this.fb.control(item.customer),
+      requested_qty: this.fb.control(item.requested_qty),
+      verified_qty: this.fb.control(item.requested_qty,
+        {validators: [Validators.min(0), Validators.max(item.requested_qty)]}),
+      worksheet_id: this.fb.control(item.worksheet_id),
+      product: this.fb.control(item.product),
+    })
+  }
+
+  renderItemsForm() {
+    this.model?.items.map((item) => {
+      this.itemsForm.push(this.createItemFormGroup(item))
+    })
+  }
+
+  submitForm() {
+    return;
+    this.form.markAllAsTouched();
+    if (this.form.invalid) {return}
+
+    const payload = {
+      remarks: this.form.get('remarks')?.value,
+      items: (this.itemsForm.controls as FormGroup[]).map((group) => {
+        return {id: group.get('id')?.value, verified_qty: group.get('verified_qty')?.value}
+      })
+    }
+    this.subSink = this.requisitionService.createVerificationRequest(this.model!.id, payload)
+      .subscribe({
+        next: () => {
+          this.router.navigate(['../'], {relativeTo: this.route})
+            .then(() => {
+              // alert('Request status updated successfully')
+            })
+        }
+      })
+
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.map((s) => s.unsubscribe())
+    this._subscriptions.map((s) => s.unsubscribe())
   }
 }
