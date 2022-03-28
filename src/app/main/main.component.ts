@@ -77,7 +77,7 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faShoppingBasket,
       items: [
         {title: 'New Requests', url: 'purchase-requisition/create', display: true},
-        {title: 'My Requests', url: 'purchase-requisition/history', display: true},
+        {title: 'All Purchase Requests', url: 'purchase-requisition/history', display: true},
         {
           title: 'Requests Checking',
           url: 'purchase-requisition/check',

@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { map, mergeMap, Observable, shareReplay } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { PurchaseRequisitionModule } from '../purchase-requisition.module';
 import { HttpService } from '../../../core/services/http.service';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
 import { PurchaseRequestModel } from '../../../models/purchase-request.model';
-import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: PurchaseRequisitionModule
