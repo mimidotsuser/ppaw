@@ -17,6 +17,7 @@ export class ProductItemSearchComponent implements OnInit {
   @Input() placeholder: string = 'Search serial number';
   @Input() warehouse?: WarehouseModel;
   @Input() outOfOrder?: boolean;
+  @Input() product_id?: number; //filter only specific model
 
 
   constructor(private httpService: HttpService) {
@@ -43,6 +44,10 @@ export class ProductItemSearchComponent implements OnInit {
     }
     if (this.outOfOrder === true || this.outOfOrder === false) {
       params = {outOfOrder: this.outOfOrder, ...params,}
+    }
+
+    if (this.product_id) {
+      params = {product_id: this.product_id.toString(), ...params,}
     }
 
     return params;

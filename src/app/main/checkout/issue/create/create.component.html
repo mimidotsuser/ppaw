@@ -183,11 +183,12 @@
           *ngFor="let grp of this.machineAllottedItemsForm(selectedOrderItem)?.controls;let i=index">
           <tr [formGroup]="$any(grp)">
             <td>
-              <ng-container *ngIf="getWarehouseById(requestModel?.warehouse_id)">
+              <ng-container *ngIf="selectedOrderItem && getWarehouseById(requestModel?.warehouse_id)">
 
                 <product-item-typeahead-input controlName="product_serial"
                                               [warehouse]="getWarehouseById(requestModel!.warehouse_id!)!"
-                                              [outOfOrder]="false">
+                                              [outOfOrder]="false"
+                                              [product_id]="selectedOrderItem.product_id">
                 </product-item-typeahead-input>
 
                 <small class="text-danger"
