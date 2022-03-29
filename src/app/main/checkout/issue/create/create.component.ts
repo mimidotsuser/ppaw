@@ -25,7 +25,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   showIssueFormPopup = false;
   cartButtonBusy = false;
   private _subscriptions: Subscription[] = [];
-  pagination: PaginationModel = {total: 0, page: 1, limit: 25};
+  pagination: PaginationModel = {total: 0, page: 1, limit: 30};
   warehouses: WarehouseModel[] = [];
   defaultWarrantStartDate: Date;
   defaultWarrantEndDate: Date;
@@ -78,9 +78,12 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   get requestItems(): MRFItemModel[] {
-    return this.requestModel?.items
-      ? this.requestModel.items.filter((item) => (item.approved_qty || 0) > 0)
-      : [];
+
+    if (!this.requestModel?.items) {return []}
+    const passed = this.requestModel.items
+      .filter((item) =>  (item.approved_qty || 0) > 0);
+    this.pagination.total = passed.length;
+    return passed;
   }
 
   get requesterRemarks() {
