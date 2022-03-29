@@ -81,7 +81,7 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     if (!this.requestModel?.items) {return []}
     const passed = this.requestModel.items
-      .filter((item) =>  (item.approved_qty || 0) > 0);
+      .filter((item) => (item.approved_qty || 0) > 0);
     this.pagination.total = passed.length;
     return passed;
   }
@@ -296,7 +296,7 @@ export class CreateComponent implements OnInit, OnDestroy {
         validators: [
           Validators.required, Validators.min(0),
           Validators.max(itemModel.approved_qty || 0)
-        ]
+        ], updateOn: 'blur'
       }),
       used_total: this.fb.control(0, {
         validators: [
@@ -319,33 +319,45 @@ export class CreateComponent implements OnInit, OnDestroy {
     group = this.createSpareAllotmentForm(itemModel);
     this.spareAllottedItemsForm.push(group);
     //register for value synchronization
-    this.registerSpareControlSynchrony(itemModel);
     return group;
   }
 
-  registerSpareControlSynchrony(orderItem: MRFItemModel) {
-    // get the form group
-    const group = this.spareAllotmentForm(orderItem);
-    if (!group || !group.get('used_total') || !group.get('unused_total')) {
+  synchronizeSpareControlValues(fromUsedInput = true) {
+    if (!this.selectedOrderItem) {
       return;
     }
 
-    this.subSink = group.get('used_total')!.valueChanges.subscribe((value) => {
-      if ((orderItem.approved_qty || 0) - value > -1) {
-        group.get('unused_total')?.patchValue((orderItem.approved_qty || 0) - value)
-      }
-    });
+    const group = this.spareAllotmentForm(this.selectedOrderItem);
+    if (!group || !group.get('used_total') || !group.get('unused_total')) {
+      return;
+    }
+    if (fromUsedInput) {
+      const diff = (this.selectedOrderItem.approved_qty || 0) - group.get('used_total')?.value;
+      group.get('unused_total')?.patchValue(diff)
+
+    } else {
+      const diff = (this.selectedOrderItem.approved_qty || 0) - group.get('unused_total')?.value;
+      group.get('used_total')?.patchValue(diff)
+    }
   }
 
   saveOrderItemSpareIssue(itemModel: MRFItemModel) {
     // get the form
     const form = this.spareAllotmentForm(itemModel);
     form.markAllAsTouched();
+
+    const qty = (form.get('used_total')?.value || 0) +
+      (form.get('unused_total')?.value || 0);
+    if (qty > (itemModel.approved_qty || 0)) {
+      form.get('used_total')?.setErrors({
+        allotment: `Quantity allocated exceeds approved quantity of ${itemModel.approved_qty}`
+      });
+    }
+
     if (form.invalid) {return}
 
     //update the quantity issued (extra step approach)
-    itemModel.issued_qty = (form.get('used_total')?.value || 0) +
-      (form.get('unused_total')?.value || 0)
+    itemModel.issued_qty = qty;
     this.showIssueFormPopup = false;
 
   }
@@ -368,10 +380,10 @@ export class CreateComponent implements OnInit, OnDestroy {
                                         qtyExpected: number) {
 
     const newStockBal = (group.get('balances')?.value as ProductBalanceModel[])
-      .find((i) => !i.product?.variant_of)
+      .find((i) => !i.product?.variant_of_id) //where variant id is empty
 
     const brandNewQtyRemainder: number = newStockBal ?
-      newStockBal.stock_balance - (balances.new_qty - qtyExpected) : 0;
+      newStockBal.stock_balance - balances.new_qty - qtyExpected : 0;
 
     const brandNewMax: number = qtyExpected < brandNewQtyRemainder ? qtyExpected : brandNewQtyRemainder;
 
@@ -381,10 +393,11 @@ export class CreateComponent implements OnInit, OnDestroy {
     group.get('unused_total')?.updateValueAndValidity();
 
     const oldStockBal = (group.get('balances')?.value as ProductBalanceModel[])
-      .find((i) => i.product?.variant_of)
+      .find((i) => i.product?.variant_of_id) //where variant id has value
 
-    const oldQtyRemainder = oldStockBal ? oldStockBal.stock_balance - (balances.old_qty - qtyExpected) : 0;
-    const oldMax: number = qtyExpected < oldQtyRemainder ? qtyExpected : oldQtyRemainder;
+    const oldQtyRemainder = oldStockBal ? oldStockBal.stock_balance - balances.old_qty - qtyExpected : 0;
+    const oldMax: number = qtyExpected < oldQtyRemainder ? qtyExpected :
+      (oldQtyRemainder > 0 ? oldQtyRemainder : 0);
 
     group.get('used_total')?.clearValidators();
     group.get('used_total')?.setValidators(Validators.min(0));
@@ -403,7 +416,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       return;
     }
     const payload = {
-      remarks: this.remarksControl.value,
+      remarks: this.remarksControl.value || 'N/A',
       items: {
         machines: [],
         spares: []

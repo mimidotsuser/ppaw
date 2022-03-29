@@ -135,21 +135,30 @@
       <form class="row" [formGroup]="group">
         <div class="col-md-6 mb-3">
           <label for="ns" class="form-label">Total new spare issued</label>
-          <input type="number" id="ns" min="0" class="form-control" formControlName="unused_total">
+          <input type="number" id="ns" min="0" class="form-control" formControlName="unused_total"
+                 (blur)="synchronizeSpareControlValues(false)">
           <small class="text-danger"
                  *ngIf="group.get('unused_total')?.touched &&
-                        group.get('unused_total')?.getError('max')">
+                        group.get('unused_total')?.hasError('max')">
             Max quantity available/allowed is {{  group.get('unused_total')?.getError('max').max}}
           </small>
         </div>
 
         <div class="col-md-6 mb-3">
           <label for="os" class="form-label">Total old spare issued</label>
-          <input type="number" id="os" min="0" class="form-control" formControlName="used_total">
+          <input type="number" id="os" min="0" class="form-control" formControlName="used_total"
+                 (blur)="synchronizeSpareControlValues(true)">
           <small class="text-danger"
                  *ngIf="group.get('used_total')?.touched &&
-                        group.get('used_total')?.getError('max')">
+                        group.get('used_total')?.hasError('max')">
             Max quantity available/allowed is {{  group.get('used_total')?.getError('max').max}}
+          </small>
+        </div>
+        <div class="col-md-12 mb-3">
+          <small class="text-danger" *ngIf="group.get('used_total')?.touched
+                        && group.get('unused_total')?.touched
+                        && group.get('used_total')?.hasError('allotment')">
+            {{group.get('used_total')?.getError('allotment')}}
           </small>
         </div>
         <div class="col-12 d-flex gap-2">
@@ -183,7 +192,8 @@
           *ngFor="let grp of this.machineAllottedItemsForm(selectedOrderItem)?.controls;let i=index">
           <tr [formGroup]="$any(grp)">
             <td>
-              <ng-container *ngIf="selectedOrderItem && getWarehouseById(requestModel?.warehouse_id)">
+              <ng-container
+                *ngIf="selectedOrderItem && getWarehouseById(requestModel?.warehouse_id)">
 
                 <product-item-typeahead-input controlName="product_serial"
                                               [warehouse]="getWarehouseById(requestModel!.warehouse_id!)!"
@@ -193,7 +203,7 @@
 
                 <small class="text-danger"
                        *ngIf="grp.get('product_serial')?.touched &&
-                        grp.get('product_serial')?.getError('duplicated')">
+                        grp.get('product_serial')?.hasError('duplicated')">
                   Serial number already selected
                 </small>
               </ng-container>
