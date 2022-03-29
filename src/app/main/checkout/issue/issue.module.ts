@@ -22,7 +22,7 @@ import { Actions, Resources } from '../../../utils/permissions';
         data: {
           resource: Resources.checkout,
           action: Actions.create,
-          title: 'Material Request :id Checkout'
+          title: 'Material Request Checkout'
         }
       },
       {
