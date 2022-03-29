@@ -41,7 +41,7 @@ export class ProductItemSearchComponent implements OnInit {
     if (this.warehouse) {
       params = {warehouse_id: this.warehouse.id.toString(), ...params,}
     }
-    if (this.outOfOrder) {
+    if (this.outOfOrder === true || this.outOfOrder === false) {
       params = {outOfOrder: this.outOfOrder, ...params,}
     }
 
