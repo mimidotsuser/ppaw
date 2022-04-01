@@ -22,31 +22,23 @@ export class CreateComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private fb: FormBuilder,
               private prService: PurchaseRequisitionService) {
-
-    const x = this.prService.findById(route.snapshot.params[ 'id' ])
-      .subscribe((value => this.model = value));
-
     this.form = this.fb.group({
       remarks: this.fb.control(null),
       accepted: this.fb.array([])
     });
 
-    this.subscriptions.push(x);
   }
 
   ngOnInit(): void {
   }
 
-  formatRequestId(orderId: number): string {
-    return this.prService.formatRequestId(orderId);
-  }
 
   get authorName() {
     return `${this.model?.created_by?.first_name || ''} ${this.model?.created_by?.last_name || ''}`
   }
 
   get requesterRemarks() {
-    const obj = this.model?.logs!.find((log) => log.stage === PRStage.CREATE);
+    const obj = this.model?.activities!.find((log) => log.stage === PRStage.REQUEST_CREATED);
     return obj ? obj.remarks : ''
   }
 
@@ -65,8 +57,8 @@ export class CreateComponent implements OnInit {
 
     this.allocationForm.push(this.fb.group({
       item_id: this.fb.control(item.id),
-      qty_approved: this.fb.control(item.qty_requested, {
-        validators: [Validators.required, Validators.min(0), Validators.max(item.qty_requested)]
+      qty_approved: this.fb.control(item.requested_qty, {
+        validators: [Validators.required, Validators.min(0), Validators.max(item.requested_qty)]
       })
     }));
     return this.allocationForm.controls[ this.allocationForm.length - 1 ] as FormGroup;

@@ -1,16 +1,16 @@
 <typeahead-input [path]="path" [resultTemplate]="resultTemplate" [controlName]="controlName"
-                  [outputFormatter]="outputFormatter" [control]="control" [editable]="editable"
-                  [customId]="customId" [search]="search">
+                 [outputFormatter]="outputFormatter" [control]="control" [editable]="editable"
+                 [customId]="customId" [search]="search">
 </typeahead-input>
 
 
 <ng-template let-results="result" #resultTemplate>
   <ng-container *ngIf="results;else noResultsTemplate">
     <div class="title">
-      {{  formatRequestId(results.order_id) }}
+      {{  results.sn }}
     </div>
     <div class="subtitle " *ngIf="results?.created_by as author">
-      By {{author?.first_name||''}} {{author?.last_name||''}}
+      By {{author?.first_name || ''}} {{author?.last_name || ''}}
     </div>
   </ng-container>
 </ng-template>

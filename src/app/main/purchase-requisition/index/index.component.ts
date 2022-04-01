@@ -2,9 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { faEllipsisV, faEye, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import {
-  PRStage,
+  PurchaseRequestActivityModel,
   PurchaseRequestItemModel,
-  PurchaseRequestLogModel,
   PurchaseRequestModel
 } from '../../../models/purchase-request.model';
 import { PurchaseRequisitionService } from '../services/purchase-requisition.service';
@@ -25,12 +24,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   faFilePdf = faFilePdf;
 
   constructor(private prService: PurchaseRequisitionService) {
-    const a$ = this.prService.fetchMyRequests()
-      .subscribe((value) => {
-        this._requests.push(...value)
-      });
 
-    this.subscriptions.push(a$);
   }
 
   ngOnInit(): void {
@@ -40,57 +34,15 @@ export class IndexComponent implements OnInit, OnDestroy {
     return this._requests;
   }
 
-  formatRequestId(requestId: number): string {
-    return this.prService.formatRequestId(requestId);
-  }
-
   aggregateRequestItemsQty(items: PurchaseRequestItemModel[]) {
     return items.reduce((acc, item) => {
-      acc.requested += item.qty_requested;
-      acc.verified += item.qty_verified;
-      acc.approved += item.qty_approved;
+      acc.requested += item.requested_qty;
+      acc.verified += item.verified_qty ? item.verified_qty : -1;
+      acc.approved += item.approved_qty ? item.approved_qty : -1;
       return acc;
     }, {requested: 0, verified: 0, approved: 0})
   }
 
-  lastProcessInstance(req: PurchaseRequestModel) {
-
-    //sort in reverse such that the latest equals first index
-    const lastStage = [...req.logs].sort((a, b) => b.id - a.id)[ 0 ];
-
-    const qty = this.aggregateRequestItemsQty(req.items);
-
-    if (lastStage.stage === PRStage.CREATE) {
-      return {stage: 'Checking/Verification', status: 'Pending verification'}
-    }
-
-    if (lastStage.stage === PRStage.VERIFY) {
-      return {
-        stage: qty.verified === 0 ? 'Complete' : 'Approval',
-        status: qty.verified === 0 ? 'Rejected' : 'Pending Approval'
-      }
-    }
-
-    if (lastStage.stage === PRStage.APPROVE) {
-      return {stage: 'Complete', status: qty.verified === 0 ? 'Rejected' : 'Approved'}
-    }
-
-    return {stage: 'Unknown', status: 'Unknown'}
-  }
-
-  formatTimelineStageTitle(log: PurchaseRequestLogModel) {
-    if (log.stage === PRStage.CREATE) {
-      return 'Request Application Stage';
-    }
-    if (log.stage === PRStage.VERIFY) {
-      return 'Request Verification/Checking Stage';
-    }
-    if (log.stage === PRStage.APPROVE) {
-      return 'Request Approval Stage';
-    }
-
-    return 'Request Stage Unknown';
-  }
 
   showRequestHistory(request: PurchaseRequestModel) {
     this.model = request;
@@ -101,5 +53,17 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.map((sub) => sub.unsubscribe());
+  }
+
+  stage(activityModel?: PurchaseRequestActivityModel) {
+    return this.prService.stage(activityModel);
+  }
+
+  status(activityModel?: PurchaseRequestActivityModel) {
+    return this.prService.status(activityModel);
+  }
+
+  formatTimelineStageTitle(log: PurchaseRequestActivityModel) {
+    return this.prService.formatTimelineStageTitle(log)
   }
 }

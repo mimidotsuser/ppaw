@@ -26,7 +26,7 @@ export interface RFQItemModel {
 
 export interface RFQModel {
   id: string;
-  order_id: number;
+  sn: string;
   purchase_request_id?: string;
   closing_date: string;
   items: RFQItemModel[],

@@ -24,13 +24,11 @@ export class RfqSearchComponent implements OnInit {
     return this.httpService.endpoint.rfqs;
   }
 
-  formatRequestId(id: number) {
-    return `REQUEST-${String(id).padStart(4, '0')}`
-  }
+
 
   get outputFormatter(): (item: RFQModel) => string {
     return (item: RFQModel) => {
-      return `${this.formatRequestId(item.order_id)}${item.created_by ? ' | by ' : ''}` +
+      return `${item.sn}${item.created_by ? ' | by ' : ''}` +
         `${item?.created_by?.first_name || ''} ${item?.created_by?.last_name || ''}`
     }
   }

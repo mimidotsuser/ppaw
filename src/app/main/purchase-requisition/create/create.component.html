@@ -34,7 +34,7 @@
 
     <div class="col-lg-3 justify-content-end d-flex">
       <small class="text-muted" role="button" (click)="toggleCartPopup()">
-        Totals: {{totalQty}}/ {{totalItems}}
+        Totals(Items/Qty): {{totalQty}}/ {{totalItems}}
       </small>
     </div>
 
@@ -51,12 +51,13 @@
       <th>RO-L</th>
       <th>MAX-L</th>
       <th>Physical Bal</th>
+      <th>Out of Stock</th>
       <th></th>
     </tr>
     </thead>
     <tbody formArrayName="cart_items">
-    <ng-container *ngIf="((itemsBalances|async)?.length||0)>0;else noData">
-      <tr *ngFor="let item of itemsBalances|async">
+    <ng-container *ngIf="itemsBalances.length>0;else noData">
+      <tr *ngFor="let item of itemsBalances">
         <td>
           <span class="td-inline-label">Item</span>
           <div class="d-flex flex-column">
@@ -90,6 +91,12 @@
           <span class="td-inline-label">Physical Bal</span>
           {{item?.stock_balance}}
         </td>
+        <td>
+          <span class="td-inline-label">Out of Stock</span>
+          <span class="badge badge-status me-1"
+                [ngClass]="item.out_of_stock?'bg-danger':'bg-success' "></span>
+          {{item?.out_of_stock ? 'Yes' : 'No'}}
+        </td>
 
         <td class="cart-actions-column">
           <div class="d-flex gap-2 justify-content-center w-100 cart-actions">
@@ -103,10 +110,10 @@
 
             <ng-template #requestTemplate>
               <div class="input-group" [formGroup]="requestForm(item.product!)!">
-                <button class="input-group-text" (click)="updateOrderQty(item)">+</button>
-                <input type="number" min="1" class="form-control" formControlName="request_qty">
-                <button class="input-group-text" (click)="updateOrderQty(item,-10)">-
+                <button class="input-group-text" (click)="updateOrderQty(item.product,-10)">-
                 </button>
+                <input type="number" min="1" class="form-control" formControlName="request_qty">
+                <button class="input-group-text" (click)="updateOrderQty(item.product)">+</button>
               </div>
             </ng-template>
 
@@ -132,34 +139,25 @@
     </ng-template>
     </tbody>
   </table>
-  <div class="pagination-col d-flex justify-content-end w-100 pr-5 d-none">
-    <ngb-pagination [(page)]="pagination.page" [pageSize]="pagination.perPage"
-                    [collectionSize]="100" (pageChange)="loadProductBalances($event)">
-      <ng-template ngbPaginationPrevious>
-        Previous
-      </ng-template>
-      <ng-template ngbPaginationPages>
-        <div
-          class="pagination-info d-flex align-items-center disabled page-item">
-          <span class="page-link">
-          {{(pagination.perPage * pagination.page) - pagination.perPage + 1}} -
-            {{pagination.page * pagination.perPage}} of 100
-            </span>
-        </div>
-
-      </ng-template>
-      <ng-template ngbPaginationNext>
-        Next
-      </ng-template>
-    </ngb-pagination>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination" (pageChange)="loadProductBalances()"></pagination>
   </div>
   <div class="row mt-2">
+    <div class="col-md-3 mb-3">
+      <label for="warehouse_id" class="required form-label">Collection Point</label>
+      <select id="warehouse_id" class="form-select" formControlName="warehouse_id">
+        <option *ngFor="let warehouse of warehouses" [value]="warehouse.id">
+          {{warehouse.name}}
+        </option>
+      </select>
+    </div>
+    <div class="col-12"></div>
     <div class="col-md-6 mb-3">
-      <label for="remarks" class="form-label">Remarks</label>
-      <textarea id="remarks" class="form-control" formControlName="remarks"></textarea>
+      <label for="remarks" class="form-label required">Remarks</label>
+      <textarea id="remarks" class="form-control" rows="4" formControlName="remarks"></textarea>
     </div>
     <div class="col-12">
-      <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submit()"
+      <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submitForm()"
               [disabled]="totalItems===0">
         Submit
       </button>
@@ -178,8 +176,8 @@
     </tr>
     </thead>
     <tbody formArrayName="cart_items">
-    <ng-container *ngFor="let group of (cartForm.controls);let i=index">
-      <tr>
+    <ng-container *ngFor="let group of cartForm.controls;let i=index">
+      <tr [formGroup]="$any(group)">
         <td>
           <span class="td-inline-label">Item</span>
           <div class="d-flex flex-column">
@@ -194,9 +192,17 @@
           {{group.get('physical_qty')!.value}}
         </td>
 
-        <td class="cart-actions-column" [formGroup]="$any(group)">
+        <td class="cart-actions-column">
           <div class="d-flex gap-2 justify-content-center cart-actions">
-            <input type="number" min="1" class="form-control" formControlName="request_qty">
+            <div class="input-group">
+              <button class="input-group-text"
+                      (click)="updateOrderQty(group.get('product')!.value,-10)">-
+              </button>
+              <input type="disabled" min="1" class="form-control" formControlName="request_qty">
+              <button class="input-group-text"
+                      (click)="updateOrderQty(group.get('product')!.value)">+
+              </button>
+            </div>
           </div>
         </td>
 

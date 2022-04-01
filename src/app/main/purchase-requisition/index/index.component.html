@@ -27,7 +27,7 @@
       <td (click)="showRequestHistory(request)" role="button">
         <span class="td-inline-label">Request No.</span>
         <a class="text-decoration-none">
-          {{formatRequestId(request.order_id)}}
+          {{request.sn}}
         </a>
       </td>
       <td>
@@ -36,10 +36,10 @@
       </td>
       <td>
         <span class="td-inline-label">Stage/Status</span>
-        <div class="d-flex flex-column" *ngIf="lastProcessInstance(request) as sd">
-          {{sd.stage}}
+        <div class="d-flex flex-column" *ngIf="request?.latestActivity">
+          {{stage(request?.latestActivity)}}
           <small class="text-muted">
-            {{sd.status}}
+            {{status(request?.latestActivity)}}
           </small>
         </div>
       </td>
@@ -50,7 +50,7 @@
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
           <div ngbDropdown class="d-inline-block">
-            <button class="btn btn-outline-secondary hide-dropdown-toggle" id="dp"
+            <button class="btn btn-outline-secondary hide-dropdown-toggle border-0" id="dp"
                     ngbDropdownToggle>
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
@@ -84,7 +84,7 @@
 </div>
 
 <app-side-popup [(show)]="showRequestHistoryPopup" [isFullScreen]="outlet.activeId=='items'"
-                [title]="formatRequestId(model?.order_id||0)">
+                [title]="model?.sn||''">
 
   <nav ngbNav activeId="logs" class="nav-tabs my-3" #outlet="ngbNav">
     <div ngbNavItem="items">
@@ -127,15 +127,15 @@
       </td>
       <td>
         <span class="td-inline-label">Qty Requested</span>
-        {{item.qty_requested}}
+        {{item.requested_qty}}
       </td>
       <td>
         <span class="td-inline-label">Qty Verified/Checked</span>
-        {{item.qty_verified}}
+        {{item.verified_qty}}
       </td>
       <td>
         <span class="td-inline-label">Qty Approved</span>
-        {{item.qty_approved}}
+        {{item.approved_qty}}
       </td>
     </tr>
     </tbody>
@@ -143,7 +143,7 @@
 </ng-template>
 <ng-template #activityTemplate>
   <div class="container-fluid p-0 p-md-2">
-    <activity-timeline [model]="model?.logs||[]" [formatTitle]="formatTimelineStageTitle">
+    <activity-timeline [model]="model?.activities||[]" [formatTitle]="formatTimelineStageTitle">
 
     </activity-timeline>
   </div>

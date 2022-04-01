@@ -18,8 +18,6 @@ export class IndexComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   constructor(private prService: PurchaseRequisitionService, private fb: FormBuilder) {
-    this.prService.fetchPendingVerification()
-      .subscribe((model) => this._purchaseRequests.push(...model))
     this.searchInput = this.fb.control('');
   }
 
@@ -30,15 +28,11 @@ export class IndexComponent implements OnInit, OnDestroy {
     return this._purchaseRequests;
   }
 
-  formatRequestId(orderId: number): string {
-    return this.prService.formatRequestId(orderId);
-  }
-
   aggregateRequestItemsQty(items: PurchaseRequestItemModel[]) {
     return items.reduce((acc, item) => {
-      acc.requested += item.qty_requested;
-      acc.verified += item.qty_verified;
-      acc.approved += item.qty_approved;
+      acc.requested += item.requested_qty;
+      acc.verified += item.verified_qty?item.verified_qty:-1;
+      acc.approved += item.approved_qty?item.approved_qty:-1;
       return acc;
     }, {requested: 0, verified: 0, approved: 0})
   }

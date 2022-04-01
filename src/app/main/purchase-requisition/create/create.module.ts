@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgbDropdownModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '../../../shared/shared.module';
 import { CreateComponent } from './create.component';
 
@@ -17,7 +17,6 @@ import { CreateComponent } from './create.component';
     SharedModule,
     FontAwesomeModule,
     NgbDropdownModule,
-    NgbPaginationModule,
   ]
 })
 export class CreateModule {}

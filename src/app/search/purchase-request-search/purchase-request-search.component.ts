@@ -4,7 +4,6 @@ import { HttpParams } from '@angular/common/http';
 import { map, mergeMap, Observable } from 'rxjs';
 import { PurchaseRequestModel } from '../../models/purchase-request.model';
 import { HttpService } from '../../core/services/http.service';
-import { ProductBalanceModel } from '../../models/product-balance.model';
 
 @Component({
   selector: 'pr-typeahead-input[controlName],pr-typeahead-input[control]',
@@ -27,13 +26,10 @@ export class PurchaseRequestSearchComponent implements OnInit {
     return this.httpService.endpoint.purchaseRequests;
   }
 
-  formatRequestId(id: number) {
-    return `REQUEST-${String(id).padStart(4, '0')}`
-  }
 
   get outputFormatter(): (item: PurchaseRequestModel) => string {
     return (item: PurchaseRequestModel) => {
-      return `${this.formatRequestId(item.order_id)} ${item.created_by ? '| by ' : ''}` +
+      return `${item.sn} ${item.created_by ? '| by ' : ''}` +
         `${item?.created_by?.first_name || ''} ${item?.created_by?.last_name || ''}`
     }
   }

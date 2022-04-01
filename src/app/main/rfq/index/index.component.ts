@@ -2,9 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import {
   faEllipsisV,
-  faFilePdf,
+  faExternalLinkAlt,
   faEye,
-  faExternalLinkAlt
+  faFilePdf
 } from '@fortawesome/free-solid-svg-icons';
 import { RqfService } from '../services/rqf.service';
 import { RFQItemModel, RFQModel } from '../../../models/r-f-q.model';
@@ -33,9 +33,6 @@ export class IndexComponent implements OnInit, OnDestroy {
       .subscribe((value) => this.rfqRequests.push(...value))
   }
 
-  formatOrderId(id: number) {
-    return `REQUEST-${String(id).padStart(4, '0')}`
-  }
 
   aggregateQty(items: RFQItemModel[]) {
     return items.reduce((acc, v) => acc += v.qty, 0)

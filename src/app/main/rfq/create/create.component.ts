@@ -1,10 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { addDaysToDate } from '../../../utils/utils';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -77,9 +72,9 @@ export class CreateComponent implements OnInit, OnDestroy {
     return this.form.get('request_items') as FormArray;
   }
 
-  createRFQItemForm(product: ProductModel, obj?: { pr_item: PurchaseRequestItemModel | null, qty: number }) {
+  createRFQItemForm(product: ProductModel, obj?: { pr_item?: PurchaseRequestItemModel, qty: number }) {
     if (!obj) {
-      obj = {pr_item: null, qty: 0};
+      obj = {pr_item: undefined, qty: 0};
     }
     return this.fb.group({
       order_item: this.fb.control(obj.pr_item),
@@ -101,7 +96,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       });
   }
 
-  addRFQItemForm(product: ProductModel, orderItem: PurchaseRequestItemModel | null = null): FormGroup {
+  addRFQItemForm(product: ProductModel, orderItem?: PurchaseRequestItemModel): FormGroup {
     //check if it exists first
     const index = this.getRFQItemFormIndex(product);
 
@@ -118,8 +113,8 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
 
     const group = this.createRFQItemForm(product, {
-      pr_item: orderItem,
-      qty: orderItem.qty_approved
+      pr_item: orderItem!,
+      qty: orderItem!.approved_qty!
     });
 
     this.requestItemsForm.push(group);
@@ -179,7 +174,6 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.adhocRFQItemForm.reset({qty: 1});
     } else {
       const group = this.createRFQItemForm(this.adhocRFQItemForm.value.product, {
-        pr_item: null,
         qty: this.adhocRFQItemForm.value.qty
       });
       this.requestItemsForm.push(group);
@@ -192,7 +186,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     if (($evt.target as HTMLInputElement).checked) {
       // reset the quantity
 
-      this.requestItemsForm.at(index).patchValue({qty: orderItem?.qty_approved || 0});
+      this.requestItemsForm.at(index).patchValue({qty: orderItem?.approved_qty || 0});
     } else {
       //if the form group has not order item id, remove
       if (!orderItem) {
@@ -230,7 +224,7 @@ export class CreateComponent implements OnInit, OnDestroy {
         //add it into the RFQ form vendors list (set as selected)
         this.vendors = [...this.vendors, vendor];
 
-        this.form.get('vendors')?.patchValue([... (this.form.value.vendors || []), vendor])
+        this.form.get('vendors')?.patchValue([...(this.form.value.vendors || []), vendor])
         this.showVendorCreateFormPopup = false;
       })
 

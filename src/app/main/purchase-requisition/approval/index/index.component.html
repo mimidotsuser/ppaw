@@ -27,7 +27,7 @@
         <td>
           <span class="td-inline-label">Request No.</span>
           <a [routerLink]="request.id" class="text-decoration-none">
-            {{formatRequestId(request.order_id!)}}
+            {{request.sn}}
           </a>
         </td>
         <td>
@@ -46,11 +46,12 @@
         </td>
         <td>
           <span class="td-inline-label">Checked On</span>
-          {{getVerifierInfo(request.logs).when|date}}
+          {{request?.latestActivity?.created_at|date}}
         </td>
         <td>
           <span class="td-inline-label">Checked By</span>
-          {{getVerifierInfo(request.logs).name}}
+          {{request?.latestActivity?.created_by?.first_name}}
+          {{request?.latestActivity?.created_by?.last_name}}
         </td>
         <td>
           <div class="d-flex gap-2 justify-content-end w-100">

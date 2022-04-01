@@ -1,62 +1,102 @@
 import { Injectable } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
 import { PurchaseRequisitionModule } from '../purchase-requisition.module';
 import { HttpService } from '../../../core/services/http.service';
+import { PaginationModel } from '../../../models/pagination.model';
+import { map, Observable } from 'rxjs';
+import { HttpResponseModel } from '../../../models/response.model';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
-import { PurchaseRequestModel } from '../../../models/purchase-request.model';
+import {
+  PRStage,
+  PurchaseRequestActivityModel,
+  PurchaseRequestModel
+} from '../../../models/purchase-request.model';
+import { WarehouseModel } from '../../../models/warehouse.model';
 
 @Injectable({
   providedIn: PurchaseRequisitionModule
 })
 export class PurchaseRequisitionService {
 
-  constructor(private http: HttpService) { }
+  constructor(private httpService: HttpService) { }
 
-  formatRequestId(requestId: number): string {
-    return `REQUEST-${String(requestId).padStart(4, '0')}`
+  stage(log?: PurchaseRequestActivityModel): string {
+
+    if (!log) {return '---'}
+
+    if (log.stage === PRStage.REQUEST_CREATED) {
+      return 'Verification Stage';
+    }
+
+    if (log.stage === PRStage.VERIFIED_REJECTED) {
+      return 'Verification Stage';
+    }
+    if (log.stage === PRStage.VERIFIED_OKAYED) {
+      return 'Approval Stage';
+    }
+
+    if (log.stage === PRStage.APPROVAL_REJECTED || log.stage === PRStage.APPROVAL_OKAYED) {
+      return 'Complete'
+    }
+
+    return 'Unknown';
   }
 
-  /**
-   * Fetch all product balances
-   * @param page
-   * @param limit
-   */
-  productBalances(page = 1, limit = 10): Observable<ProductBalanceModel[]> {
-    return this.http.get('/stock-balances', {
-      params: {_expand: 'product', _page: page, _limit: limit}
-    })
-      .pipe(map((res: { data: ProductBalanceModel[] }) => res.data))
-      .pipe(shareReplay())
+  status(log?: PurchaseRequestActivityModel): string {
+
+    if (!log) {return '---'}
+
+    if (log.stage === PRStage.REQUEST_CREATED || log.stage === PRStage.VERIFIED_OKAYED) {
+      return 'Pending';
+    }
+    if (log.stage === PRStage.VERIFIED_REJECTED || log.stage === PRStage.APPROVAL_REJECTED) {
+      return 'Request Rejected'
+    }
+
+    if (log.stage === PRStage.APPROVAL_OKAYED) {
+      return 'Complete'
+
+    }
+    return 'Unknown';
   }
 
-  fetchMyRequests({page, perPage} = {page: 1, perPage: 10}): Observable<PurchaseRequestModel[]> {
-    return this.http.get('/purchase-requests', {
-      params: {_expand: 'created_by', _page: page, _limit: perPage}
-    }).pipe(map((res: { data: PurchaseRequestModel[] }) => res.data))
+  formatTimelineStageTitle(log: PurchaseRequestActivityModel) {
+    if (log.stage === PRStage.REQUEST_CREATED) {
+      return 'Request Application Stage';
+    }
+    if (log.stage === PRStage.VERIFIED_OKAYED || log.stage === PRStage.VERIFIED_REJECTED) {
+      return 'Request Verification Stage';
+    }
+    if (log.stage === PRStage.APPROVAL_OKAYED || log.stage === PRStage.APPROVAL_REJECTED) {
+      return 'Request Approval Stage';
+    }
+    return 'Request Stage Unknown';
   }
 
-  fetchPendingVerification({page, perPage} = {
-    page: 1,
-    perPage: 10
-  }): Observable<PurchaseRequestModel[]> {
-    return this.http.get('/purchase-requests', {
-      params: {_expand: 'created_by', _page: page, _limit: perPage}
-    }).pipe(map((res: { data: PurchaseRequestModel[] }) => res.data))
+  fetch(meta: PaginationModel): Observable<HttpResponseModel<PurchaseRequestModel>> {
+    return this.httpService.get(this.httpService.endpoint.purchaseRequests,
+      {params: {...meta}})
+
   }
 
-  fetchPendingApproval({page, perPage} = {
-    page: 1,
-    perPage: 10
-  }): Observable<PurchaseRequestModel[]> {
-    return this.http.get('/purchase-requests', {
-      params: {_expand: 'created_by', _page: page, _limit: perPage}
-    }).pipe(map((res: { data: PurchaseRequestModel[] }) => res.data))
+  create(payload: object): Observable<PurchaseRequestModel> {
+    return this.httpService.post(this.httpService.endpoint.purchaseRequests, payload)
+      .pipe(map((res: { data: PurchaseRequestModel }) => res.data))
   }
 
-  findById(id: string): Observable<PurchaseRequestModel> {
-    return this.http.get(`/purchase-requests/${id}`, {
-      params: {_expand: 'created_by'}
-    })
+  fetchProductBalances(meta: PaginationModel): Observable<HttpResponseModel<ProductBalanceModel>> {
+    const params = {
+      exclude_variants: true,
+      sort_by: 'out_of_stock',
+      include: 'product',
+      ...meta
+    };
+    return this.httpService.get(this.httpService.endpoint.stockBalances, {params})
   }
+
+  get fetchAllWarehouses(): Observable<WarehouseModel[]> {
+    return this.httpService.get(this.httpService.endpoint.warehouses)
+      .pipe(map((res: { data: WarehouseModel[] }) => res.data));
+  }
+
 
 }

@@ -7,7 +7,7 @@
     <div class="col-md-3 mb-3">
       <label for="request_id" class="form-label">Request No.</label>
       <input type="text" class="form-control" disabled id="request_id"
-             [value]="formatRequestId(model?.order_id||0)">
+             [value]="model?.sn||''">
     </div>
 
     <div class="col-md-3 mb-3">
@@ -74,7 +74,7 @@
           </td>
           <td>
             <span class="td-inline-label">Qty Requested</span>
-            <div class="text-sm-center"> {{item.qty_requested}}</div>
+            <div class="text-sm-center"> {{item.requested_qty}}</div>
           </td>
           <td class="qty-cell" [formGroup]="itemAllocationFormOrCreate(item)">
             <span class="td-inline-label">Qty Verified</span>

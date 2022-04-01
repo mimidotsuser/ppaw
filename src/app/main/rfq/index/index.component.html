@@ -29,7 +29,7 @@
       <td (click)="showRFQSummary(request)" role="button">
         <span class="td-inline-label">Request No.</span>
         <a class="text-decoration-none">
-          {{formatOrderId(request.order_id)}}
+          {{request.sn}}
         </a>
       </td>
       <td>
@@ -90,7 +90,7 @@
   </table>
 </div>
 
-<app-side-popup [title]="'RFQ '+formatOrderId(selectedModel?.order_id||0)+' Summary'"
+<app-side-popup [title]="'RFQ '+selectedModel?.sn||''+' Summary'"
                 [(show)]="showRFQSummaryPopup" [isFullScreen]="true">
 
   <div class="row container-fluid">

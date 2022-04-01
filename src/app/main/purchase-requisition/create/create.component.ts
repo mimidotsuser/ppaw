@@ -1,55 +1,70 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { faFilter, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
-import { SearchService } from '../../../shared/services/search.service';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
 import { PurchaseRequisitionService } from '../services/purchase-requisition.service';
 import { ProductModel } from '../../../models/product.model';
+import { PaginationModel } from '../../../models/pagination.model';
+import { WarehouseModel } from '../../../models/warehouse.model';
 
 @Component({
   selector: 'app-create',
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
-  providers: [SearchService]
 })
-export class CreateComponent implements OnInit {
+export class CreateComponent implements OnInit, OnDestroy {
 
 
-  searchInput: FormControl;
-  _itemBalance: Observable<ProductBalanceModel[]> = new Observable();
   faShoppingCart = faShoppingCart
   faFilter = faFilter
   showCartPopup = false;
-  //forms
+  pagination: PaginationModel = {page: 1, limit: 25, total: 0}
+  private _itemBalance: ProductBalanceModel[] = [];
+  private _subscriptions: Subscription[] = [];
+  private _warehouses: WarehouseModel[] = [];
   form: FormGroup;
-  pagination = {
-    perPage: 15,
-    page: 1
-  }
+  searchInput: FormControl;
 
-  constructor(private searchService: SearchService<ProductBalanceModel>, private fb: FormBuilder,
-              private prService: PurchaseRequisitionService) {
+  constructor(private fb: FormBuilder, private purchaseRequisitionService: PurchaseRequisitionService) {
+    this.loadProductBalances();
 
-    this._itemBalance = this.prService.productBalances(this.pagination.page, this.pagination.perPage);
     this.searchInput = this.fb.control('');
     this.form = this.fb.group({
       cart_items: this.fb.array([]),
-      remarks: this.fb.control(null, {validators: [Validators.required]})
+      warehouse_id: this.fb.control(null,
+        {validators: [Validators.required]}),
+      remarks: this.fb.control(null,
+        {validators: [Validators.required, Validators.max(250)]})
     });
 
   }
 
   ngOnInit(): void {
+    this.subSink = this.purchaseRequisitionService.fetchAllWarehouses
+      .subscribe((m) => this._warehouses = m)
   }
 
-  get itemsBalances(): Observable<ProductBalanceModel[]> {
+  private set subSink(v: Subscription) {
+    this._subscriptions.push(v);
+  }
+
+  get itemsBalances(): ProductBalanceModel[] {
     return this._itemBalance;
   }
 
-  loadProductBalances(page: number) {
-    this.pagination.page = page;
-    this._itemBalance = this.prService.productBalances(this.pagination.page, this.pagination.perPage);
+  loadProductBalances() {
+    this.subSink = this.purchaseRequisitionService.fetchProductBalances(this.pagination)
+      .subscribe({
+        next: (res) => {
+          this._itemBalance = res.data;
+          this.pagination.total = res.total;
+        }
+      });
+  }
+
+  get warehouses(): WarehouseModel[] {
+    return this._warehouses;
   }
 
   get cartForm(): FormArray {
@@ -75,8 +90,10 @@ export class CreateComponent implements OnInit {
     this.cartForm.push(group);
   }
 
-  updateOrderQty(productBalance: ProductBalanceModel, by = 10) {
-    const subForm = this.requestForm(productBalance.product!)!;
+  updateOrderQty(product?: ProductModel, by = 10) {
+    if (!product) {return;}
+    const subForm = this.requestForm(product);
+    if (!subForm) {return;}
 
     if (Number(subForm.get('request_qty')?.value) + by < 1) {
       //remove the form group from cart
@@ -102,17 +119,32 @@ export class CreateComponent implements OnInit {
 
   toggleCartPopup() {
     if (this.totalItems > 0) {
-      //todo fix quantity bug before enabling the popup
-      // this.showCartPopup = !this.showCartPopup;
+      this.showCartPopup = !this.showCartPopup;
     }
   }
 
-  submit() {
+  submitForm() {
     this.form.markAllAsTouched();
-    if (this.form.invalid) {
-      alert('Form has errors invalid');
-      return
+    if (this.form.invalid) {return}
+
+    const payload = {
+      remarks: this.form.value.remarks,
+      warehouse_id: this.form.value.warehouse_id,
+      items: (this.form.value.cart_items as [])
+        .map((item: { product: ProductModel, request_qty: number }) => {
+          return {product_id: item.product.id, requested_qty: item.request_qty}
+        })
     }
+    this.subSink = this.purchaseRequisitionService.create(payload)
+      .subscribe({
+        next: () => {
+          this.form.reset();
+        }
+      })
+  }
+
+  ngOnDestroy(): void {
+    this._subscriptions.map((sub) => sub.unsubscribe());
   }
 
 }

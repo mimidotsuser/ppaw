@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import {
   PRStage,
+  PurchaseRequestActivityModel,
   PurchaseRequestItemModel,
-  PurchaseRequestLogModel,
   PurchaseRequestModel
 } from '../../../../models/purchase-request.model';
 import { Subscription } from 'rxjs';
@@ -20,8 +20,7 @@ export class IndexComponent implements OnInit {
   subscriptions: Subscription[] = [];
 
   constructor(private prService: PurchaseRequisitionService, private fb: FormBuilder) {
-    this.prService.fetchPendingApproval()
-      .subscribe((model) => this._purchaseRequests.push(...model))
+
     this.searchInput = this.fb.control('');
   }
 
@@ -32,21 +31,18 @@ export class IndexComponent implements OnInit {
     return this._purchaseRequests;
   }
 
-  formatRequestId(orderId: number): string {
-    return this.prService.formatRequestId(orderId);
-  }
 
   aggregateRequestItemsQty(items: PurchaseRequestItemModel[]) {
     return items.reduce((acc, item) => {
-      acc.requested += item.qty_requested;
-      acc.verified += item.qty_verified;
-      acc.approved += item.qty_approved;
+      acc.requested += item.requested_qty;
+      acc.verified += item.verified_qty?item.verified_qty:-1;
+      acc.approved += item.approved_qty?item.approved_qty:-1;
       return acc;
     }, {requested: 0, verified: 0, approved: 0})
   }
 
-  getVerifierInfo(logs: PurchaseRequestLogModel[]): { name: string, when: string } {
-    const obj = logs.find((log) => log.stage === PRStage.VERIFY);
+  getVerifierInfo(logs: PurchaseRequestActivityModel[]): { name: string, when: string } {
+    const obj = logs.find((log) => log.stage === PRStage.VERIFIED_OKAYED);
     if (!obj) {
       return {name: '', when: ''}
     }
