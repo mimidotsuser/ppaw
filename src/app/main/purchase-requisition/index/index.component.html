@@ -16,9 +16,9 @@
     <thead>
     <tr>
       <th>Request No.</th>
-      <th>Total Items</th>
-      <th>Stage/Status</th>
-      <th>Requested On</th>
+      <th>Current Stage/Status</th>
+      <th>Created On</th>
+      <th>Created By</th>
       <th></th>
     </tr>
     </thead>
@@ -31,21 +31,22 @@
         </a>
       </td>
       <td>
-        <span class="td-inline-label">Total Items</span>
-        {{requests.length}} ({{aggregateRequestItemsQty(request.items).requested}})
-      </td>
-      <td>
-        <span class="td-inline-label">Stage/Status</span>
-        <div class="d-flex flex-column" *ngIf="request?.latestActivity">
-          {{stage(request?.latestActivity)}}
+        <span class="td-inline-label">Current Stage/Status</span>
+        <div class="d-flex flex-column" *ngIf="request?.latest_activity">
+          {{stage(request?.latest_activity)}}
           <small class="text-muted">
-            {{status(request?.latestActivity)}}
+            {{status(request?.latest_activity)}}
           </small>
         </div>
       </td>
       <td>
-        <span class="td-inline-label">Requested On</span>
+        <span class="td-inline-label">Created On</span>
         {{request.created_at|date}}
+      </td>
+      <td>
+        <span class="td-inline-label">Created By</span>
+        {{request.created_by?.first_name}}
+        {{request.created_by?.last_name}}
       </td>
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
@@ -84,7 +85,7 @@
 </div>
 
 <app-side-popup [(show)]="showRequestHistoryPopup" [isFullScreen]="outlet.activeId=='items'"
-                [title]="model?.sn||''">
+                [title]="selectedModel?.sn||''">
 
   <nav ngbNav activeId="logs" class="nav-tabs my-3" #outlet="ngbNav">
     <div ngbNavItem="items">
@@ -115,7 +116,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of model?.items">
+    <tr *ngFor="let item of selectedModel?.items">
       <td>
         <span class="td-inline-label">Item</span>
         <div class="d-flex flex-column">
@@ -143,7 +144,7 @@
 </ng-template>
 <ng-template #activityTemplate>
   <div class="container-fluid p-0 p-md-2">
-    <activity-timeline [model]="model?.activities||[]" [formatTitle]="formatTimelineStageTitle">
+    <activity-timeline [model]="selectedModel?.activities||[]" [formatTitle]="formatTimelineStageTitle">
 
     </activity-timeline>
   </div>

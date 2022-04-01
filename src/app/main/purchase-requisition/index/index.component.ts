@@ -2,11 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { faEllipsisV, faEye, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import {
+  PRStage,
   PurchaseRequestActivityModel,
-  PurchaseRequestItemModel,
   PurchaseRequestModel
 } from '../../../models/purchase-request.model';
 import { PurchaseRequisitionService } from '../services/purchase-requisition.service';
+import { PaginationModel } from '../../../models/pagination.model';
 
 @Component({
   selector: 'app-index',
@@ -15,55 +16,77 @@ import { PurchaseRequisitionService } from '../services/purchase-requisition.ser
 })
 export class IndexComponent implements OnInit, OnDestroy {
 
-  _requests: PurchaseRequestModel[] = [];
-  showRequestHistoryPopup = false
-  model: PurchaseRequestModel | null = null;
-  subscriptions: Subscription[] = [];
   faEllipsisV = faEllipsisV;
   faEye = faEye
   faFilePdf = faFilePdf;
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25}
+  showRequestHistoryPopup = false
+  selectedModel: PurchaseRequestModel | null = null;
+  private _requests: PurchaseRequestModel[] = [];
+  private _subscriptions: Subscription[] = [];
 
-  constructor(private prService: PurchaseRequisitionService) {
 
+  constructor(private purchaseRequisitionService: PurchaseRequisitionService) {
+    this.loadRequests();
   }
 
   ngOnInit(): void {
+  }
+
+  set subSink(v: Subscription) {
+    this._subscriptions.push(v);
+  }
+
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
+  }
+
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
   }
 
   get requests(): PurchaseRequestModel[] {
     return this._requests;
   }
 
-  aggregateRequestItemsQty(items: PurchaseRequestItemModel[]) {
-    return items.reduce((acc, item) => {
-      acc.requested += item.requested_qty;
-      acc.verified += item.verified_qty ? item.verified_qty : -1;
-      acc.approved += item.approved_qty ? item.approved_qty : -1;
-      return acc;
-    }, {requested: 0, verified: 0, approved: 0})
+  loadRequests() {
+    this.subSink = this.purchaseRequisitionService.fetch(this.pagination)
+      .subscribe((res) => {
+        this.pagination.total = res.total;
+        this._requests = res.data;
+      })
   }
 
-
   showRequestHistory(request: PurchaseRequestModel) {
-    this.model = request;
+    this.selectedModel = request;
     this.showRequestHistoryPopup = true;
   }
 
   export(request: PurchaseRequestModel) {}
 
-  ngOnDestroy(): void {
-    this.subscriptions.map((sub) => sub.unsubscribe());
-  }
 
   stage(activityModel?: PurchaseRequestActivityModel) {
-    return this.prService.stage(activityModel);
+    return this.purchaseRequisitionService.stage(activityModel);
   }
 
   status(activityModel?: PurchaseRequestActivityModel) {
-    return this.prService.status(activityModel);
+    return this.purchaseRequisitionService.status(activityModel);
   }
 
   formatTimelineStageTitle(log: PurchaseRequestActivityModel) {
-    return this.prService.formatTimelineStageTitle(log)
+    if (log.stage === PRStage.REQUEST_CREATED) {
+      return 'Request Application Stage';
+    }
+    if (log.stage === PRStage.VERIFIED_OKAYED || log.stage === PRStage.VERIFIED_REJECTED) {
+      return 'Request Verification Stage';
+    }
+    if (log.stage === PRStage.APPROVAL_OKAYED || log.stage === PRStage.APPROVAL_REJECTED) {
+      return 'Request Approval Stage';
+    }
+    return 'Request Stage Unknown';
+  }
+
+  ngOnDestroy(): void {
+    this._subscriptions.map((sub) => sub.unsubscribe());
   }
 }

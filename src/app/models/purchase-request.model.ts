@@ -40,7 +40,7 @@ export interface PurchaseRequestModel {
   warehouse_id: number;
   warehouse?: WarehouseModel;
   activities: PurchaseRequestActivityModel[];
-  latestActivity?: PurchaseRequestActivityModel;
+  latest_activity?: PurchaseRequestActivityModel;
   items: PurchaseRequestItemModel[]
   created_by_id: string;
   created_by: UserModel

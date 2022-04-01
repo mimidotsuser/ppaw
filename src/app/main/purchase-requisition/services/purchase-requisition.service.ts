@@ -59,22 +59,10 @@ export class PurchaseRequisitionService {
     return 'Unknown';
   }
 
-  formatTimelineStageTitle(log: PurchaseRequestActivityModel) {
-    if (log.stage === PRStage.REQUEST_CREATED) {
-      return 'Request Application Stage';
-    }
-    if (log.stage === PRStage.VERIFIED_OKAYED || log.stage === PRStage.VERIFIED_REJECTED) {
-      return 'Request Verification Stage';
-    }
-    if (log.stage === PRStage.APPROVAL_OKAYED || log.stage === PRStage.APPROVAL_REJECTED) {
-      return 'Request Approval Stage';
-    }
-    return 'Request Stage Unknown';
-  }
 
   fetch(meta: PaginationModel): Observable<HttpResponseModel<PurchaseRequestModel>> {
     return this.httpService.get(this.httpService.endpoint.purchaseRequests,
-      {params: {...meta}})
+      {params: {...meta,include:'latestActivity,createdBy,activities,items'}})
 
   }
 

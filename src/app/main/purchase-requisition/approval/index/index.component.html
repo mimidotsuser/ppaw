@@ -46,12 +46,12 @@
         </td>
         <td>
           <span class="td-inline-label">Checked On</span>
-          {{request?.latestActivity?.created_at|date}}
+          {{request?.latest_activity?.created_at|date}}
         </td>
         <td>
           <span class="td-inline-label">Checked By</span>
-          {{request?.latestActivity?.created_by?.first_name}}
-          {{request?.latestActivity?.created_by?.last_name}}
+          {{request?.latest_activity?.created_by?.first_name}}
+          {{request?.latest_activity?.created_by?.last_name}}
         </td>
         <td>
           <div class="d-flex gap-2 justify-content-end w-100">
