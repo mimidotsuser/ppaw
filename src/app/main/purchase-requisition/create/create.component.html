@@ -104,6 +104,7 @@
             <ng-container *ngIf="!requestForm(item.product!);else requestTemplate">
               <button type="button" class="btn btn-outline-primary"
                       (click)="addToCart(item)">
+                Add to Cart
                 <fa-icon [icon]="faShoppingCart"></fa-icon>
               </button>
             </ng-container>
