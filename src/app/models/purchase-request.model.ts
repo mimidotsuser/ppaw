@@ -35,7 +35,7 @@ export interface PurchaseRequestItemModel {
 }
 
 export interface PurchaseRequestModel {
-  id: string;
+  id: number;
   sn: string;
   warehouse_id: number;
   warehouse?: WarehouseModel;

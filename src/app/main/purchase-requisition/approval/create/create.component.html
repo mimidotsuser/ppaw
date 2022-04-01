@@ -38,7 +38,7 @@
 
 </div>
 <div class="container-md-fluid" [formGroup]="form">
-  <table class="table table-responsive table-bordered table-block-sm">
+  <table class="table table-responsive table-bordered table-block-sm table-hover">
     <thead>
     <tr>
       <th>Item</th>
@@ -52,57 +52,68 @@
     </tr>
     </thead>
     <tbody>
-    <ng-container *ngIf="model && model.items;else noData">
-      <ng-container *ngFor="let item of model.items">
-        <tr formArrayName="accepted">
-          <td class="product-column">
-            <span class="td-inline-label">Item</span>
-            <div class="d-flex flex-column">
-              {{item.product?.item_code}}
-              <small class="text-muted">
-                {{item.product?.local_description || item?.product?.description}}
-              </small>
-            </div>
-          </td>
-          <td>
-            <span class="td-inline-label">M-PN</span>
-            {{item.product?.manufacturer_part_number}}
-          </td>
-          <td>
-            <span class="td-inline-label">Min</span>
-            {{item.product?.min_level}}
-          </td>
-          <td>
-            <span class="td-inline-label">Max</span>
-            {{item.product?.max_level}}
-          </td>
-          <td>
-            <span class="td-inline-label">Balance</span>
-            {{item.product?.balance?.stock_balance}}
-          </td>
-          <td>
-            <span class="td-inline-label">Qty Requested</span>
-            <div class="text-sm-center"> {{item.requested_qty}}</div>
-          </td>
-          <td>
-            <span class="td-inline-label">Qty Checked</span>
-            <div class="text-sm-center"> {{item.verified_qty}}</div>
-          </td>
-          <td class="qty-cell" [formGroup]="itemAllocationFormOrCreate(item)">
-            <span class="td-inline-label">Qty Approved</span>
-            <div class="w-50">
-              <input type="number" class="form-control" min="0" formControlName="qty_approved">
-            </div>
-          </td>
-        </tr>
-      </ng-container>
+    <ng-container *ngFor="let item of requestItems | slice:tableCountStart:tableCountEnd">
+      <tr formArrayName="items">
+        <td class="product-column">
+          <span class="td-inline-label">Item</span>
+          <div class="d-flex flex-column">
+            {{item.product?.item_code}}
+            <small class="text-muted">
+              {{item.product?.local_description || item?.product?.description}}
+            </small>
+          </div>
+        </td>
+        <td>
+          <span class="td-inline-label">M-PN</span>
+          {{item.product?.manufacturer_part_number}}
+        </td>
+        <td>
+          <span class="td-inline-label">Min</span>
+          {{item.product?.min_level}}
+        </td>
+        <td>
+          <span class="td-inline-label">Max</span>
+          {{item.product?.max_level}}
+        </td>
+        <td>
+          <span class="td-inline-label">Balance</span>
+          {{item.product?.balance?.stock_balance}}
+        </td>
+        <td>
+          <span class="td-inline-label">Qty Requested</span>
+          <div class="text-sm-center"> {{item.requested_qty}}</div>
+        </td>
+        <td>
+          <span class="td-inline-label">Qty Checked</span>
+          <div class="text-sm-center"> {{item.verified_qty}}</div>
+        </td>
+        <td class="qty-cell">
+          <ng-container *ngIf="itemAllocationFormOrCreate(item) as group">
+            <form [formGroup]="group">
+              <span class="td-inline-label">Qty Approved</span>
+              <div class="w-75">
+                <input type="number" class="form-control" min="0" formControlName="approved_qty">
+              </div>
+              <ng-container *ngIf="group.get('approved_qty')?.touched &&
+                 group.get('approved_qty')?.errors">
+                <small class="text-danger" *ngIf="group.get('approved_qty')?.hasError('max')">
+                  Cannot exceed {{group.get('approved_qty')?.getError('max')?.max}}
+                </small>
+                <small class="text-danger" *ngIf="group.get('approved_qty')?.hasError('min')">
+                  Cannot be less than zero
+                </small>
+              </ng-container>
+            </form>
+          </ng-container>
+        </td>
+      </tr>
     </ng-container>
 
-    <ng-template #noData>
+    <ng-container *ngIf="requestItems.length===0">
       <tr>
         <td colspan="7">No data</td>
       </tr>
-    </ng-template>
+    </ng-container>
 
     </tbody>
   </table>

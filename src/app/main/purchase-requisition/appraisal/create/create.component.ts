@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PurchaseRequisitionService } from '../../services/purchase-requisition.service';
 import {
   PRStage,
@@ -6,30 +6,49 @@ import {
   PurchaseRequestModel
 } from '../../../../models/purchase-request.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { PaginationModel } from '../../../../models/pagination.model';
 
 @Component({
   selector: 'app-create',
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit {
+export class CreateComponent implements OnInit, OnDestroy {
 
   model: PurchaseRequestModel | null = null;
   form: FormGroup;
-  subscriptions: Subscription[] = []
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25}
+  private _subscriptions: Subscription[] = []
 
-  constructor(private route: ActivatedRoute, private fb: FormBuilder,
-              private prService: PurchaseRequisitionService) {
+  constructor(private route: ActivatedRoute, private fb: FormBuilder, private router: Router,
+              private purchaseRequisitionService: PurchaseRequisitionService) {
+
+    //fetch the model
+    this.loadRequest();
+
     this.form = this.fb.group({
       remarks: this.fb.control(null),
-      accepted: this.fb.array([])
+      items: this.fb.array([])
     });
 
   }
 
   ngOnInit(): void {
+  }
+
+
+  set subSink(v: Subscription) {
+    this._subscriptions.push(v);
+  }
+
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
+  }
+
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
   }
 
 
@@ -43,12 +62,21 @@ export class CreateComponent implements OnInit {
   }
 
   get allocationForm(): FormArray {
-    return this.form.get('accepted') as FormArray
+    return this.form.get('items') as FormArray
+  }
+
+  loadRequest() {
+    this.subSink = this.purchaseRequisitionService
+      .fetchRequestPendingVerification(this.route.snapshot.params[ 'id' ])
+      .subscribe((model) => {
+        this.model = model;
+        this.pagination.total = model.items.length;
+      });
   }
 
   itemAllocationFormOrCreate(item: PurchaseRequestItemModel): FormGroup {
     let group = (this.allocationForm.controls as FormGroup[])
-      .find((group) => group.get('item_id')?.value === item.id);
+      .find((group) => group.get('id')?.value === item.id);
     if (group) {
       return group;
     }
@@ -56,20 +84,29 @@ export class CreateComponent implements OnInit {
     //create and push it to the form array
 
     this.allocationForm.push(this.fb.group({
-      item_id: this.fb.control(item.id),
-      qty_approved: this.fb.control(item.requested_qty, {
+      id: this.fb.control(item.id),
+      verified_qty: this.fb.control(item.requested_qty, {
         validators: [Validators.required, Validators.min(0), Validators.max(item.requested_qty)]
       })
     }));
     return this.allocationForm.controls[ this.allocationForm.length - 1 ] as FormGroup;
   }
 
-  submit() {
+  submitForm() {
     this.form.markAllAsTouched();
-    if (this.form.invalid) {
-      alert('Invalid data');
-      return
-    }
-    //submit the form
+    if (this.form.invalid || !this.model?.id) {return}
+
+    this.subSink = this.purchaseRequisitionService
+      .createVerificationRequest(this.model.id, this.form.value)
+      .subscribe(() => {
+        this.router.navigate(['../'], {relativeTo: this.route})
+          .then(() => {
+            //show success message
+          })
+      })
+  }
+
+  ngOnDestroy(): void {
+    this._subscriptions.map((sub) => sub.unsubscribe())
   }
 }

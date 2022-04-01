@@ -33,4 +33,10 @@ export enum V1Endpoints {
 
   materialRequestIssue = '/material-requisitions/:id/issue',
   materialRequestsPendingIssue = '/material-requisitions/issue',
+
+  purchaseRequestVerification='/purchase-requests/:id/verification',
+  purchaseRequestsPendingVerification='/purchase-requests/verification',
+
+  purchaseRequestApproval ='/purchase-requests/:id/approval',
+  purchaseRequestsPendingApproval ='/purchase-requests/approval',
 }

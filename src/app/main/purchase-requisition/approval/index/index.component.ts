@@ -1,13 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import {
-  PRStage,
-  PurchaseRequestActivityModel,
-  PurchaseRequestItemModel,
-  PurchaseRequestModel
-} from '../../../../models/purchase-request.model';
+import { PurchaseRequestModel } from '../../../../models/purchase-request.model';
 import { Subscription } from 'rxjs';
 import { PurchaseRequisitionService } from '../../services/purchase-requisition.service';
+import { PaginationModel } from '../../../../models/pagination.model';
 
 @Component({
   selector: 'app-index',
@@ -15,45 +11,46 @@ import { PurchaseRequisitionService } from '../../services/purchase-requisition.
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit {
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25}
+  _requests: PurchaseRequestModel[] = [];
+  _subscriptions: Subscription[] = [];
   searchInput: FormControl;
-  _purchaseRequests: PurchaseRequestModel[] = [];
-  subscriptions: Subscription[] = [];
 
-  constructor(private prService: PurchaseRequisitionService, private fb: FormBuilder) {
-
+  constructor(private fb: FormBuilder,
+              private purchaseRequisitionService: PurchaseRequisitionService,) {
+    this.loadRequests();
     this.searchInput = this.fb.control('');
   }
 
   ngOnInit(): void {
   }
 
-  get purchaseRequests(): PurchaseRequestModel[] {
-    return this._purchaseRequests;
+  set subSink(v: Subscription) {
+    this._subscriptions.push(v);
   }
 
-
-  aggregateRequestItemsQty(items: PurchaseRequestItemModel[]) {
-    return items.reduce((acc, item) => {
-      acc.requested += item.requested_qty;
-      acc.verified += item.verified_qty?item.verified_qty:-1;
-      acc.approved += item.approved_qty?item.approved_qty:-1;
-      return acc;
-    }, {requested: 0, verified: 0, approved: 0})
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
   }
 
-  getVerifierInfo(logs: PurchaseRequestActivityModel[]): { name: string, when: string } {
-    const obj = logs.find((log) => log.stage === PRStage.VERIFIED_OKAYED);
-    if (!obj) {
-      return {name: '', when: ''}
-    }
-    return {
-      name: `${obj.created_by?.first_name || ''} ${obj.created_by?.last_name || ''}`,
-      when: obj.created_at
-    }
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
+  }
+
+  get requests(): PurchaseRequestModel[] {
+    return this._requests;
+  }
+
+  loadRequests() {
+    this.subSink = this.purchaseRequisitionService.fetchRequestsPendingApproval(this.pagination)
+      .subscribe((res) => {
+        this.pagination.total = res.total;
+        this._requests = res.data;
+      })
   }
 
 
   ngOnDestroy(): void {
-    this.subscriptions.map((sub) => sub.unsubscribe())
+    this._subscriptions.map((sub) => sub.unsubscribe())
   }
 }

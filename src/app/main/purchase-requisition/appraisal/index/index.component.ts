@@ -1,11 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import {
-  PurchaseRequestItemModel,
-  PurchaseRequestModel
-} from '../../../../models/purchase-request.model';
+import { PurchaseRequestModel } from '../../../../models/purchase-request.model';
 import { PurchaseRequisitionService } from '../../services/purchase-requisition.service';
+import { PaginationModel } from '../../../../models/pagination.model';
 
 @Component({
   selector: 'app-index',
@@ -13,32 +11,46 @@ import { PurchaseRequisitionService } from '../../services/purchase-requisition.
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit, OnDestroy {
-  searchInput: FormControl;
-  _purchaseRequests: PurchaseRequestModel[] = [];
-  subscriptions: Subscription[] = [];
 
-  constructor(private prService: PurchaseRequisitionService, private fb: FormBuilder) {
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25}
+  private _requests: PurchaseRequestModel[] = [];
+  private _subscriptions: Subscription[] = [];
+  searchInput: FormControl;
+
+  constructor(private purchaseRequisitionService: PurchaseRequisitionService, private fb: FormBuilder) {
+    this.loadRequests();
     this.searchInput = this.fb.control('');
   }
 
   ngOnInit(): void {
   }
 
-  get purchaseRequests(): PurchaseRequestModel[] {
-    return this._purchaseRequests;
+  set subSink(v: Subscription) {
+    this._subscriptions.push(v);
   }
 
-  aggregateRequestItemsQty(items: PurchaseRequestItemModel[]) {
-    return items.reduce((acc, item) => {
-      acc.requested += item.requested_qty;
-      acc.verified += item.verified_qty?item.verified_qty:-1;
-      acc.approved += item.approved_qty?item.approved_qty:-1;
-      return acc;
-    }, {requested: 0, verified: 0, approved: 0})
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
+  }
+
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
+  }
+
+  get requests(): PurchaseRequestModel[] {
+    return this._requests;
+  }
+
+  loadRequests() {
+    this.subSink = this.purchaseRequisitionService.fetchRequestsPendingVerification(this.pagination)
+      .subscribe((res) => {
+        this.pagination.total = res.total;
+        this._requests = this._requests.concat(res.data);
+      })
   }
 
 
   ngOnDestroy(): void {
-    this.subscriptions.map((sub) => sub.unsubscribe())
+    this._subscriptions.map((sub) => sub.unsubscribe())
   }
 }

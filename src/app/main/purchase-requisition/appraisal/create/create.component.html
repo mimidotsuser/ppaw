@@ -31,22 +31,22 @@
 
 </div>
 <div class="container-md-fluid" [formGroup]="form">
-  <table class="table table-responsive table-bordered table-block-sm">
+  <table class="table table-responsive table-bordered table-hover table-block-sm">
     <thead>
     <tr>
       <th>Item</th>
       <th>M-PN</th>
       <th>Min</th>
       <th>Max</th>
-      <th>Balance</th>
-      <th>Qty requested</th>
+      <th class="qty-cell">Physical Balance</th>
+      <th class="qty-cell">Qty requested</th>
       <th>Qty Verified</th>
     </tr>
     </thead>
     <tbody>
     <ng-container *ngIf="model && model.items;else noData">
-      <ng-container *ngFor="let item of model.items">
-        <tr formArrayName="accepted">
+      <ng-container *ngFor="let item of model.items | slice:tableCountStart:tableCountEnd">
+        <tr formArrayName="items">
           <td>
             <span class="td-inline-label">Item</span>
             <div class="d-flex flex-column">
@@ -76,11 +76,24 @@
             <span class="td-inline-label">Qty Requested</span>
             <div class="text-sm-center"> {{item.requested_qty}}</div>
           </td>
-          <td class="qty-cell" [formGroup]="itemAllocationFormOrCreate(item)">
-            <span class="td-inline-label">Qty Verified</span>
-            <div class="w-50">
-              <input type="number" class="form-control" min="0" formControlName="qty_approved">
-            </div>
+          <td class="qty-cell">
+            <ng-container *ngIf="itemAllocationFormOrCreate(item) as group">
+              <form [formGroup]="group">
+                <span class="td-inline-label">Qty Verified</span>
+                <div class="w-75">
+                  <input type="number" class="form-control" min="0" formControlName="verified_qty">
+                </div>
+                <ng-container *ngIf="group.get('verified_qty')?.touched &&
+                 group.get('verified_qty')?.errors">
+                  <small class="text-danger" *ngIf="group.get('verified_qty')?.hasError('max')">
+                    Cannot exceed {{group.get('verified_qty')?.getError('max')?.max}}
+                  </small>
+                  <small class="text-danger" *ngIf="group.get('verified_qty')?.hasError('min')">
+                    Cannot be less than zero
+                  </small>
+                </ng-container>
+              </form>
+            </ng-container>
           </td>
         </tr>
       </ng-container>
@@ -94,13 +107,16 @@
 
     </tbody>
   </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination"></pagination>
+  </div>
   <div class="row container-fluid">
     <div class="col-md-6 mb-3">
       <label for="remarks" class="form-label">Remarks</label>
-      <textarea id="remarks" class="form-control" formControlName="remarks"></textarea>
+      <textarea id="remarks" class="form-control" formControlName="remarks" rows="4"></textarea>
     </div>
     <div class="col-12">
-      <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submit()"
+      <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submitForm()"
               [disabled]="form.invalid">
         Submit
       </button>

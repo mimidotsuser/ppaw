@@ -13,26 +13,20 @@
     <thead>
     <tr>
       <th>Request No.</th>
-      <th>Total Qty/Items</th>
       <th>Requested On</th>
       <th>Requested By</th>
       <th></th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let request of purchaseRequests">
+    <tr
+      *ngFor="let request of requests | slice:tableCountStart:tableCountEnd | filter:this.searchInput.value">
       <td>
         <span class="td-inline-label">Request No.</span>
         <a [routerLink]="request.id" class="text-decoration-none">
           {{request.sn}}
         </a>
       </td>
-      <td>
-        <span class="td-inline-label">Total Qty/Items</span>
-        {{aggregateRequestItemsQty(request.items).requested}}
-        <small>({{request.items!.length}})</small>
-      </td>
-
       <td>
         <span class="td-inline-label">Requested On</span>
         {{request.created_at|date}}
@@ -43,11 +37,11 @@
       </td>
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
-          <a routerLink="{{request.id}}" class="btn btn-outline-primary btn-sm">view</a>
+          <a routerLink="{{request.id}}" class="btn btn-outline-primary btn-sm ps-4 pe-4">view</a>
         </div>
       </td>
     </tr>
-    <ng-container *ngIf="purchaseRequests.length===0">
+    <ng-container *ngIf="requests.length===0">
       <tr>
         <td class="text-center py-3" colspan="5">
           No items pending action.
@@ -57,4 +51,7 @@
 
     </tbody>
   </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination" (pageChange)="loadRequests()"></pagination>
+  </div>
 </div>
