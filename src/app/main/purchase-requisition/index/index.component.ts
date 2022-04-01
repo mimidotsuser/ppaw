@@ -8,6 +8,7 @@ import {
 } from '../../../models/purchase-request.model';
 import { PurchaseRequisitionService } from '../services/purchase-requisition.service';
 import { PaginationModel } from '../../../models/pagination.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-index',
@@ -26,7 +27,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   private _subscriptions: Subscription[] = [];
 
 
-  constructor(private purchaseRequisitionService: PurchaseRequisitionService) {
+  constructor(private purchaseRequisitionService: PurchaseRequisitionService,
+              public route:ActivatedRoute) {
     this.loadRequests();
   }
 

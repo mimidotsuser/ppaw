@@ -49,6 +49,14 @@ export class CreateComponent implements OnInit, OnDestroy {
     this._subscriptions.push(v);
   }
 
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
+  }
+
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
+  }
+
   get itemsBalances(): ProductBalanceModel[] {
     return this._itemBalance;
   }

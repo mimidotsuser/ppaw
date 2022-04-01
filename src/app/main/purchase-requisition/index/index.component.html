@@ -4,7 +4,7 @@
     </div>
 
     <div class="d-md-block">
-      <a class="btn btn-outline-primary" routerLink="create">
+      <a class="btn btn-outline-primary" routerLink="create" [relativeTo]="route.parent?.parent">
         + New Request
       </a>
     </div>
@@ -23,7 +23,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let request of requests">
+    <tr *ngFor="let request of requests|slice:tableCountStart:tableCountEnd">
       <td (click)="showRequestHistory(request)" role="button">
         <span class="td-inline-label">Request No.</span>
         <a class="text-decoration-none">
@@ -82,6 +82,9 @@
 
     </tbody>
   </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination"></pagination>
+  </div>
 </div>
 
 <app-side-popup [(show)]="showRequestHistoryPopup" [isFullScreen]="outlet.activeId=='items'"
@@ -144,7 +147,8 @@
 </ng-template>
 <ng-template #activityTemplate>
   <div class="container-fluid p-0 p-md-2">
-    <activity-timeline [model]="selectedModel?.activities||[]" [formatTitle]="formatTimelineStageTitle">
+    <activity-timeline [model]="selectedModel?.activities||[]"
+                       [formatTitle]="formatTimelineStageTitle">
 
     </activity-timeline>
   </div>

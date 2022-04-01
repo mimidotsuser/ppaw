@@ -57,7 +57,7 @@
     </thead>
     <tbody formArrayName="cart_items">
     <ng-container *ngIf="itemsBalances.length>0;else noData">
-      <tr *ngFor="let item of itemsBalances">
+      <tr *ngFor="let item of itemsBalances|slice:tableCountStart:tableCountEnd">
         <td>
           <span class="td-inline-label">Item</span>
           <div class="d-flex flex-column">
