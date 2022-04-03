@@ -29,7 +29,7 @@
       <td (click)="showLPOSummary(request)" role="button">
         <span class="td-inline-label">Request No.</span>
         <a class="text-decoration-none">
-          {{formatOrderId(request.order_id)}}
+          {{request.sn}}
         </a>
       </td>
       <td>
@@ -38,7 +38,7 @@
       </td>
       <td>
         <span class="td-inline-label">DOC Date</span>
-        {{request.doc_date|date}}
+        {{request.doc_validity|date}}
       </td>
       <td>
         <span class="td-inline-label">RFQ </span>
@@ -89,19 +89,19 @@
   </table>
 </div>
 
-<app-side-popup [title]="'RFQ '+formatOrderId(selectedModel?.order_id||0)+' Summary'"
+<app-side-popup [title]="'RFQ '+selectedModel?.sn||''+' Summary'"
                 [(show)]="showLPOSummaryPopup" [isFullScreen]="true">
 
   <div class="row container-fluid">
     <div class="col-md-4 mb-3">
       <label for="vendor" class="form-label">Vendor</label>
       <input type="text" id="vendor" class="form-control" disabled
-             [value]="selectedLPOVendor">
+             [value]="this.selectedModel?.vendor?.name">
     </div>
     <div class="col-md-4 mb-3">
       <label for="doc_date" class="form-label">DOC Date</label>
       <input type="text" id="doc_date" class="form-control" disabled
-             [value]="selectedModel?.doc_date|date">
+             [value]="selectedModel?.doc_validity|date">
     </div>
 
     <div class="col-12 mt-3">

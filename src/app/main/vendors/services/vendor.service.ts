@@ -7,14 +7,15 @@ import { VendorsModule } from '../vendors.module';
 @Injectable({providedIn: VendorsModule})
 export class VendorService {
 
-  constructor(private http: HttpService) { }
+  constructor(private httpService: HttpService) { }
 
   fetchAll(): Observable<VendorModel[]> {
-    return this.http.get('/vendors')
+    return this.httpService.get(this.httpService.endpoint.vendors)
       .pipe(map((s: { data: VendorModel[] }) => s.data))
   }
 
-  create(vendor: VendorModel) {
-    return this.http.post('/vendors', vendor);
+  create(vendor: VendorModel): Observable<VendorModel> {
+    return this.httpService.post(this.httpService.endpoint.vendors, vendor)
+      .pipe(map((s: { data: VendorModel }) => s.data));
   }
 }

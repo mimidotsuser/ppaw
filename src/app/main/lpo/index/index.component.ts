@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import {
-  faExternalLinkAlt,
   faEllipsisV,
+  faExternalLinkAlt,
   faEye,
   faFilePdf
 } from '@fortawesome/free-solid-svg-icons';
-import { LPOModel } from '../../../models/l-p-o.model';
+import { PurchaseOrderModel } from '../../../models/purchase-order.model';
 import { PurchaseOrderService } from '../services/purchase-order.service';
 
 @Component({
@@ -16,8 +16,8 @@ import { PurchaseOrderService } from '../services/purchase-order.service';
 })
 export class IndexComponent implements OnInit, OnDestroy {
 
-  lpoRequests: LPOModel[] = []
-  selectedModel: LPOModel | null = null;
+  lpoRequests: PurchaseOrderModel[] = []
+  selectedModel: PurchaseOrderModel | null = null;
   showLPOSummaryPopup = false;
   faExternalLinkAlt = faExternalLinkAlt;
   faEllipsisV = faEllipsisV;
@@ -37,30 +37,24 @@ export class IndexComponent implements OnInit, OnDestroy {
     return `REQUEST-${String(id).padStart(4, '0')}`
   }
 
-  aggregateOrderTotal(request: LPOModel): string {
+  aggregateOrderTotal(request: PurchaseOrderModel): string {
     return request.items
       .reduce((acc, item) => acc += item.qty * item.unit_price, 0)
       .toString();
   }
 
-  authorName(req: LPOModel) {
+  authorName(req: PurchaseOrderModel) {
     return `${req.created_by?.first_name || ''} ${req.created_by?.last_name || ''}`
   }
 
-  showLPOSummary(request: LPOModel) {
+  showLPOSummary(request: PurchaseOrderModel) {
     this.selectedModel = request;
     this.showLPOSummaryPopup = true;
   }
 
-  get selectedLPOVendor(): string {
-    if (!this.selectedModel || !this.selectedModel.vendors
-      || this.selectedModel.vendors.length === 0) {
-      return '---'
-    }
-    return this.selectedModel.vendors[ 0 ].business_name;
-  }
 
-  exportPurchaseOrder(request: LPOModel) {
+
+  exportPurchaseOrder(request: PurchaseOrderModel) {
 
   }
 

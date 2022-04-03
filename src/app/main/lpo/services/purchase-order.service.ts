@@ -4,7 +4,7 @@ import { LpoModule } from '../lpo.module';
 import { HttpService } from '../../../core/services/http.service';
 import { RFQModel } from '../../../models/r-f-q.model';
 import { CurrencyModel } from '../../../models/currency.model';
-import { LPOModel } from '../../../models/l-p-o.model';
+import { PurchaseOrderModel } from '../../../models/purchase-order.model';
 
 @Injectable({
   providedIn: LpoModule
@@ -13,9 +13,9 @@ export class PurchaseOrderService {
 
   constructor(private http: HttpService) { }
 
-  fetchAll(): Observable<LPOModel[]> {
+  fetchAll(): Observable<PurchaseOrderModel[]> {
     return this.http.get('/purchase-orders')
-      .pipe(map((res: { data: LPOModel[] }) => res.data));
+      .pipe(map((res: { data: PurchaseOrderModel[] }) => res.data));
   }
 
   findRFQByInd(id: string): Observable<RFQModel> {

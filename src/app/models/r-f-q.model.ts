@@ -2,22 +2,17 @@ import { UserModel } from './user.model';
 import { UOMModel } from './u-o-m.model';
 import { VendorModel } from './vendor.model';
 import { ProductModel } from './product.model';
+import { PurchaseOrderModel } from './purchase-order.model';
 
-export interface RFQVendors {
-  id: number;
-  vendor_id: string;
-  created_at: string;
-  created_by_id: string;
-  vendor?: VendorModel;
-  created_by?: UserModel;
-}
 
 export interface RFQItemModel {
-  id: string;
-  product_id: string;
+  id: number;
+  request_for_quotation_id: number;
+  purchase_request_item_id?: number
+  product_id: number;
   product?: ProductModel;
   qty: number;
-  uom_id: string;
+  unit_of_measure_id: string;
   uom?: UOMModel;
   created_at: string;
   created_by_id: string;
@@ -25,13 +20,14 @@ export interface RFQItemModel {
 }
 
 export interface RFQModel {
-  id: string;
+  id: number;
   sn: string;
-  purchase_request_id?: string;
+  purchase_request_id?: number;
   closing_date: string;
   items: RFQItemModel[],
-  vendors: RFQVendors[]
+  vendors?: VendorModel[]
   created_at: string;
   created_by_id: string;
   created_by?: UserModel;
+  purchase_order?: PurchaseOrderModel
 }

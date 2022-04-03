@@ -38,12 +38,12 @@ const routes: Routes = [
         loadChildren: () => import('./lpo/lpo.module').then(m => m.LpoModule)
       },
       {
-        path: 'checkin',
-        loadChildren: () => import('./checkin/checkin.module').then(m => m.CheckinModule)
+        path: 'goods-receipt-note',
+        loadChildren: () => import('./goods-receipt-note/goods-receipt-note.module').then(m => m.GoodsReceiptNoteModule)
       },
       {
-        path: 'inspection-report',
-        loadChildren: () => import('./inspection-report/inspection-report.module').then(m => m.InspectionReportModule)
+        path: 'inspection-note',
+        loadChildren: () => import('./inspection-note/inspection-note.module').then(m => m.InspectionNoteModule)
       },
       {
         path: 'receiving-report',

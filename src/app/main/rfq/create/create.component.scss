@@ -9,8 +9,8 @@
 }
 
 @include media-breakpoint-up(md) {
-  .qty-cell {
-    max-width: 100px;
+  .input-column {
+    width: 145px;
   }
 
 }

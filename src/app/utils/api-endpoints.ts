@@ -19,7 +19,7 @@ export enum V1Endpoints {
   productItems = '/product-items',
   purchaseOrders = '/purchase-orders',
   purchaseRequests = '/purchase-requests',
-  rfqs = '/rfqs',
+  rfqs = '/request-for-quotation',
 
   meldedBalances = '/products/:id/melded-balances',
 
@@ -34,9 +34,11 @@ export enum V1Endpoints {
   materialRequestIssue = '/material-requisitions/:id/issue',
   materialRequestsPendingIssue = '/material-requisitions/issue',
 
-  purchaseRequestVerification='/purchase-requests/:id/verification',
-  purchaseRequestsPendingVerification='/purchase-requests/verification',
+  purchaseRequestVerification = '/purchase-requests/:id/verification',
+  purchaseRequestsPendingVerification = '/purchase-requests/verification',
 
-  purchaseRequestApproval ='/purchase-requests/:id/approval',
-  purchaseRequestsPendingApproval ='/purchase-requests/approval',
+  purchaseRequestApproval = '/purchase-requests/:id/approval',
+  purchaseRequestsPendingApproval = '/purchase-requests/approval',
+  vendors = '/vendors',
+  unitOfMeasure = '/unit-of-measures',
 }

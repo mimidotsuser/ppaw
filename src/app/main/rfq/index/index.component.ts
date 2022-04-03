@@ -7,7 +7,8 @@ import {
   faFilePdf
 } from '@fortawesome/free-solid-svg-icons';
 import { RqfService } from '../services/rqf.service';
-import { RFQItemModel, RFQModel } from '../../../models/r-f-q.model';
+import { RFQModel } from '../../../models/r-f-q.model';
+import { PaginationModel } from '../../../models/pagination.model';
 
 @Component({
   selector: 'app-index',
@@ -16,30 +17,53 @@ import { RFQItemModel, RFQModel } from '../../../models/r-f-q.model';
 })
 export class IndexComponent implements OnInit, OnDestroy {
 
-  rfqRequests: RFQModel[] = [];
-  subscriptions: Subscription[] = [];
   showRFQSummaryPopup = false;
   faEllipsisV = faEllipsisV;
   faFilePdf = faFilePdf;
   faEye = faEye;
   faExternalLinkAlt = faExternalLinkAlt;
   selectedModel: RFQModel | null = null;
+  _rfqRequests: RFQModel[] = [];
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25}
+  private _subscriptions: Subscription[] = [];
 
 
-  constructor(private rfqService: RqfService) { }
+  constructor(private rfqService: RqfService) {
+    this.loadRequests();
+  }
 
   ngOnInit(): void {
-    this.rfqService.fetchAll()
-      .subscribe((value) => this.rfqRequests.push(...value))
+
   }
 
-
-  aggregateQty(items: RFQItemModel[]) {
-    return items.reduce((acc, v) => acc += v.qty, 0)
+  set subSink(v: Subscription) {
+    this._subscriptions.push(v);
   }
 
-  authorName(req: RFQModel) {
-    return `${req.created_by?.first_name || ''} ${req.created_by?.last_name || ''}`
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
+  }
+
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
+  }
+
+  get requests() {
+    return this._rfqRequests;
+  }
+
+  loadRequests() {
+    this.subSink = this.rfqService
+      .fetch(this.pagination, {include: 'purchaseOrder,createdBy,vendors,items'})
+      .subscribe({
+        next: (res) => {
+          if (this.tableCountEnd <= this.requests.length) {
+            return;
+          }
+          this.pagination.total = res.total;
+          this._rfqRequests = this._rfqRequests.concat(res.data);
+        }
+      })
   }
 
   showRFQSummary(request: RFQModel) {
@@ -52,6 +76,6 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.map((sub) => sub.unsubscribe())
+    this._subscriptions.map((sub) => sub.unsubscribe())
   }
 }

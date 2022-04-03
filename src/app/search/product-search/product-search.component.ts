@@ -17,6 +17,7 @@ export class ProductSearchComponent implements OnInit {
   @Input() placeholder = 'Type to search';
   @Input() parent: ProductModel | null = null;
   @Input() customId?: string;
+  @Input() with?: string;
 
 
   constructor(private httpService: HttpService) {
@@ -39,11 +40,14 @@ export class ProductSearchComponent implements OnInit {
   }
 
   get queryParams(): { [ key: string ]: string } {
+    let params: { [ key: string ]: string } = {search: '%s'};
     if (this.parent) {
-      return {search: '%s', parent_id: this.parent.id.toString()}
-    } else {
-      return {search: '%s'}
+      params = {parent_id: this.parent.id.toString(), ...params}
     }
+    if (this.with) {
+      params = {include: this.with, ...params}
+    }
+    return params;
   }
 
 }

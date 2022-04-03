@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { HttpParams } from '@angular/common/http';
-import { map, mergeMap, Observable } from 'rxjs';
-import { PurchaseRequestModel } from '../../models/purchase-request.model';
+import { PRStage, PurchaseRequestModel } from '../../models/purchase-request.model';
 import { HttpService } from '../../core/services/http.service';
 
 @Component({
@@ -16,13 +14,16 @@ export class PurchaseRequestSearchComponent implements OnInit {
   @Input() controlName: string = '';
   @Input() customId: string | undefined;
   @Input() editable = false;
+  @Input() stage: PRStage | null = PRStage.APPROVAL_OKAYED;
+  @Input() with: string | null = 'items';
+  @Input() withoutRFQ?: boolean;
 
   constructor(private httpService: HttpService) { }
 
   ngOnInit(): void {
   }
 
-  get path(){
+  get path() {
     return this.httpService.endpoint.purchaseRequests;
   }
 
@@ -34,22 +35,17 @@ export class PurchaseRequestSearchComponent implements OnInit {
     }
   }
 
-  get search(): (searchItem: string) => Observable<PurchaseRequestModel[]> {
-    return (searchItem: string) => {
-      return this.httpService.get(this.path, {params: {search: searchItem}})
-        .pipe(map((value: { data: PurchaseRequestModel[] }) => value.data))
-        .pipe(mergeMap((prs: PurchaseRequestModel[]) => {
-          let params = new HttpParams();
-          params = params.append('_expand', 'product');
-          //extract the product ids to fetch
-          prs.map((pr) => {
-            pr.items.map((v) => params = params.append('product_id', v.product_id));
-          });
-
-          return this.httpService.get('/stock-balances?', {params})
-
-        }))
+  get queryParams(): { [ key: string ]: string | boolean; } {
+    let params: { [ key: string ]: string | boolean } = {search: '%s'}
+    if (this.stage) {
+      params = {stage: this.stage, ...params}
     }
+    if (this.with) {
+      params = {include: this.with, ...params}
+    }
+    if (this.withoutRFQ === true) {
+      params = {withoutRFQ: true, ...params}
+    }
+    return params
   }
-
 }

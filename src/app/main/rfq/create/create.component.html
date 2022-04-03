@@ -4,7 +4,8 @@
       <div class="col-md-3 mb-3">
         <label for="purchase_request" class="form-label required">Purchase Request</label>
         <pr-typeahead-input controlName="purchase_request" customId="purchase_request"
-                            (change)="onPurchaseRequestSelected()">
+                            with="items.product.balance" [withoutRFQ]="true"
+                            (change)="onPurchaseRequestSelect()">
 
         </pr-typeahead-input>
       </div>
@@ -14,12 +15,12 @@
       </div>
       <div class="col-md-4 mb-3">
         <label for="vendors" class="form-label required">Vendors </label>
-        <ng-select [items]="vendors" bindLabel="business_name" [multiple]="true" #vc
+        <ng-select [items]="vendors" bindLabel="name" [multiple]="true" #vc
                    formControlName="vendors" labelForId="vendors" [closeOnSelect]="false">
           <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
             <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
                    [ngModelOptions]="{standalone:true}" class="form-check-inline">
-            {{item.business_name}}
+            {{item.name}}
           </ng-template>
           <ng-template ng-footer-tmp>
             <a role="button" class="btn btn-outline-primary border-0"
@@ -40,51 +41,63 @@
         <td></td>
         <th class="product-column">Item</th>
         <th>M-PN</th>
-        <th>Balance</th>
-        <th>PR Qty <small>(Approved)</small></th>
-        <th>Qty Required</th>
+        <th>Physical Balance</th>
+        <th>PR Qty</th>
+        <th class="input-column">UOM</th>
+        <th class="input-column">Qty Required</th>
+        <th>Total Qty</th>
       </tr>
       </thead>
       <tbody formArrayName="request_items">
-      <ng-container *ngIf="this.requestItemsForm.length>0;else noPurchaseRequestData">
-        <tr *ngFor="let group of this.requestItemsForm.controls;let i=index" [formGroupName]="i">
-          <td>
-            <span class="td-inline-label">Include Item</span>
-            <input type="checkbox" checked
-                   (change)="rfqItemChecked($event,i,group.get('order_item')?.value)">
-          </td>
-          <td>
-            <span class="td-inline-label">Item</span>
-            <div class="d-flex flex-column">
-              {{group.get('product')?.value?.item_code}}
-              <small class="text-muted">
-                {{
-                group.get('product')?.value?.local_description
-                || group.get('product')?.value?.description
-                }}
-              </small>
-            </div>
-          </td>
-          <td>
-            <span class="td-inline-label">M-PN</span>
-            {{group.get('product')?.value?.mpn}}
-          </td>
-          <td>
-            <span class="td-inline-label">Balance</span>
-            {{group.get('product')?.value?.physical_balance || 0}}
-          </td>
-          <td class="qty-cell">
-            <span class="td-inline-label">PR Qty<small>(Approved)</small></span>
-            {{group.get('order_item')?.value?.qty_approved || 0}}
-          </td>
-          <td class="qty-cell">
-            <span class="td-inline-label">Qty Required</span>
-            <input type="number" class="form-control" min="0" formControlName="qty">
-          </td>
-        </tr>
-      </ng-container>
+      <tr *ngFor="let group of requestItemsForm.controls | slice:tableCountStart:tableCountEnd;"
+          [formGroup]="$any(group)">
+        <td>
+          <span class="td-inline-label">Include Item</span>
+          <input type="checkbox" checked class="form-check-input"
+                 (change)="rfqItemChecked($event,$any(group))">
+        </td>
+        <td>
+          <span class="td-inline-label">Item</span>
+          <div class="d-flex flex-column">
+            {{group.get('product')?.value?.item_code}}
+            <small class="text-muted">
+              {{
+              group.get('product')?.value?.local_description
+              || group.get('product')?.value?.description
+              }}
+            </small>
+          </div>
+        </td>
+        <td>
+          <span class="td-inline-label">M-PN</span>
+          {{group.get('product')?.value?.mpn}}
+        </td>
+        <td>
+          <span class="td-inline-label">Physical Balance</span>
+          {{group.get('product')?.value?.balance?.stock_balance || 0}}
+        </td>
+        <td>
+          <span class="td-inline-label">PR Qty</span>
+          {{group.get('pr_item')?.value?.approved_qty || 0}}
+        </td>
+        <td>
+          <span class="td-inline-label">UOM</span>
+          <select class="form-select" formControlName="uom">
+            <option *ngFor="let uom of unitOfMeasure"
+                    [ngValue]="uom">{{uom.title}} {{uom.unit}}</option>
+          </select>
+        </td>
+        <td>
+          <span class="td-inline-label">Qty Required</span>
+          <input type="number" class="form-control" min="0" formControlName="qty">
+        </td>
+        <td>
+          <span class="td-inline-label">Total Qty</span>
+          {{(group.get('uom')?.value?.unit || 0) * group.get('qty')?.value}}
+        </td>
+      </tr>
 
-      <ng-template #noPurchaseRequestData>
+      <ng-container *ngIf="this.requestItemsForm.length==0">
         <tr>
           <td colspan="7">
             <div class="py-5 text-center">
@@ -92,9 +105,12 @@
             </div>
           </td>
         </tr>
-      </ng-template>
+      </ng-container>
       </tbody>
     </table>
+    <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+      <pagination [meta]="pagination"></pagination>
+    </div>
     <div class="d-flex justify-content-end">
       <button class="btn btn-outline-primary" (click)="showAdhocRFQItemFormPopup=true">
         + Add Item
@@ -104,7 +120,7 @@
   <div class="container-fluid">
     <div class="d-flex my-4">
       <div class="input-group submit-buttons">
-        <button type="button" class="btn btn-primary btn-submit btn-lg" (click)="submitRFQ()"
+        <button type="button" class="btn btn-primary btn-submit btn-lg" (click)="submitRFQForm()"
                 [disabled]="this.form.invalid">
           Generate RFQ
         </button>
@@ -113,7 +129,7 @@
                   [disabled]="this.form.invalid" ngbDropdownToggle>
           </button>
           <div ngbDropdownMenu aria-labelledby="dp">
-            <button ngbDropdownItem (click)="submitRFQ()">
+            <button ngbDropdownItem (click)="submitRFQForm(false)">
               Submit only
             </button>
           </div>
@@ -126,35 +142,42 @@
 
 <app-side-popup title="Add RFQ Item" [(show)]="showAdhocRFQItemFormPopup">
 
-  <div class="row" [formGroup]="adhocRFQItemForm">
+  <form class="row" [formGroup]="adhocRFQItemForm">
 
     <div class="mb-3 col-md-6">
       <label for="product" class="form-label">Product</label>
-      <product-typeahead-input customId="product" controlName="product" [category]="null">
+      <product-typeahead-input customId="product" controlName="product" [category]="null"
+                               with="balance">
       </product-typeahead-input>
     </div>
     <div class="mb-3 col-md-6">
       <label for="current_balance" class="form-label">Physical Balance</label>
       <input type="text" disabled id="current_balance" class="form-control"
-             [value]="adhocRFQItemForm.get('product')?.value?.physical_balance||0">
+             [value]="adhocRFQItemForm.get('product')?.value?.balance?.stock_balance">
     </div>
     <div class="mb-3 col-md-6">
       <label for="min_l" class="form-label">MIN-L</label>
       <input type="text" disabled id="min_l" class="form-control"
-             [value]="adhocRFQItemForm.get('product')?.value?.minl||0">
+             [value]="adhocRFQItemForm.get('product')?.value?.min_level||0">
     </div>
     <div class="mb-3 col-md-6">
       <label for="max_l" class="form-label">MAX-L</label>
       <input type="text" disabled id="max_l" class="form-control"
-             [value]="adhocRFQItemForm.get('product')?.value?.maxl||0">
+             [value]="adhocRFQItemForm.get('product')?.value?.max_level||0">
     </div>
 
+    <div class="col-md-6 mb-3">
+      <label for="qty" class="form-label">UOM</label>
+      <select class="form-select" formControlName="uom">
+        <option *ngFor="let uom of unitOfMeasure" [ngValue]="uom">{{uom.title}}</option>
+      </select>
+    </div>
     <div class="col-md-6 mb-3">
       <label for="qty" class="form-label">Quantity Required</label>
       <input type="number" min="0" class="form-control" formControlName="qty">
     </div>
     <div class="col-12 d-flex gap-2 my-5">
-      <button type="button" class="btn btn-primary" (click)="saveAdhocItemForm()">
+      <button type="button" class="btn btn-primary" (click)="addAdhocRFQItem()">
         Done
       </button>
 
@@ -162,7 +185,7 @@
         Cancel
       </button>
     </div>
-  </div>
+  </form>
 </app-side-popup>
 
 <app-side-popup title="Create new vendor" [(show)]="showVendorCreateFormPopup">

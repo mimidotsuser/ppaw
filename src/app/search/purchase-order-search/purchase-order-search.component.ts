@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { HttpService } from '../../core/services/http.service';
-import { LPOModel } from '../../models/l-p-o.model';
+import { PurchaseOrderModel } from '../../models/purchase-order.model';
 
 @Component({
   selector: 'po-typeahead-input[control],po-typeahead-input[controlName]',
@@ -24,13 +24,10 @@ export class PurchaseOrderSearchComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  formatRequestId(id: number) {
-    return `REQUEST-${String(id).padStart(4, '0')}`
-  }
 
-  get outputFormatter(): (item: LPOModel) => string {
-    return (item: LPOModel) => {
-      return `${this.formatRequestId(item.order_id)} ${item.created_by ? '| by ' : ''}` +
+  get outputFormatter(): (item: PurchaseOrderModel) => string {
+    return (item: PurchaseOrderModel) => {
+      return `${item.sn} ${item.created_by ? '| by ' : ''}` +
         `${item?.created_by?.first_name || ''} ${item?.created_by?.last_name || ''}`
     }
   }

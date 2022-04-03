@@ -12,9 +12,10 @@ export class VendorFormComponent implements OnInit {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      business_name: this.fb.control(null, {validators: [Validators.required]}),
+      name: this.fb.control(null, {validators: [Validators.required]}),
       email: this.fb.control(null, {validators: [Validators.email]}),
       address: this.fb.control(null),
+      telephone: this.fb.control(null),
     })
   }
 
