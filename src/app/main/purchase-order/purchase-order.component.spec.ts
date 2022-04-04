@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LpoComponent } from './lpo.component';
+import { PurchaseOrderComponent } from './purchase-order.component';
 
 describe('LpoComponent', () => {
-  let component: LpoComponent;
-  let fixture: ComponentFixture<LpoComponent>;
+  let component: PurchaseOrderComponent;
+  let fixture: ComponentFixture<PurchaseOrderComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LpoComponent ]
+      declarations: [ PurchaseOrderComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LpoComponent);
+    fixture = TestBed.createComponent(PurchaseOrderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

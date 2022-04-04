@@ -75,7 +75,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   uomComparator(x1: UOMModel, x2: UOMModel) {
-    return x1.id === x2.id
+    return x1?.id === x2?.id
   }
 
   loadPurchaseRequest() {
@@ -321,6 +321,7 @@ export class CreateComponent implements OnInit, OnDestroy {
             queryParams: {pr: null},
             queryParamsHandling: 'merge'
           })
+          this.requestItemsForm.clear();
           this.form.reset();
         }
       })

@@ -35,7 +35,7 @@ const routes: Routes = [
       },
       {
         path: 'purchase-orders',
-        loadChildren: () => import('./lpo/lpo.module').then(m => m.LpoModule)
+        loadChildren: () => import('./purchase-order/purchase-order.module').then(m => m.PurchaseOrderModule)
       },
       {
         path: 'goods-receipt-note',

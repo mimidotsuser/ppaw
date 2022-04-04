@@ -1,10 +1,10 @@
-
 <form [formGroup]="form">
   <div class="container-fluid">
     <div class="row my-4">
       <div class="col-md-3 mb-3">
         <label for="purchase_request" class="form-label">RFQ Request</label>
-        <rfq-typeahead-input controlName="rfq" (change)="onRFQRequestSelection()">
+        <rfq-typeahead-input controlName="rfq" [withoutPO]="true" with="items.product.balance"
+                             (change)="onRFQRequestSelection()">
         </rfq-typeahead-input>
       </div>
       <div class="col-md-3 mb-3">
@@ -12,13 +12,13 @@
         <input type="date" class="form-control" id="closing_date" formControlName="doc_validity">
       </div>
       <div class="col-md-3 mb-3">
-        <label for="vendors" class="form-label required">Vendor </label>
-        <ng-select [items]="vendors" bindLabel="business_name" [multiple]="false" #vc
-                   formControlName="vendors" labelForId="vendors">
+        <label for="vendor" class="form-label required">Vendor </label>
+        <ng-select [items]="vendors" bindLabel="name" [multiple]="false" #vc
+                   formControlName="vendor" labelForId="vendors">
           <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
             <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
                    [ngModelOptions]="{standalone:true}" class="form-check-inline">
-            {{item.business_name}}
+            {{item.name}}
           </ng-template>
           <ng-template ng-footer-tmp>
             <a role="button" class="btn btn-outline-primary border-0"
@@ -49,21 +49,22 @@
       <tr>
         <td></td>
         <th class="product-column">Item</th>
-        <th>M-PN</th>
-        <th>BAL</th>
+        <th>Physical Balance</th>
         <th>RFQ Qty</th>
+        <th class="qty-column">UOM</th>
         <th class="qty-column">Qty Required</th>
         <th class="price-column">Unit Price</th>
         <th class="total-column">Total</th>
       </tr>
       </thead>
-      <tbody formArrayName="request_items">
-      <ng-container *ngIf="this.requestItemsForm.length>0;else noPurchaseItemsData">
-        <tr *ngFor="let group of this.requestItemsForm.controls;let i=index" [formGroupName]="i">
+      <tbody formArrayName="items">
+      <ng-container *ngIf="requestItemsForm.length>0">
+        <tr *ngFor="let group of requestItemsForm.controls| slice:tableCountStart:tableCountEnd"
+            [formGroup]="$any(group)">
           <td>
             <span class="td-inline-label">Include Item</span>
-            <input type="checkbox" [checked]="group.get('qty')?.value||0>0"
-                   (change)="lpoItemChecked($event,i,group.get('order_item')?.value)">
+            <input type="checkbox" [checked]="group.get('qty')?.value||0>0" class="form-check-input"
+                   (change)="purchaseOrderItemChecked($event,$any(group))">
           </td>
           <td>
             <span class="td-inline-label">Item</span>
@@ -78,16 +79,18 @@
             </div>
           </td>
           <td>
-            <span class="td-inline-label">M-PN</span>
-            {{group.get('product')?.value?.mpn}}
-          </td>
-          <td>
-            <span class="td-inline-label">Balance</span>
-            {{group.get('product')?.value?.physical_balance || 0}}
+            <span class="td-inline-label">Physical Balance	</span>
+            {{group.get('product')?.value?.balance?.stock_balance || 0}}
           </td>
           <td>
             <span class="td-inline-label">PR Qty<small>(Approved)</small></span>
-            {{group.get('order_item')?.value?.qty || 0}}
+            {{group.get('rfq_item')?.value?.qty || 0}}
+          </td>
+          <td>
+            <span class="td-inline-label">UOM</span>
+            <select class="form-select" formControlName="uom" [compareWith]="uomComparator">
+              <option *ngFor="let uom of unitOfMeasure" [ngValue]="uom">{{uom.title}}</option>
+            </select>
           </td>
           <td>
             <span class="td-inline-label">Qty Required</span>
@@ -99,8 +102,7 @@
           </td>
           <td>
             <span class="td-inline-label">Total</span>
-            {{(group.get('qty')?.value || 0) * (group.get('unit_price')?.value || 0)
-            | currency:form.get('currency')?.value?.code + ' '}}
+            {{calcSubtotalPrice($any(group)) | currency:form.get('currency')?.value?.code + ' '}}
           </td>
         </tr>
         <tr>
@@ -110,12 +112,12 @@
             </div>
           </td>
           <td>
-            {{aggregateOrderTotal|currency:form.get('currency')?.value?.code + ' '}}
+            {{calcTotalPrice|currency:form.get('currency')?.value?.code + ' '}}
           </td>
         </tr>
       </ng-container>
 
-      <ng-template #noPurchaseItemsData>
+      <ng-container *ngIf="requestItemsForm.length===0">
         <tr>
           <td colspan="8">
             <div class="py-5 text-center">
@@ -123,9 +125,12 @@
             </div>
           </td>
         </tr>
-      </ng-template>
+      </ng-container>
       </tbody>
     </table>
+    <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+      <pagination [meta]="pagination"></pagination>
+    </div>
     <div class="d-flex justify-content-end">
       <button class="btn btn-outline-primary" (click)="showAdhocLPOItemFormPopup=true">
         + Add Item
@@ -145,7 +150,7 @@
                   [disabled]="this.form.invalid" ngbDropdownToggle>
           </button>
           <div ngbDropdownMenu aria-labelledby="dp">
-            <button ngbDropdownItem (click)="submitPurchaseOrder()">
+            <button ngbDropdownItem (click)="submitPurchaseOrder(false)">
               Submit only
             </button>
           </div>
@@ -162,23 +167,31 @@
 
     <div class="mb-3 col-md-6">
       <label for="product" class="form-label required">Product</label>
-      <product-typeahead-input customId="product" controlName="product" [category]="null">
+      <product-typeahead-input customId="product" controlName="product" [category]="null"
+                               with="balance">
       </product-typeahead-input>
     </div>
     <div class="mb-3 col-md-6">
       <label for="current_balance" class="form-label">Balance</label>
       <input type="text" disabled id="current_balance" class="form-control"
-             [value]="adhocLPOItemForm.get('product')?.value?.physical_balance||0">
+             [value]="adhocLPOItemForm.get('product')?.value?.balance?.stock_balance||0">
     </div>
     <div class="mb-3 col-md-6">
       <label for="min_l" class="form-label">MIN-L</label>
       <input type="text" disabled id="min_l" class="form-control"
-             [value]="adhocLPOItemForm.get('product')?.value?.minl||0">
+             [value]="adhocLPOItemForm.get('product')?.value?.min_level||0">
     </div>
     <div class="mb-3 col-md-6">
       <label for="max_l" class="form-label">MAX-L</label>
       <input type="text" disabled id="max_l" class="form-control"
-             [value]="adhocLPOItemForm.get('product')?.value?.maxl||0">
+             [value]="adhocLPOItemForm.get('product')?.value?.max_level||0">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="uom" class="form-label required">UOM</label>
+      <select class="form-select" id="uom" [compareWith]="uomComparator" formControlName="uom">
+        <option *ngFor="let uom of unitOfMeasure" [ngValue]="uom">{{uom.title}}</option>
+      </select>
     </div>
 
     <div class="col-md-6 mb-3">

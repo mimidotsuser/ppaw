@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LpoComponent } from './lpo.component';
+import { PurchaseOrderComponent } from './purchase-order.component';
 import { Actions, Resources } from '../../utils/permissions';
 
 const routes: Routes = [
   {
-    path: '', component: LpoComponent, children: [
+    path: '', component: PurchaseOrderComponent, children: [
       {path: '', pathMatch: 'exact', redirectTo: 'history'},
       {
         path: 'history',
@@ -38,4 +38,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class LpoRoutingModule {}
+export class PurchaseOrderRoutingModule {}

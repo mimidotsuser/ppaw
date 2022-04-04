@@ -41,4 +41,5 @@ export enum V1Endpoints {
   purchaseRequestsPendingApproval = '/purchase-requests/approval',
   vendors = '/vendors',
   unitOfMeasure = '/unit-of-measures',
+  currencies = '/currencies',
 }

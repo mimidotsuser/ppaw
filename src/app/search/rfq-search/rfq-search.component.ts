@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { map, Observable } from 'rxjs';
 import { HttpService } from '../../core/services/http.service';
 import { RFQModel } from '../../models/r-f-q.model';
 
@@ -14,6 +13,8 @@ export class RfqSearchComponent implements OnInit {
   @Input() controlName: string = '';
   @Input() customId: string | undefined;
   @Input() editable = false;
+  @Input() with?: string
+  @Input() withoutPO?: boolean
 
   constructor(private httpService: HttpService) { }
 
@@ -25,7 +26,6 @@ export class RfqSearchComponent implements OnInit {
   }
 
 
-
   get outputFormatter(): (item: RFQModel) => string {
     return (item: RFQModel) => {
       return `${item.sn}${item.created_by ? ' | by ' : ''}` +
@@ -33,11 +33,16 @@ export class RfqSearchComponent implements OnInit {
     }
   }
 
-  get search(): (searchItem: string) => Observable<RFQModel[]> {
-    return (searchItem: string) => {
-      return this.httpService.get(this.path, {params: {search: searchItem, include: 'product'}})
-        .pipe(map((value: { data: RFQModel[] }) => value.data))
-    }
-  }
 
+  get queryParams(): { [ key: string ]: string | boolean; } {
+    let params: { [ key: string ]: string | boolean } = {search: '%s'}
+
+    if (this.with) {
+      params = {include: this.with, ...params}
+    }
+    if (this.withoutPO === true) {
+      params = {withoutPO: true, ...params}
+    }
+    return params
+  }
 }
