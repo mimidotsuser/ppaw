@@ -29,7 +29,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
 
   constructor(private rfqService: RqfService) {
-    this.loadRequests();
+    this.loadRequestForQuotations();
   }
 
   ngOnInit(): void {
@@ -52,14 +52,14 @@ export class IndexComponent implements OnInit, OnDestroy {
     return this._rfqRequests;
   }
 
-  loadRequests() {
+  loadRequestForQuotations() {
+    if (this.tableCountEnd <= this.requests.length) {
+      return;
+    }
     this.subSink = this.rfqService
       .fetch(this.pagination, {include: 'purchaseOrder,createdBy,vendors,items'})
       .subscribe({
         next: (res) => {
-          if (this.tableCountEnd <= this.requests.length) {
-            return;
-          }
           this.pagination.total = res.total;
           this._rfqRequests = this._rfqRequests.concat(res.data);
         }

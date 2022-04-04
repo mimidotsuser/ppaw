@@ -74,6 +74,10 @@ export class CreateComponent implements OnInit, OnDestroy {
     return this._uom;
   }
 
+  uomComparator(x1: UOMModel, x2: UOMModel) {
+    return x1.id === x2.id
+  }
+
   loadPurchaseRequest() {
     //if purchase request id is available on url, preload.
     if (this.route.snapshot.queryParamMap.has('pr')) {
@@ -172,12 +176,12 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   removePRItemsFromRFQItemsForm() {
-    (this.requestItemsForm.controls as FormGroup[])
-      .map((group, index) => {
-        if (group.get('pr_item')?.value) {
-          this.requestItemsForm.removeAt(index);
-        }
-      })
+    if (this.requestItemsForm.length == 0) {return;}
+    for (let i = this.requestItemsForm.length - 1; i >= 0; i--) {
+      if (this.requestItemsForm.at(i).get('pr_item')?.value) {
+        this.requestItemsForm.removeAt(i);
+      }
+    }
   }
 
   renderPurchaseRequestItemsForm(request: PurchaseRequestModel) {
@@ -287,19 +291,26 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.form.markAllAsTouched();
     if (this.form.invalid) {return}
 
+    const items = (this.form.value.request_items as RFQItemFormModel[])
+      .map((item) => {
+        return {
+          purchase_request_item_id: item.pr_item?.id,
+          product_id: item.product.id, qty: item.qty,
+          unit_of_measure_id: item.uom.id
+        }
+      })
+      .filter((item) => item.qty > 0);
+
+    if (items.length === 0) {
+      //show error
+      return;
+    }
+
     let payload = {
       vendors: (this.form.value.vendors as VendorModel[]).map((v) => ({id: v.id})),
-      items: (this.form.value.request_items as
-        [{ pr_item: PurchaseRequestItemModel, product: ProductModel, qty: number, uom: UOMModel }])
-        .map((item) => {
-          return {
-            purchase_request_item_id: item.pr_item.id,
-            product_id: item.product.id, qty: item.qty,
-            unit_of_measure_id: item.uom.id
-          }
-        }),
       purchase_request_id: (this.form.value.purchase_request as PurchaseRequestModel).id,
       closing_date: serializeDate(this.form.value.closing_date),
+      items,
       download
     }
     this.subSink = this.rfqService.create(payload)
@@ -319,4 +330,11 @@ export class CreateComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._subscriptions.map((sub) => sub.unsubscribe())
   }
+}
+
+export interface RFQItemFormModel {
+  pr_item?: PurchaseRequestItemModel,
+  product: ProductModel,
+  qty: number,
+  uom: UOMModel
 }

@@ -82,7 +82,7 @@
         </td>
         <td>
           <span class="td-inline-label">UOM</span>
-          <select class="form-select" formControlName="uom">
+          <select class="form-select" formControlName="uom"  [compareWith]="uomComparator">
             <option *ngFor="let uom of unitOfMeasure"
                     [ngValue]="uom">{{uom.title}} {{uom.unit}}</option>
           </select>
