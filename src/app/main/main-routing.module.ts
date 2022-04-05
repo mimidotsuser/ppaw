@@ -46,10 +46,6 @@ const routes: Routes = [
         loadChildren: () => import('./inspection-note/inspection-note.module').then(m => m.InspectionNoteModule)
       },
       {
-        path: 'receiving-report',
-        loadChildren: () => import('./receiving-report/receiving-report.module').then(m => m.ReceivingReportModule)
-      },
-      {
         path: 'material-requisition',
         loadChildren: () => import('./material-requisition/material-requisition.module').then(m => m.MaterialRequisitionModule)
       },

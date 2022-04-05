@@ -106,7 +106,7 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faShoppingCart,
       items: [
         {title: 'New Purchase Order', url: 'purchase-orders/create', display: true, exact: false},
-        {title: 'All Purchase Orders', url: 'purchase-orders', display: true},
+        {title: 'All Purchase Orders', url: 'purchase-orders/history', display: true},
       ]
     },
     checkin: {
@@ -114,7 +114,7 @@ export class MainComponent implements OnInit, OnDestroy {
       display: true,
       icon: faDolly,
       items: [
-        {title: 'Purchased Products', url: 'checkin/purchased-products', display: true},
+        {title: 'Purchased Products', url: 'goods-receipt-note/create', display: true},
         {title: 'Spare Standby Reminder', url: 'checkin/standby-reminder', display: true},
       ]
     },
@@ -124,12 +124,12 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faCheckDouble,
       items: [
         {
-          title: 'Inspection Requests', url: 'inspection-report/purchased-products',
+          title: 'Inspection Requests', url: 'inspection-note/purchased-products',
           display: true,
           exact: false
         },
         {
-          title: 'Inspection History', url: 'inspection-report/history',
+          title: 'Inspection History', url: 'inspection-note/history',
           display: true
         }]
     },

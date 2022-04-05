@@ -42,4 +42,5 @@ export enum V1Endpoints {
   vendors = '/vendors',
   unitOfMeasure = '/unit-of-measures',
   currencies = '/currencies',
+  goodsReceiptNote = '/goods-receipt-note',
 }

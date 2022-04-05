@@ -17,6 +17,7 @@ export interface PurchaseOrderItemModel {
   created_by_id: string;
   created_by?: UserModel;
   unit_price: number;
+  delivered_qty?: number;
 }
 
 export interface PurchaseOrderModel {

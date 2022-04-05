@@ -14,6 +14,10 @@ export class PurchaseOrderSearchComponent implements OnInit {
   @Input() control: FormControl | null = null;
   @Input() controlName: string = '';
   @Input() customId: string | undefined;
+  @Input() placeholder = 'Search by PO No. or vendor name'
+  @Input() with?: string;
+  @Input() undeliveredOnly?: boolean;
+  @Input() includeDeliveredItems?: boolean;
 
   path: string;
 
@@ -27,9 +31,21 @@ export class PurchaseOrderSearchComponent implements OnInit {
 
   get outputFormatter(): (item: PurchaseOrderModel) => string {
     return (item: PurchaseOrderModel) => {
-      return `${item.sn} ${item.created_by ? '| by ' : ''}` +
-        `${item?.created_by?.first_name || ''} ${item?.created_by?.last_name || ''}`
+      return `${item.sn} ${item.vendor ? '| by ' : ''}` + `${item?.vendor?.name || ''}`
     }
   }
 
+  get queryParams(): { [ key: string ]: string | boolean; } {
+    let params: { [ key: string ]: string | boolean } = {search: '%s'}
+    if (this.with) {
+      params = {include: this.with, ...params}
+    }
+    if (this.undeliveredOnly === true) {
+      params = {undeliveredOnly: true, ...params}
+    }
+    if (this.includeDeliveredItems === true) {
+      params = {withDeliveredQty: true, ...params}
+    }
+    return params
+  }
 }

@@ -3,13 +3,15 @@
     <div class="row my-4">
       <div class="col-lg-4 col-md-6 mb-3">
         <label for="purchase_order" class="form-label required">Purchase Order</label>
-        <po-typeahead-input controlName="purchase_order" customId="purchase_order">
+        <po-typeahead-input controlName="purchase_order" customId="purchase_order" with="items"
+                            [includeDeliveredItems]="true" [undeliveredOnly]="true"
+                            (change)="onPurchaseOrderSelected()">
         </po-typeahead-input>
       </div>
       <div class="col-lg-4 col-md-6 mb-3">
         <label for="reference" class="form-label required">Delivery Note / Packaging List
           No.</label>
-        <input type="text" class="form-control" id="reference" formControlName="reference_no">
+        <input type="text" class="form-control" id="reference" formControlName="reference">
       </div>
     </div>
   </div>
@@ -21,12 +23,14 @@
         <th class="product-column">Item</th>
         <th>M-PN</th>
         <th>PO Qty</th>
-        <th>Already Delivered</th>
-        <th class="qty-column">Qty Received</th>
+        <th>Delivered</th>
+        <th>Received</th>
       </tr>
       </thead>
-      <tbody formArrayName="order_entries">
-      <tr *ngFor="let group of this.orderEntriesForm.controls;let i=index" [formGroupName]="i">
+      <tbody formArrayName="items">
+      <tr
+        *ngFor="let group of this.goodsReceiptNoteItemsForm.controls|slice:tableCountStart:tableCountEnd"
+        [formGroup]="$any(group)">
         <td>
           <span class="td-inline-label">Item</span>
           <div class="d-flex flex-column">
@@ -45,20 +49,32 @@
         </td>
         <td>
           <span class="td-inline-label">PO Qty</span>
-          {{group.get('po_qty')?.value}}
+          {{group.get('po_item')?.value?.qty * group.get('po_item')?.value?.uom?.unit}}
         </td>
         <td>
           <span class="td-inline-label">Delivered Qty</span>
           {{group.get('delivered_qty')?.value}}
         </td>
-        <td>
+        <td class="input-column">
           <span class="td-inline-label">Qty Required</span>
-          <input type="number" class="form-control" min="0" formControlName="qty">
+          <input type="number" class="form-control" min="0" formControlName="received_qty">
+          <ng-container
+            *ngIf="group.get('received_qty')?.touched && group.get('received_qty')?.errors">
+            <small class="text-danger"
+                   *ngIf="group.get('received_qty')?.hasError('max')">
+              Cannot exceed {{group.get('received_qty')?.getError('max').max}}
+            </small>
+            <small class="text-danger"
+                   *ngIf="group.get('received_qty')?.hasError('min')">
+              Minimum allowed is  {{group.get('received_qty')?.getError('min').min}}
+            </small>
+          </ng-container>
+
         </td>
       </tr>
 
 
-      <ng-container *ngIf="this.orderEntriesForm.length===0">
+      <ng-container *ngIf="this.goodsReceiptNoteItemsForm.length===0">
         <tr>
           <td colspan="7">
             <div class="py-5 text-center">
@@ -75,9 +91,26 @@
       </ng-container>
       </tbody>
     </table>
-
+    <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+      <pagination [meta]="pagination"></pagination>
+    </div>
   </div>
   <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <label for="warehouse_id" class="required form-label">Collection Point</label>
+        <select id="warehouse_id" class="form-select" formControlName="warehouse">
+          <option *ngFor="let warehouse of warehouses" [ngValue]="warehouse">
+            {{warehouse.name}}
+          </option>
+        </select>
+      </div>
+      <div class="col-12"></div>
+      <div class="col-md-6 mb-3">
+        <label for="remarks" class="form-label required">Remarks</label>
+        <textarea id="remarks" class="form-control" rows="4" formControlName="remarks"></textarea>
+      </div>
+    </div>
     <div class="d-flex my-4">
       <button type="button" class="btn btn-primary btn-submit btn-lg" [disabled]="form.invalid"
               (click)="submitForm()">

@@ -1,5 +1,6 @@
 <typeahead-input [path]="path" [resultTemplate]="resultTemplate" [controlName]="controlName"
-                  [outputFormatter]="outputFormatter" [control]="control" [customId]="customId" >
+                 [outputFormatter]="outputFormatter" [control]="control" [customId]="customId"
+                 [placeholder]="placeholder" [queryParams]="queryParams">
 </typeahead-input>
 
 
@@ -8,8 +9,8 @@
     <div class="title">
       {{  results.sn }}
     </div>
-    <div class="subtitle " *ngIf="results?.created_by as author">
-      By {{author?.first_name||''}} {{author?.last_name||''}}
+    <div class="subtitle " *ngIf="results?.vendor">
+      By {{results.vendor.name || ''}}
     </div>
   </ng-container>
 </ng-template>
