@@ -298,7 +298,9 @@ export class CreateComponent implements OnInit, OnDestroy {
     } else {
       const group = this.createPurchaseOrderItemForm(this.adhocLPOItemForm.value.product, {
         qty: this.adhocLPOItemForm.value.qty,
-        price: this.adhocLPOItemForm.value.unit_price
+        price: this.adhocLPOItemForm.value.unit_price,
+        uom: this.adhocLPOItemForm.value.uom
+
       });
 
       this.requestItemsForm.push(group);
