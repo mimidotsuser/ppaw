@@ -44,7 +44,10 @@ export enum V1Endpoints {
   currencies = '/currencies',
   goodsReceiptNote = '/goods-receipt-note',
 
-  goodsReceiptNotePendingInspection = '/goods-receipt-note/inspection',
-  goodsReceiptNotePendingInspectionShow = '/goods-receipt-note/:id/inspection',
-  inspection = '/inspection-note'
+  goodsReceiptNoteRequestPendingInspection = '/goods-receipt-note/:id/inspection',
+  goodsReceiptNoteRequestsPendingInspection = '/goods-receipt-note/inspection',
+  inspection = '/inspection-note',
+
+  goodsReceiptNoteRequestPendingApproval = '/goods-receipt-note/:id/approval',
+  goodsReceiptNoteRequestsPendingApproval = '/goods-receipt-note/approval',
 }

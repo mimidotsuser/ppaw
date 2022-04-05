@@ -1,1 +1,137 @@
-<p>create works!</p>
+<form>
+
+  <div class="row px-0 px-md-3 mt-4">
+    <div class="col-md-3 mb-3">
+      <label for="reference" class="form-label">Reference / Packaging List No.</label>
+      <input type="text" class="form-control" disabled id="reference"
+             [value]="model?.reference">
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <label for="name" class="form-label">Requested By</label>
+      <input type="text" class="form-control" disabled id="name"
+             [value]="authorName">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="created_at" class="form-label">Created On</label>
+      <input type="text" class="form-control" disabled id="created_at"
+             [value]="model?.created_at|date">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="po" class="form-label">Purchase Order</label>
+      <input type="text" class="form-control" disabled id="po"
+             [value]="model?.purchase_order?.sn">
+    </div>
+
+    <ng-container *ngIf="requesterRemarks">
+      <div class="col-md-6 mb-3">
+        <label for="a_remarks" class="form-label">Requestor Remarks</label>
+        <textarea id="a_remarks" class="form-control" disabled>{{requesterRemarks}}</textarea>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="inspectionRemarks">
+      <div class="col-md-6 mb-3">
+        <label for="b_remarks" class="form-label">Inspection Remarks</label>
+        <textarea id="b_remarks" class="form-control" disabled>{{inspectionRemarks}}</textarea>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <div class="container-fluid px-0 px-md-3">
+    <table class="table table-responsive table-bordered table-hover table-block-sm">
+      <thead>
+      <tr>
+        <th class="product-column">Item</th>
+        <th>M-PN</th>
+        <th>Qty Received</th>
+        <th>Qty Accepted</th>
+        <th>Qty Rejected</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of items|slice:tableCountStart:tableCountEnd">
+        <td>
+          <span class="td-inline-label">Item</span>
+          <div class="d-flex flex-column">
+            {{item.product?.item_code}}
+            <small class="text-muted">
+              {{item.product?.local_description || item.product?.description }}
+            </small>
+          </div>
+        </td>
+        <td>
+          <span class="td-inline-label">M-PN</span>
+          {{item.product?.manufacturer_part_number}}
+        </td>
+        <td>
+          <span class="td-inline-label">Qty Received</span>
+          {{item.delivered_qty || 0}}
+        </td>
+        <td>
+          <span class="td-inline-label">Qty Accepted</span>
+          {{(item.delivered_qty || 0) - (item.rejected_qty || 0)}}
+        </td>
+        <td class="input-column">
+          <span class="td-inline-label">Qty Rejected</span>
+          {{item.rejected_qty || 0}}
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+      <pagination [meta]="pagination"></pagination>
+    </div>
+  </div>
+  <hr>
+
+  <div class="container-fluid col-md-10 px-0 px-md-3 ms-0">
+    <h2 class="section-title col-12">
+      Inspection Checklist
+    </h2>
+    <table class="table table-block-sm table-hover inspection-checklist-table">
+      <thead>
+      <tr>
+        <th></th>
+        <th>Feature Inspected</th>
+        <th>Passed/Failed</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="group" *ngFor="let item of inspectionChecklist;index as i">
+        <th>{{i + 1}}</th>
+        <td>
+          <span class="td-inline-label">Feature</span>
+          {{item.feature}}
+        </td>
+        <td>
+          <span class="td-inline-label">Passed/Failed</span>
+          {{item.passed ? 'Passed' : 'Failed'}}
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="remarks" class="form-label">Remarks</label>
+        <textarea id="remarks" class="form-control" [formControl]="remarks" rows="4"></textarea>
+      </div>
+      <div class="col-12 my-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary btn-lg btn-submit" [disabled]="remarks.invalid"
+                (click)="submitForm()">
+          Approve
+        </button>
+        <button type="submit" class="btn btn-outline-primary btn-lg btn-submit"
+                [disabled]="remarks.invalid"
+                (click)="submitForm(false)">
+          Reject
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+
+</form>

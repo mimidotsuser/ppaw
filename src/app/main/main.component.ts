@@ -139,12 +139,12 @@ export class MainComponent implements OnInit, OnDestroy {
       display: true,
       items: [
         {
-          title: 'GRN/RGA Approval', url: 'receiving-report/grn-and-rga',
+          title: 'GRN/RGA Approval', url: 'goods-receipt-note/approval',
           display: true,
           exact: false
         },
         {
-          title: 'All GRN/RGA Docs', url: 'receiving-report/history',
+          title: 'All GRN/RGA Docs', url: 'goods-receipt-note',
           display: true
         }]
     },

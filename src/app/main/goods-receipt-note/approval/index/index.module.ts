@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { IndexComponent } from './index.component';
 import { SharedModule } from '../../../../shared/shared.module';
 
@@ -12,7 +13,8 @@ import { SharedModule } from '../../../../shared/shared.module';
   imports: [
     CommonModule,
     RouterModule.forChild([{path: '', component: IndexComponent}]),
-    SharedModule
+    SharedModule,
+    NgbDropdownModule,
   ]
 })
 export class IndexModule {}

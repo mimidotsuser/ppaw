@@ -15,12 +15,12 @@ export class InspectionNoteService {
   constructor(private httpService: HttpService) { }
 
   fetchRequests(meta: PaginationModel): Observable<HttpResponseModel<GoodsReceiptNoteModel>> {
-    return this.httpService.get(this.httpService.endpoint.goodsReceiptNotePendingInspection,
+    return this.httpService.get(this.httpService.endpoint.goodsReceiptNoteRequestsPendingInspection,
       {params: {...meta, include: 'purchaseOrder,createdBy'}});
   }
 
   fetchRequest(id: string | number): Observable<GoodsReceiptNoteModel> {
-    const url = this.httpService.endpoint.goodsReceiptNotePendingInspectionShow
+    const url = this.httpService.endpoint.goodsReceiptNoteRequestPendingInspection
       .replace(':id', id.toString());
 
     return this.httpService.get(url,
