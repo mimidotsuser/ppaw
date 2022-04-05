@@ -41,7 +41,7 @@ export class PurchaseOrderSearchComponent implements OnInit {
       params = {include: this.with, ...params}
     }
     if (this.undeliveredOnly === true) {
-      params = {undeliveredOnly: true, ...params}
+      params = {undeliveredQtyOnly: true, ...params}
     }
     if (this.includeDeliveredItems === true) {
       params = {withDeliveredQty: true, ...params}
