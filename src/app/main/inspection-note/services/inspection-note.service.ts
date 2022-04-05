@@ -32,4 +32,14 @@ export class InspectionNoteService {
     return this.httpService.post(this.httpService.endpoint.inspection, payload)
       .pipe(map((res: { data: InspectionModel }) => res.data));
   }
+
+  fetchHistory(meta: PaginationModel): Observable<HttpResponseModel<InspectionModel>> {
+
+    const params = {
+      include: 'createdBy,goodsReceiptNote.purchaseOrder,InspectionNote,items.product,' +
+        'goodsReceiptNote.latestActivity',
+      ...meta
+    };
+    return this.httpService.get(this.httpService.endpoint.inspection, {params});
+  }
 }

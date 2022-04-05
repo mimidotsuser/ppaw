@@ -173,7 +173,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       payload = {
         customer_id: this.form.value.customer.id,
         warrant_start: this.form.value.warrant_start,
-        warrant_end: this.form.value.warrant_start,
+        warrant_end: this.form.value.warrant_end,
         contract_id: this.form.value.contract_id?.id,
         ...payload,
       }

@@ -57,21 +57,21 @@
     <tr *ngFor="let request of requests">
       <td>
         <span class="td-inline-label">Request No.</span>
-        <a class="text-decoration-none" routerLink="{{request.id}}/create/">
+        <a class="text-decoration-none" routerLink="{{request.id}}">
           {{request.sn}}
         </a>
       </td>
       <td>
         <span class="td-inline-label">Reference No.</span>
-        {{request.reference}}
+        {{request?.goods_receipt_note?.reference}}
       </td>
       <td>
         <span class="td-inline-label">PO No.</span>
-        {{request.purchase_order?.sn}}
+        {{request?.goods_receipt_note?.purchase_order?.sn}}
       </td>
       <td>
         <span class="td-inline-label">Supplier</span>
-        {{request?.purchase_order?.vendor?.name}}
+        {{request?.goods_receipt_note?.purchase_order?.vendor?.name}}
       </td>
       <td>
         <span class="td-inline-label">Created On</span>
@@ -83,16 +83,24 @@
       </td>
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
-          <a routerLink="{{request.id}}/create" class="btn btn-outline-primary btn-sm pe-4 ps-4">
-            view
-          </a>
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary hide-dropdown-toggle border-0" id="adp"
+                    ngbDropdownToggle>
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="adp">
+              <a ngbDropdownItem [routerLink]="request.id.toString()">View summary</a>
+
+            </div>
+          </div>
         </div>
+
       </td>
     </tr>
     <ng-container *ngIf="requests?.length===0">
       <tr>
-        <td class="text-center py-5" colspan="8">
-          No items pending action.
+        <td class="text-center py-3" colspan="8">
+          No data
         </td>
       </tr>
     </ng-container>

@@ -7,19 +7,21 @@ const routes: Routes = [
   {
     path: '', component: InspectionNoteComponent,
     children: [
-      {path: '', pathMatch: 'exact', redirectTo: 'history'},
       {
         path: 'history',
-        loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
+        loadChildren: () => import('./history/history.module').then(m => m.HistoryModule),
         data: {
-          resource: Resources.inspection, action: Actions.view,
+          resource: Resources.inspectionNote, action: Actions.view,
           title: 'Inspection History', breadcrumb: 'Inspection Forms'
         }
       },
       {
         path: 'purchased-products',
         loadChildren: () => import('./purchased-products/purchased-products.module').then(m => m.PurchasedProductsModule),
-        data: {title: 'Inspection Requests', breadcrumb: 'Pending Inspection Requests'}
+        data: {
+          resource: Resources.inspectionNote, action: Actions.view,
+          title: 'Inspection Requests', breadcrumb: 'Inspection Requests'
+        }
       },
     ],
   },

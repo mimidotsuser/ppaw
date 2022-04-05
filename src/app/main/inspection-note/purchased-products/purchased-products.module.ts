@@ -17,14 +17,14 @@ import { Actions, Resources } from '../../../utils/permissions';
       {
         path: '',
         component: IndexComponent,
-        data: {resource: Resources.inspection, action: Actions.create}
+        data: {resource: Resources.inspectionNote, action: Actions.create}
       },
       {
         path: ':id/create',
         component: CreateComponent,
         data: {
-          resource: Resources.inspection, action: Actions.create,
-          title: 'Products Inspection',
+          resource: Resources.inspectionNote, action: Actions.create,
+          title: 'Inspection Request',
           breadcrumb: 'Inspection Form'
         }
       }

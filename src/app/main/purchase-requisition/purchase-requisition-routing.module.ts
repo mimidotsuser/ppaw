@@ -29,7 +29,7 @@ const routes: Routes = [{
       loadChildren: () => import('./appraisal/appraisal.module').then(m => m.AppraisalModule),
       data: {
         resource: Resources.purchaseRequisition, action: Actions.verify,
-        title: 'Check Purchase Request',
+        title: 'Check Purchase Requests',
         breadcrumb: 'Purchase Request Forms'
       }
     },

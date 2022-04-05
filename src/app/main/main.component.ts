@@ -130,7 +130,8 @@ export class MainComponent implements OnInit, OnDestroy {
         },
         {
           title: 'Inspection History', url: 'inspection-note/history',
-          display: true
+          display: true,
+          exact: false
         }]
     },
     post_inspection: {
@@ -144,8 +145,9 @@ export class MainComponent implements OnInit, OnDestroy {
           exact: false
         },
         {
-          title: 'All GRN/RGA Docs', url: 'goods-receipt-note',
-          display: true
+          title: 'All GRN/RGA Docs', url: 'goods-receipt-note/history',
+          display: true,
+          exact:false
         }]
     },
     stock_balance: {

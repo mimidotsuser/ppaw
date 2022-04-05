@@ -1,4 +1,5 @@
 import { UserModel } from './user.model';
+import { GoodsReceiptNoteModel } from './goods-receipt-note.model';
 
 enum CheckInTypes {
   PURCHASED_PRODUCT = 'PURCHASED_PRODUCT',
@@ -19,4 +20,5 @@ export interface InspectionModel {
   created_at: string;
   created_by_id: string;
   created_by?: UserModel;
+  goods_receipt_note?: GoodsReceiptNoteModel
 }
