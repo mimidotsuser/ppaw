@@ -43,4 +43,8 @@ export enum V1Endpoints {
   unitOfMeasure = '/unit-of-measures',
   currencies = '/currencies',
   goodsReceiptNote = '/goods-receipt-note',
+
+  goodsReceiptNotePendingInspection = '/goods-receipt-note/inspection',
+  goodsReceiptNotePendingInspectionShow = '/goods-receipt-note/:id/inspection',
+  inspection = '/inspection-note'
 }

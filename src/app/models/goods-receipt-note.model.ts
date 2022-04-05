@@ -39,9 +39,10 @@ export interface GoodsReceiptNoteActivityModel {
  */
 export interface GoodsReceiptNoteModel {
   id: number;
+  sn:string;
   reference: string;
   purchase_order_id: number;
-  po?: PurchaseOrderModel;
+  purchase_order?: PurchaseOrderModel;
   warehouse_id: number;
   warehouse?: WarehouseModel;
   items: GoodsReceiptNoteItemModel[],

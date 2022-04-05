@@ -4,7 +4,7 @@
       <div class="col-md-3 mb-3">
         <label for="purchase_request" class="form-label">RFQ Request</label>
         <rfq-typeahead-input controlName="rfq" [withoutPO]="true" with="items.product.balance"
-                             (change)="onRFQRequestSelection()">
+                          customId="purchase_request"   (change)="onRFQRequestSelection()">
         </rfq-typeahead-input>
       </div>
       <div class="col-md-3 mb-3">
@@ -51,8 +51,8 @@
         <th class="product-column">Item</th>
         <th>Physical Balance</th>
         <th>RFQ Qty</th>
-        <th class="qty-column">UOM</th>
-        <th class="qty-column">Qty Required</th>
+        <th class="input-column">UOM</th>
+        <th class="input-column">Qty Required</th>
         <th class="price-column">Unit Price</th>
         <th class="total-column">Total</th>
       </tr>

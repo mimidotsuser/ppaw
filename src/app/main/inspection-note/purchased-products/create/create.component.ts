@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
@@ -9,6 +9,8 @@ import {
   GRNReceiptNoteStage
 } from '../../../../models/goods-receipt-note.model';
 import { InspectionNoteService } from '../../services/inspection-note.service';
+import { PaginationModel } from '../../../../models/pagination.model';
+import { ProductModel } from '../../../../models/product.model';
 
 @Component({
   selector: 'app-create',
@@ -17,30 +19,40 @@ import { InspectionNoteService } from '../../services/inspection-note.service';
 })
 export class CreateComponent implements OnInit, OnDestroy {
 
-  model!: GoodsReceiptNoteModel;
-  form: FormGroup;
   faTrashAlt = faTrashAlt
-  private _subscriptions: Subscription[] = []
+  private _subscriptions: Subscription[] = [];
+  pagination: PaginationModel = {page: 1, limit: 25, total: 0};
+  model?: GoodsReceiptNoteModel;
+  form!: FormGroup;
 
   constructor(private route: ActivatedRoute, private inspectionService: InspectionNoteService,
-              private fb: FormBuilder) {
+              private fb: FormBuilder, private router: Router) {
 
-    this.form = this.fb.group({
-      remarks: this.fb.control(null),
-      checkin_type: this.fb.control('PURCHASED_PRODUCT'),
-      inspection_checklist: this.fb.array([]),
-      inspection_items: this.fb.array([])
-    });
+    this.subSink = this.inspectionService.fetchRequest(this.route.snapshot.params[ 'id' ])
+      .subscribe((model) => {
+        this.model = model;
+        this.pagination.total = this.model.items.length;
+        model.items.map((item) => this.renderInspectionItemsFormGroup(item));
+      });
+
+    this.initMainForm()
     //create at least one checklist form group
     this.createChecklistItemFormGroup()
   }
 
   ngOnInit(): void {
-    this.subSink = this.inspectionService.fetchProductCheckInById(this.route.snapshot.params[ 'id' ])
-      .subscribe((model) => {
-        this.model = model;
-        model.items.map((item) => this.addInspectionItemFormGroup(item));
-      });
+  }
+
+  set subSink(value: Subscription) {
+    this._subscriptions.push(value);
+  }
+
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
+  }
+
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
   }
 
   get authorName(): string {
@@ -48,34 +60,37 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   get requesterRemarks(): string {
-    if (!this.model.activities) {return ''}
-    return this.model.activities
+    if (!this.model?.activities) {return ''}
+    return this.model?.activities
       .find((log) => log.stage === GRNReceiptNoteStage.REQUEST_CREATED)
       ?.remarks || ''
-  }
-
-  set subSink(value: Subscription) {
-    this._subscriptions.push(value);
   }
 
   /**
    * Inspection
    */
   get inspectionItemsForm(): FormArray {
-    return this.form.get('inspection_items') as FormArray;
+    return this.form.get('items') as FormArray;
   }
 
-  addInspectionItemFormGroup(item: GoodsReceiptNoteItemModel) {
+  initMainForm() {
+    this.form = this.fb.group({
+      remarks: this.fb.control(null, {validators: [Validators.required]}),
+      checklist: this.fb.array([]),
+      items: this.fb.array([])
+    });
+  }
+
+  renderInspectionItemsFormGroup(item: GoodsReceiptNoteItemModel) {
     const group = this.fb.group({
+      item_id: this.fb.control(item.id),
       product: this.fb.control(item.product),
-      qty_received: this.fb.control(item.delivered_qty),
-      qty_fit: this.fb.control(item.delivered_qty,
-        {
-          validators: [
-            Validators.required, Validators.min(0), Validators.max(item.delivered_qty)
-          ]
-        }
-      ),
+      delivered_qty: this.fb.control(item.delivered_qty),
+      rejected_qty: this.fb.control(0, {
+        validators: [
+          Validators.required, Validators.min(0), Validators.max(item.delivered_qty)
+        ]
+      }),
     });
 
     this.inspectionItemsForm.push(group);
@@ -83,13 +98,13 @@ export class CreateComponent implements OnInit, OnDestroy {
 
 
   get inspectionChecklistForm(): FormArray {
-    return this.form.get('inspection_checklist') as FormArray;
+    return this.form.get('checklist') as FormArray;
   }
 
   createChecklistItemFormGroup() {
     const group = this.fb.group({
       feature: this.fb.control(null, {validators: [Validators.required]}),
-      status: this.fb.control(true, {validators: [Validators.required]})
+      passed: this.fb.control(true, {validators: [Validators.required]})
     });
 
     this.inspectionChecklistForm.push(group);
@@ -99,13 +114,36 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.inspectionChecklistForm.removeAt(index);
   }
 
-  submit() {
+  submitForm() {
     this.form.markAllAsTouched();
     if (this.form.invalid) {return;}
 
+    const payload = this.form.value;
+
+    payload.items = (payload.items as ItemInspectionForm[])
+      .map((item) => ({rejected_qty: item.rejected_qty, item_id: item.item_id}))
+
+    payload[ 'goods_receipt_note_id' ] = this.model?.id;
+
+    this.subSink = this.inspectionService.create(payload)
+      .subscribe({
+        next: () => {
+          this.router.navigate(['../../'], {relativeTo: this.route})
+            .then(() => {
+              //show success message
+            })
+        }
+      })
   }
 
   ngOnDestroy(): void {
     this._subscriptions.map((sub) => sub.unsubscribe())
   }
+}
+
+interface ItemInspectionForm {
+  item_id: number
+  product: ProductModel
+  delivered_qty: number
+  rejected_qty: number
 }

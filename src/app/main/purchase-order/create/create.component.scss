@@ -8,7 +8,7 @@
 }
 
 @include media-breakpoint-up(md) {
-  th.qty-column,
+  th.input-column,
   th.price-column {
     width: 125px;
   }

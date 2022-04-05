@@ -28,17 +28,20 @@
   </div>
 
   <div class="container-fluid px-0 px-md-3">
-    <table class="table table-responsive table-bordered table-block-sm">
+    <table class="table table-responsive table-bordered table-hover table-block-sm">
       <thead>
       <tr>
         <th class="product-column">Item</th>
         <th>M-PN</th>
         <th>Qty Received</th>
-        <th class="qty-column">Qty Accepted</th>
+        <th>Qty Accepted</th>
+        <th>Qty Rejected</th>
       </tr>
       </thead>
-      <tbody formArrayName="inspection_items">
-      <tr *ngFor="let group of inspectionItemsForm.controls ;let i=index" [formGroupName]="i">
+      <tbody formArrayName="items">
+      <tr
+        *ngFor="let group of inspectionItemsForm.controls|slice:tableCountStart:tableCountEnd"
+        [formGroup]="$any(group)">
         <td>
           <span class="td-inline-label">Item</span>
           <div class="d-flex flex-column">
@@ -56,17 +59,33 @@
         </td>
         <td>
           <span class="td-inline-label">Qty Received</span>
-          {{group.get('qty_received')?.value}}
+          {{group.get('delivered_qty')?.value}}
         </td>
         <td>
           <span class="td-inline-label">Qty Accepted</span>
-          <input type="number" class="form-control" formControlName="qty_fit">
+          {{group.get('delivered_qty')?.value - group.get('rejected_qty')?.value}}
         </td>
-        <td>
+        <td class="input-column">
+          <span class="td-inline-label">Qty Rejected</span>
+          <input type="number" class="form-control" formControlName="rejected_qty">
+          <ng-container
+            *ngIf="group.get('rejected_qty')?.touched && group.get('rejected_qty')?.errors">
+            <small class="text-danger"
+                   *ngIf="group.get('rejected_qty')?.hasError('max')">
+              Cannot exceed {{group.get('rejected_qty')?.getError('max').max}}
+            </small>
+            <small class="text-danger"
+                   *ngIf="group.get('rejected_qty')?.hasError('min')">
+              Minimum allowed is  {{group.get('rejected_qty')?.getError('min').min}}
+            </small>
+          </ng-container>
         </td>
       </tr>
       </tbody>
     </table>
+    <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+      <pagination [meta]="pagination"></pagination>
+    </div>
   </div>
   <hr>
   <h2 class="section-title col-12">
@@ -81,9 +100,9 @@
         <td class="actions-column"></td>
       </tr>
       </thead>
-      <tbody formArrayName="inspection_checklist">
-      <tr class="group" *ngFor="let g of inspectionChecklistForm.controls;let i=index"
-          [formGroupName]="i">
+      <tbody formArrayName="checklist">
+      <tr class="group" *ngFor="let group of inspectionChecklistForm.controls;index as i;first as f"
+          [formGroup]="$any(group)">
         <td>
           <span class="td-inline-label">Feature</span>
           <input type="text" class="form-control" formControlName="feature"
@@ -92,13 +111,13 @@
         <td>
           <span class="td-inline-label">Passed/Failed</span>
 
-          <select class="form-select" formControlName="status">
-            <option value="true">Passed</option>
-            <option value="false">Failed</option>
+          <select class="form-select" formControlName="passed">
+            <option [ngValue]="true">Passed</option>
+            <option [ngValue]="false">Failed</option>
           </select>
         </td>
         <td>
-          <div *ngIf="inspectionChecklistForm.length>1" class="d-flex justify-content-end w-100">
+          <div *ngIf="!f" class="d-flex justify-content-end justify-content-md-center w-100">
             <button class="bnt btn-sm btn-outline-secondary border-0"
                     (click)="removeChecklistItemFormGroup(i)">
               <fa-icon [icon]="faTrashAlt"></fa-icon>
@@ -119,11 +138,12 @@
 
   <div class="row">
     <div class="col-md-6 mb-3">
-      <label for="remarks" class="form-label">Remarks</label>
-      <textarea id="remarks" class="form-control" formControlName="remarks"></textarea>
+      <label for="remarks" class="form-label required">Remarks</label>
+      <textarea id="remarks" class="form-control" formControlName="remarks" rows="4"></textarea>
     </div>
     <div class="col-12 my-3">
-      <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submit()">
+      <button type="submit" class="btn btn-primary btn-lg btn-submit" [disabled]="form.invalid"
+              (click)="submitForm()">
         Submit
       </button>
     </div>

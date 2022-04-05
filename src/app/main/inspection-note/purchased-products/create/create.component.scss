@@ -8,8 +8,8 @@
 }
 
 @include media-breakpoint-up(md) {
-  .qty-column {
-    width: 150px;
+  .input-column {
+    max-width: 100px;
   }
 
   .inspection-checklist-table.table {
