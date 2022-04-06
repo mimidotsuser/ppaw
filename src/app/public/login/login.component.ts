@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private meta: MetaService, private fb: FormBuilder, private route: ActivatedRoute,
               private router: Router, private httpService: HttpService,
-              private authService:AuthService) {
+              private authService: AuthService) {
     this.meta.title = 'Login'
     this.form = this.fb.group({
       username: this.fb.control('',
@@ -54,11 +54,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             {
               next: (res: { data: UserModel }) => {
                 this.authService.user = res.data;
-                if (this.route.snapshot.queryParamMap.get('src')) {
-                  this.router.navigateByUrl(this.route.snapshot.queryParamMap.get('src')!);
-                } else {
-                  this.router.navigateByUrl('/main')
-                }
+                this.authService.redirectToMainSystemPage();
               },
               error: (err) => {
                 this.submitting = false;
