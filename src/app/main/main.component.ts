@@ -19,8 +19,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { environment } from '../../environments/environment';
 import { HttpService } from '../core/services/http.service';
-import { StorageService } from '../core/services/storage.service';
 import { MetaService } from '../core/services/meta.service';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-main',
@@ -147,7 +147,7 @@ export class MainComponent implements OnInit, OnDestroy {
         {
           title: 'All GRN/RGA Docs', url: 'goods-receipt-note/history',
           display: true,
-          exact:false
+          exact: false
         }]
     },
     stock_balance: {
@@ -224,7 +224,7 @@ export class MainComponent implements OnInit, OnDestroy {
   breadcrumbList: { label: string, title: string, path: string, active: boolean }[] = [];
 
   constructor(private router: Router, private httpService: HttpService,
-              private storageService: StorageService, private titleService: MetaService,) {
+              private authService: AuthService, private titleService: MetaService,) {
 
     this.subSink = this.router.events
       .pipe(filter((evt) => evt instanceof NavigationEnd))
@@ -245,12 +245,13 @@ export class MainComponent implements OnInit, OnDestroy {
     this._subscriptions.push(value);
   }
 
-  toggleSidebar() {
-    this.collapseSidebar = !this.collapseSidebar;
-  }
-
   get menuBlocks(): string[] {
     return Object.keys(this.menuList);
+  }
+
+  get name(): string {
+    return !this.authService.user ? '' :
+      `${this.authService.user?.first_name} ${this.authService.user?.last_name}`
   }
 
 
@@ -299,7 +300,7 @@ export class MainComponent implements OnInit, OnDestroy {
   logout() {
     this.subSink = this.httpService.post('/auth/logout', {})
       .subscribe(() => {
-        this.storageService.user = null; //reset the local storage user
+        this.authService.user = null; //reset the local storage user
         this.router.navigateByUrl('/');// route out of the main application
       });
   }

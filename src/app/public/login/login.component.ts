@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { HttpService } from '../../core/services/http.service';
 import { MetaService } from '../../core/services/meta.service';
-import { StorageService } from '../../core/services/storage.service';
 import { UserModel } from '../../models/user.model';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private meta: MetaService, private fb: FormBuilder, private route: ActivatedRoute,
               private router: Router, private httpService: HttpService,
-              private storageService: StorageService) {
+              private authService:AuthService) {
     this.meta.title = 'Login'
     this.form = this.fb.group({
       username: this.fb.control('',
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.storageService.user = null;
+    this.authService.user = null;
   }
 
   set subSink(value: Subscription) {
@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           .subscribe(
             {
               next: (res: { data: UserModel }) => {
-                this.storageService.user = res.data;
+                this.authService.user = res.data;
                 if (this.route.snapshot.queryParamMap.get('src')) {
                   this.router.navigateByUrl(this.route.snapshot.queryParamMap.get('src')!);
                 } else {

@@ -11,6 +11,10 @@ export class AuthService {
   constructor(private storageService: StorageService) {
   }
 
+  set user(model) {
+    this.storageService.user = model;
+  }
+
   get user(): UserModel | null {
     return this.storageService.user;
   }

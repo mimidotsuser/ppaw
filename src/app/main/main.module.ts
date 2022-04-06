@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { MainRoutingModule } from './main-routing.module';
 import { MainComponent } from './main.component';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import { NgbCollapseModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -15,6 +15,7 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
         CommonModule,
         MainRoutingModule,
         NgbDropdownModule,
+      NgbCollapseModule,
         FontAwesomeModule
     ]
 })
