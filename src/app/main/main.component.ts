@@ -158,7 +158,8 @@ export class MainComponent implements OnInit, OnDestroy {
         {
           title: 'Product Tracking',
           url: 'product-items',
-          display: true
+          display: true,
+          exact:false
         },
         {
           title: 'Stock Balances', url: 'stock-balances',
