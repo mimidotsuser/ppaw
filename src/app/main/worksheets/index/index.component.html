@@ -19,7 +19,7 @@
             </div>
             <form class="px-3">
               <div class="mb-3">
-                <label class="form-label" for="">Client</label>
+                <label class="form-label" for="">Customer</label>
                 <select class="form-select" id="product_category">
                   <option value="all">All</option>
                   <option value="machine">Machine</option>
@@ -47,7 +47,7 @@
 
 
     <div class="d-md-block">
-      <a class="btn btn-outline-primary" routerLink="create">
+      <a class="btn btn-outline-primary" routerLink="../create">
         + New Request
       </a>
     </div>
@@ -59,10 +59,11 @@
     <thead>
     <tr>
       <th>Worksheet No.</th>
-      <th>Client</th>
+      <th>Reference No.</th>
+      <th>Customer</th>
       <th>Created By</th>
       <th>Created On</th>
-      <th>Entries total</th>
+      <th>Total entries</th>
       <th></th>
     </tr>
     </thead>
@@ -71,35 +72,71 @@
       <td>
         <span class="td-inline-label">Worksheet No.</span>
         <a class="text-decoration-none">
-          {{worksheet.reference_number}}
+          {{worksheet.sn}}
         </a>
       </td>
       <td>
-        <span class="td-inline-label">Client</span>
-        <span class="td-inline-label">Client</span>
+        <span class="td-inline-label">Reference No.</span>
+        {{worksheet.reference}}
+      </td>
+      <td>
+        <span class="td-inline-label">Customer</span>
         <div class="d-flex flex-column">
-          {{worksheet?.client?.name || '--'}}
+          {{worksheet?.customer?.name || '--'}}
           <small class="text-muted">
-            {{worksheet?.client?.branch || ''}} | {{worksheet?.client?.region || ''}}
+            {{worksheet?.customer?.branch || ''}} | {{worksheet?.customer?.region || ''}}
           </small>
         </div>
       </td>
       <td>
         <span class="td-inline-label">Created By</span>
-        {{deserializeAuthorName(worksheet.created_by)}}
+        {{worksheet.created_by?.first_name}}
+        {{worksheet.created_by?.last_name}}
       </td>
       <td>
         <span class="td-inline-label">Created On</span>
         {{worksheet.created_at|date}}
       </td>
-    </tr>
-    <tr>
-      <td colspan="6">
-        <div class="py-5 text-center">
-          No worksheets entries found at moment.
+      <td>
+        <span class="td-inline-label">Total entries</span>
+        <a class="text-decoration-none">
+          {{worksheet?.entries?.length}}
+        </a>
+      </td>
+      <td>
+        <div class="d-flex flex-column gap-2">
+        </div>
+        <div class="d-flex gap-2 justify-content-end w-100">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary border-0 hide-dropdown-toggle border-0"
+                    ngbDropdownToggle>
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </button>
+
+            <div ngbDropdownMenu aria-labelledby="dp">
+              <button  ngbDropdownItem (click)="viewWorksheetSummary(worksheet)">
+                View all entries
+              </button>
+            </div>
+          </div>
         </div>
       </td>
     </tr>
+
+    <ng-container *ngIf="worksheets.length==0">
+
+      <tr>
+        <td colspan="7">
+          <div class="py-5 text-center">
+            No worksheets entries found at moment.
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+
     </tbody>
   </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination" (pageChange)="loadWorksheets()"></pagination>
+  </div>
 </div>

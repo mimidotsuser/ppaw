@@ -7,11 +7,17 @@
 .section-title {
   font-size: 15px;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
 }
 
+.table td {
+  .btn.action-btn {
+    padding-bottom: 3px;
+    padding-top: 3px;
+  }
+}
 
-.spare-entry {
+.repair-item-entry {
   background-color: $checkout-group-card-background-color;
 
   .group-header {

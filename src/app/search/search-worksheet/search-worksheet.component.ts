@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { WorksheetModel } from '../../models/worksheet.model';
-import { CustomerModel } from '../../models/customer.model';
 import { HttpService } from '../../core/services/http.service';
+import { CustomerModel } from '../../models/customer.model';
 
 @Component({
   selector: 'worksheet-typeahead-input[control],worksheet-typeahead-input[controlName]',
@@ -13,8 +13,8 @@ export class SearchWorksheetComponent implements OnInit {
 
   @Input() control: FormControl | null = null;
   @Input() controlName: string = '';
-  @Input() client: CustomerModel | null = null;
   @Input() customId: string | undefined;
+  @Input() customer?: CustomerModel;
 
   constructor(private httpService: HttpService) {
   }
@@ -27,16 +27,14 @@ export class SearchWorksheetComponent implements OnInit {
   }
 
   get queryParams(): { [ key: string ]: string; } {
-    if (this.client) {
-      return {
-        search: '%s',
-        client_id: this.client.id.toString()
-      }
+    return {
+      search: '%s',
+      include: 'customer'
     }
-    return {search: '%s'}
+
   }
 
   get outputFormatter(): (item: WorksheetModel) => string {
-    return (item: WorksheetModel) => `${item.id}|${item?.remarks.slice(0, 15)}`
+    return (item: WorksheetModel) => `${item.reference}|${item?.customer?.name}`
   };
 }

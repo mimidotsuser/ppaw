@@ -1,16 +1,16 @@
 <typeahead-input [path]="path" [resultTemplate]="resultTemplate"
-                  [outputFormatter]="outputFormatter" [customId]="customId"
-                  [controlName]="controlName" [control]="control" [queryParams]="queryParams">
+                 [outputFormatter]="outputFormatter" [customId]="customId"
+                 [controlName]="controlName" [control]="control" [queryParams]="queryParams">
 </typeahead-input>
 
 
 <ng-template let-results="result" #resultTemplate>
   <ng-container *ngIf="results;else noResultsTemplate">
     <div class="title">
-      {{results.id}}
+      {{results.reference}}
     </div>
     <div class="subtitle ">
-      {{results?.remarks.slice(0, 15)}}
+      {{results?.customer?.name}}|{{results?.sn}}
     </div>
   </ng-container>
 </ng-template>

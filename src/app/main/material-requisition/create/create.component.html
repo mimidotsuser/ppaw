@@ -222,7 +222,7 @@
       <div class="col-md-6 mb-3">
         <label for="worksheet" class="form-label">Referenced Worksheet</label>
         <worksheet-typeahead-input customId="worksheet" controlName="worksheet"
-                                   [client]="form.get('customer')?.value">
+                                   [customer]="form.get('customer')?.value">
         </worksheet-typeahead-input>
       </div>
     </ng-container>
