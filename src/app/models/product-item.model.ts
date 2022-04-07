@@ -5,15 +5,16 @@ import { CustomerContractModel } from './customer-contract.model';
 import { ActivityDescriptionModel } from './activity-description.model';
 import { WarehouseModel } from './warehouse.model';
 import { ProductItemWarrant } from './product-item-warrant.model';
+import { PurchaseOrderModel } from './purchase-order.model';
 
 export enum ProductItemActivityCategoryCode {
   CONTRACT_ASSIGNED = 'CONTRACT_ASSIGNED',
   CONTRACT_UPDATED = 'CONTRACT_UPDATED',
   INITIAL_ENTRY = 'INITIAL_ENTRY',
-  DEMO_CHECKIN = 'DEMO_CHECKIN',
-  STANDBY_CHECKIN = 'STANDBY_CHECKIN',
-  LEASE_CHECKIN = 'LEASE_CHECKIN',
-  CUSTOMER_TRANSFER = 'CUSTOMER_TRANSFER',
+  CUSTOMER_TO_CUSTOMER_TRANSFER = 'CUSTOMER_TO_CUSTOMER_TRANSFER',
+  CUSTOMER_TO_WAREHOUSE_TRANSFER = 'CUSTOMER_TO_WAREHOUSE_TRANSFER',
+  WAREHOUSE_TO_WAREHOUSE_TRANSFER = 'WAREHOUSE_TO_WAREHOUSE_TRANSFER',
+  WARRANTY_UPDATE = 'WARRANTY_UPDATE',
   MATERIAL_REQUISITION_ISSUED = 'MATERIAL_REQUISITION_ISSUED',
   REPAIR = 'REPAIR',
   GENERAL_SERVICING = 'GENERAL_SERVICING',
@@ -23,21 +24,9 @@ export enum ProductItemActivityCategoryCode {
   OTHER = 'OTHER'
 }
 
-export enum ProductItemActivityCategoryTitle {
-  CONTRACT_ASSIGNED = 'Contract Created',
-  CONTRACT_UPDATED = 'Contract Updated',
-  INITIAL_ENTRY = 'Tracking Start',
-  DEMO_CHECKIN = 'Out of Demo',
-  STANDBY_CHECKIN = 'Standby Reminder',
-  LEASE_CHECKIN = 'Out of Lease',
-  CUSTOMER_TRANSFER = 'Customer/Branch Transfer',
-  MATERIAL_REQUISITION_ISSUED = 'MRN issued',
-  REPAIR = 'Machine Repair',
-  GENERAL_SERVICING = 'Service and Maintenance',
-  TRAINING_AND_INSTALLATION = 'Training and Installation',
-  DELIVERY_AND_INSTALLATION = 'Delivery and Installation',
-  TECHNICAL_REPORT = 'Technical Report',
-  OTHER = 'Other'
+export interface ProductItemRepairModel {
+  id: number;
+  spares_utilized: { new_total: number, old_total: number, product_id: number, product?: ProductModel }[]
 }
 
 export interface ProductItemActivityModel {
@@ -47,19 +36,17 @@ export interface ProductItemActivityModel {
   location_type: 'customer' | 'warehouse';
   location: CustomerModel | WarehouseModel
   customer_contract_id?: number;
-  product_warrant_id: number;
+  customer_contract?: CustomerContractModel;
+  product_warrant_id?: number;
   warrant?: ProductItemWarrant;
   entry_remark_id?: number;
-  remark?: { id: number, description: string };
+  remark?: ActivityDescriptionModel;
   product_repair_id?: number;
-  repair?: { id: number, spares_utilized: ProductModel[] };
+  repair?: ProductItemRepairModel;
   log_category_code: ProductItemActivityCategoryCode;
-  log_category_title: ProductItemActivityCategoryTitle;
-  customerContract?: CustomerContractModel;
-  activity_description_id: string;
-  activity_description: ActivityDescriptionModel;
-  eventable_id: string;
-  eventable_type: string;
+  log_category_title: string;
+  eventable_id?: string;
+  eventable_type?: string;
   created_by_id: number;
   updated_by_id: number;
   created_by?: UserModel;
@@ -69,13 +56,16 @@ export interface ProductItemActivityModel {
 
 export interface ProductItemModel {
   id: number;
+  sn: string;
   product_id: number;
   product?: ProductModel;
   serial_number: string;
   out_of_order: boolean;
-  entry_logs?: ProductItemActivityModel[];
-  latest_entry_log?: ProductItemActivityModel;
+  activities?: ProductItemActivityModel[];
+  latest_activity?: ProductItemActivityModel;
   purchase_order_id?: number;
+  purchase_order?: PurchaseOrderModel;
+  active_warrant?: ProductItemWarrant;
   created_by_id: number;
   updated_by_id: number;
   created_by?: UserModel;

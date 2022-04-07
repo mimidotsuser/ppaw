@@ -56,14 +56,14 @@
       </td>
       <td>
         <span class="td-inline-label">Location</span>
-        {{item?.latest_entry_log?.location?.name || ''}}
+        {{item?.latest_activity?.location?.name || ''}}
       </td>
       <td>
         <span class="td-inline-label">Warrant</span>
         <div class="d-flex flex-column">
-          <small>{{item?.latest_entry_log?.warrant?.warrant_start|date}}</small>
-          <small *ngIf="item?.latest_entry_log?.warrant" class="text-muted">to</small>
-          <small>{{item?.latest_entry_log?.warrant?.warrant_end|date}}</small>
+          <small>{{item?.active_warrant?.warrant_start|date}}</small>
+          <small *ngIf="item?.active_warrant?.warrant" class="text-muted">to</small>
+          <small>{{item?.active_warrant?.warrant_end|date}}</small>
         </div>
       </td>
       <td>
@@ -80,14 +80,14 @@
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
-              <a routerLink="{{item.id}}/history" ngbDropdownItem>
+              <a routerLink="{{item.id}}/activities" ngbDropdownItem>
                 View all activity logs
               </a>
               <a ngbDropdownItem *ngIf="item.purchase_order_id"> View purchase order</a>
-              <a ngbDropdownItem *ngIf="item?.latest_entry_log?.customer_contract_id">
+              <a ngbDropdownItem *ngIf="item?.latest_activity?.customer_contract_id">
                 View contract
               </a>
-              <button ngbDropdownItem class="d-none">Edit Item</button>
+              <button ngbDropdownItem (click)="showEditItemForm(item)">Edit Item</button>
             </div>
           </div>
         </div>
@@ -133,26 +133,27 @@
       <label class="form-label required">Serial Number</label>
       <input type="text" class="form-control" formControlName="serial_number">
     </div>
-    <div class="mb-3 col-md-6">
+    <div class="mb-3 col-md-6" *ngIf=" !form.value.id">
       <label class="form-label required">Current Location</label>
-      <select class="form-select" (change)="locationFormChange()">
+      <select class="form-select" (change)="locationFormChange()"
+              formControlName="current_location">
         <option *ngFor="let loc of productItemLocations" [value]="loc.value">
           {{loc.title}}
         </option>
       </select>
     </div>
-    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse">
+    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse && !form.value.id">
       <label class="form-label required" for="customer">Customer</label>
       <customer-typeahead-input controlName="customer" customId="customer">
       </customer-typeahead-input>
     </div>
-    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse">
+    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse && !form.value.id">
       <label class="form-label">Current contract</label>
       <select class="form-select" formControlName="contract">
 
       </select>
     </div>
-    <div class="mb-3 col-md-6" *ngIf="!this.itemOutsideWarehouse">
+    <div class="mb-3 col-md-6" *ngIf="!this.itemOutsideWarehouse && !form.value.id">
       <label class="form-label required" id="warehouse">Warehouse</label>
       <select class="form-select" formControlName="warehouse">
         <option *ngFor="let warehouse of warehouses" [ngValue]="warehouse">
@@ -167,16 +168,16 @@
       </po-typeahead-input>
     </div>
 
-    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse">
+    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse && !form.value.id">
       <label class="form-label">Warrant Start</label>
       <input type="date" class="form-control" formControlName="warrant_start">
     </div>
-    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse">
+    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse  && !form.value.id">
       <label class="form-label">Warrant End</label>
       <input type="date" class="form-control" formControlName="warrant_end"
              [min]="minAllowedWarrantEndDate">
     </div>
-    <div class="mb-3 col-md-6" *ngIf="!this.itemOutsideWarehouse">
+    <div class="mb-3 col-md-6" *ngIf="!this.itemOutsideWarehouse ">
       <label class="form-label required">Working Status</label>
       <select class="form-select" formControlName="out_of_order">
         <option [ngValue]="false">In good condition</option>
@@ -186,8 +187,15 @@
   </div>
   <div class="d-flex gap-2 mt-2">
 
-    <button type="button" class="btn btn-primary" (click)="submitForm()">
+    <button type="button" class="btn btn-primary" *ngIf="!form.value.id" (click)="submitForm()"
+            [disabled]="form.invalid">
       CREATE
+    </button>
+
+    <button type="button" class="btn btn-primary" *ngIf="form.value.id"
+            [disabled]="form.invalid||!form.dirty"
+            (click)="submitForm()">
+      UPDATE
     </button>
 
     <button type="button" class="btn btn-cancel" (click)="this.closeProductItemFormPopup()">

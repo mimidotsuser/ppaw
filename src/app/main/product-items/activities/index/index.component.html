@@ -1,0 +1,296 @@
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+    <div class="data-filters d-flex gap-2 col-md-6">
+      <div class="col-md-5 mb-1">
+        <input type="text" class="form-control search" [formControl]="searchInput"
+               placeholder="Search by event type">
+      </div>
+      <div class="col-md-4 mb-1">
+        <div ngbDropdown class="d-inline-block">
+          <button id="dp" ngbDropdownToggle
+                  class="btn btn-outline-secondary hide-dropdown-toggle btn-filter">
+            <fa-icon [icon]="faFilter"></fa-icon>
+            Filters
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dp">
+            <div class="dropdown-header">
+              <h6 class="text-capitalize">Filter options</h6>
+            </div>
+
+            <form class="px-3">
+              <div class="mb-3">
+                <label class="form-label">Event type</label>
+                <select class="form-select">
+                  <option value="all">All</option>
+                  <option>Machine Repaired</option>
+                  <option>Service and Maintenance</option>
+                  <option>Delivery and Installation</option>
+                  <option>Training and Installation</option>
+                  <option>Technical Report</option>
+                  <option>Contract Updated</option>
+                  <option>Standby Reminder Checkin</option>
+                  <option>Customer/Branch Transfer</option>
+                  <option>Tracking Start</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Created After</label>
+                <input type="date" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Created Before</label>
+                <input type="date" class="form-control">
+              </div>
+              <div class="mt-3 d-grid">
+                <button class="btn btn-success btn-lg">Apply filters</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-5 gap-2 justify-content-end d-flex">
+      <div class="d-md-block">
+        <button type="button" class="btn btn-outline-primary"
+                (click)="showLocationFormPopup=!showLocationFormPopup"
+                [disabled]="!productItem?.id">
+          + Update Item Status
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <ng-container *ngIf="productItem">
+    <div class="row mt-3 mb-3 product-info-row">
+      <div class="col-md-3 mb-3">
+        <label for="serial_number" class="form-label">Serial Number</label>
+        <input type="text" class="form-control form-control-sm" id="serial_number" disabled
+               [value]="productItem.serial_number">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="product_code" class="form-label">Item Code</label>
+        <input type="text" id="product_code" class="form-control form-control-sm" disabled
+               [value]="productItem?.product?.item_code">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="description" class="form-label">Item Description</label>
+        <input type="text" id="description" class="form-control form-control-sm" disabled
+               [value]="productItem.product?.local_description||productItem.product?.description">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="condition" class="form-label">Working Condition</label>
+        <input type="text" id="condition" class="form-control form-control-sm" disabled
+               [value]="productItem.out_of_order?'Good':'Out of order'">
+      </div>
+    </div>
+  </ng-container>
+
+</div>
+
+<div class="container-md-fluid mt-3">
+  <table class="table table-hover table-block-sm table-bordered">
+    <thead>
+    <tr>
+      <th>Event type</th>
+      <th>Location</th>
+      <th>Worksheet</th>
+      <th>Contract</th>
+      <th>Warrant</th>
+      <th>Created By</th>
+      <th>Created On</th>
+      <th class="actions-column"></th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <ng-container *ngIf="activities.length>0">
+      <tr *ngFor="let activity of activities |slice:tableCountStart:tableCountEnd ">
+        <td>
+          <span class="td-inline-label">Action category</span>
+          {{activity.log_category_title}}
+        </td>
+        <td>
+          <span class="td-inline-label">Location</span>
+          {{activity?.location?.name}}
+        </td>
+        <td>
+          <span class="td-inline-label">Worksheet</span>
+          <a *ngIf="activity.eventable_type=='worksheet'"
+             routerLink="/main/worksheets/{{activity.eventable_id}}">
+            view
+          </a>
+        </td>
+        <td>
+          <span class="td-inline-label">Contract</span>
+          <a *ngIf="activity.customer_contract_id"
+             routerLink="main/customers/{{activity.location_id}}/{{activity.customer_contract_id}}"
+          >view
+          </a>
+        </td>
+        <td>
+          <span class="td-inline-label">Warranty</span>
+          {{activity.warrant?.warrant_start || ''|date}} -
+          {{activity.warrant?.warrant_end || ''|date}}
+        </td>
+        <td>
+          {{activity?.created_by?.first_name || ''}} {{activity?.created_by?.last_name || ''}}
+        </td>
+        <td>
+          <span class="td-inline-label">Created on</span>
+          {{activity.created_at|date}}
+        </td>
+
+        <td>
+          <div class="d-flex flex-column gap-2">
+          </div>
+          <div class="d-flex flex-column gap-2 justify-content-end w-100">
+            <div class="text-decoration-underline" *ngIf="activity.remark" role="button"
+                 [ngbPopover]="remarksPopover" triggers="mouseenter:mouseleave">
+              remarks
+            </div>
+            <ng-template #remarksPopover>
+              {{activity?.remark?.description || 'No remarks'}}
+            </ng-template>
+
+            <div class="text-decoration-underline" *ngIf="activity.repair" role="button"
+                 [ngbPopover]="repairsPopover" triggers="mouseenter:mouseleave">
+              spares utilized
+            </div>
+            <ng-template #repairsPopover>
+              <table class="table table-bordered ">
+                <thead>
+                <tr>
+                  <td>Item</td>
+                  <td>Old total</td>
+                  <td>Brand new total</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let spare of activity.repair?.spares_utilized">
+                  <td>
+                    <span class="td-inline-label">Item</span>
+                    <div class="d-flex flex-column">
+                      {{spare?.product?.item_code}}
+                      <small class="text-muted">
+                        {{spare?.product?.local_description || spare?.product?.description}}
+                      </small>
+                    </div>
+                  </td>
+                  <td>{{spare.old_total}}</td>
+                  <td>{{spare.new_total}}</td>
+                </tr>
+                </tbody>
+
+              </table>
+            </ng-template>
+          </div>
+        </td>
+
+      </tr>
+    </ng-container>
+
+    <ng-container *ngIf="activities.length===0">
+      <tr>
+        <td class="text-center py-3" colspan="9">
+          <ng-container *ngIf="!searchInput.value;else noResults">
+            There is no product items.&nbsp;
+            <a class="text-decoration-none">
+              Click to add a new item
+            </a>
+          </ng-container>
+          <ng-template #noResults>
+            No data matching filtered criteria
+          </ng-template>
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination"></pagination>
+  </div>
+</div>
+
+<app-side-popup [(show)]="showLocationFormPopup"
+                title="Update Item Status">
+
+  <ng-container *ngIf="productItem && productItem.latest_activity?.location_type=='customer'">
+    <form class="row" [formGroup]="form" disabled="true">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Update Category</label>
+        <select class="form-select" formControlName="category_code">
+          <option *ngFor="let category of updateCategories" [value]="category.code">
+            {{category.title}}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="current_location" class="form-label">Current Location</label>
+        <input type="text" class="form-control" id="current_location"
+               formControlName="current_location">
+      </div>
+      <div class="col-md-6 mb-3" *ngIf="warrantyUpdateSelected">
+        <label for="warrant_start" class="form-label required">Warrant Start</label>
+        <input type="date" class="form-control" id="warrant_start" formControlName="warrant_start">
+      </div>
+      <div class="col-md-6 mb-3" *ngIf="warrantyUpdateSelected">
+        <label for="warrant_end" class="form-label">Warrant End</label>
+        <input type="date" class="form-control" id="warrant_end" formControlName="warrant_end"
+               [min]="minAllowedWarrantEndDate">
+      </div>
+
+      <div class="col-md-6 mb-3" *ngIf="customer2CustomerUpdateSelected">
+        <label for="customer" class="form-label required">
+          Receiving Customer
+        </label>
+        <customer-typeahead-input controlName="customer" customId="customer">
+
+        </customer-typeahead-input>
+      </div>
+
+      <div class="col-md-6 mb-3" *ngIf="customer2WarehouseUpdateSelected">
+        <label for="warehouse" class="form-label required">
+          Receiving Warehouse
+        </label>
+        <select formControlName="warehouse" id="warehouse" class="form-select">
+          <option *ngFor="let warehouse of warehouses" [ngValue]="warehouse">
+            {{warehouse.name}}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-6 mb-3" *ngIf="customer2WarehouseUpdateSelected">
+        <label class="form-label required" for="working-status">Working Status</label>
+        <select class="form-select" formControlName="out_of_order" id="working-status">
+          <option [ngValue]="false">In good condition</option>
+          <option [ngValue]="true">Out of order</option>
+        </select>
+      </div>
+      <div class="col-md-12 mb-3">
+        <label for="remarks" class="form-label required">
+          Remarks
+        </label>
+        <textarea id="remarks" class="form-control" formControlName="description"
+                  rows="4"></textarea>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary" (click)="submitForm()"
+                [disabled]="form.invalid">
+          SAVE
+        </button>
+        <button type="button" class="btn btn-outline-primary"
+                (click)="showLocationFormPopup=!showLocationFormPopup">
+          CANCEL
+        </button>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container *ngIf="productItem && productItem.latest_activity?.location_type==='warehouse'">
+    <h4 class="pt-5"> Cannot update item status.</h4>
+    <h6> Item currently in {{productItem.latest_activity?.location?.name}}.</h6>
+  </ng-container>
+</app-side-popup>

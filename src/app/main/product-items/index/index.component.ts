@@ -26,9 +26,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   private _productCategories: ProductCategoryModel[] = [];
   private _warehouses: WarehouseModel[] = [];
   pagination: PaginationModel = {total: 0, page: 1, limit: 25};
-  _productItemLocations: { [ key: string ]: { title: string, value: string } } = {};
   showProductItemFormPopup = false;
-  itemOutsideWarehouse = false;
   minAllowedWarrantEndDate?: string;
   searchInput: FormControl;
   form: FormGroup;
@@ -44,6 +42,9 @@ export class IndexComponent implements OnInit, OnDestroy {
       product: this.fb.control({}, [Validators.required]),
       serial_number: this.fb.control({}, [Validators.required]),
 
+      current_location: this.fb.control(this.productItemLocations[ 0 ].value,
+        [Validators.required]),
+
       customer: this.fb.control({}),
       contract: this.fb.control({}, []),
       purchase_order: this.fb.control({}, []),
@@ -54,10 +55,6 @@ export class IndexComponent implements OnInit, OnDestroy {
       out_of_order: this.fb.control({}, [Validators.required]),
     });
 
-    this._productItemLocations = {
-      warehouse: {title: `Warehouse/${environment.app.name} store`, value: 'warehouse'},
-      customer: {title: 'Customer Premises', value: 'customer'}
-    }
 
   }
 
@@ -117,7 +114,16 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   get productItemLocations() {
-    return Object.keys(this._productItemLocations).map((k) => this._productItemLocations[ k ])
+    return [
+      {title: `${environment.app.name} Warehouses/stores`, value: 'warehouse'},
+      {title: 'Customer Premises', value: 'customer'}
+    ]
+  }
+
+  get itemOutsideWarehouse(): boolean {
+    return this.form.value.current_location ?
+      this.form.value.current_location !== this.productItemLocations[ 0 ].value :
+      false;
   }
 
   get warehouses() {
@@ -125,7 +131,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   closeProductItemFormPopup() {
-    if (this.form.dirty && !window.confirm('')) {
+    if (this.form.dirty && !window.confirm('Data not saved. Changes will be lost if you continue.')) {
       return
     }
     this.showProductItemFormPopup = false;
@@ -140,7 +146,6 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   locationFormChange() {
-    this.itemOutsideWarehouse = !this.itemOutsideWarehouse;
     if (this.itemOutsideWarehouse) {
       this.form.get('customer')?.addValidators([Validators.required])
       this.form.get('warehouse')?.clearValidators();
@@ -155,6 +160,40 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.form.get('customer')?.updateValueAndValidity();
     this.form.get('warehouse')?.updateValueAndValidity();
     this.form.get('out_of_order')?.updateValueAndValidity();
+  }
+
+  showEditItemForm(item: ProductItemModel) {
+    this.form.patchValue({
+      id: item.id,
+      product: item.product,
+      serial_number: item.serial_number,
+      purchase_order: item.purchase_order
+    });
+    if (item.latest_activity?.location_type === 'customer') {
+      this.form.patchValue({
+        current_location: this.productItemLocations[ 1 ].value,
+        customer: item.latest_activity?.location,
+        warehouse: null
+      })
+    } else {
+      this.form.patchValue({
+        current_location: this.productItemLocations[ 0 ].value,
+        warehouse: item.latest_activity?.location,
+        customer: null,
+        out_of_order: item.out_of_order,
+      })
+    }
+
+    this.locationFormChange();
+
+    this.form.clearValidators();
+    this.form.updateValueAndValidity();
+    this.form.get('product')?.addValidators(Validators.required);
+    this.form.get('product')?.updateValueAndValidity();
+    this.form.get('serial_number')?.addValidators(Validators.required);
+    this.form.get('serial_number')?.updateValueAndValidity();
+
+    this.showProductItemFormPopup = true;
   }
 
   submitForm() {

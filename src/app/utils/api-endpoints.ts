@@ -16,6 +16,7 @@ export enum V1Endpoints {
   warehouses = '/warehouses',
   stockBalances = '/stock-balances',
   worksheets = '/worksheets',
+  productItemActivities = '/product-items/:id/activities',
   productItems = '/product-items',
   purchaseOrders = '/purchase-orders',
   purchaseRequests = '/purchase-requests',
