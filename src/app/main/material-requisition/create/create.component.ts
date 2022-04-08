@@ -183,6 +183,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.form.get('qty')?.addValidators([Validators.min(1)]);
       this.form.get('qty')?.addValidators([Validators.max(0)]);
       this.form.get('qty')?.updateValueAndValidity();
+      this.loadingProductMaxQty = false
 
       return
     }
