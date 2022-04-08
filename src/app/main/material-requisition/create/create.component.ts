@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, tap } from 'rxjs';
 import { faEllipsisV, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { MRFPurposeCode } from '../../../models/m-r-f.model';
 import { WorksheetModel } from '../../../models/worksheet.model';
@@ -72,6 +72,7 @@ export class CreateComponent implements OnInit, OnDestroy {
         //reset product
         this.form.get('product')?.reset();
         this.form.get('maxQty')?.patchValue(0);
+        this.form.get('parent')?.reset();
 
         //if spare, disable product input
         if (this.spareCategorySelected) {
@@ -190,16 +191,15 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.loadingProductMaxQty = true
 
     this.subSink = this.requisitionService.fetchMaxAllowedRequestQty(this.form.value.product)
+      .pipe(tap(() => this.loadingProductMaxQty = false))
       .subscribe({
         next: (available) => {
 
-          this.loadingProductMaxQty = false;
           this.form.get('maxQty')?.patchValue(available); //must be done before adding max validator
           this.form.get('qty')?.addValidators([Validators.min(1)]);
           this.form.get('qty')?.addValidators([Validators.max(this.maxAllowedQty)]);
           this.form.get('qty')?.updateValueAndValidity();
         },
-        error: () => this.loadingProductMaxQty = false
       })
   }
 
