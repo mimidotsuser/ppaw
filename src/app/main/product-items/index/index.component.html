@@ -56,7 +56,14 @@
       </td>
       <td>
         <span class="td-inline-label">Location</span>
-        {{item?.latest_activity?.location?.name || ''}}
+        {{item?.latest_activity?.location?.name }}
+        <div>
+          <small>
+            {{item?.latest_activity?.location?.branch }}
+            {{item?.latest_activity?.location?.region ? '|' : ''}}
+            {{item?.latest_activity?.location?.region }}
+          </small>
+        </div>
       </td>
       <td>
         <span class="td-inline-label">Warrant</span>
