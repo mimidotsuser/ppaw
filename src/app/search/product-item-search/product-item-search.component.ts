@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { ProductSerialModel } from '../../models/product-serial.model';
 import { HttpService } from '../../core/services/http.service';
 import { WarehouseModel } from '../../models/warehouse.model';
+import { ProductItemModel } from '../../models/product-item.model';
 
 @Component({
   selector: 'product-item-typeahead-input[control],product-item-typeahead-input[controlName]',
@@ -18,6 +19,7 @@ export class ProductItemSearchComponent implements OnInit {
   @Input() warehouse?: WarehouseModel;
   @Input() outOfOrder?: boolean;
   @Input() product_id?: number; //filter only specific model
+  @Input() excludedItems?: ProductItemModel[];//items to ignore
 
 
   constructor(private httpService: HttpService) {
@@ -44,6 +46,13 @@ export class ProductItemSearchComponent implements OnInit {
     }
     if (this.outOfOrder === true || this.outOfOrder === false) {
       params = {outOfOrder: this.outOfOrder, ...params,}
+    }
+
+    if (this.excludedItems) {
+      params = {
+        excludedItems: this.excludedItems.map((item) => item.id).join(','),
+        ...params
+      }
     }
 
     if (this.product_id) {

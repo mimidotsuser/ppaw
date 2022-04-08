@@ -1,16 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { map, Subscription, tap } from 'rxjs';
 import { faCartPlus, faSpinner, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { MRFItemModel, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
 import { CheckoutService } from '../../services/checkout.service';
-import { ProductSerialModel } from '../../../../models/product-serial.model';
-import { uniqueProductSerial } from '../../../../utils/validators/unique-product-serial';
 import { PaginationModel } from '../../../../models/pagination.model';
 import { addDaysToDate } from '../../../../utils/utils';
 import { WarehouseModel } from '../../../../models/warehouse.model';
-import { ProductBalanceModel } from '../../../../models/product-balance.model';
+import { ProductItemModel } from '../../../../models/product-item.model';
+import { serializeDate } from '../../../../utils/serializers/date';
 
 @Component({
   selector: 'app-create',
@@ -23,34 +22,37 @@ export class CreateComponent implements OnInit, OnDestroy {
   faTrashAlt = faTrashAlt;
   faSpinner = faSpinner;
   showIssueFormPopup = false;
-  cartButtonBusy = false;
-  private _subscriptions: Subscription[] = [];
   pagination: PaginationModel = {total: 0, page: 1, limit: 30};
   warehouses: WarehouseModel[] = [];
+  private _subscriptions: Subscription[] = [];
+  private _balances: ProductMeldedBalanceModel[] = []
   defaultWarrantStartDate: Date;
   defaultWarrantEndDate: Date;
-  selectedOrderItem?: MRFItemModel;
+  selectedItemToAllocate?: MRFItemModel;
   requestModel?: MRFModel;
-  machineAllocationFormGroup: FormGroup;
-  spareAllocationFormGroup: FormGroup;
+  machineItemsFormArray: FormArray;
+  spareItemsFormArray: FormArray;
   remarksControl: FormControl;
 
   constructor(private checkoutService: CheckoutService, private fb: FormBuilder,
               private route: ActivatedRoute, private router: Router) {
 
     this.subSink = this.checkoutService.findRequestById(this.route.snapshot.params[ 'id' ])
+      .pipe(map((model) => {
+        model.items = model.items.filter((item) => (item.approved_qty || 0) > 0)
+          .map((item) => Object.assign(item, {cartButtonBusy: false}));
+        return model;
+      }))
+      .pipe(tap((model) => this.pagination.total = model.items.length))
       .subscribe((v) => this.requestModel = v);
 
     this.defaultWarrantStartDate = new Date();
     this.defaultWarrantEndDate = addDaysToDate(this.defaultWarrantStartDate, 365)
-    this.machineAllocationFormGroup = this.fb.group({
-      machineOrderItems: this.fb.array([])
-    });
 
-    this.spareAllocationFormGroup = this.fb.group({
-      allottedSpares: this.fb.array([])
-    });
-    this.remarksControl = this.fb.control('');
+    this.machineItemsFormArray = this.fb.array([]);
+    this.spareItemsFormArray = this.fb.array([]);
+    this.remarksControl = this.fb.control('N/A',
+      {validators: [Validators.required]});
 
   }
 
@@ -78,12 +80,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   get requestItems(): MRFItemModel[] {
-
-    if (!this.requestModel?.items) {return []}
-    const passed = this.requestModel.items
-      .filter((item) => (item.approved_qty || 0) > 0);
-    this.pagination.total = passed.length;
-    return passed;
+    return this.requestModel?.items ? this.requestModel.items : [];
   }
 
   get requesterRemarks() {
@@ -107,64 +104,18 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   get selectedItemIsSpare(): boolean {
-    return !!this.selectedOrderItem?.product?.parent_id;
+    return !!this.selectedItemToAllocate?.product?.parent_id;
   }
 
   get issueFormPopupTitle() {
-    if (!this.selectedOrderItem) {
+    if (!this.selectedItemToAllocate) {
       return '';
     }
     if (this.selectedItemIsSpare) {
-      return `Spare Requisition Allocation [${this.selectedOrderItem.product?.item_code}]`
+      return `Spare Requisition Allocation [${this.selectedItemToAllocate.product?.item_code}]`
     } else {
-      return `Machine Requisition Allocation [${this.selectedOrderItem.product?.item_code}]`
+      return `Machine Requisition Allocation [${this.selectedItemToAllocate.product?.item_code}]`
     }
-  }
-
-  openIssuePopupForm(item: MRFItemModel) {
-    this.selectedOrderItem = item;
-    if (!this.selectedItemIsSpare) {
-      this.addMachineOrderItemsFormGroup(item);  //Init machine order items array
-      if (this.machineAllottedItemsForm(item).length === 0) {
-        this.addMachineAllottedItemFormGroup(item);       //add one group
-      }
-
-      this.showIssueFormPopup = true;
-
-    } else {
-      //get spare balances i.e. allocated (used,unused) and stock balances(all parent + variants)
-
-      const balances = this.getAlreadyAllottedSpares(item.product_id);
-
-      const group = this.spareAllotmentForm(item);
-
-      if (group.get('balances')?.value) {
-        this.setSpareControlsMaxAllocationValidity(group, balances, item.approved_qty!);
-        this.showIssueFormPopup = true;
-
-      } else if (balances.balances && balances.balances.length > 0) {
-        group.get('balances')?.patchValue(balances.balances);
-        this.setSpareControlsMaxAllocationValidity(group, balances, item.approved_qty!);
-        this.showIssueFormPopup = true;
-      } else {
-        //fetch spares balances for the item if not found
-        this.cartButtonBusy = true;
-        this.subSink = this.checkoutService.fetchMeldedBalances(item.product_id)
-          .subscribe({
-            next: (ProductBalances) => {
-
-              group.get('balances')?.patchValue(ProductBalances);
-
-              this.setSpareControlsMaxAllocationValidity(group, balances, item.approved_qty!);
-
-              this.cartButtonBusy = false
-              this.showIssueFormPopup = true;
-            },
-            error: () => this.cartButtonBusy = false
-          })
-      }
-    }
-
   }
 
   getWarehouseById(id?: number): WarehouseModel | undefined {
@@ -172,241 +123,238 @@ export class CreateComponent implements OnInit, OnDestroy {
     return this.warehouses.find((x) => x.id == id)
   }
 
-  /** Forms and submission **/
 
-  //1 Machines
+  /** Machines form related logic**/
 
-  /**
-   * Machine Form Structure
-   *     x = this.fb.group({
-   *       machineOrderItems: new FormArray([
-   *         this.fb.group({
-   *           order_item: this.fb.control('abc'),
-   *           allotted_machines: new FormArray([
-   *             this.fb.group({
-   *               product_serial: this.fb.control(null, {validators: [Validators.required]}),
-   *               warrant_start: this.fb.control(this.defaultWarrantStartDate),
-   *               warrant_end: this.fb.control(this.defaultWarrantEndDate),
-   *             })
-   *           ])
-   *         }),
-   *         ...
-   *       ])
-   *     })
-   */
-
-  get machineOrderItemsFormArray(): FormArray {
-    return (this.machineAllocationFormGroup.get('machineOrderItems') as FormArray)
-  }
-
-  addMachineOrderItemsFormGroup(item: MRFItemModel) {
-    //check if group exists
-    let group = this.machineOrderItemsFormGroup(item.id);
-    if (!group) {
-      //create the group if not exist
-      group = this.fb.group({
-        order_item_id: this.fb.control(item.id),
-        product_id: this.fb.control(item.product_id),
-        allotted_machines: this.fb.array([])
-      });
-
-      this.machineOrderItemsFormArray.push(group);
-    }
-  }
-
-  machineOrderItemsFormGroup(itemId: number): FormGroup | undefined {
-    return (this.machineOrderItemsFormArray.controls as FormGroup[])
-      .find((group: FormGroup) => group.get('order_item_id')?.value === itemId)
-  }
-
-  private createMachineAllotmentForm(): FormGroup {
+  private machineAllocationFormGroup(id: string, item: MRFItemModel) {
     return this.fb.group({
-      product_serial: this.fb.control(null,
-        {
-          validators: [
-            Validators.required,
-            uniqueProductSerial(this.selectedProductSerials.bind(this))
-          ]
-        }),
+      id: this.fb.control(id),
+      item_id: this.fb.control(item.id),
+      product_id: this.fb.control(item.product_id),
+      product_item: this.fb.control(null, {validators: [Validators.required]}),
       warrant_start: this.fb.control(this.defaultWarrantStartDate.toISOString().slice(0, 10)),
       warrant_end: this.fb.control(this.defaultWarrantEndDate.toISOString().slice(0, 10)),
-    });
-  }
-
-  machineAllottedItemsForm(orderItem: MRFItemModel): FormArray {
-    const root = this.machineOrderItemsFormGroup(orderItem.id);
-    if (!root) {
-      throw new Error('Trying to access machine allocation group from un-initialized array')
-    }
-
-    return root.get('allotted_machines') as FormArray;
+    })
   }
 
 
-  addMachineAllottedItemFormGroup(orderItem: MRFItemModel) {
-    const allottedMachinesForm = this.createMachineAllotmentForm();
-    this.machineAllottedItemsForm(orderItem).push(allottedMachinesForm);
-  }
-
-  removeMachineAllottedItemFormGroup(orderItem: MRFItemModel, index: number) {
-    this.machineAllottedItemsForm(orderItem).removeAt(index);
-  }
-
-  canAddMachineAllottedItemForm(orderItem: MRFItemModel) {
-    return this.machineAllottedItemsForm(orderItem).length < (orderItem.approved_qty || 0);
-  }
-
-
-  saveOrderItemMachineIssue(orderItem: MRFItemModel) {
-    // get the form
-    const form = this.machineAllottedItemsForm(orderItem);
-    form.markAllAsTouched();
-    if (form.invalid) {
-      //todo notify user
-      return
-    }
-    //update the quantity issued
-    orderItem.issued_qty = form.length;
-    this.showIssueFormPopup = false;
-  }
-
-  selectedProductSerials(): ProductSerialModel[] {
-    return (this.machineOrderItemsFormArray!.controls as FormGroup[])
-      .flatMap((orderGroup) => {
-        const allocation = (orderGroup as FormGroup).get('allotted_machines') as FormArray;
-        return (allocation.controls as FormGroup[])
-          .filter((group) => group.get('product_serial')?.valid) //return only valid
-          .map((group) => group.get('product_serial')?.value as ProductSerialModel)
-      });
-
-  }
-
-
-  // 2. Spares
-
-  get spareAllottedItemsForm(): FormArray {
-    return this.spareAllocationFormGroup.get('allottedSpares') as FormArray
-  }
-
-  createSpareAllotmentForm(itemModel: MRFItemModel) {
-    return this.fb.group({
-      order_item_id: this.fb.control(itemModel.id),
-      product_id: this.fb.control(itemModel.product_id),
-      unused_total: this.fb.control(itemModel.approved_qty || 0, {
-        validators: [
-          Validators.required, Validators.min(0),
-          Validators.max(itemModel.approved_qty || 0)
-        ], updateOn: 'blur'
-      }),
-      used_total: this.fb.control(0, {
-        validators: [
-          Validators.required, Validators.min(0),
-          Validators.max(itemModel.approved_qty || 0)
-        ],
-        updateOn: 'blur'
-      }),
-      balances: this.fb.control(null)//will hold actual stock balances
-    });
-  }
-
-  spareAllotmentForm(itemModel: MRFItemModel): FormGroup {
-    //check if form exists first
-    let group = (this.spareAllottedItemsForm.controls as FormGroup[])
-      .find((group: FormGroup) => group.get('order_item_id')?.value === itemModel.id);
-
-    if (group) {return group}
-    //else create and return
-    group = this.createSpareAllotmentForm(itemModel);
-    this.spareAllottedItemsForm.push(group);
-    //register for value synchronization
+  createMachineAllotmentFormGroup(itemModel: MRFItemModel): FormGroup {
+    const id = Math.random().toString(36).substr(2);
+    const group = this.machineAllocationFormGroup(id, itemModel);
+    this.machineItemsFormArray.push(group);
     return group;
   }
 
-  synchronizeSpareControlValues(fromUsedInput = true) {
-    if (!this.selectedOrderItem) {
+  /**
+   * Remove machine allocation item form group
+   *
+   * @param group: allocation group
+   */
+  removeMachineAllottedItemFormGroup(group: FormGroup) {
+    const index = (this.machineItemsFormArray.controls as FormGroup[])
+      .findIndex((form) => form.get('id')?.value === group.get('id')?.value);
+    if (index > -1) {
+      this.machineItemsFormArray.removeAt(index);
+    }
+  }
+
+  machineAllocationArrayByItem(itemModel: MRFItemModel): FormGroup[] {
+    const items = (this.machineItemsFormArray.controls as FormGroup[])
+      .filter((group) => group.get('item_id')?.value === itemModel.id) as FormGroup[];
+    if (items.length > 0) {
+      return items;
+    }
+    return [this.createMachineAllotmentFormGroup(itemModel)];
+  }
+
+  /**
+   * Get all selected product items
+   * @param group
+   */
+  getSelectedMachineProductItems(group: FormGroup): ProductItemModel[] {
+    //return all product items that matches the product_id of the group
+
+    return ((this.machineItemsFormArray.controls as FormGroup[])
+      .filter((g) => {
+        return g.get('product_id')?.value === group.get('product_id')?.value &&
+          g.get('product_item')?.value
+      }) as FormGroup[])
+      .map((group) => group.get('product_item')?.value as ProductItemModel)
+  }
+
+  /** 2. Spares form related logic **/
+
+  private createSpareAllotmentItemForm(item: MRFItemModel) {
+    return this.fb.group({
+      item_id: this.fb.control(item.id),
+      product_id: this.fb.control(item.product_id),
+      approved_qty: this.fb.control(item.approved_qty || 0),
+      old_total: this.fb.control(0),
+      new_total: this.fb.control(item.approved_qty || 0),
+    });
+  }
+
+
+  spareAllocationFormGroupByItem(itemModel: MRFItemModel): FormGroup {
+    let group = (this.spareItemsFormArray.controls as FormGroup[])
+      .find((group) => group.get('item_id')?.value === itemModel.id);
+
+    if (!group) {
+      //if the group doesn't exist, create one
+      group = this.createSpareAllotmentItemForm(itemModel);
+      this.spareItemsFormArray.push(group);
+    }
+
+    return group;
+  }
+
+  synchronizeSpareControlValues(group: FormGroup, fromOldTotalInput = true) {
+
+    if (!group || !group.get('old_total') || !group.get('new_total')) {
       return;
     }
 
-    const group = this.spareAllotmentForm(this.selectedOrderItem);
-    if (!group || !group.get('used_total') || !group.get('unused_total')) {
-      return;
-    }
-    if (fromUsedInput) {
-      const diff = (this.selectedOrderItem.approved_qty || 0) - group.get('used_total')?.value;
-      group.get('unused_total')?.patchValue(diff)
+    if (fromOldTotalInput) {
+      const diff = (group.get('approved_qty')?.value || 0) - (group.get('old_total')?.value || 0)
+      group.get('new_total')?.patchValue(diff > -1 ? diff : 0)
 
     } else {
-      const diff = (this.selectedOrderItem.approved_qty || 0) - group.get('unused_total')?.value;
-      group.get('used_total')?.patchValue(diff)
+      const diff = (group.get('approved_qty')?.value || 0) - (group.get('new_total')?.value || 0)
+      group.get('old_total')?.patchValue(diff > -1 ? diff : 0)
     }
   }
 
-  saveOrderItemSpareIssue(itemModel: MRFItemModel) {
-    // get the form
-    const form = this.spareAllotmentForm(itemModel);
-    form.markAllAsTouched();
+  updateSpareFormGroupValidations(item: MRFItemModel, balances: ProductMeldedBalanceModel) {
+    const group = this.spareAllocationFormGroupByItem(item);
+    if (!group) {return}
 
-    const qty = (form.get('used_total')?.value || 0) +
-      (form.get('unused_total')?.value || 0);
-    if (qty > (itemModel.approved_qty || 0)) {
-      form.get('used_total')?.setErrors({
-        allotment: `Quantity allocated exceeds approved quantity of ${itemModel.approved_qty}`
-      });
-    }
 
-    if (form.invalid) {return}
+    const totalQtyAllocated = this.allocatedSpareBalancesByProductId(item);
+    const approved = group.get('approved_qty')?.value || 0;
 
-    //update the quantity issued (extra step approach)
-    itemModel.issued_qty = qty;
-    this.showIssueFormPopup = false;
 
+    const totalNewQtyAllocated = totalQtyAllocated.new_total - (group.get('new_total')?.value || 0);
+    const totalOldQtyAllocated = totalQtyAllocated.old_total - (group.get('old_total')?.value || 0);
+
+
+    const availableTotalNewQty = balances.parent_total - totalNewQtyAllocated;
+    const availableTotalOldQty = balances.variant_total - totalOldQtyAllocated;
+
+    group.get('new_total')?.clearValidators();
+    group.get('new_total')?.setValidators([
+      Validators.required, Validators.min(0),
+      Validators.max(approved > availableTotalNewQty ? availableTotalNewQty : approved)]);
+    group.get('new_total')?.updateValueAndValidity();
+
+    group.get('old_total')?.clearValidators();
+    group.get('old_total')?.setValidators([
+      Validators.required, Validators.min(0),
+      Validators.max(approved > availableTotalOldQty ? availableTotalOldQty : approved)]);
+    group.get('old_total')?.updateValueAndValidity();
   }
 
-  getAlreadyAllottedSpares(productId: number):
-    { old_qty: number, new_qty: number, balances: ProductBalanceModel[] } {
-    return (this.spareAllottedItemsForm.controls as FormGroup[])
+  allocatedSpareBalancesByProductId(item: MRFItemModel): { new_total: 0, old_total: 0 } {
+    return (this.spareItemsFormArray.controls as FormGroup[])
       .reduce((acc, group) => {
-        if (group.get('product_id')?.value === productId) {
-          acc.old_qty += (+group.get('used_total')?.value);
-          acc.new_qty += (+group.get('unused_total')?.value);
-          acc.balances = group.get('balances')?.value; //this is just assignment
+        if (group.get('product_id')?.value === item.product_id) {
+          acc.old_total += (+group.get('old_total')?.value);
+          acc.new_total += (+group.get('new_total')?.value);
         }
         return acc;
-      }, {old_qty: 0, new_qty: 0, balances: []})
+      }, {new_total: 0, old_total: 0})
   }
 
-  setSpareControlsMaxAllocationValidity(group: FormGroup,
-                                        balances: { new_qty: number, old_qty: number },
-                                        qtyExpected: number) {
+  showIssueForm(item: MRFItemModel) {
+    this.selectedItemToAllocate = item;
+    if (!this.selectedItemIsSpare) {
+      this.showIssueFormPopup = true;
+      return;
+    }
+    //check if we have respective balances
 
-    const newStockBal = (group.get('balances')?.value as ProductBalanceModel[])
-      .find((i) => !i.product?.variant_of_id) //where variant id is empty
+    let balances = this._balances.find((bal) => bal.product_id === item.product_id);
 
-    const brandNewQtyRemainder: number = newStockBal ?
-      newStockBal.stock_balance - balances.new_qty - qtyExpected : 0;
+    if (balances) {
+      this.updateSpareFormGroupValidations(item, balances);
+      //update current form validity
+      this.showIssueFormPopup = true;
+    } else {
 
-    const brandNewMax: number = qtyExpected < brandNewQtyRemainder ? qtyExpected : brandNewQtyRemainder;
+      //fetch spares balances for the item if not found
+      item.cartButtonBusy = true;
+      this.subSink = this.checkoutService.fetchMeldedBalances(item.product_id)
+        .pipe(tap(() => item.cartButtonBusy = false))
+        .subscribe({
+          next: (productBalances) => {
 
-    group.get('unused_total')?.clearValidators();
-    group.get('unused_total')?.setValidators(Validators.min(0));
-    group.get('unused_total')?.setValidators(Validators.max(brandNewMax));
-    group.get('unused_total')?.updateValueAndValidity();
+            //aggregate the balances for variants and all parents (if more than 1 🤫)
+            const aggregate = productBalances
+              .reduce((acc, bal) => {
+                if (bal.product?.variant_of_id) {
+                  acc.variant_total += bal.stock_balance;
+                } else {
+                  acc.parents_total += bal.stock_balance;
+                }
+                return acc;
+              }, {variant_total: 0, parents_total: 0})
 
-    const oldStockBal = (group.get('balances')?.value as ProductBalanceModel[])
-      .find((i) => i.product?.variant_of_id) //where variant id has value
+            balances = {
+              product_id: item.product_id,
+              parent_total: aggregate.parents_total,
+              variant_total: aggregate.variant_total
+            }
+            //push it to local balances array
+            this._balances.push(balances)
 
-    const oldQtyRemainder = oldStockBal ? oldStockBal.stock_balance - balances.old_qty - qtyExpected : 0;
-    const oldMax: number = qtyExpected < oldQtyRemainder ? qtyExpected :
-      (oldQtyRemainder > 0 ? oldQtyRemainder : 0);
+            this.updateSpareFormGroupValidations(item, balances)
+            //show the popup
+            this.showIssueFormPopup = true;
+          },
+          error: () => false
+        })
+    }
+  }
 
-    group.get('used_total')?.clearValidators();
-    group.get('used_total')?.setValidators(Validators.min(0));
-    group.get('used_total')?.setValidators(Validators.max(oldMax));
-    group.get('used_total')?.updateValueAndValidity();
+  closeIssueForm() {
+    if (!this.selectedItemIsSpare) {
+      this.saveMachineAllocationFormArray(false);
+    }
+  }
+
+  saveSpareAllocationFormGroup(group: FormGroup) {
+    group.markAllAsTouched();
+    if (group.invalid) {return}
+
+    const itemModel = this.requestItems
+      .find((item) => item.id === group.get('item_id')?.value);
+
+    if (itemModel) {
+      itemModel.issued_qty = group.get('old_total')?.value + group.get('new_total')?.value;
+      this.showIssueFormPopup = false;
+    }
+  }
+
+  saveMachineAllocationFormArray(validateForm = true) {
+
+    if (validateForm) {
+      this.machineItemsFormArray.markAllAsTouched();
+      if (this.machineItemsFormArray.invalid) {return}
+    }
+
+    const itemModel = this.requestItems
+      .find((item) => item.id === this.selectedItemToAllocate?.id);
+
+    if (itemModel) {
+      itemModel.issued_qty = (this.machineItemsFormArray.controls as FormGroup[])
+        .filter((group) => {
+          return group.get('item_id')?.value === itemModel.id && group.get('product_item')?.value;
+        }).length;
+      this.showIssueFormPopup = false;
+    }
 
   }
 
-  submitOrderFulfillment() {
+  submitIssueForm() {
     //verify all items have been issued
     const notIssued = this.requestModel!.items
       .find((item) => (item.approved_qty || 0) > (item.issued_qty || 0));
@@ -416,35 +364,26 @@ export class CreateComponent implements OnInit, OnDestroy {
       return;
     }
     const payload = {
-      remarks: this.remarksControl.value || 'N/A',
+      remarks: this.remarksControl.value,
       items: {
-        machines: [],
-        spares: []
+        spares: (this.spareItemsFormArray.value as SpareItemAllocationFormModel[]),
+        machines: (this.machineItemsFormArray.value as MachineItemAllocationFormModel[])
+          .reduce((acc: { item_id: number, allocation: any[] }[], allocation) => {
+            //check if already exists
+            let group = acc.find((item) => item.item_id === allocation.item_id);
+            if (!group) {
+              group = {item_id: allocation.item_id, allocation: []};
+              acc.push(group);
+            }
+            group.allocation.push({
+              product_item_id: allocation.product_item.id,
+              warrant_start: allocation.warrant_start ? serializeDate(allocation.warrant_start) : '',
+              warrant_end: allocation.warrant_end ? serializeDate(allocation.warrant_end) : ''
+            })
+            return acc;
+          }, [])
       }
     }
-    //push spare allocation
-    payload.items.spares = (this.spareAllottedItemsForm.controls as FormGroup[])
-      .map((group) => {
-        return {
-          id: group.get('order_item_id')?.value,
-          new_total: group.get('unused_total')?.value,
-          old_total: group.get('used_total')?.value,
-        }
-      }) as any;
-    //push machines allocation
-    payload.items.machines = (this.machineOrderItemsFormArray.value as any[])
-      .map((item) => {
-        return {
-          id: item.order_item_id,
-          allocation: (item.allotted_machines as any[]).map((allocation) => {
-            return {
-              product_item_id: allocation.product_serial.id,
-              warrant_start: allocation.warrant_start,
-              warrant_end: allocation.warrant_end
-            }
-          })
-        }
-      }) as any
 
     this.subSink = this.checkoutService.create(this.requestModel!.id!, payload)
       .subscribe({
@@ -459,4 +398,29 @@ export class CreateComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._subscriptions.map((sub) => sub.unsubscribe());
   }
+}
+
+interface ProductMeldedBalanceModel {
+  product_id: number
+  parent_total: number
+  variant_total: number
+}
+
+interface SpareItemAllocationFormModel {
+  item_id: number
+  product_id: number
+  approved_qty: number
+  old_total: number
+  new_total: number
+}
+
+interface MachineItemAllocationFormModel {
+  id: string
+  item_id: number
+  product_id: number
+  product_item: ProductItemModel
+  serial_number: string
+  warrant_start: string | null
+  warrant_end: string | null
+
 }

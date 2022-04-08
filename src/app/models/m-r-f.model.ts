@@ -34,6 +34,7 @@ export interface MRFItemModel {
   worksheet_id?: number;
   product?: ProductModel;
   customer?: CustomerModel;
+  cartButtonBusy?: boolean;
 }
 
 export interface MRFActivity {

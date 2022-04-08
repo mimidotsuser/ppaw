@@ -239,6 +239,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         next: (model) => {
           this.productItems.unshift(model);
           this.showProductItemFormPopup = false;
+          this.pagination.total =  this.pagination.total+1;
         }
       });
   }
