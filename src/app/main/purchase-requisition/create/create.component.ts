@@ -7,6 +7,7 @@ import { PurchaseRequisitionService } from '../services/purchase-requisition.ser
 import { ProductModel } from '../../../models/product.model';
 import { PaginationModel } from '../../../models/pagination.model';
 import { WarehouseModel } from '../../../models/warehouse.model';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-create',
@@ -26,7 +27,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   form: FormGroup;
   searchInput: FormControl;
 
-  constructor(private fb: FormBuilder, private purchaseRequisitionService: PurchaseRequisitionService) {
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute,
+              private purchaseRequisitionService: PurchaseRequisitionService) {
     this.loadProductBalances();
 
     this.searchInput = this.fb.control('');
@@ -147,6 +149,10 @@ export class CreateComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.form.reset();
+          this.router.navigate(['../history'], {relativeTo: this.route})
+            .then(() => {
+              //show message
+            })
         }
       })
   }
