@@ -46,7 +46,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       out_of_order: this.fb.control(null),
       customer: this.fb.control(null),
       warehouse: this.fb.control(null),
-      description: this.fb.control(null,{validators:Validators.required}),
+      description: this.fb.control(null, {validators: Validators.required}),
     });
 
     this.syncFormValidations()
@@ -147,8 +147,14 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.subSink = this.form.get('category_code')!
       .valueChanges
       .subscribe(() => {
-        this.form.clearValidators()
-        this.form.updateValueAndValidity();
+        this.form.get('warrant_start')?.removeValidators(Validators.required)
+        this.form.get('warrant_start')?.updateValueAndValidity()
+        this.form.get('customer')?.removeValidators(Validators.required)
+        this.form.get('customer')?.updateValueAndValidity()
+        this.form.get('warehouse')?.removeValidators(Validators.required)
+        this.form.get('warehouse')?.updateValueAndValidity()
+        this.form.get('out_of_order')?.removeValidators(Validators.required)
+        this.form.get('out_of_order')?.updateValueAndValidity()
 
         if (this.warrantyUpdateSelected) {
           this.form.get('warrant_start')?.setValidators(Validators.required)
