@@ -214,7 +214,11 @@ export class IndexComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           this._activities.unshift(res);
-          this.form.reset();
+          this.form.patchValue({
+            current_location: res?.location?.name,
+            warrant_start: res.warrant?.warrant_start,
+            warrant_end: res?.warrant?.warrant_end
+          })
           this.showLocationFormPopup = false;
         }
       })
