@@ -1,1 +1,111 @@
-<p>index works!</p>
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+    <div class="data-filters d-flex gap-2 col-md-6">
+      <div class="col-md-5 mb-1">
+        <input type="text" class="form-control search" [formControl]="searchInput"
+               placeholder="Search by serial number">
+      </div>
+      <div class="col-md-4 mb-1">
+
+      </div>
+    </div>
+
+    <div class="col-md-5 gap-2 justify-content-end d-flex">
+      <div class="d-md-block">
+        <a type="button" class="btn btn-outline-primary" routerLink="create">
+          + New Contract
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<div class="container-md-fluid mt-3">
+  <table class="table table-hover table-block-sm table-bordered">
+    <thead>
+    <tr>
+      <th>Contract No.</th>
+      <th>Customer HQ</th>
+      <th>Cover Type</th>
+      <th>Start Date</th>
+      <th>Contract End</th>
+      <th class="actions-column"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr
+      *ngFor="let contract of contracts|slice:tableCountStart:tableCountEnd">
+      <td>
+        <span class="td-inline-label">Contract No.</span>
+        {{contract.sn}}
+      </td>
+      <td>
+        <span class="td-inline-label">Customer HQ</span>
+        <div class="d-flex flex-column">
+          {{contract.customer?.name}}
+          <small class="text-muted">
+            {{contract.customer?.branch}}
+            {{contract.customer?.region ? '|' : ''}}
+            {{contract.customer?.region}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Cover Type</span>
+        {{contract.category_title }}
+      </td>
+      <td>
+        <span class="td-inline-label">Start Date</span>
+        {{contract.start_date|date}}
+      </td>
+      <td>
+        <span class="td-inline-label">Contract End</span>
+        {{contract.expiry_date|date}}
+      </td>
+      <td>
+        <div class="d-flex flex-column gap-2">
+        </div>
+        <div class="d-flex gap-2 justify-content-end w-100">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary border-0 hide-dropdown-toggle border-0"
+                    ngbDropdownToggle>
+              <fa-icon [icon]="faEllipsisV"></fa-icon>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dp">
+
+              <a ngbDropdownItem routerLink="view/{{contract.id}}" [relativeTo]="route">
+                View contract
+              </a>
+
+              <a ngbDropdownItem routerLink="edit/{{contract.id}}" [relativeTo]="route">
+                Edit contract
+              </a>
+            </div>
+          </div>
+        </div>
+      </td>
+
+    </tr>
+
+    <ng-container *ngIf="contracts.length===0">
+      <tr>
+        <td class="text-center py-3" colspan="9">
+          <ng-container *ngIf="!searchInput.value;else noResults">
+            There is no contracts.&nbsp;
+            <a class="text-decoration-none" routerLink="create" [relativeTo]="route">
+              Click here to create new contract.
+            </a>
+          </ng-container>
+          <ng-template #noResults>
+            No data matching filtered criteria.
+          </ng-template>
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination" (pageChange)="loadContracts()"></pagination>
+  </div>
+</div>

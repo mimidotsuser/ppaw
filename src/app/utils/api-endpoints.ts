@@ -18,6 +18,7 @@ export enum V1Endpoints {
   worksheets = '/worksheets',
   productItemActivities = '/product-items/:id/activities',
   productItems = '/product-items',
+  customerProductItems = '/customers/:id/product-items',
   purchaseOrders = '/purchase-orders',
   purchaseRequests = '/purchase-requests',
   rfqs = '/request-for-quotation',
@@ -51,4 +52,7 @@ export enum V1Endpoints {
 
   goodsReceiptNoteRequestPendingApproval = '/goods-receipt-note/:id/approval',
   goodsReceiptNoteRequestsPendingApproval = '/goods-receipt-note/approval',
+
+  customerContractProductItems = '/customer-contracts/:id/product-items',
+  customerContracts = '/customer-contracts',
 }

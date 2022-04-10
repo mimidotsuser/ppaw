@@ -1,1 +1,13 @@
-<p>create works!</p>
+<app-customer-contract-form #contractForm>
+
+  <div class="container-fluid">
+    <div class="mt-3 d-flex gap-2">
+      <button type="button" class="btn btn-primary"
+              [disabled]="contractForm.form.invalid && contractForm.totalSelectedItems>0"
+              (click)="submitForm(contractForm.form)">
+        CREATE
+      </button>
+      <a routerLink="../" [relativeTo]="this.route" class="btn btn-outline-primary">CANCEL</a>
+    </div>
+  </div>
+</app-customer-contract-form>

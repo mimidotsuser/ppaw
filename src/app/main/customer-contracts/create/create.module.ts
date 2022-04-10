@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CreateComponent } from './create.component';
+import { SharedModule } from '../../../shared/shared.module';
+import { WidgetsModule as CustomerContractWidgetsModule } from '../widgets/widgets.module';
 
 
 @NgModule({
@@ -10,7 +12,9 @@ import { CreateComponent } from './create.component';
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{path: '', component: CreateComponent}])
+    RouterModule.forChild([{path: '', component: CreateComponent}]),
+    SharedModule,
+    CustomerContractWidgetsModule
   ]
 })
 export class CreateModule {}

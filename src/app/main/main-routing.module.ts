@@ -82,7 +82,8 @@ const routes: Routes = [
       },
       {
         path: 'customer-contracts',
-        loadChildren: () => import('./customer-contracts/customer-contracts.module').then(m => m.CustomerContractsModule)
+        loadChildren: () => import('./customer-contracts/customer-contracts.module').then(m => m.CustomerContractsModule),
+        data: {title: 'All Customer Contracts', breadcrumb: 'Customer Contracts'}
       },
       {
         path: 'not-authorized',
