@@ -14,7 +14,7 @@ import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 export class AccountRecoveryComponent implements OnInit {
   private _subscriptions: Subscription[] = [];
   form: FormGroup;
-  passwordPattern = '^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$'
+  passwordPattern = '^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d][\\w~@#$%^&*+=`|{}:;!.?\\"()\\[\\]-]{8,}$'
   emailPattern = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,24}$';
   validationStatus = {lengthOk: false, hasLetters: false, hasNumbers: false}
   submitting = false;
