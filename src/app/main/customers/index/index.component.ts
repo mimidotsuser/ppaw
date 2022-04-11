@@ -17,7 +17,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   searchControl: FormControl;
   faEllipsisV = faEllipsisV;
   showCustomerFormPopup = false;
-  pagination: PaginationModel = {total: 0, page: 1, limit: 5}
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   private _customers: CustomerModel[] = [];
   private _subscriptions: Subscription[] = []
 

@@ -44,7 +44,7 @@ export class CustomerContractService {
     const url = this.httpService.endpoint.customerProductItems
       .replace(/:id/g, customerId.toString());
 
-    return this.httpService.get(url, {params: {includeCustomerChildren: true, ...meta}})
+    return this.httpService.get(url, {params: {includeChildrenItems: true, ...meta}})
   }
 
   fetchContractProductItems(contractId: number, params: object):
