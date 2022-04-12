@@ -16,11 +16,6 @@ export class GoodsReceiptNoteService {
 
   constructor(private httpService: HttpService, private downloadService: DownloadService) { }
 
-  get fetchAllWarehouses(): Observable<WarehouseModel[]> {
-    return this.httpService.get(this.httpService.endpoint.warehouses)
-      .pipe(map((res: { data: WarehouseModel[] }) => res.data));
-  }
-
   create(payload: object): Observable<GoodsReceiptNoteModel> {
     return this.httpService.post(this.httpService.endpoint.goodsReceiptNote, payload)
       .pipe(map((res: { data: GoodsReceiptNoteModel }) => res.data))
@@ -30,6 +25,25 @@ export class GoodsReceiptNoteService {
     params = {hasRejectedItems: true, include: 'latestActivity,purchaseOrder,createdBy', ...params}
     return this.httpService.get(this.httpService.endpoint.goodsReceiptNote, {params});
   }
+
+  findById(id: string | number): Observable<GoodsReceiptNoteModel> {
+    return this.httpService.get(`${this.httpService.endpoint.goodsReceiptNote}/${id}`,
+      {
+        params: {
+          hasRejectedItems: true,
+          include: 'activities.createdBy,purchaseOrder,items,items.product,hasRejectedItems,' +
+            'inspectionNote.checklist'
+        }
+      })
+      .pipe(map((res: { data: GoodsReceiptNoteModel }) => res.data))
+  }
+
+
+  get fetchAllWarehouses(): Observable<WarehouseModel[]> {
+    return this.httpService.get(this.httpService.endpoint.warehouses)
+      .pipe(map((res: { data: WarehouseModel[] }) => res.data));
+  }
+
 
   fetchRequestsPendingApproval(meta: PaginationModel): Observable<HttpResponseModel<GoodsReceiptNoteModel>> {
     return this.httpService

@@ -1,5 +1,9 @@
 <div class="row px-0 px-md-3 mt-4">
   <div class="col-md-3 mb-3">
+    <label for="sn" class="form-label">Request No.</label>
+    <input type="text" class="form-control" disabled id="sn" [value]="model?.sn">
+  </div>
+  <div class="col-md-3 mb-3">
     <label for="reference" class="form-label">Reference / Packaging List No.</label>
     <input type="text" class="form-control" disabled id="reference"
            [value]="model?.goods_receipt_note?.reference">
@@ -111,7 +115,7 @@
 <div class="container-fluid">
   <div class="my-5  d-flex  gap-2" *ngIf="model">
     <button type="button" class="btn btn-primary" (click)="exportInspectionNote(model)">
-      <fa-icon [icon]="faFilePdf"  class="export-pdf icon"></fa-icon>
+      <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
       EXPORT
     </button>
   </div>

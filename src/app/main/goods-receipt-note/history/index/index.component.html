@@ -105,13 +105,11 @@
               <a ngbDropdownItem routerLink="{{request.id}}" [relativeTo]="route">
                 View Summary
               </a>
-              <button ngbDropdownItem *ngIf="canExportGRN(request)"
-                      (click)="exportGRN(request)">
+              <button ngbDropdownItem *ngIf="canExportGRN(request)" (click)="exportGRN(request)">
                 Export GRN Doc
               </button>
 
-              <button ngbDropdownItem *ngIf="canExportRGA(request)"
-                      (click)="exportRGA(request)">
+              <button ngbDropdownItem *ngIf="canExportRGA(request)" (click)="exportRGA(request)">
                 Export RGA Doc
               </button>
               <button ngbDropdownItem *ngIf="request.inspection_note && request.inspection_note.id"
