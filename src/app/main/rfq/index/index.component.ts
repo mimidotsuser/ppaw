@@ -72,7 +72,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   exportRFQ(request: RFQModel) {
-    //to-do
+    this.subSink = this.rfqService.download(request);
   }
 
   ngOnDestroy(): void {

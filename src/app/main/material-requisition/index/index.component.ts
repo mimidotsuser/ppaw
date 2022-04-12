@@ -6,6 +6,7 @@ import { MaterialRequisitionService } from '../services/material-requisition.ser
 import { MRFActivity, MRFModel, MRFStage } from '../../../models/m-r-f.model';
 import { PaginationModel } from '../../../models/pagination.model';
 import { Subscription } from 'rxjs';
+import { FileService } from '../../../core/services/file.service';
 
 @Component({
   selector: 'app-index',
@@ -25,7 +26,9 @@ export class IndexComponent implements OnInit, OnDestroy {
   searchInput: FormControl;
 
 
-  constructor(private requisitionService: MaterialRequisitionService, private fb: FormBuilder) {
+  constructor(private requisitionService: MaterialRequisitionService, private fb: FormBuilder,
+              private fileService: FileService) {
+
     this.loadRequests();
     this.searchInput = this.fb.control('');
   }
@@ -154,9 +157,13 @@ export class IndexComponent implements OnInit, OnDestroy {
     return index > -1;
   }
 
-  exportMRN(request: MRFModel) {}
+  exportMRN(request: MRFModel) {
+    this.subSink = this.requisitionService.exportMRN(request);
+  }
 
-  exportSIV(request: MRFModel) {}
+  exportSIV(request: MRFModel) {
+    this.subSink = this.requisitionService.exportSiv(request);
+  }
 
   ngOnDestroy(): void {
     this._subscriptions.map((sub) => sub.unsubscribe())

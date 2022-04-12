@@ -1,13 +1,24 @@
 <nav class="main-navbar navbar navbar-collapse navbar-light bg-light">
   <div class="container-fluid  flex-nowrap justify-content-between">
     <button class="navbar-toggler border-0 d-md-block d-lg-none" type="button"
-            aria-label="Toggle side menu" (click)="this.collapseSidebar=!this.collapseSidebar">
+            aria-label="Toggle side menu" (click)="this.hideSidebarMenu=!this.hideSidebarMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
     <a routerLink="home" routerLinkActive="active" class="navbar-brand w-100">
       {{this.appName}}
     </a>
-    <ul class="navbar-nav">
+    <ul class="navbar-nav flex-row">
+      <li class="nav-item me-4">
+        <div class="nav-link p-0 download-jobs" title="Pending download requests">
+          <ng-container *ngIf="totalDownloadJobs>0">
+            <fa-layers size="2x">
+              <fa-icon [spin]="true" [icon]="faCircleNotch" class="spinner-icon"></fa-icon>
+              <fa-layers-text [content]="totalDownloadJobs.toString()" class="value">
+              </fa-layers-text>
+            </fa-layers>
+          </ng-container>
+        </div>
+      </li>
       <li class="nav-item" ngbDropdown display="dynamic">
         <a class="nav-link d-flex gap-2 align-items-center p-0" ngbDropdownToggle role="button">
           <div class="user-icon d-flex align-items-center justify-content-center">
@@ -31,7 +42,7 @@
 <div class="container-fluid">
   <div class="wrapper row flex-nowrap">
     <aside class="main-sidebar d-none d-lg-block col-lg-2 min-vh-100" id="sidemenu"
-           [ngbCollapse]="this.collapseSidebar">
+           [ngbCollapse]="this.hideSidebarMenu">
 
       <div class="sidebar-menu-wrapper overflow-auto">
         <ng-container *ngFor="let menuBlock of menuBlocks">

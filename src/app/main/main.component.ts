@@ -1,11 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRouteSnapshot, ActivationEnd, NavigationEnd, Router } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  ActivationEnd,
+  NavigationEnd,
+  NavigationStart,
+  Router
+} from '@angular/router';
 import { filter, Subscription, tap } from 'rxjs';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {
   faAddressBook,
   faBook,
   faCheckDouble,
+  faCircleNotch,
   faClipboardCheck,
   faCubes,
   faDolly,
@@ -21,6 +28,7 @@ import { environment } from '../../environments/environment';
 import { HttpService } from '../core/services/http.service';
 import { MetaService } from '../core/services/meta.service';
 import { AuthService } from '../core/services/auth.service';
+import { DownloadService } from '../core/services/download.service';
 
 @Component({
   selector: 'app-main',
@@ -29,9 +37,11 @@ import { AuthService } from '../core/services/auth.service';
 })
 export class MainComponent implements OnInit, OnDestroy {
 
+  faCircleNotch = faCircleNotch;
   appName: string = environment.app.name;
   logoUrl: string = environment.app.logoUrl;
-  collapseSidebar = false;
+  hideSidebarMenu = true;
+  totalDownloadJobs = 0;
   private _subscriptions: Subscription[] = [];
 
   menuList: { [ key: string ]: MenuItem } = {
@@ -226,11 +236,12 @@ export class MainComponent implements OnInit, OnDestroy {
   breadcrumbList: { label: string, title: string, path: string, active: boolean }[] = [];
 
   constructor(private router: Router, private httpService: HttpService,
-              private authService: AuthService, private titleService: MetaService,) {
+              private authService: AuthService, private titleService: MetaService,
+              private downloadService: DownloadService) {
 
     this.subSink = this.router.events
-      .pipe(filter((evt) => evt instanceof NavigationEnd))
-      .pipe(tap(() => this.collapseSidebar = false))
+      .pipe(filter((evt) => evt instanceof NavigationStart))
+      .pipe(tap(() => this.hideSidebarMenu = true))
       .subscribe()
 
     this.subSink = this.router.events
@@ -241,6 +252,15 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.subSink = this.downloadService.queueEvents.subscribe({
+      next: (data) => {
+        if (data.status === 'processed' || data.status === 'failed') {
+          this.totalDownloadJobs -= 1;
+        } else {
+          this.totalDownloadJobs += 1;
+        }
+      }
+    })
   }
 
   set subSink(value: Subscription) {

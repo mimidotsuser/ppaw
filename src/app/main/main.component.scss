@@ -7,6 +7,8 @@
   width: 100%;
   z-index: 10;
   border-bottom: 1px solid $main-nav-border-bottom-color;
+  position: sticky;
+  top: 0;
 
   .navbar-toggler {
     &:focus {
@@ -24,16 +26,36 @@
     font-size: 14px;
   }
 
-  .nav-item .nav-link {
-    font-size: 14px;
+  .nav-item {
+    .nav-link {
+      font-size: 14px;
 
-    .user-icon {
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      background-color: $main-nav-user-icon-background-color;
+      .user-icon {
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        background-color: $main-nav-user-icon-background-color;
+      }
     }
+
+    .download-jobs {
+      .fa-layers {
+
+        .spinner-icon {
+          color: $primary-color;
+          width: 25px;
+        }
+
+        .value {
+          font-size: 12px;
+          font-weight: bold;
+          color: $primary-color;
+        }
+      }
+    }
+
   }
+
 }
 
 

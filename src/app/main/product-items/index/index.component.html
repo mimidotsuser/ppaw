@@ -69,8 +69,14 @@
         <span class="td-inline-label">Warrant</span>
         <div class="d-flex flex-column">
           <small>{{item?.active_warrant?.warrant_start|date}}</small>
-          <small *ngIf="item?.active_warrant?.warrant" class="text-muted">to</small>
-          <small>{{item?.active_warrant?.warrant_end|date}}</small>
+          <small *ngIf="item?.active_warrant" class="text-muted">to</small>
+          <ng-container *ngIf="item?.active_warrant?.warrant_end">
+            <small>{{item?.active_warrant?.warrant_end|date}}</small>
+          </ng-container>
+
+          <ng-container *ngIf="item?.active_warrant && !item?.active_warrant?.warrant_end">
+            <small>N/A</small>
+          </ng-container>
         </div>
       </td>
       <td>

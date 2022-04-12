@@ -2,6 +2,7 @@ import { PurchaseOrderModel } from './purchase-order.model';
 import { UserModel } from './user.model';
 import { ProductModel } from './product.model';
 import { WarehouseModel } from './warehouse.model';
+import { InspectionModel } from './inspection.model';
 
 export enum GRNReceiptNoteStage {
   REQUEST_CREATED = 'REQUEST_CREATED',
@@ -39,7 +40,7 @@ export interface GoodsReceiptNoteActivityModel {
  */
 export interface GoodsReceiptNoteModel {
   id: number;
-  sn:string;
+  sn: string;
   reference: string;
   purchase_order_id: number;
   purchase_order?: PurchaseOrderModel;
@@ -47,8 +48,10 @@ export interface GoodsReceiptNoteModel {
   warehouse?: WarehouseModel;
   items: GoodsReceiptNoteItemModel[],
   activities?: GoodsReceiptNoteActivityModel[],
-  latestActivity?: GoodsReceiptNoteActivityModel,
+  latest_activity?: GoodsReceiptNoteActivityModel,
   created_by_id: string;
   created_by?: UserModel;
   created_at: string;
+  has_rejected_items?: boolean;
+  inspection_note?: InspectionModel
 }

@@ -55,4 +55,13 @@ export enum V1Endpoints {
 
   customerContractProductItems = '/customer-contracts/:id/product-items',
   customerContracts = '/customer-contracts',
+
+  MRNDownload = '/material-requisitions/:id/download-mrn-doc',
+  SIVDownload = '/material-requisitions/:id/download-siv-doc',
+  purchaseRequestDownload = '/purchase-requests/:id/download-doc',
+  requestForQuotationDownload = '/request-for-quotation/:id/download-docs',
+  inspectionNoteDownload = '/inspection-note/:id/download-doc',
+  purchaseOrderDownload = '/purchase-orders/:id/download-doc',
+  goodsReceiptNoteDownload='/goods-receipt-note/:id/download-doc',
+  rejectedGoodsAdviceDownload='/goods-receipt-note/:id/download-rga-doc',
 }

@@ -5,7 +5,6 @@ import { faEllipsisV, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { MRFPurposeCode } from '../../../models/m-r-f.model';
 import { WorksheetModel } from '../../../models/worksheet.model';
 import { CustomerModel } from '../../../models/customer.model';
-import { SearchService } from '../../../shared/services/search.service';
 import { ProductModel } from '../../../models/product.model';
 import { ProductCategoryModel } from '../../../models/product-category.model';
 import { MaterialRequisitionService } from '../services/material-requisition.service';
@@ -15,7 +14,6 @@ import { WarehouseModel } from '../../../models/warehouse.model';
   selector: 'app-create',
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss'],
-  providers: [SearchService]
 })
 export class CreateComponent implements OnInit, OnDestroy {
 

@@ -67,6 +67,14 @@ export class HttpService {
     return this.httpClient.delete(this.baseUrl + uri, this.buildHttpOptions(httpOptions));
   }
 
+  downloadFile(uri: string, httpOptions?: HTTPOptions): Observable<any> {
+    return this.httpClient.get(this.baseUrl + uri, this.buildHttpOptions({
+      headers: {'Content-Type': 'application/json', Accept: 'blob',},
+      responseType: 'blob', ...httpOptions
+    }));
+
+  }
+
 
   /**
    * Build HTTP request options

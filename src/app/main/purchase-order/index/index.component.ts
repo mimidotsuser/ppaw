@@ -76,7 +76,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
 
   exportPurchaseOrder(request: PurchaseOrderModel) {
-
+    this.subSink = this.lpoService.download(request);
   }
 
   ngOnDestroy(): void {

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProductItemSearchComponent } from './product-serial-search.component';
+import { ProductItemSearchComponent } from './product-item-search.component';
 
 describe('ProductSerialSearchComponent', () => {
   let component: ProductItemSearchComponent;

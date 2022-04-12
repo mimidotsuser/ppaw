@@ -127,15 +127,28 @@
         </td>
         <td>
           <span class="td-inline-label">Contract</span>
+          <div class="d-flex pb-2">
+            {{activity?.contract?.category_title}}
+          </div>
           <a *ngIf="activity.customer_contract_id"
              routerLink="main/customers/{{activity.location_id}}/{{activity.customer_contract_id}}"
-          >view
-          </a>
+          >
+            <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+            view</a>
         </td>
         <td>
           <span class="td-inline-label">Warranty</span>
-          {{activity.warrant?.warrant_start || ''|date}} -
-          {{activity.warrant?.warrant_end || ''|date}}
+          <div class="d-flex flex-column">
+            <small>{{activity?.warrant?.warrant_start|date}}</small>
+            <small *ngIf="activity.warrant" class="text-muted">to</small>
+            <ng-container *ngIf="activity.warrant?.warrant_end">
+              <small>{{activity?.warrant?.warrant_end|date}}</small>
+            </ng-container>
+
+            <ng-container *ngIf="activity?.warrant&& !activity.warrant?.warrant_end">
+              <small>N/A</small>
+            </ng-container>
+          </div>
         </td>
         <td>
           {{activity?.created_by?.first_name || ''}} {{activity?.created_by?.last_name || ''}}

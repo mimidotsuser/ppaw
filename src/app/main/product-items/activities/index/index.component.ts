@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { faEllipsisV, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisV, faExternalLinkAlt, faFilter } from '@fortawesome/free-solid-svg-icons';
 import {
   ProductItemActivityCategoryCode,
   ProductItemActivityModel,
@@ -22,6 +22,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   faEllipsisV = faEllipsisV;
   faFilter = faFilter;
+  faExternalLinkAlt = faExternalLinkAlt;
   showLocationFormPopup = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 25};
   private _productItem?: ProductItemModel;

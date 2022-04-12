@@ -3,7 +3,6 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { MRFModel } from '../../../../models/m-r-f.model';
-import { SearchService } from '../../../../shared/services/search.service';
 import { CheckoutService } from '../../services/checkout.service';
 import { PaginationModel } from '../../../../models/pagination.model';
 
@@ -11,7 +10,6 @@ import { PaginationModel } from '../../../../models/pagination.model';
   selector: 'app-index',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss'],
-  providers: [SearchService]
 })
 export class IndexComponent implements OnInit {
 

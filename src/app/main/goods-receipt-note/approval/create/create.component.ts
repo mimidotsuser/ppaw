@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import {
   GoodsReceiptNoteItemModel,
@@ -16,10 +16,10 @@ import { InspectionChecklistModel, InspectionModel } from '../../../../models/in
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit {
+export class CreateComponent implements OnInit, OnDestroy {
 
   private _subscriptions: Subscription[] = [];
-  pagination: PaginationModel = {page: 1, limit: 25, total: 0};
+  pagination: PaginationModel = {page: 1, limit: 15, total: 0};
   model?: GoodsReceiptNoteModel & { inspection_note: InspectionModel };
   form!: FormGroup;
   remarks: FormControl;
@@ -93,5 +93,9 @@ export class CreateComponent implements OnInit {
             })
         }
       })
+  }
+
+  ngOnDestroy(): void {
+    this._subscriptions.map((sub)=>sub.unsubscribe())
   }
 }

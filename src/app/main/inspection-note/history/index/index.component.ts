@@ -58,6 +58,9 @@ export class IndexComponent implements OnInit {
       })
   }
 
+  exportInspectionNote(request: InspectionModel) {
+    this.subSink = this.inspectionService.download(request);
+  }
 
   ngOnDestroy(): void {
     this._subscriptions.map((sub) => sub.unsubscribe())

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PurchaseRequisitionModule } from '../purchase-requisition.module';
 import { HttpService } from '../../../core/services/http.service';
 import { PaginationModel } from '../../../models/pagination.model';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import { HttpResponseModel } from '../../../models/response.model';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
 import {
@@ -11,13 +11,14 @@ import {
   PurchaseRequestModel
 } from '../../../models/purchase-request.model';
 import { WarehouseModel } from '../../../models/warehouse.model';
+import { DownloadService } from '../../../core/services/download.service';
 
 @Injectable({
   providedIn: PurchaseRequisitionModule
 })
 export class PurchaseRequisitionService {
 
-  constructor(private httpService: HttpService) { }
+  constructor(private httpService: HttpService, private downloadService: DownloadService) { }
 
   stage(log?: PurchaseRequestActivityModel): string {
 
@@ -143,4 +144,9 @@ export class PurchaseRequisitionService {
       .pipe(map((res: { data: PurchaseRequestModel }) => res.data));
   }
 
+  download(request: PurchaseRequestModel): Subscription {
+    const path = this.httpService.endpoint.purchaseRequestDownload
+      .replace(/:id/g, request.id.toString());
+    return this.downloadService.queue({path, filename: `pr-${request.sn}.pdf`})
+  }
 }

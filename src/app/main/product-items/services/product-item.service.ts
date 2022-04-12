@@ -17,7 +17,7 @@ export class ProductItemService {
 
   fetch(pagination: PaginationModel): Observable<HttpResponseModel<ProductItemModel>> {
     return this.httpService.get(this.httpService.endpoint.productItems, {
-      params: {include: 'product,latestActivity.location,active_warrant', ...pagination}
+      params: {include: 'product,latestActivity.location,activeWarrant', ...pagination}
     })
   }
 
@@ -59,7 +59,8 @@ export class ProductItemService {
     const url = this.httpService.endpoint.productItemActivities
       .replace(':id', itemId.toString());
 
-    const params = {...meta, include: 'location,warrant,createdBy,remark,repair,eventable,contract'}
+    const params = {...meta,
+      include: 'location,warrant,createdBy,remark,repair.sparesUtilized,eventable,contract'}
     return this.httpService.get(url, {params})
   }
 

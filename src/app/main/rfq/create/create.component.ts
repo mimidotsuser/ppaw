@@ -310,19 +310,24 @@ export class CreateComponent implements OnInit, OnDestroy {
       vendors: (this.form.value.vendors as VendorModel[]).map((v) => ({id: v.id})),
       purchase_request_id: (this.form.value.purchase_request as PurchaseRequestModel).id,
       closing_date: serializeDate(this.form.value.closing_date),
-      items,
-      download
+      items
     }
     this.subSink = this.rfqService.create(payload)
       .subscribe({
-        next: () => {
+        next: (model) => {
+
+          this.requestItemsForm.clear();
+          this.form.reset();
 
           this.router.navigate([], {
             queryParams: {pr: null},
             queryParamsHandling: 'merge'
+          }).finally(() => {
+            if (download) {
+              this.subSink = this.rfqService.download(model);
+            }
           })
-          this.requestItemsForm.clear();
-          this.form.reset();
+
         }
       })
   }

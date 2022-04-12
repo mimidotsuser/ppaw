@@ -36,7 +36,7 @@ export interface ProductItemActivityModel {
   location_type: 'customer' | 'warehouse';
   location: CustomerModel | WarehouseModel
   customer_contract_id?: number;
-  customer_contract?: CustomerContractModel;
+  contract?: CustomerContractModel;
   product_warrant_id?: number;
   warrant?: ProductItemWarrant;
   entry_remark_id?: number;

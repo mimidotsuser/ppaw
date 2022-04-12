@@ -3,20 +3,31 @@
     <label for="name" class="form-label required">Business Name</label>
     <input type="text" id="name" class="form-control" formControlName="name">
   </div>
-  <div class="col-md-12"></div>
-
   <div class="col-md-6 mb-3">
     <label for="email" class="form-label">Email</label>
     <input type="text" id="email" class="form-control" formControlName="email">
   </div>
   <div class="col-md-6 mb-3">
-    <label for="tel" class="form-label">Telephone</label>
-    <input type="tel" id="tel" class="form-control" formControlName="telephone">
+    <label for="tel" class="form-label">Telephone Number</label>
+    <input type="text" id="tel" class="form-control" formControlName="telephone">
+  </div>
+  <div class="col-md-6 mb-3">
+    <label for="mobile" class="form-label">Mobile Phone Numbers</label>
+    <input type="text" id="mobile" class="form-control" formControlName="mobile_phone"
+           placeholder="+62 394 949 344">
   </div>
 
   <div class="col-md-6 mb-3">
-    <label for="address" class="form-label">Address</label>
-    <textarea id="address" class="form-control" rows="3" formControlName="address"></textarea>
+    <label for="street_address" class="form-label">Street Address</label>
+    <textarea id="street_address" class="form-control" rows="3" formControlName="street_address"
+              placeholder="Nation Towers, Opposite View Park Motel">
+    </textarea>
+  </div>
+  <div class="col-md-6 mb-3">
+    <label for="postal_address" class="form-label">Postal Address</label>
+    <textarea id="postal_address" class="form-control" rows="3" formControlName="postal_address"
+              placeholder="P.O. Box  10001, Mombasa, Kenya">
+    </textarea>
   </div>
 
   <ng-content></ng-content>

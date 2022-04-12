@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import { MaterialRequisitionModule } from '../material-requisition.module';
 import { HttpService } from '../../../core/services/http.service';
-import { MRFItemModel, MRFModel } from '../../../models/m-r-f.model';
+import { MRFModel } from '../../../models/m-r-f.model';
 import { PaginationModel } from '../../../models/pagination.model';
 import { HttpResponseModel } from '../../../models/response.model';
 import { ProductCategoryModel } from '../../../models/product-category.model';
 import { WarehouseModel } from '../../../models/warehouse.model';
 import { ProductModel } from '../../../models/product.model';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
+import { DownloadService } from '../../../core/services/download.service';
 
 @Injectable({
   providedIn: MaterialRequisitionModule
@@ -16,18 +17,7 @@ import { ProductBalanceModel } from '../../../models/product-balance.model';
 export class MaterialRequisitionService {
 
 
-  constructor(private httpService: HttpService) {
-  }
-
-  aggregateQty(items: MRFItemModel[]) {
-    return items.reduce((acc, val) => {
-      acc.issued += !val.issued_qty ? -1 : val.issued_qty;
-      acc.verified += !val.verified_qty ? -1 : val.verified_qty;
-      acc.approved += !val.approved_qty ? -1 : val.approved_qty;
-      acc.requested += val.requested_qty || 0;
-      return acc;
-    }, {verified: 0, approved: 0, issued: 0, requested: 0}) as
-      { verified: number, approved: number, issued: number, requested: number };
+  constructor(private httpService: HttpService, private downloadService: DownloadService) {
   }
 
   fetch(meta: PaginationModel): Observable<HttpResponseModel<MRFModel>> {
@@ -110,5 +100,19 @@ export class MaterialRequisitionService {
   create(payload: object): Observable<MRFModel> {
     return this.httpService.post(this.httpService.endpoint.materialRequests, payload)
       .pipe(map((res: { data: MRFModel }) => res.data))
+  }
+
+  exportMRN(request: MRFModel): Subscription {
+    const path = this.httpService.endpoint.MRNDownload
+      .replace(/:id/, request.id.toString())
+
+    return this.downloadService.queue({path: path, filename: `mrn-${request.sn}.pdf`})
+  }
+
+  exportSiv(request: MRFModel): Subscription {
+    const path = this.httpService.endpoint.SIVDownload
+      .replace(/:id/, request.id.toString())
+
+    return this.downloadService.queue({path, filename: `siv-${request.sn}.pdf`})
   }
 }

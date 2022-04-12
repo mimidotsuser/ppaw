@@ -332,20 +332,24 @@ export class CreateComponent implements OnInit, OnDestroy {
       doc_validity: this.form.value.doc_validity,
       vendor_id: this.form.value.vendor?.id,
       currency_id: this.form.value.currency?.id,
-      items,
-      download
+      items
     }
 
     this.subSink = this.purchaseOrderService.create(payload)
       .subscribe({
-        next: () => {
+        next: (model) => {
+          this.requestItemsForm.clear();
+          this.form.reset();
+
           this.router.navigate([], {
             queryParams: {rfq: null},
             queryParamsHandling: 'merge'
+          }).finally(() => {
+            if (download) {
+              this.subSink = this.purchaseOrderService.download(model)
+            }
           });
 
-          this.requestItemsForm.clear();
-          this.form.reset();
         }
       })
   }

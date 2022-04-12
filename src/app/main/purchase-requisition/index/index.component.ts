@@ -9,6 +9,7 @@ import {
 import { PurchaseRequisitionService } from '../services/purchase-requisition.service';
 import { PaginationModel } from '../../../models/pagination.model';
 import { ActivatedRoute } from '@angular/router';
+import { FileService } from '../../../core/services/file.service';
 
 @Component({
   selector: 'app-index',
@@ -28,7 +29,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
 
   constructor(private purchaseRequisitionService: PurchaseRequisitionService,
-              public route:ActivatedRoute) {
+              public route: ActivatedRoute, private fileService: FileService) {
     this.loadRequests();
   }
 
@@ -64,7 +65,10 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.showRequestHistoryPopup = true;
   }
 
-  export(request: PurchaseRequestModel) {}
+  export(request: PurchaseRequestModel) {
+    this.subSink = this.purchaseRequisitionService.download(request)
+
+  }
 
 
   stage(activityModel?: PurchaseRequestActivityModel) {

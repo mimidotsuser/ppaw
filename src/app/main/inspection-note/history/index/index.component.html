@@ -89,8 +89,10 @@
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="adp">
-              <a ngbDropdownItem [routerLink]="request.id.toString()">View summary</a>
-
+              <a ngbDropdownItem [routerLink]="request.id.toString()">View Summary</a>
+              <a ngbDropdownItem role="button" (click)="exportInspectionNote(request)">
+                Export Inspection Note
+              </a>
             </div>
           </div>
         </div>

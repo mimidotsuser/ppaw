@@ -46,3 +46,14 @@ export function addDaysToDate(start: any, days: number, excludeWeekends = false)
     return prev;
   }
 }
+
+
+export function extractFilenameFromHeader(header?: string | null, defaultFilename = 'default-file') {
+  if (header && header.includes('filename')) {
+    const match = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(header)
+    if (match && match[ 1 ]) {
+      defaultFilename = match[ 1 ].replace(/"/g, '')
+    }
+  }
+  return defaultFilename;
+}

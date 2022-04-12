@@ -54,7 +54,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let request of requests">
+    <tr *ngFor="let request of requests|slice:tableCountStart:tableCountEnd">
       <td>
         <span class="td-inline-label">Request No.</span>
         <a class="text-decoration-none" routerLink="{{request.id}}/create/">
