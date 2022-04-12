@@ -19,7 +19,7 @@ import { SharedModule } from '../../../shared/shared.module';
       {
         path: ':id', component: ShowComponent,
         data: {
-          title: 'Inspection History', breadcrumb: 'view',
+          title: 'Inspection Form', breadcrumb: 'View Sumary',
           resource: Resources.inspectionNote, action: Actions.view
         }
       },
@@ -29,7 +29,7 @@ import { SharedModule } from '../../../shared/shared.module';
       }
     ]),
     NgbDropdownModule,
-    SharedModule
+    SharedModule,
   ]
 })
 export class HistoryModule {}

@@ -1,0 +1,119 @@
+<div class="row px-0 px-md-3 mt-4">
+  <div class="col-md-3 mb-3">
+    <label for="reference" class="form-label">Reference / Packaging List No.</label>
+    <input type="text" class="form-control" disabled id="reference"
+           [value]="model?.goods_receipt_note?.reference">
+  </div>
+  <div class="col-md-3 mb-3">
+    <label for="supplier" class="form-label">Supplier/Vendor</label>
+    <input type="text" class="form-control" disabled id="supplier"
+           [value]="model?.goods_receipt_note?.purchase_order?.vendor?.name">
+  </div>
+
+  <div class="col-md-3 mb-3">
+    <label for="po" class="form-label">Purchase Order No.</label>
+    <input type="text" class="form-control" disabled id="po"
+           [value]="model?.goods_receipt_note?.purchase_order?.sn">
+  </div>
+  <div class="col-md-3 mb-3">
+    <label for="name" class="form-label">Created By</label>
+    <input type="text" class="form-control" disabled id="name"
+           [value]="authorName">
+  </div>
+  <div class="col-md-3 mb-3">
+    <label for="created_at" class="form-label">Created On</label>
+    <input type="text" class="form-control" disabled id="created_at"
+           [value]="model?.created_at|date">
+  </div>
+
+</div>
+
+<div class="container-fluid px-0 px-md-3">
+  <div class="subtitle">
+    Inspected Items
+  </div>
+  <table class="table table-responsive table-bordered table-hover table-block-sm">
+    <thead>
+    <tr>
+      <th class="product-column">Item</th>
+      <th>M-PN</th>
+      <th>Qty Received</th>
+      <th>Qty Accepted</th>
+      <th>Qty Rejected</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of items|slice:tableCountStart:tableCountEnd">
+      <td>
+        <span class="td-inline-label">Item</span>
+        <div class="d-flex flex-column">
+          {{item.product?.item_code}}
+          <small class="text-muted">
+            {{item.product?.local_description || item.product?.description }}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">M-PN</span>
+        {{item.product?.manufacturer_part_number}}
+      </td>
+      <td>
+        <span class="td-inline-label">Qty Received</span>
+        {{item.delivered_qty || 0}}
+      </td>
+      <td>
+        <span class="td-inline-label">Qty Accepted</span>
+        {{(item.delivered_qty || 0) - (item.rejected_qty || 0)}}
+      </td>
+      <td class="input-column">
+        <span class="td-inline-label">Qty Rejected</span>
+        {{item.rejected_qty || 0}}
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination"></pagination>
+  </div>
+</div>
+<hr>
+
+<div class="container-fluid col-md-10 px-0 px-md-3 ms-0 pb-3">
+  <div class="subtitle">
+    Inspection Checklist
+  </div>
+  <table class="table table-block-sm table-hover inspection-checklist-table">
+    <thead>
+    <tr>
+      <th></th>
+      <th>Feature Inspected</th>
+      <th>Passed/Failed</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="group" *ngFor="let item of inspectionChecklist;index as i">
+      <th>{{i + 1}}</th>
+      <td>
+        <span class="td-inline-label">Feature</span>
+        {{item.feature}}
+      </td>
+      <td>
+        <span class="td-inline-label">Passed/Failed</span>
+        {{item.passed ? 'Passed' : 'Failed'}}
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+<hr>
+
+<div class="container-fluid">
+  <div class="my-5  d-flex  gap-2" *ngIf="model">
+    <button type="button" class="btn btn-primary" (click)="exportInspectionNote(model)">
+      <fa-icon [icon]="faFilePdf"  class="export-pdf icon"></fa-icon>
+      EXPORT
+    </button>
+  </div>
+</div>
+

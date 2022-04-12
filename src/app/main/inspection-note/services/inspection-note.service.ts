@@ -15,22 +15,16 @@ export class InspectionNoteService {
 
   constructor(private httpService: HttpService, private downloadService: DownloadService) { }
 
-  fetchRequests(meta: PaginationModel): Observable<HttpResponseModel<GoodsReceiptNoteModel>> {
-    return this.httpService.get(this.httpService.endpoint.goodsReceiptNoteRequestsPendingInspection,
-      {params: {...meta, include: 'purchaseOrder,createdBy'}});
-  }
-
-  fetchRequest(id: string | number): Observable<GoodsReceiptNoteModel> {
-    const url = this.httpService.endpoint.goodsReceiptNoteRequestPendingInspection
-      .replace(':id', id.toString());
-
-    return this.httpService.get(url,
-      {params: {include: 'items.product,activities,purchaseOrder,createdBy'}})
-      .pipe(map((res: { data: GoodsReceiptNoteModel }) => res.data));
-  }
-
   create(payload: object): Observable<InspectionModel> {
     return this.httpService.post(this.httpService.endpoint.inspection, payload)
+      .pipe(map((res: { data: InspectionModel }) => res.data));
+  }
+
+  findById(id: number | string): Observable<InspectionModel> {
+    const params = {
+      include: 'createdBy,goodsReceiptNote.purchaseOrder,goodsReceiptNote.items.product'
+    };
+    return this.httpService.get(`${this.httpService.endpoint.inspection}/${id}`, {params})
       .pipe(map((res: { data: InspectionModel }) => res.data));
   }
 
@@ -48,5 +42,20 @@ export class InspectionNoteService {
     const path = this.httpService.endpoint.inspectionNoteDownload
       .replace(/:id/g, request.id.toString());
     return this.downloadService.queue({path, filename: `inspection-node-${request.sn}.pdf`})
+  }
+
+
+  fetchRequests(meta: PaginationModel): Observable<HttpResponseModel<GoodsReceiptNoteModel>> {
+    return this.httpService.get(this.httpService.endpoint.goodsReceiptNoteRequestsPendingInspection,
+      {params: {...meta, include: 'purchaseOrder,createdBy'}});
+  }
+
+  fetchRequest(id: string | number): Observable<GoodsReceiptNoteModel> {
+    const url = this.httpService.endpoint.goodsReceiptNoteRequestPendingInspection
+      .replace(':id', id.toString());
+
+    return this.httpService.get(url,
+      {params: {include: 'items.product,activities,purchaseOrder,createdBy'}})
+      .pipe(map((res: { data: GoodsReceiptNoteModel }) => res.data));
   }
 }

@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { PaginationModel } from '../../../../models/pagination.model';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { faEllipsisV, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
+import {
+  faEllipsisV,
+  faExternalLinkAlt,
+  faEye,
+  faFilePdf,
+  faFilter
+} from '@fortawesome/free-solid-svg-icons';
+import { PaginationModel } from '../../../../models/pagination.model';
 import { InspectionNoteService } from '../../services/inspection-note.service';
 import { InspectionModel } from '../../../../models/inspection.model';
 
@@ -16,12 +23,16 @@ export class IndexComponent implements OnInit {
 
   faFilter = faFilter;
   faEllipsisV = faEllipsisV;
+  faEye = faEye;
+  faFilePdf = faFilePdf;
+  faExternalLinkAlt = faExternalLinkAlt;
   pagination: PaginationModel = {page: 1, limit: 25, total: 0}
   private _requests: InspectionModel[] = [];
   private _subscriptions: Subscription[] = []
   searchInput: FormControl;
 
-  constructor(private fb: FormBuilder, private inspectionService: InspectionNoteService) {
+  constructor(private fb: FormBuilder, private inspectionService: InspectionNoteService,
+              private _route: ActivatedRoute) {
     this.loadRequests();
     this.searchInput = this.fb.control('');
   }
@@ -44,6 +55,8 @@ export class IndexComponent implements OnInit {
   get requests(): InspectionModel [] {
     return this._requests
   }
+
+  get route() {return this._route}
 
   loadRequests() {
     if (this.tableCountEnd <= this._requests.length) {

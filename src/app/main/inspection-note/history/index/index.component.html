@@ -67,7 +67,16 @@
       </td>
       <td>
         <span class="td-inline-label">PO No.</span>
-        {{request?.goods_receipt_note?.purchase_order?.sn}}
+        <div class="d-flex flex-column">
+          {{request?.goods_receipt_note?.purchase_order?.sn}}
+          <ng-container *ngIf="request?.goods_receipt_note?.purchase_order_id">
+            <a [relativeTo]="route" target="_blank" class="pt-2"
+               routerLink="../../purchase-orders/history/{{request?.goods_receipt_note?.purchase_order_id}}">
+              <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+              view
+            </a>
+          </ng-container>
+        </div>
       </td>
       <td>
         <span class="td-inline-label">Supplier</span>
@@ -84,15 +93,20 @@
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
           <div ngbDropdown class="d-inline-block">
+
             <button class="btn btn-outline-secondary hide-dropdown-toggle border-0" id="adp"
                     ngbDropdownToggle>
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="adp">
-              <a ngbDropdownItem [routerLink]="request.id.toString()">View Summary</a>
-              <a ngbDropdownItem role="button" (click)="exportInspectionNote(request)">
-                Export Inspection Note
+              <a routerLink="{{request.id}}" [relativeTo]="route" ngbDropdownItem>
+                <fa-icon [icon]="faEye" class="icon"></fa-icon>
+                View Summary
               </a>
+              <button ngbDropdownItem (click)="exportInspectionNote(request)">
+                <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
+                Export Inspection Note
+              </button>
             </div>
           </div>
         </div>
@@ -101,7 +115,7 @@
     </tr>
     <ng-container *ngIf="requests?.length===0">
       <tr>
-        <td class="text-center py-3" colspan="8">
+        <td class="text-center py-5" colspan="8">
           No data
         </td>
       </tr>
