@@ -6,9 +6,13 @@ import {
   faEye,
   faFilePdf
 } from '@fortawesome/free-solid-svg-icons';
-import { PurchaseOrderItemModel, PurchaseOrderModel } from '../../../models/purchase-order.model';
-import { PurchaseOrderService } from '../services/purchase-order.service';
-import { PaginationModel } from '../../../models/pagination.model';
+import { PaginationModel } from '../../../../models/pagination.model';
+import {
+  PurchaseOrderItemModel,
+  PurchaseOrderModel
+} from '../../../../models/purchase-order.model';
+import { PurchaseOrderService } from '../../services/purchase-order.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-index',
@@ -16,6 +20,7 @@ import { PaginationModel } from '../../../models/pagination.model';
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit, OnDestroy {
+
 
   faEye = faEye;
   faFilePdf = faFilePdf;
@@ -27,7 +32,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   private _requests: PurchaseOrderModel[] = []
   private _subscriptions: Subscription[] = [];
 
-  constructor(private lpoService: PurchaseOrderService) {
+  constructor(private purchaseOrderService: PurchaseOrderService, private _route: ActivatedRoute) {
     this.loadPurchaseOrders()
   }
 
@@ -50,6 +55,8 @@ export class IndexComponent implements OnInit, OnDestroy {
     return this._requests;
   }
 
+  get route() {return this._route}
+
   calcTotalPrice(request: PurchaseOrderModel): string {
     return request.items
       .reduce((acc, item) => acc += this.calcSubtotalPrice(item), 0)
@@ -62,7 +69,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   loadPurchaseOrders() {
     if (this.tableCountEnd <= this.requests.length) {return;}
-    this.subSink = this.lpoService.fetch(this.pagination, {include: 'items,createdBy'})
+    this.subSink = this.purchaseOrderService.fetch(this.pagination, {include: 'items,createdBy'})
       .subscribe((res) => {
         this._requests = this._requests.concat(res.data);
         this.pagination.total = res.total;
@@ -76,7 +83,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
 
   exportPurchaseOrder(request: PurchaseOrderModel) {
-    this.subSink = this.lpoService.download(request);
+    this.subSink = this.purchaseOrderService.download(request);
   }
 
   ngOnDestroy(): void {

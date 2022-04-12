@@ -23,6 +23,24 @@ export class PurchaseOrderService {
       .get(this.httpService.endpoint.purchaseOrders, {params});
   }
 
+  findById(id: string | number): Observable<PurchaseOrderModel> {
+    const params = {include: 'items,createdBy'}
+    return this.httpService
+      .get(`${this.httpService.endpoint.purchaseOrders}/${id}`, {params})
+      .pipe(map((res: { data: PurchaseOrderModel }) => res.data));
+  }
+
+  create(payload: object) {
+    return this.httpService.post(this.httpService.endpoint.purchaseOrders, payload)
+      .pipe(map((res: { data: PurchaseOrderModel }) => res.data));
+  }
+
+  download(request: PurchaseOrderModel): Subscription {
+    const path = this.httpService.endpoint.purchaseOrderDownload
+      .replace(/:id/g, request.id.toString());
+    return this.downloadService.queue({path, filename: `po-${request.sn}.pdf`})
+  }
+
   findRFQById(id: number | string, params: {} = {}): Observable<RFQModel> {
     params = {include: 'items', ...params}
     return this.httpService.get(`${this.httpService.endpoint.rfqs}/${id}`, {params})
@@ -38,17 +56,6 @@ export class PurchaseOrderService {
   get fetchUnitOfMeasure(): Observable<UOMModel[]> {
     return this.httpService.get(this.httpService.endpoint.unitOfMeasure)
       .pipe(map((res: { data: UOMModel[] }) => res.data));
-  }
-
-  create(payload: object) {
-    return this.httpService.post(this.httpService.endpoint.purchaseOrders, payload)
-      .pipe(map((res: { data: PurchaseOrderModel }) => res.data));
-  }
-
-  download(request: PurchaseOrderModel): Subscription {
-    const path = this.httpService.endpoint.purchaseOrderDownload
-      .replace(/:id/g, request.id.toString());
-    return this.downloadService.queue({path, filename: `po-${request.sn}.pdf`})
   }
 
 }

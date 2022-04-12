@@ -4,7 +4,7 @@
     </div>
 
     <div class="d-md-block">
-      <a class="btn btn-outline-primary" routerLink="create">
+      <a class="btn btn-outline-primary" routerLink="../create" [relativeTo]="route">
         + New Request
       </a>
     </div>
@@ -42,8 +42,8 @@
       </td>
       <td>
         <span class="td-inline-label">RFQ </span>
-        <a *ngIf="request.rfq_id" routerLink="/main/request-for-quotations/history" target="_blank"
-           [queryParams]="{rfq:request.rfq_id}">
+        <a *ngIf="request.rfq_id" [relativeTo]="route" target="_blank"
+           routerLink="../../request-for-quotations/history/{{request.rfq_id}}">
           <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
           view
         </a>
@@ -65,10 +65,10 @@
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
-              <button ngbDropdownItem (click)="showPurchaseOrderSummary(request)">
+              <a routerLink="{{request.id}}" [relativeTo]="route" ngbDropdownItem>
                 <fa-icon [icon]="faEye" class="icon"></fa-icon>
                 View Summary
-              </button>
+              </a>
               <button ngbDropdownItem (click)="exportPurchaseOrder(request)">
                 <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
                 Export PO
@@ -159,7 +159,7 @@
             </td>
 
           </tr>
-          <tr>
+          <tr class="d-md-table-row d-none">
             <td colspan="5">
               <div class="d-flex justify-content-md-end">
                 <strong>Total</strong>
