@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RqfService } from './rqf.service';
+import { RequestForQuotationService } from './request-for-quotation.service';
 
 describe('RqfService', () => {
-  let service: RqfService;
+  let service: RequestForQuotationService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(RqfService);
+    service = TestBed.inject(RequestForQuotationService);
   });
 
   it('should be created', () => {

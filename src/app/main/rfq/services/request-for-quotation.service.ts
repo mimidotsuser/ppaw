@@ -12,13 +12,30 @@ import { DownloadService } from '../../../core/services/download.service';
 @Injectable({
   providedIn: RfqModule
 })
-export class RqfService {
+export class RequestForQuotationService {
 
   constructor(private httpService: HttpService, private downloadService: DownloadService) { }
 
   fetch(meta: PaginationModel, params: {} = {}): Observable<HttpResponseModel<RFQModel>> {
     params = {...meta, ...params};
     return this.httpService.get(this.httpService.endpoint.rfqs, {params})
+  }
+
+  create(payload: object): Observable<RFQModel> {
+    return this.httpService.post(this.httpService.endpoint.rfqs, payload)
+      .pipe(map((res: { data: RFQModel }) => res.data));
+  }
+
+  findById(id: number | string): Observable<RFQModel> {
+    const params = {include:'createdBy,vendors,items'};
+    return this.httpService.get(`${this.httpService.endpoint.rfqs}/${id}`, {params})
+      .pipe(map((res: { data: RFQModel }) => res.data));
+  }
+
+  download(request: RFQModel): Subscription {
+    const path = this.httpService.endpoint.requestForQuotationDownload
+      .replace(/:id/, request.id.toString());
+    return this.downloadService.queue({path, filename: `rfq-${request.sn}.zip`})
   }
 
   findPurchaseRequestById(id: number | string, params: {} = {}): Observable<PurchaseRequestModel> {
@@ -33,14 +50,4 @@ export class RqfService {
       .pipe(map((res: { data: UOMModel[] }) => res.data));
   }
 
-  create(payload: object): Observable<RFQModel> {
-    return this.httpService.post(this.httpService.endpoint.rfqs, payload)
-      .pipe(map((res: { data: RFQModel }) => res.data));
-  }
-
-  download(request: RFQModel): Subscription {
-    const path = this.httpService.endpoint.requestForQuotationDownload
-      .replace(/:id/, request.id.toString());
-    return this.downloadService.queue({path, filename: `rfq-${request.sn}.zip`})
-  }
 }

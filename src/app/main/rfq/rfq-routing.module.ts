@@ -10,11 +10,10 @@ const routes: Routes = [{
     {path: '', pathMatch: 'full', redirectTo: 'history'},
     {
       path: 'history',
-      loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
+      loadChildren: () => import('./history/history.module').then(m => m.HistoryModule),
       data: {
-        resource: Resources.rfq,
-        action: Actions.view,
-        title: 'All Request for Quotations', breadcrumb: 'Request for Quotation Forms'
+        resource: Resources.rfq, action: Actions.view,
+        title: 'All Requests for Quotation (RFQs)', breadcrumb: 'Request for Quotation Forms'
       }
     },
     {
@@ -26,7 +25,7 @@ const routes: Routes = [{
       }
     },
     {
-      path: 'edit',
+      path: 'edit/:id',
       loadChildren: () => import('./edit/edit.module').then(m => m.EditModule),
       data: {
         resource: Resources.rfq, action: Actions.edit,

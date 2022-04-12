@@ -8,7 +8,7 @@ import {
   PurchaseRequestItemModel,
   PurchaseRequestModel
 } from '../../../models/purchase-request.model';
-import { RqfService } from '../services/rqf.service';
+import { RequestForQuotationService } from '../services/request-for-quotation.service';
 import { ProductModel } from '../../../models/product.model';
 import { VendorModel } from '../../../models/vendor.model';
 import { VendorService } from '../../vendors/services/vendor.service';
@@ -32,7 +32,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   adhocRFQItemForm!: FormGroup;
 
-  constructor(private route: ActivatedRoute, private rfqService: RqfService, private router: Router,
+  constructor(private route: ActivatedRoute, private rfqService: RequestForQuotationService, private router: Router,
               private fb: FormBuilder, private vendorService: VendorService) {
 
     this.loadPurchaseRequest();

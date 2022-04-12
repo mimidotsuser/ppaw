@@ -1,14 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import {
   faEllipsisV,
   faExternalLinkAlt,
   faEye,
   faFilePdf
 } from '@fortawesome/free-solid-svg-icons';
-import { RqfService } from '../services/rqf.service';
-import { RFQModel } from '../../../models/r-f-q.model';
-import { PaginationModel } from '../../../models/pagination.model';
+import { RFQModel } from '../../../../models/r-f-q.model';
+import { PaginationModel } from '../../../../models/pagination.model';
+import { RequestForQuotationService } from '../../services/request-for-quotation.service';
 
 @Component({
   selector: 'app-index',
@@ -28,7 +29,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   private _subscriptions: Subscription[] = [];
 
 
-  constructor(private rfqService: RqfService) {
+  constructor(private rfqService: RequestForQuotationService, private _route: ActivatedRoute) {
     this.loadRequestForQuotations();
   }
 
@@ -51,6 +52,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   get requests() {
     return this._rfqRequests;
   }
+
+  get route() {return this._route}
 
   loadRequestForQuotations() {
     if (this.tableCountEnd <= this.requests.length) {
@@ -78,4 +81,5 @@ export class IndexComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._subscriptions.map((sub) => sub.unsubscribe())
   }
+
 }

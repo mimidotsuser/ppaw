@@ -4,7 +4,7 @@
     </div>
 
     <div class="d-md-block">
-      <a class="btn btn-outline-primary" routerLink="create">
+      <a class="btn btn-outline-primary"  routerLink="../create" [relativeTo]="route">
         + New Request
       </a>
     </div>
@@ -38,8 +38,8 @@
       </td>
       <td>
         <span class="td-inline-label">Purchase Request</span>
-        <a *ngIf="request.purchase_request_id" target="_blank"
-           routerLink="/main/purchase-requisition/history" [queryParams]="{pr:request.id}">
+        <a *ngIf="request.purchase_request_id" target="_blank" [relativeTo]="route"
+           routerLink="../../purchase-requisition/history/{{request?.purchase_request_id}}">
           <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
           view
         </a>
@@ -70,10 +70,10 @@
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
-              <button ngbDropdownItem (click)="showRFQSummary(request)">
+              <a routerLink="{{request.id}}" [relativeTo]="route" ngbDropdownItem>
                 <fa-icon [icon]="faEye" class="icon"></fa-icon>
                 View Summary
-              </button>
+              </a>
               <button ngbDropdownItem (click)="exportRFQ(request)">
                 <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
                 Export RFQ
@@ -87,7 +87,9 @@
       <tr>
         <td class="text-center py-3" colspan="5">
           There are no RFQ's available at the moment.
-          <a class="text-decoration-none" routerLink="create">Create new RFQ</a>
+          <a class="text-decoration-none" routerLink="../create" [relativeTo]="route">
+            Create new RFQ
+          </a>
         </td>
       </tr>
     </ng-container>
