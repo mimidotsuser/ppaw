@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../../shared/shared.module';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IndexComponent } from './index/index.component';
 import { CreateComponent } from './create/create.component';
 
@@ -22,7 +21,6 @@ import { CreateComponent } from './create/create.component';
       }
     ]),
     SharedModule,
-    FontAwesomeModule,
   ]
 })
 export class ApproveModule {}

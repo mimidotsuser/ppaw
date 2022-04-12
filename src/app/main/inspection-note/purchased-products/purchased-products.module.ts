@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { IndexComponent } from './index/index.component';
 import { SharedModule } from '../../../shared/shared.module';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { CreateComponent } from './create/create.component';
 import { Actions, Resources } from '../../../utils/permissions';
@@ -30,7 +29,6 @@ import { Actions, Resources } from '../../../utils/permissions';
       }
     ]),
     SharedModule,
-    FontAwesomeModule,
     NgbDropdownModule,
   ]
 })
