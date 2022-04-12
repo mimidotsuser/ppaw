@@ -1,15 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { faEllipsisV, faEye, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { PaginationModel } from '../../../../models/pagination.model';
 import {
   PRStage,
   PurchaseRequestActivityModel,
   PurchaseRequestModel
-} from '../../../models/purchase-request.model';
-import { PurchaseRequisitionService } from '../services/purchase-requisition.service';
-import { PaginationModel } from '../../../models/pagination.model';
-import { ActivatedRoute } from '@angular/router';
-import { FileService } from '../../../core/services/file.service';
+} from '../../../../models/purchase-request.model';
+import { PurchaseRequisitionService } from '../../services/purchase-requisition.service';
+import { FileService } from '../../../../core/services/file.service';
 
 @Component({
   selector: 'app-index',
@@ -17,6 +17,7 @@ import { FileService } from '../../../core/services/file.service';
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit, OnDestroy {
+
 
   faEllipsisV = faEllipsisV;
   faEye = faEye
@@ -95,4 +96,5 @@ export class IndexComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._subscriptions.map((sub) => sub.unsubscribe());
   }
+
 }

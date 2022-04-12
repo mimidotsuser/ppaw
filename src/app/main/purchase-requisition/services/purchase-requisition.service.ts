@@ -72,6 +72,12 @@ export class PurchaseRequisitionService {
       .pipe(map((res: { data: PurchaseRequestModel }) => res.data))
   }
 
+  fetchById(id: number | string): Observable<PurchaseRequestModel> {
+    return this.httpService.get(`${this.httpService.endpoint.purchaseRequests}/${id}`,
+      {params: {include: 'items,activities,items.product'}})
+      .pipe(map((res: { data: PurchaseRequestModel }) => res.data))
+  }
+
   fetchProductBalances(meta: PaginationModel): Observable<HttpResponseModel<ProductBalanceModel>> {
     const params = {
       exclude_variants: true,

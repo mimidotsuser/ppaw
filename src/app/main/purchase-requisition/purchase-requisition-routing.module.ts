@@ -7,7 +7,8 @@ const routes: Routes = [{
   path: '', component: PurchaseRequisitionComponent,
   children: [
     {
-      path: 'history', loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
+      path: 'history',
+      loadChildren: () => import('./history/history.module').then(m => m.HistoryModule),
       data: {
         resource: Resources.purchaseRequisition, action: Actions.view,
         title: 'All Purchase Requests',

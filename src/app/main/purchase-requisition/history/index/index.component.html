@@ -4,7 +4,7 @@
     </div>
 
     <div class="d-md-block">
-      <a class="btn btn-outline-primary" routerLink="create" [relativeTo]="route.parent?.parent">
+      <a class="btn btn-outline-primary" routerLink="../create" [relativeTo]="route">
         + New Request
       </a>
     </div>
@@ -56,10 +56,10 @@
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
-              <button ngbDropdownItem (click)="showRequestHistory(request)">
+              <a ngbDropdownItem routerLink="{{request.id}}" [relativeTo]="route">
                 <fa-icon [icon]="faEye" class="icon"></fa-icon>
-                View activity
-              </button>
+                View Summary
+              </a>
 
               <button ngbDropdownItem (click)="export(request)">
                 <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
