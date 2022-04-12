@@ -8,10 +8,15 @@
   <ng-container *ngIf="results;else noResultsTemplate">
     <div class="title">
       {{  results.sn }}
+      <ng-container *ngIf="results.vendor">
+        |       {{results.vendor?.name}}
+      </ng-container>
     </div>
-    <div class="subtitle " *ngIf="results?.vendor">
-      By {{results.vendor.name || ''}}
+    <div class="subtitle " *ngIf="results?.created_by">
+      By {{results.created_by.first_name }}
+      {{results.created_by.last_name }}
     </div>
+
   </ng-container>
 </ng-template>
 

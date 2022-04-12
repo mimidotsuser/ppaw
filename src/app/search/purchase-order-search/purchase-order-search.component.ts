@@ -36,7 +36,7 @@ export class PurchaseOrderSearchComponent implements OnInit {
   }
 
   get queryParams(): { [ key: string ]: string | boolean; } {
-    let params: { [ key: string ]: string | boolean } = {search: '%s'}
+    let params: { [ key: string ]: string | boolean } = {search: '%s', include: 'createdBy,vendor'}
     if (this.with) {
       params = {include: this.with, ...params}
     }

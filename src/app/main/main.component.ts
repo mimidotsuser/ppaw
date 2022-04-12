@@ -87,7 +87,12 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faShoppingBasket,
       items: [
         {title: 'New Requests', url: 'purchase-requisition/create', display: true},
-        {title: 'All Purchase Requests', url: 'purchase-requisition/history', display: true},
+        {
+          title: 'All Purchase Requests',
+          url: 'purchase-requisition/history',
+          display: true,
+          exact: false
+        },
         {
           title: 'Requests Checking',
           url: 'purchase-requisition/check',
@@ -107,7 +112,7 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faFileInvoiceDollar,
       items: [
         {title: 'New RFQ', url: 'request-for-quotations/create', display: true, exact: false},
-        {title: 'All RFQ\'s', url: 'request-for-quotations/history', display: true},
+        {title: 'All RFQ\'s', url: 'request-for-quotations/history', display: true, exact: false},
       ]
     },
     lpo: {
@@ -116,7 +121,7 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faShoppingCart,
       items: [
         {title: 'New Purchase Order', url: 'purchase-orders/create', display: true, exact: false},
-        {title: 'All Purchase Orders', url: 'purchase-orders/history', display: true},
+        {title: 'All Purchase Orders', url: 'purchase-orders/history', display: true, exact: false},
       ]
     },
     checkin: {
