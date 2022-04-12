@@ -7,7 +7,7 @@ const routes: Routes = [{
   path: '',
   component: RfqComponent,
   children: [
-    {path: '', pathMatch: 'exact', redirectTo: 'history'},
+    {path: '', pathMatch: 'full', redirectTo: 'history'},
     {
       path: 'history',
       loadChildren: () => import('./index/index.module').then(m => m.IndexModule),

@@ -6,7 +6,7 @@ import { Actions, Resources } from '../../utils/permissions';
 const routes: Routes = [
   {
     path: '', component: PurchaseOrderComponent, children: [
-      {path: '', pathMatch: 'exact', redirectTo: 'history'},
+      {path: '', pathMatch: 'full', redirectTo: 'history'},
       {
         path: 'history',
         loadChildren: () => import('./index/index.module').then(m => m.IndexModule),

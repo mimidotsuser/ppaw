@@ -7,7 +7,7 @@ const routes: Routes = [{
   path: '',
   component: ProductsComponent,
   children: [
-    {path: '', pathMatch: 'exact', redirectTo: 'machines'},
+    {path: '', pathMatch: 'full', redirectTo: 'machines'},
     {
       path: 'spares',
       loadChildren: () => import('./spares/spares.module').then((m) => m.SparesModule),

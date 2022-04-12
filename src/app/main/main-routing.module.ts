@@ -90,7 +90,7 @@ const routes: Routes = [
         loadChildren: () => import('./not-authorized/not-authorized.module').then(m => m.NotAuthorizedModule),
         data: {title: 'Not Authorized', breadcrumb: 'Access Denied'}
       },
-      {path: '', redirectTo: 'home', pathMatch: 'exact'},
+      {path: '', redirectTo: 'home', pathMatch: 'full'},
       {
         path: '**',
         loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule),
