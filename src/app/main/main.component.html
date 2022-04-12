@@ -80,7 +80,7 @@
           class="page-header-container flex-wrap d-flex align-items-center justify-content-between">
           <h1>{{pageTitle}}</h1>
           <div class="breadcrumb-container">
-            <ol class="breadcrumb">
+            <ol class="breadcrumb flex-nowrap">
               <li *ngFor="let item of breadcrumbList; let i =index"
                   class="breadcrumb-item" [ngClass]="{'active': item.active}">
                 <ng-container *ngIf="!item.active;else noLinkBreadcrumb">
