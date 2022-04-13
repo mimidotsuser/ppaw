@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { PaginationModel } from '../../../models/pagination.model';
-import { CustomerContractModel } from '../../../models/customer-contract.model';
-import { CustomerContractService } from '../services/customer-contract.service';
-import { ActivatedRoute } from '@angular/router';
+import { PaginationModel } from '../../../../models/pagination.model';
+import { CustomerContractModel } from '../../../../models/customer-contract.model';
+import { CustomerContractService } from '../../services/customer-contract.service';
 
 @Component({
   selector: 'app-index',
@@ -13,7 +13,6 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit, OnDestroy {
-
   faEllipsisV = faEllipsisV;
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   private _contracts: CustomerContractModel[] = [];
@@ -63,5 +62,6 @@ export class IndexComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._subscriptions.map((sub) => sub.unsubscribe())
   }
+
 
 }

@@ -50,6 +50,7 @@
           <th>Serial Number</th>
           <th>Item</th>
           <th>Location</th>
+          <th>Current Contract</th>
         </tr>
         </thead>
         <tbody formArrayName="contract_items">
@@ -89,6 +90,10 @@
                   {{group.get('location')?.value?.region }}
                 </small>
               </div>
+            </td>
+            <td>
+              <span class="td-inline-label">Current Contract</span>
+
             </td>
           </tr>
         </ng-container>

@@ -30,6 +30,7 @@
       <th>Cover Type</th>
       <th>Start Date</th>
       <th>Contract End</th>
+      <th>Archived</th>
       <th class="actions-column"></th>
     </tr>
     </thead>
@@ -38,7 +39,9 @@
       *ngFor="let contract of contracts|slice:tableCountStart:tableCountEnd">
       <td>
         <span class="td-inline-label">Contract No.</span>
+        <a routerLink="{{contract.id}}" [relativeTo]="route" class="text-decoration-none">
         {{contract.sn}}
+        </a>
       </td>
       <td>
         <span class="td-inline-label">Customer HQ</span>
@@ -64,6 +67,10 @@
         {{contract.expiry_date|date}}
       </td>
       <td>
+        <span class="td-inline-label">Archived</span>
+        {{contract.active ? '' : 'Yes'}}
+      </td>
+      <td>
         <div class="d-flex flex-column gap-2">
         </div>
         <div class="d-flex gap-2 justify-content-end w-100">
@@ -74,11 +81,12 @@
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
 
-              <a ngbDropdownItem routerLink="view/{{contract.id}}" [relativeTo]="route">
+              <a ngbDropdownItem routerLink="{{contract.id}}" [relativeTo]="route">
                 View contract
               </a>
 
-              <a ngbDropdownItem routerLink="edit/{{contract.id}}" [relativeTo]="route">
+              <a *ngIf="contract.active" routerLink="edit/{{contract.id}}" [relativeTo]="route"
+                 ngbDropdownItem>
                 Edit contract
               </a>
             </div>
@@ -92,7 +100,7 @@
       <tr>
         <td class="text-center py-3" colspan="9">
           <ng-container *ngIf="!searchInput.value;else noResults">
-            There is no contracts.&nbsp;
+            There are no contracts.&nbsp;
             <a class="text-decoration-none" routerLink="create" [relativeTo]="route">
               Click here to create new contract.
             </a>

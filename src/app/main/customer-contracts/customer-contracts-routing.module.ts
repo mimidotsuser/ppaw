@@ -22,16 +22,10 @@ const routes: Routes = [
           title: 'Edit Contract', breadcrumb: 'Contract Form'
         }
       },
+      {path: '', pathMatch: 'full', redirectTo: 'history'},
       {
-        path: 'show/:id', loadChildren: () => import('./show/show.module').then(m => m.ShowModule),
-        data: {
-          resource: Resources.contracts, action: Actions.view,
-          title: 'View Contract', breadcrumb: 'Contract Form'
-        }
-      },
-      {
-        path: '',
-        loadChildren: () => import('./index/index.module').then(m => m.IndexModule)
+        path: 'history',
+        loadChildren: () => import('./history/history.module').then(m => m.HistoryModule)
       },
     ]
   }];

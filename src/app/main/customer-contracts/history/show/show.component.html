@@ -1,0 +1,90 @@
+<div class="row px-0 px-md-3 mt-4">
+
+  <div class="row my-4">
+    <div class="col-md-3 mb-3">
+      <label for="sn" class="form-label">Contract No.</label>
+      <input type="text" id="sn" class="form-control" disabled [value]="model?.sn">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="customer" class="form-label">Customer (HQ)</label>
+      <input type="text" id="customer" class="form-control" disabled [value]="customer">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="contract_type" class="form-label">Cover Type</label>
+      <input type="text" id="contract_type" class="form-control" disabled
+             [value]="model?.category_title">
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <label for="created_at" class="form-label">Created On</label>
+      <input type="text" id="created_at" class="form-control" disabled
+             [value]="model?.created_at|date">
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <label for="start_date" class="form-label">Cover Start Date</label>
+      <input type="text" id="start_date" class="form-control" disabled
+             [value]="model?.start_date|date">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="expiry_date" class="form-label">Cover End Date</label>
+      <input type="text" id="expiry_date" class="form-control" disabled
+             [value]="model?.expiry_date|date">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="created_by" class="form-label">Created By</label>
+      <input type="text" id="created_by" class="form-control" disabled [value]="authorName">
+    </div>
+  </div>
+</div>
+
+<div class="container-md-fluid">
+  <div class="subtitle">
+    Items Under Contract
+  </div>
+  <div class="col-lg-8">
+    <table class="table table-responsive table-bordered table-block-sm table-hover">
+      <thead>
+      <tr>
+        <th>S/N</th>
+        <th>Item</th>
+        <th>Serial Number</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngIf="model && model.product_items">
+        <tr *ngFor="let item of model.product_items|slice:tableCountStart:tableCountEnd;index as i">
+          <td>
+            <span class="td-inline-label">S/N</span>
+            {{i + 1}}
+          </td>
+          <td>
+            <span class="td-inline-label">Item</span>
+            <div class="d-flex flex-column">
+              {{item.product?.item_code}}
+              <small class="text-muted">
+                {{item.product?.local_description || item?.product?.description}}
+              </small>
+            </div>
+          </td>
+          <td>
+            <span class="td-inline-label">Serial Number</span>
+            {{item.serial_number}}
+          </td>
+        </tr>
+      </ng-container>
+
+      <ng-container *ngIf="!model || (model?.product_items?.length||0)===0">
+        <tr>
+          <td colspan="3" class="py-5">
+            <div class="text-center">No data available at the moment</div>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+    <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+      <pagination [meta]="pagination"></pagination>
+    </div>
+  </div>
+</div>

@@ -18,9 +18,10 @@ export interface CustomerContractModel {
   category_title: string;
   customer_id: string;
   customer?: CustomerModel;
-  productItems?: ProductItemModel[];
+  product_items?: ProductItemModel[];
   start_date: string;
   expiry_date: string;
+  active: boolean;
   created_at: string;
   created_by_id: string;
   created_by?: UserModel;

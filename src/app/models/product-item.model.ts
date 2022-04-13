@@ -67,6 +67,7 @@ export interface ProductItemModel {
   purchase_order_id?: number;
   purchase_order?: PurchaseOrderModel;
   active_warrant?: ProductItemWarrant;
+  latest_contracts?: CustomerContractModel[];
   created_by_id: number;
   updated_by_id: number;
   created_by?: UserModel;

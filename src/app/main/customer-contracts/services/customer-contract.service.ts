@@ -35,7 +35,7 @@ export class CustomerContractService {
 
   fetchById(id: number): Observable<CustomerContractModel> {
     return this.httpService.get(`${this.httpService.endpoint.customerContracts}/${id}`,
-      {params: {include: 'customer'}})
+      {params: {include: 'customer,createdBy,productItems.product'}})
       .pipe(map((res: { data: CustomerContractModel }) => res.data));
   }
 
@@ -44,7 +44,11 @@ export class CustomerContractService {
     const url = this.httpService.endpoint.customerProductItems
       .replace(/:id/g, customerId.toString());
 
-    return this.httpService.get(url, {params: {includeChildrenItems: true, ...meta}})
+    const params = {
+      include: 'latestActiveContracts,product,latestActivity.location',
+      includeChildrenItems: true, ...meta
+    }
+    return this.httpService.get(url, {params})
   }
 
   fetchContractProductItems(contractId: number, params: object):

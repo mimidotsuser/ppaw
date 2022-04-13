@@ -1,11 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { concatMap, map, Observable, of, Subscription, tap } from 'rxjs';
+import { Subscription, tap } from 'rxjs';
 import { PaginationModel } from '../../../../models/pagination.model';
 import { CustomerContractService } from '../../services/customer-contract.service';
 import { ProductItemModel } from '../../../../models/product-item.model';
-import { CustomerModel } from '../../../../models/customer.model';
-import { HttpResponseModel } from '../../../../models/response.model';
 import { CustomerContractModel } from '../../../../models/customer-contract.model';
 
 @Component({
@@ -86,7 +84,11 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
   toggleProductItemSelection($evt: Event) {
     if (($evt.target as HTMLInputElement).checked) {
       (this.contractItemsFormArray.controls as FormGroup[])
-        .map((group) => {group.patchValue({selected: true})})
+        .map((group) => {
+          if(!group.get('selected')?.disabled) {
+            group.patchValue({selected: true});
+          }
+        })
 
     } else {
       (this.contractItemsFormArray.controls as FormGroup[])
@@ -95,19 +97,23 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  contractItemFormGroup(productItem: ProductItemModel & { location: CustomerModel, selected: boolean }) {
+  contractItemFormGroup(productItem: ProductItemModel) {
+    const contract = productItem?.latest_contracts ? productItem.latest_contracts[ 0 ] : null;
+    const isSelected = this._model ? this._model.id === contract?.id : false;
+    const canBeSelected = !contract ||( this._model ? this._model?.id === contract?.id : false);
+
     return this.fb.group({
-      selected: this.fb.control(productItem.selected),
-      searchableStatus: this.fb.control(productItem.selected ? 'selected' : ''),
+      selected: this.fb.control({value: isSelected, disabled: !canBeSelected}),
+      searchableStatus: this.fb.control(isSelected && canBeSelected ? 'selected' : ''),
       productItem: this.fb.control(productItem),
       product: this.fb.control(productItem.product),
-      location: this.fb.control(productItem?.location)
+      location: this.fb.control(productItem?.latest_activity?.location)
     })
   }
 
   onCustomerSelect() {
     if (!this.form.value.customer) {
-      //allow user to modify contract owner
+      //allow user to modify contract owner if contract id already exists
       if (this.contractId) {return}
 
       //clear the form if we are not editing the contract
@@ -127,21 +133,12 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
     this.isBusy = true;
     this.subSink = this.customerContractService
       .fetchCustomerProductItems(this.form.value.customer.id, this.pagination)
-      .pipe(
-        concatMap((customerProductItemsResponse) => {
-          if (this.contractId) {
-            //fetch contract items
-            return this.loadContractItemsAndConcat(customerProductItemsResponse)
-          }
-          return of(customerProductItemsResponse);
-        })
-      )
       .pipe(tap(x => this.isBusy = false))
       .subscribe({
         next: (res) => {
           this.pagination.total = res.total;
           res.data.map((item) => {
-            const group = this.contractItemFormGroup(item as any)
+            const group = this.contractItemFormGroup(item)
             this.contractItemsFormArray.push(group);
 
             this.subSink = group.get('selected')!.valueChanges
@@ -151,22 +148,6 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
           })
         }
       })
-  }
-
-  private loadContractItemsAndConcat(res: HttpResponseModel<ProductItemModel>):
-    Observable<HttpResponseModel<ProductItemModel & { selected: boolean, location: CustomerModel }>> {
-    return this.customerContractService
-      .fetchContractProductItems(this.contractId!,
-        {ids: res.data.map((item) => item.id).join(',')})
-      .pipe(map((customerProductItemsResponse) => {
-        res.data.map((item) => {
-          const index = customerProductItemsResponse.data
-            .findIndex((x) => x.product_item_id == item.id);
-          Object.assign(item, {selected: index > -1})
-          return item;
-        });
-        return res as HttpResponseModel<ProductItemModel & { location: CustomerModel, selected: boolean }>;
-      }))
   }
 
   patchForm() {
