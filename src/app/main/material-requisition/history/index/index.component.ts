@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { faEye, faFilePdf } from '@fortawesome/free-regular-svg-icons';
-import { MaterialRequisitionService } from '../services/material-requisition.service';
-import { MRFActivity, MRFModel, MRFStage } from '../../../models/m-r-f.model';
-import { PaginationModel } from '../../../models/pagination.model';
 import { Subscription } from 'rxjs';
-import { FileService } from '../../../core/services/file.service';
+import { faEllipsisV, faEye, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { MRFActivity, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
+import { PaginationModel } from '../../../../models/pagination.model';
+import { MaterialRequisitionService } from '../../services/material-requisition.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-index',
@@ -27,7 +26,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
 
   constructor(private requisitionService: MaterialRequisitionService, private fb: FormBuilder,
-              private fileService: FileService) {
+              private _route: ActivatedRoute) {
 
     this.loadRequests();
     this.searchInput = this.fb.control('');
@@ -51,6 +50,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   get tableCountEnd() {
     return this.pagination.page * this.pagination.limit
   }
+
+  get route() {return this._route;}
 
   loadRequests() {
     this.subSink = this.requisitionService.fetch(this.pagination)

@@ -56,10 +56,10 @@
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
-              <button ngbDropdownItem (click)="showRequestSummary(request)">
+              <a routerLink="{{request.id}}" [relativeTo]="route" ngbDropdownItem>
                 <fa-icon [icon]="faEye" class="icon"></fa-icon>
-                View logs
-              </button>
+                View Summary
+              </a>
               <button ngbDropdownItem (click)="exportMRN(request)" *ngIf="canExportMRN(request)">
                 <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
                 Export MRN

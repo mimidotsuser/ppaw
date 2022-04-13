@@ -25,6 +25,17 @@ export class MaterialRequisitionService {
     return this.httpService.get(this.httpService.endpoint.materialRequests, {params});
   }
 
+  fetchById(id: string): Observable<MRFModel> {
+    return this.httpService.get(`${this.httpService.endpoint.materialRequests}/${id}`,
+      {params:{include:'items,activities'}})
+      .pipe(map((res: { data: MRFModel }) => res.data))
+  }
+
+  create(payload: object): Observable<MRFModel> {
+    return this.httpService.post(this.httpService.endpoint.materialRequests, payload)
+      .pipe(map((res: { data: MRFModel }) => res.data))
+  }
+
   fetchRequestsPendingVerification(meta: PaginationModel): Observable<HttpResponseModel<MRFModel>> {
     return this.httpService.get(this.httpService.endpoint.materialRequestsPendingVerification,
       {params: {...meta, include: 'latestActivity'}});
@@ -71,11 +82,6 @@ export class MaterialRequisitionService {
   }
 
 
-  findById(id: string): Observable<MRFModel> {
-    return this.httpService.get(`${this.httpService.endpoint.materialRequests}/${id}`)
-      .pipe(map((res: { data: MRFModel }) => res.data))
-  }
-
   get fetchAllProductCategories(): Observable<ProductCategoryModel[]> {
     return this.httpService.get(this.httpService.endpoint.productCategories)
       .pipe(map((res: { data: ProductCategoryModel[] }) => res.data));
@@ -95,11 +101,6 @@ export class MaterialRequisitionService {
         return res.data.reduce((acc, row) => acc + row.virtual_balance, 0)
       }));
 
-  }
-
-  create(payload: object): Observable<MRFModel> {
-    return this.httpService.post(this.httpService.endpoint.materialRequests, payload)
-      .pipe(map((res: { data: MRFModel }) => res.data))
   }
 
   exportMRN(request: MRFModel): Subscription {

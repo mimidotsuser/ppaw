@@ -59,7 +59,7 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faWarehouse,
       items: [
         {title: 'New request', url: 'material-requisition/create', display: true},
-        {title: 'All requests', url: 'material-requisition/history', display: true},
+        {title: 'All requests', url: 'material-requisition/history', display: true,exact:false},
         {
           title: 'Verify requests', url: 'material-requisition/verification',
           display: true,

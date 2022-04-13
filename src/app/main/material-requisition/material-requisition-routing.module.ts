@@ -9,12 +9,10 @@ const routes: Routes = [{
   children: [
     {
       path: 'history',
-      loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
+      loadChildren: () => import('./history/history.module').then(m => m.HistoryModule),
       data: {
-        resource: Resources.materialRequisition,
-        action: Actions.view,
-        title: 'All Material Requisition Requests',
-        breadcrumb: 'All Material Requisition Forms'
+        resource: Resources.materialRequisition, action: Actions.view,
+        title: 'All Material Requisition Requests', breadcrumb: 'All Material Requisition Forms'
       }
     },
     {
