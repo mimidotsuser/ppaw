@@ -4,7 +4,7 @@ import { IndexComponent } from './index/index.component';
 import { ShowComponent } from './show/show.component';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../../shared/shared.module';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { Actions, Resources } from '../../../utils/permissions';
 
 
@@ -27,6 +27,7 @@ import { Actions, Resources } from '../../../utils/permissions';
     ]),
     SharedModule,
     NgbDropdownModule,
+    NgbNavModule
   ]
 })
 export class HistoryModule {}

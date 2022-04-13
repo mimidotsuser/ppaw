@@ -58,25 +58,24 @@
   <table class="table table-hover table-block-sm">
     <thead>
     <tr>
-      <th>Worksheet No.</th>
       <th>Reference No.</th>
+      <th>Worksheet No.</th>
       <th>Customer</th>
       <th>Created By</th>
       <th>Created On</th>
-      <th>Total entries</th>
       <th></th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let worksheet of worksheets">
       <td>
-        <span class="td-inline-label">Worksheet No.</span>
-        <a class="text-decoration-none">
+        <span class="td-inline-label">Reference No.</span>
+        <a class="text-decoration-none" routerLink="{{worksheet.id}}" [relativeTo]="route" >
           {{worksheet.sn}}
         </a>
       </td>
       <td>
-        <span class="td-inline-label">Reference No.</span>
+        <span class="td-inline-label">Worksheet No.</span>
         {{worksheet.reference}}
       </td>
       <td>
@@ -96,12 +95,6 @@
       <td>
         <span class="td-inline-label">Created On</span>
         {{worksheet.created_at|date}}
-      </td>
-      <td>
-        <span class="td-inline-label">Total entries</span>
-        <a class="text-decoration-none">
-          {{worksheet?.entries?.length}}
-        </a>
       </td>
       <td>
         <div class="d-flex flex-column gap-2">

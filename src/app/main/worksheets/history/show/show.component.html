@@ -1,0 +1,218 @@
+<div class="container-fluid">
+
+  <div class="row">
+
+    <div class="col-md-3 mb-3">
+      <label for="request_id" class="form-label">Request No.</label>
+      <input type="text" class="form-control" disabled id="request_id"
+             [value]="model?.sn">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="customer" class="form-label">Customer</label>
+      <input type="text" class="form-control" disabled id="customer"
+             [value]="customer">
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <label for="name" class="form-label">Created By</label>
+      <input type="text" class="form-control" disabled id="name"
+             [value]="authorName">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="created_at" class="form-label">Created On</label>
+      <input type="text" class="form-control" disabled id="created_at"
+             [value]="model?.created_at|date">
+    </div>
+
+  </div>
+
+</div>
+
+<div class="container-md-fluid">
+  <div class="subtitle">
+    Worksheet Entries
+  </div>
+  <table class="table table-bordered table-hover table-block-sm">
+    <thead>
+    <tr>
+      <th class="entry-column">Entry Category</th>
+      <th>Work Description</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let group of groupedEntries|slice:groupsTableCountStart:groupsTableCountEnd">
+      <td>
+        <span class="td-inline-label">Entry Category</span>
+        {{group.category_title}}
+      </td>
+      <td>
+        <span class="td-inline-label">Work Description</span>
+        {{group.remark?.description}}
+      </td>
+      <td>
+        <div class="d-flex justify-content-end w-100 gap-2">
+          <button type="btn" class="btn btn-outline-dark btn-sm action-btn pe-3 ps-3"
+                  (click)="showEntrySummary(group)">
+            View entry
+          </button>
+        </div>
+      </td>
+    </tr>
+    <ng-container *ngIf="groupedEntries.length===0">
+      <tr>
+        <td colspan="5" class="text-center py-5">
+          No data available at the moment
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="groupsPagination"></pagination>
+  </div>
+</div>
+
+<app-side-popup [(show)]="showWorksheetEntryPopup" [isFullScreen]="true"
+                title="Worksheet Entry [{{selectedEntry?.category_title}}]">
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Work Description</label>
+      <textarea class="form-control" disabled
+                rows="4">{{selectedEntry?.remark?.description}}</textarea>
+    </div>
+  </div>
+  <nav ngbNav activeId="items" class="nav-tabs my-3" #outlet="ngbNav">
+    <div ngbNavItem="items">
+      <a ngbNavLink>Product Item Entries</a>
+      <ng-template ngbNavContent>
+        <ng-container *ngTemplateOutlet="itemsTemplate"></ng-container>
+      </ng-template>
+    </div>
+    <div ngbNavItem="repair" *ngIf="entries[0]?.repair?.spares_utilized">
+      <a ngbNavLink>Repair Products Utilized</a>
+      <ng-template ngbNavContent>
+        <ng-container *ngTemplateOutlet="repairItemsTemplate"></ng-container>
+      </ng-template>
+    </div>
+  </nav>
+  <div [ngbNavOutlet]="outlet"></div>
+
+</app-side-popup>
+
+<ng-template #itemsTemplate>
+  <div class="mt-2"></div>
+  <table class="table table-bordered table-hover table-block-sm">
+    <thead>
+    <tr>
+      <th>S/N</th>
+      <th>Item</th>
+      <th>Serial Number</th>
+      <th>Warrant</th>
+      <th>Contract Type</th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container *ngIf="this.selectedEntry && selectedEntry.entries">
+      <tr
+        *ngFor="let entry of selectedEntry.entries|slice:entriesTableCountStart:entriesTableCountEnd;index as i">
+        <td>
+          <span class="td-inline-label">S/N</span>
+          {{i + 1}}
+        </td>
+        <td>
+          <span class="td-inline-label">Item</span>
+          <div class="d-flex flex-column">
+            {{entry?.product_item?.product?.item_code}}
+            <small class="text-muted">
+              {{entry?.product_item?.product?.local_description ||
+            entry?.product_item?.product?.local_description}}
+            </small>
+          </div>
+        </td>
+        <td>
+          <span class="td-inline-label">Serial Number</span>
+          {{entry?.product_item?.serial_number}}
+        </td>
+        <td>
+          <span class="td-inline-label">Warrant</span>
+          <div class="d-flex flex-column">
+            <small>{{entry?.warrant?.warrant_start|date}}</small>
+            <small *ngIf="entry?.warrant" class="text-muted">to</small>
+            <ng-container *ngIf="entry?.warrant?.warrant_end;else notAvail">
+              <small>{{entry?.warrant?.warrant_end|date}}</small>
+            </ng-container>
+            <ng-template #notAvail>
+              <small *ngIf="entry?.warrant?.warrant_end">N/A</small>
+            </ng-template>
+          </div>
+        </td>
+        <td>
+          <span class="td-inline-label">Contract Type</span>
+          <div class="d-flex pb-2">
+            {{entry?.contract?.category_title}}
+          </div>
+          <a *ngIf="entry.customer_contract_id" [relativeTo]="route" target="_blank"
+             routerLink="../../../customer-contracts/history/{{entry.customer_contract_id}}">
+            <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+            view
+          </a>
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="entriesPagination"></pagination>
+  </div>
+</ng-template>
+
+<ng-template #repairItemsTemplate>
+  <div class="mt-2"></div>
+  <table class="table table-hover table-block-sm" *ngIf="entries[0]?.repair?.spares_utilized">
+    <thead>
+    <tr>
+      <th>Item Code</th>
+      <th>M-PN</th>
+      <th>Description</th>
+      <th>Total Used</th>
+      <th>Total New</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr
+      *ngFor="let spare of entries[0].repair!.spares_utilized|slice:sparesTableCountStart:sparesTableCountEnd">
+
+      <td>
+        <span class="td-inline-label">Item Code</span>
+        <div class="d-flex flex-column">
+          {{spare?.product?.item_code}}
+          <small class="text-muted">
+            {{spare?.product?.local_description}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">M-PN</span>
+        {{spare?.product?.manufacturer_part_number}}
+      </td>
+      <td>
+        <span class="td-inline-label">Description</span>
+        {{spare?.product?.description}}
+      </td>
+      <td>
+        <span class="td-inline-label">Total Used</span>
+        {{spare?.old_total}}
+      </td>
+      <td>
+        <span class="td-inline-label">Total New</span>
+        {{spare?.new_total}}
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="sparesPagination"></pagination>
+  </div>
+</ng-template>

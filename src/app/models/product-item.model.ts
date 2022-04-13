@@ -32,6 +32,7 @@ export interface ProductItemRepairModel {
 export interface ProductItemActivityModel {
   id: number;
   product_item_id: number;
+  product_item?: ProductItemModel;
   location_id: number;
   location_type: 'customer' | 'warehouse';
   location: CustomerModel | WarehouseModel

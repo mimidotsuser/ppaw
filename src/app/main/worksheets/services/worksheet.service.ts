@@ -16,7 +16,7 @@ export class WorksheetService {
   constructor(private httpService: HttpService) { }
 
   fetch(meta: PaginationModel): Observable<HttpResponseModel<WorksheetModel>> {
-    const params = {...meta, include: 'entries.repair.products,createdBy,customer'}
+    const params = {...meta, include: 'createdBy,customer'}
     return this.httpService.get(this.httpService.endpoint.worksheets, {params})
   }
 
@@ -30,8 +30,8 @@ export class WorksheetService {
     return this.httpService.get(`${this.httpService.endpoint.worksheets}/${id}`,
       {
         params: {
-          include: 'createdBy,customer,entries.remark,entries.repair,' +
-            'entries.repair.products,entries.repair.sparesUtilized,entries.warrant,entries.contract'
+          include: `createdBy,customer,entries.remark,entries.repair,entries.repair.products,
+          entries.repair.sparesUtilized,entries.warrant,entries.contract,entries.productItem.product`
         }
       })
       .pipe(map((res: { data: WorksheetModel }) => res.data))
