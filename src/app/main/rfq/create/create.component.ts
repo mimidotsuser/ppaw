@@ -179,6 +179,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     if (this.requestItemsForm.length == 0) {return;}
     for (let i = this.requestItemsForm.length - 1; i >= 0; i--) {
       if (this.requestItemsForm.at(i).get('pr_item')?.value) {
+        this.pagination.total -= 1
         this.requestItemsForm.removeAt(i);
       }
     }
@@ -200,8 +201,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   onPurchaseRequestSelect() {
     //if there is no purchase, just reset the form
     if (!this.form.value.purchase_request) {
-      this.pagination.total = 0;
       this.removePRItemsFromRFQItemsForm();
+      this.pagination.total = 0;
     } else {
       this.pagination.total = this.form.value?.purchase_request?.items?.length;
       this.renderPurchaseRequestItemsForm(this.form.value.purchase_request);
@@ -239,6 +240,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.requestItemsForm.push(group);
       this.showAdhocRFQItemFormPopup = false;
       this.adhocRFQItemForm.reset({qty: 1});
+      this.pagination.total += 1
     }
   }
 
@@ -256,6 +258,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       //if the form group has not order item id, remove
       if (!group.get('pr_item')?.value) {
         this.requestItemsForm.removeAt(index);
+        this.pagination.total -= 1;
       } else {
         //reset the quantity to zero
         this.requestItemsForm.at(index).patchValue({qty: 0});

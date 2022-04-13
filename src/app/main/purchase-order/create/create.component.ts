@@ -218,6 +218,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     for (let i = this.requestItemsForm.length - 1; i >= 0; i--) {
       if (this.requestItemsForm.at(i).get('rfq_item')?.value) {
         this.requestItemsForm.removeAt(i);
+        this.pagination.total -= 1;
       }
     }
   }
@@ -228,6 +229,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     //for each RFQ request item, create and push LPO item form
     request.items.forEach((item) => {
       this.addPurchaseOrderItemForm(item.product!, item);
+      this.pagination.total += 1;
     })
   }
 
@@ -262,6 +264,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       //remove the item if the form group has no RFQ order item
       if (!group.get('rfq_item')?.value) {
         this.requestItemsForm.removeAt(index);
+        this.pagination.total -=1 ;
       } else {
         //reset the quantity to zero
         this.requestItemsForm.at(index).patchValue({qty: 0});
@@ -306,6 +309,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       this.requestItemsForm.push(group);
       this.showAdhocLPOItemFormPopup = false;
       this.adhocLPOItemForm.reset({qty: 1});
+      this.pagination.total += 1;
     }
 
   }
