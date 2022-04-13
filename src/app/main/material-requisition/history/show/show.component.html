@@ -150,12 +150,12 @@
     <pagination [meta]="pagination"></pagination>
   </div>
 
-  <div class="my-5" *ngIf="model">
-    <button class="btn-outline-primary" (click)="exportMRN(model)" *ngIf="canExportMRN(model)">
+  <div class="my-5 d-flex gap-2" *ngIf="model">
+    <button class="btn btn-outline-primary" (click)="exportMRN(model)" *ngIf="canExportMRN(model)">
       <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
       Export MRN
     </button>
-    <button class="btn-outline-primary" (click)="exportSIV(model)" *ngIf="canExportSIV(model)">
+    <button class="btn btn-primary" (click)="exportSIV(model)" *ngIf="canExportSIV(model)">
       <fa-icon [icon]="faFilePdf" class="export-pdf icon"></fa-icon>
       Export SIV
     </button>

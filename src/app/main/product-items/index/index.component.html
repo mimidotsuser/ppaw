@@ -110,7 +110,7 @@
 
     <ng-container *ngIf="productItems.length===0">
       <tr>
-        <td class="text-center py-3" colspan="9">
+        <td class="text-center py-5" colspan="9">
           <ng-container *ngIf="!searchInput.value;else noResults">
             There is no product items.&nbsp;
             <a class="text-decoration-none" (click)="openCreateForm()">
