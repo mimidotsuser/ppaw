@@ -47,7 +47,7 @@
 
 
     <div class="d-md-block">
-      <a class="btn btn-outline-primary" routerLink="../create">
+      <a class="btn btn-outline-primary" routerLink="../create" [relativeTo]="route">
         + New Request
       </a>
     </div>
@@ -114,9 +114,9 @@
             </button>
 
             <div ngbDropdownMenu aria-labelledby="dp">
-              <button  ngbDropdownItem (click)="viewWorksheetSummary(worksheet)">
+              <a routerLink="{{worksheet.id}}" [relativeTo]="route" ngbDropdownItem>
                 View all entries
-              </button>
+              </a>
             </div>
           </div>
         </div>

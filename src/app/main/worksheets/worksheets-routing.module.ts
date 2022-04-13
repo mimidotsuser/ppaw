@@ -9,7 +9,7 @@ const routes: Routes = [{
     {path: '', pathMatch: 'full', redirectTo: 'history'},
     {
       path: 'history',
-      loadChildren: () => import('./index/index.module').then(m => m.IndexModule),
+      loadChildren: () => import('./history/history.module').then(m => m.HistoryModule),
       data: {
         resource: Resources.worksheet, action: Actions.view,
         title: 'All Worksheets', breadcrumb: 'All Worksheets'

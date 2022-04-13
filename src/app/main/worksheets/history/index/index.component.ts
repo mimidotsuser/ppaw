@@ -1,17 +1,18 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { faEllipsisV, faFilter } from '@fortawesome/free-solid-svg-icons';
-import { WorksheetModel } from '../../../models/worksheet.model';
-import { WorksheetService } from '../services/worksheet.service';
-import { PaginationModel } from '../../../models/pagination.model';
+import { WorksheetModel } from '../../../../models/worksheet.model';
+import { PaginationModel } from '../../../../models/pagination.model';
+import { WorksheetService } from '../../services/worksheet.service';
 
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss']
 })
-export class IndexComponent implements OnInit, OnDestroy {
+export class IndexComponent implements OnInit {
 
   faFilter = faFilter
   faEllipsisV = faEllipsisV;
@@ -20,7 +21,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   pagination: PaginationModel = {limit: 25, total: 0, page: 1};
   searchInput: FormControl;
 
-  constructor(private fb: FormBuilder, private worksheetService: WorksheetService) {
+  constructor(private fb: FormBuilder, private worksheetService: WorksheetService,
+              private _route: ActivatedRoute) {
     this.searchInput = this.fb.control(null);
     this.loadWorksheets();
   }
@@ -36,6 +38,8 @@ export class IndexComponent implements OnInit, OnDestroy {
     return this._worksheets;
   }
 
+  get route() {return this._route}
+
   loadWorksheets() {
     this.subSink = this.worksheetService.fetch(this.pagination)
       .subscribe({
@@ -44,10 +48,6 @@ export class IndexComponent implements OnInit, OnDestroy {
           this._worksheets = this.worksheets.concat(res.data);
         }
       })
-  }
-
-  viewWorksheetSummary(worksheet: WorksheetModel) {
-
   }
 
   ngOnDestroy(): void {

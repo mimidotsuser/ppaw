@@ -29,6 +29,7 @@ export interface WorksheetEntryModel {
   customer_contract_id: number;
   product_item_warrant_id?: number;
   entry_remark_id?: number
+  remark?: string
   product_item_repair_id?: number;
   repair?: ProductItemRepairModel
   log_category_code: string

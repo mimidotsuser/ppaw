@@ -25,6 +25,18 @@ export class WorksheetService {
       .pipe(map((res: { data: WorksheetModel }) => res.data))
   }
 
+
+  fetchById(id: string | number): Observable<WorksheetModel> {
+    return this.httpService.get(`${this.httpService.endpoint.worksheets}/${id}`,
+      {
+        params: {
+          include: 'createdBy,customer,entries.remark,entries.repair,' +
+            'entries.repair.products,entries.repair.sparesUtilized,entries.warrant,entries.contract'
+        }
+      })
+      .pipe(map((res: { data: WorksheetModel }) => res.data))
+  }
+
   fetchCustomerMachines(client_id: number): Observable<ProductItemModel[]> {
     return this.httpService.get(this.httpService.endpoint.productItems,
       {params: {customer_id: client_id}})

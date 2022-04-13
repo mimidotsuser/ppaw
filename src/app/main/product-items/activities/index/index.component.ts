@@ -33,7 +33,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   form: FormGroup;
   minAllowedWarrantEndDate?: string;
 
-  constructor(private productItemService: ProductItemService, private router: ActivatedRoute,
+  constructor(private productItemService: ProductItemService, private _route: ActivatedRoute,
               private fb: FormBuilder) {
 
     this.loadActivities();
@@ -55,7 +55,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subSink = this.productItemService.findById(this.router.snapshot.params[ 'id' ])
+    this.subSink = this.productItemService.findById(this._route.snapshot.params[ 'id' ])
       .subscribe({
         next: (v) => {
           this._productItem = v;
@@ -129,12 +129,14 @@ export class IndexComponent implements OnInit, OnDestroy {
       this.form.value.category_code === ProductItemActivityCategoryCode.WAREHOUSE_TO_WAREHOUSE_TRANSFER
   }
 
+  get route() {return this._route;}
+
   loadActivities() {
     if (this.tableCountEnd <= this._activities.length) {
       return;
     }
     this.subSink = this.productItemService.fetchActivities(
-      this.router.snapshot.params[ 'id' ],
+      this._route.snapshot.params[ 'id' ],
       this.pagination)
       .subscribe({
         next: (res) => {
@@ -211,7 +213,7 @@ export class IndexComponent implements OnInit, OnDestroy {
     }
 
     this.subSink = this.productItemService
-      .createActivity(this.router.snapshot.params[ 'id' ], payload)
+      .createActivity(this._route.snapshot.params[ 'id' ], payload)
       .subscribe({
         next: (res) => {
           this._activities.unshift(res);
