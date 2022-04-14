@@ -30,8 +30,8 @@ export class WorksheetService {
     return this.httpService.get(`${this.httpService.endpoint.worksheets}/${id}`,
       {
         params: {
-          include: `createdBy,customer,entries.remark,entries.repair,entries.repair.products,
-          entries.repair.sparesUtilized,entries.warrant,entries.contract,entries.productItem.product`
+          include: 'createdBy,customer,entries.remark,entries.repair.products,' +
+            'entries.warrant,entries.contract,entries.productItem.product'
         }
       })
       .pipe(map((res: { data: WorksheetModel }) => res.data))

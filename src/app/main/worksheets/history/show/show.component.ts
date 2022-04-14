@@ -116,7 +116,7 @@ export class ShowComponent implements OnInit {
   showEntrySummary(group: GroupedEntryModel) {
     this.showWorksheetEntryPopup = true;
     this.selectedEntry = group;
-    this.sparesPagination.total = group.entries[ 0 ]?.repair?.spares_utilized?.length || 0;
+    this.sparesPagination.total = group.entries[ 0 ]?.repair?.products?.length || 0;
     this.entriesPagination.total = group.entries.length;
   }
 

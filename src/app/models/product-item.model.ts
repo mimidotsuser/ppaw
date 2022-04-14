@@ -26,7 +26,8 @@ export enum ProductItemActivityCategoryCode {
 
 export interface ProductItemRepairModel {
   id: number;
-  spares_utilized: { new_total: number, old_total: number, product_id: number, product?: ProductModel }[]
+  spares_utilized?: { new_total: number, old_total: number, product_id: number, product?: ProductModel }[]
+  products: (ProductModel & { pivot: { new_total: number, old_total: number } }) []
 }
 
 export interface ProductItemActivityModel {

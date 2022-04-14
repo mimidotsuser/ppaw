@@ -90,7 +90,8 @@
         <ng-container *ngTemplateOutlet="itemsTemplate"></ng-container>
       </ng-template>
     </div>
-    <div ngbNavItem="repair" *ngIf="entries[0]?.repair?.spares_utilized">
+    <div ngbNavItem="repair"
+         *ngIf="selectedEntry &&selectedEntry.entries &&  selectedEntry!.entries[0]?.repair">
       <a ngbNavLink>Repair Products Utilized</a>
       <ng-template ngbNavContent>
         <ng-container *ngTemplateOutlet="repairItemsTemplate"></ng-container>
@@ -170,44 +171,40 @@
 
 <ng-template #repairItemsTemplate>
   <div class="mt-2"></div>
-  <table class="table table-hover table-block-sm" *ngIf="entries[0]?.repair?.spares_utilized">
+  <table class="table table-hover table-block-sm"
+         *ngIf=" selectedEntry &&selectedEntry.entries &&  selectedEntry!.entries[0]?.repair">
     <thead>
     <tr>
-      <th>Item Code</th>
+      <th>Item</th>
       <th>M-PN</th>
-      <th>Description</th>
       <th>Total Used</th>
       <th>Total New</th>
     </tr>
     </thead>
     <tbody>
     <tr
-      *ngFor="let spare of entries[0].repair!.spares_utilized|slice:sparesTableCountStart:sparesTableCountEnd">
+      *ngFor="let repair of selectedEntry.entries[0].repair!.products|slice:sparesTableCountStart:sparesTableCountEnd">
 
       <td>
-        <span class="td-inline-label">Item Code</span>
+        <span class="td-inline-label">Item</span>
         <div class="d-flex flex-column">
-          {{spare?.product?.item_code}}
+          {{repair?.item_code}}
           <small class="text-muted">
-            {{spare?.product?.local_description}}
+            {{repair?.local_description || repair.local_description}}
           </small>
         </div>
       </td>
       <td>
         <span class="td-inline-label">M-PN</span>
-        {{spare?.product?.manufacturer_part_number}}
-      </td>
-      <td>
-        <span class="td-inline-label">Description</span>
-        {{spare?.product?.description}}
+        {{repair?.manufacturer_part_number}}
       </td>
       <td>
         <span class="td-inline-label">Total Used</span>
-        {{spare?.old_total}}
+        {{repair?.pivot?.old_total}}
       </td>
       <td>
         <span class="td-inline-label">Total New</span>
-        {{spare?.new_total}}
+        {{repair?.pivot?.new_total}}
       </td>
     </tr>
     </tbody>

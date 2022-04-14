@@ -59,7 +59,7 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faWarehouse,
       items: [
         {title: 'New request', url: 'material-requisition/create', display: true},
-        {title: 'All requests', url: 'material-requisition/history', display: true,exact:false},
+        {title: 'All requests', url: 'material-requisition/history', display: true, exact: false},
         {
           title: 'Verify requests', url: 'material-requisition/verification',
           display: true,
@@ -192,7 +192,7 @@ export class MainComponent implements OnInit, OnDestroy {
           display: true
         }, {
           title: 'All Worksheets', url: 'worksheets/history',
-          display: true
+          display: true, exact: false
         },
       ]
     },
