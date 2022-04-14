@@ -55,7 +55,7 @@ export class EditComponent implements OnInit, OnDestroy {
     this.subSink = this.contractService.update(this.route.snapshot.params[ 'id' ], payload)
       .subscribe({
         next: () => {
-          this.router.navigate(['../'], {relativeTo: this.route})
+          this.router.navigate(['../../'], {relativeTo: this.route})
             .then(() => {
 
             })
