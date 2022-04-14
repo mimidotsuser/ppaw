@@ -58,7 +58,11 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
   }
 
   get contractCategories() {
-    return [{code: 'FULL', title: 'Full cover'}, {code: 'LABOUR_ONLY', title: 'Labour Only'}]
+    return [
+      {code: 'FULL', title: 'Full cover'},
+      {code: 'LABOUR_ONLY', title: 'Labour Only'},
+      {code: 'LEASE', title: 'Lease cover'}
+    ]
   }
 
   get contractId(): number | null {return this._model ? this._model.id : null}
@@ -85,7 +89,7 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
     if (($evt.target as HTMLInputElement).checked) {
       (this.contractItemsFormArray.controls as FormGroup[])
         .map((group) => {
-          if(!group.get('selected')?.disabled) {
+          if (!group.get('selected')?.disabled) {
             group.patchValue({selected: true});
           }
         })
@@ -100,7 +104,7 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
   contractItemFormGroup(productItem: ProductItemModel) {
     const contract = productItem?.latest_contracts ? productItem.latest_contracts[ 0 ] : null;
     const isSelected = this._model ? this._model.id === contract?.id : false;
-    const canBeSelected = !contract ||( this._model ? this._model?.id === contract?.id : false);
+    const canBeSelected = !contract || (this._model ? this._model?.id === contract?.id : false);
 
     return this.fb.group({
       selected: this.fb.control({value: isSelected, disabled: !canBeSelected}),
