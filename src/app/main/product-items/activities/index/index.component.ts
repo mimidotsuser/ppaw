@@ -12,6 +12,7 @@ import { WarehouseModel } from '../../../../models/warehouse.model';
 import { PaginationModel } from '../../../../models/pagination.model';
 import { ProductItemService } from '../../services/product-item.service';
 import { serializeDate } from '../../../../utils/serializers/date';
+import { MRFPurposeCode } from '../../../../models/m-r-f.model';
 
 @Component({
   selector: 'app-index',
@@ -48,6 +49,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       customer: this.fb.control(null),
       warehouse: this.fb.control(null),
       description: this.fb.control(null, {validators: Validators.required}),
+      purpose_code: this.fb.control(null),
     });
 
     this.syncFormValidations()
@@ -62,7 +64,8 @@ export class IndexComponent implements OnInit, OnDestroy {
           this.form.patchValue({
             current_location: v.latest_activity?.location?.name,
             warrant_start: v?.active_warrant?.warrant_start,
-            warrant_end: v?.active_warrant?.warrant_end
+            warrant_end: v?.active_warrant?.warrant_end,
+            purpose_code: v?.latest_activity?.covenant
           })
         }
       });
@@ -146,6 +149,17 @@ export class IndexComponent implements OnInit, OnDestroy {
       })
   }
 
+
+  get purposes(): { code: MRFPurposeCode, title: string }[] {
+    return [
+      {code: MRFPurposeCode.SALE, title: 'Customer Sale'},
+      {code: MRFPurposeCode.STANDBY, title: 'Standby'},
+      {code: MRFPurposeCode.DEMO, title: 'Customer Demo'},
+      {code: MRFPurposeCode.LEASE, title: 'Customer Lease'}
+    ]
+  }
+
+
   private syncFormValidations() {
     this.subSink = this.form.get('category_code')!
       .valueChanges
@@ -158,6 +172,8 @@ export class IndexComponent implements OnInit, OnDestroy {
         this.form.get('warehouse')?.updateValueAndValidity()
         this.form.get('out_of_order')?.removeValidators(Validators.required)
         this.form.get('out_of_order')?.updateValueAndValidity()
+        this.form.get('purpose_code')?.removeValidators(Validators.required)
+        this.form.get('purpose_code')?.updateValueAndValidity()
 
         if (this.warrantyUpdateSelected) {
           this.form.get('warrant_start')?.setValidators(Validators.required)
@@ -166,6 +182,8 @@ export class IndexComponent implements OnInit, OnDestroy {
         if (this.customer2CustomerUpdateSelected) {
           this.form.get('customer')?.setValidators(Validators.required)
           this.form.get('customer')?.updateValueAndValidity();
+          this.form.get('purpose_code')?.setValidators(Validators.required)
+          this.form.get('purpose_code')?.updateValueAndValidity()
         }
 
         if (this.customer2WarehouseUpdateSelected) {
@@ -210,6 +228,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       payload.warehouse_id = this.form.value.warehouse?.id;
     } else if (this.customer2CustomerUpdateSelected) {
       payload.customer_id = this.form.value.customer?.id;
+      payload.purpose_code = this.form.value.purpose_code;
     }
 
     this.subSink = this.productItemService
@@ -220,7 +239,8 @@ export class IndexComponent implements OnInit, OnDestroy {
           this.form.patchValue({
             current_location: res?.location?.name,
             warrant_start: res.warrant?.warrant_start,
-            warrant_end: res?.warrant?.warrant_end
+            warrant_end: res?.warrant?.warrant_end,
+            purpose_code: res?.covenant
           })
           this.showLocationFormPopup = false;
         }

@@ -178,8 +178,8 @@
                 <thead>
                 <tr>
                   <td>Item</td>
-                  <td>Old total</td>
-                  <td>Brand new total</td>
+                  <td>Total old</td>
+                  <td>Total new</td>
                 </tr>
                 </thead>
                 <tbody>
@@ -193,8 +193,12 @@
                       </small>
                     </div>
                   </td>
-                  <td>{{spare.old_total}}</td>
-                  <td>{{spare.new_total}}</td>
+                  <td>
+                    <span class="td-inline-label">Total old</span>
+                    {{spare.old_total}}</td>
+                  <td>
+                    <span class="td-inline-label">Total new</span>
+                    {{spare.new_total}}</td>
                 </tr>
                 </tbody>
 
@@ -263,6 +267,15 @@
         <customer-typeahead-input controlName="customer" customId="customer">
 
         </customer-typeahead-input>
+      </div>
+      <div class="col-md-6 mb-3" *ngIf="customer2CustomerUpdateSelected">
+        <label for="purpose" class="form-label required">Transfer Agreement</label>
+        <select id="purpose" class="form-select" formControlName="purpose_code">
+          <option disabled selected></option>
+          <option *ngFor="let purpose of purposes" [ngValue]="purpose.code">
+            {{purpose.title}}
+          </option>
+        </select>
       </div>
 
       <div class="col-md-6 mb-3" *ngIf="customer2WarehouseUpdateSelected">

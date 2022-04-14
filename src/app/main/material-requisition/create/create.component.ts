@@ -117,10 +117,6 @@ export class CreateComponent implements OnInit, OnDestroy {
     return requestPurposes;
   }
 
-  purposeOptionComparator(v1: { id: MRFPurposeCode }, v2: { id: MRFPurposeCode }) {
-    return v1 && v2 ? v1.id === v2.id : false;
-  }
-
   get requestItems(): FormModel[] {
     return this._formRequestItems;
   }
@@ -139,6 +135,10 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   get spareCategorySelected(): boolean {
     return this.form.get('category')?.value === this.spareCategory;
+  }
+
+  purposeOptionComparator(v1: { id: MRFPurposeCode }, v2: { id: MRFPurposeCode }) {
+    return v1 && v2 ? v1.id === v2.id : false;
   }
 
   closePopup() {

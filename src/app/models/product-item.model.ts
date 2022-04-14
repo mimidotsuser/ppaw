@@ -49,6 +49,7 @@ export interface ProductItemActivityModel {
   log_category_title: string;
   eventable_id?: string;
   eventable_type?: string;
+  covenant: string;
   created_by_id: number;
   updated_by_id: number;
   created_by?: UserModel;
