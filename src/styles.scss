@@ -43,6 +43,11 @@
 @import "button";
 @import "pagination";
 
+body{
+  height: 100%;
+  position: relative;
+}
+
 .form-select.ng-invalid.ng-touched,
 .form-control.ng-invalid.ng-touched,
 .ng-select.ng-invalid.ng-touched {
