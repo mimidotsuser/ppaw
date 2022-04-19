@@ -13,7 +13,6 @@ import {
   imports: [
     CommonModule,
     TypeaheadSearchInputModule,
-    TypeaheadSearchInputModule,
   ],
   exports: [
     CustomerSearchInputComponent

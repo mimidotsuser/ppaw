@@ -137,4 +137,8 @@ export class TypeaheadSearchInputComponent<T> implements OnInit, ControlValueAcc
       $event.preventDefault();
     }
   }
+
+  onFocus($event: FocusEvent) {
+    ($event.target as HTMLInputElement).select()
+  }
 }
