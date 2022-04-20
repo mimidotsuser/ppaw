@@ -57,7 +57,7 @@
               {{menuList[menuBlock].title}}
             </p>
             <ul class="menu nav nav-pills flex-column">
-              <ng-container *ngFor="let item of menuList[menuBlock].items">
+              <ng-container *ngFor="let item of menuList[menuBlock].items;trackBy:menuItemTrackBy">
                 <li class="nav-item" *ngIf="item.display">
                   <a [routerLink]="item.url" routerLinkActive="active" class="nav-link"
                      [routerLinkActiveOptions]="{exact:(item?.exact!=undefined?item.exact!:true)}">
