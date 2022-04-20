@@ -7,7 +7,7 @@
     </div>
 
     <div class="d-md-block">
-      <button type="button" class="btn btn-outline-primary"
+      <button type="button" class="btn btn-outline-primary" *can="'users.create'"
               (click)="showCreateUserPopup()">
         + New user
       </button>
@@ -56,20 +56,24 @@
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
 
-              <button ngbDropdownItem *ngIf="user.status==='PENDING_ACTIVATION'"
-                      (click)="resendInvite(user)">
-                Resend invite
+              <ng-container *can="'users.edit'">
+                <button ngbDropdownItem *ngIf="user.status==='PENDING_ACTIVATION'"
+                        (click)="resendInvite(user)">
+                  Resend invite
+                </button>
+                <button ngbDropdownItem (click)="showEditForm(user)">Edit</button>
+                <button ngbDropdownItem *ngIf="user.status==='ACTIVE'"
+                        (click)="updateStatus(user)">
+                  Suspend
+                </button>
+                <button ngbDropdownItem *ngIf="user.status==='SUSPENDED'"
+                        (click)="updateStatus(user,false)">
+                  Unsuspend
+                </button>
+              </ng-container>
+              <button ngbDropdownItem (click)="deleteUser(user)" *can="'users.delete'">
+                Delete
               </button>
-              <button ngbDropdownItem (click)="showEditForm(user)">Edit</button>
-              <button ngbDropdownItem *ngIf="user.status==='ACTIVE'"
-                      (click)="updateStatus(user)">
-                Suspend
-              </button>
-              <button ngbDropdownItem *ngIf="user.status==='SUSPENDED'"
-                      (click)="updateStatus(user,false)">
-                Unsuspend
-              </button>
-              <button ngbDropdownItem (click)="deleteUser(user)">Delete</button>
             </div>
           </div>
         </div>

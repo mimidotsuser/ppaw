@@ -27,7 +27,7 @@ export class MaterialRequisitionService {
 
   fetchById(id: string): Observable<MRFModel> {
     return this.httpService.get(`${this.httpService.endpoint.materialRequests}/${id}`,
-      {params:{include:'items,activities'}})
+      {params: {include: 'items,activities'}})
       .pipe(map((res: { data: MRFModel }) => res.data))
   }
 
@@ -45,7 +45,7 @@ export class MaterialRequisitionService {
     const url = this.httpService.endpoint.materialRequestVerification
       .replace(/:id/g, id.toString());
     return this.httpService
-      .get(url, {params: {include: 'items,activities'}})
+      .get(url, {params: {include: 'items,activities,items.worksheet'}})
       .pipe(map((res: { data: MRFModel }) => res.data));
 
   }
@@ -68,7 +68,7 @@ export class MaterialRequisitionService {
       .replace(/:id/g, id.toString());
 
     return this.httpService
-      .get(url, {params: {include: 'items,activities'}})
+      .get(url, {params: {include: 'items,activities,items.worksheet'}})
       .pipe(map((res: { data: MRFModel }) => res.data));
   }
 

@@ -67,16 +67,17 @@
       </td>
       <td>
         <span class="td-inline-label">PO No.</span>
-        <div class="d-flex flex-column">
+        <ng-template #poViewFallback>
           {{request?.goods_receipt_note?.purchase_order?.sn}}
-          <ng-container *ngIf="request?.goods_receipt_note?.purchase_order_id">
+        </ng-template>
+          <ng-container *can="'purchaseOrder.view';else poViewFallback">
             <a [relativeTo]="route" target="_blank" class="pt-2"
+               *ngIf="request?.goods_receipt_note?.purchase_order_id"
                routerLink="../../purchase-orders/history/{{request?.goods_receipt_note?.purchase_order_id}}">
               <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
-              view
+              {{request?.goods_receipt_note?.purchase_order?.sn}}
             </a>
           </ng-container>
-        </div>
       </td>
       <td>
         <span class="td-inline-label">Supplier</span>

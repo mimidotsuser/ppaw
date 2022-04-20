@@ -8,7 +8,7 @@
 
     <div class="d-md-block">
       <button type="button" class="btn btn-outline-primary"
-              (click)="showCreateForm()">
+              (click)="showCreateForm()" *can="'customers.create'">
         + New Client
       </button>
     </div>
@@ -55,12 +55,19 @@
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
 
-              <button ngbDropdownItem *ngIf="!customer.parent_id"
-                      (click)="showCreateForm(customer)">
-                Add Branch
+              <ng-container *can="'customers.create'">
+                <button ngbDropdownItem *ngIf="!customer.parent_id"
+                        (click)="showCreateForm(customer)">
+                  Add Branch
+                </button>
+              </ng-container>
+
+              <button ngbDropdownItem (click)="showEditForm(customer)" *can="'customers.edit'">
+                Edit
               </button>
-              <button ngbDropdownItem (click)="showEditForm(customer)">Edit</button>
-              <button ngbDropdownItem (click)="deleteCustomer(customer)">Delete</button>
+              <button ngbDropdownItem (click)="deleteCustomer(customer)" *can="'customers.delete'">
+                Delete
+              </button>
             </div>
           </div>
         </div>
@@ -71,7 +78,7 @@
         <td class="text-center py-3" colspan="9">
           <ng-container *ngIf="!searchControl.value;else noResults">
             There is no customers.&nbsp;
-            <a class="text-decoration-none" (click)="showCreateForm()">
+            <a class="text-decoration-none" (click)="showCreateForm()" *can="'customers.create'">
               Click to add new item
             </a>
           </ng-container>

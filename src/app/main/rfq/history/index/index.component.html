@@ -4,7 +4,8 @@
     </div>
 
     <div class="d-md-block">
-      <a class="btn btn-outline-primary"  routerLink="../create" [relativeTo]="route">
+      <a class="btn btn-outline-primary" routerLink="../create" [relativeTo]="route"
+         *can="'rfq.create'">
         + New Request
       </a>
     </div>
@@ -38,11 +39,15 @@
       </td>
       <td>
         <span class="td-inline-label">Purchase Request</span>
-        <a *ngIf="request.purchase_request_id" target="_blank" [relativeTo]="route"
-           routerLink="../../purchase-requisition/history/{{request?.purchase_request_id}}">
-          <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
-          view
-        </a>
+        <ng-template #prViewFallback> {{request.purchase_request?.sn}}</ng-template>
+
+        <ng-container *can="'purchaseRequests.view';else prViewFallback ">
+          <a *ngIf="request.purchase_request_id" target="_blank" [relativeTo]="route"
+             routerLink="../../purchase-requisition/history/{{request?.purchase_request_id}}">
+            <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+            {{request.purchase_request?.sn}}
+          </a>
+        </ng-container>
       </td>
       <td>
         <span class="td-inline-label">Requested On</span>
@@ -55,12 +60,16 @@
       </td>
       <td>
         <span class="td-inline-label">Purchase Order</span>
-        <a *ngIf="request?.purchase_order" target="_blank"
-           routerLink="/main/purchase-order/history"
-           [queryParams]="{po:request?.purchase_order?.id}">
-          <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
-          view
-        </a>
+        <ng-template #poViewFallback>
+          {{request.purchase_order?.sn}}
+        </ng-template>
+        <ng-container *can="'purchaseOrder.view';else poViewFallback">
+          <a *ngIf="request?.purchase_order" target="_blank" [relativeTo]="route"
+             routerLink="../../purchase-orders/history/{{request?.purchase_order?.id}}">
+            <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+            {{request.purchase_order?.sn}}
+          </a>
+        </ng-container>
       </td>
       <td>
         <div class="d-flex gap-2 justify-content-end w-100">
@@ -87,7 +96,8 @@
       <tr>
         <td class="text-center py-5" colspan="7">
           There are no RFQ's available at the moment.
-          <a class="text-decoration-none" routerLink="../create" [relativeTo]="route">
+          <a class="text-decoration-none" routerLink="../create" [relativeTo]="route"
+             *can="'rfq.create'">
             Create new RFQ
           </a>
         </td>

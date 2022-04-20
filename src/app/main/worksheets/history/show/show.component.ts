@@ -20,6 +20,7 @@ export class ShowComponent implements OnInit {
   entriesPagination: PaginationModel = {total: 0, page: 1, limit: 15}
   sparesPagination: PaginationModel = {total: 0, page: 1, limit: 15}
   showWorksheetEntryPopup = false;
+  popupActiveTab = 'items';
   private _subscriptions: Subscription[] = []
   searchInput: FormControl;
   model?: WorksheetModel;
@@ -114,6 +115,7 @@ export class ShowComponent implements OnInit {
   }
 
   showEntrySummary(group: GroupedEntryModel) {
+    this.popupActiveTab = 'items';
     this.showWorksheetEntryPopup = true;
     this.selectedEntry = group;
     this.sparesPagination.total = group.entries[ 0 ]?.repair?.products?.length || 0;

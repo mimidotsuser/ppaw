@@ -114,7 +114,8 @@
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="adp">
-              <button ngbDropdownItem (click)="showBalanceAdjustmentForm(item)">
+              <button ngbDropdownItem (click)="showBalanceAdjustmentForm(item)"
+                      *can="'stockBalance.edit'">
                 Adjust Balance
               </button>
             </div>

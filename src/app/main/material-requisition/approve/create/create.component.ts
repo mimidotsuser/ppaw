@@ -20,7 +20,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   pagination: PaginationModel = {total: 0, page: 1, limit: 15};
   form: FormGroup;
 
-  constructor(private route: ActivatedRoute, private router: Router, private fb: FormBuilder,
+  constructor(private _route: ActivatedRoute, private router: Router, private fb: FormBuilder,
               private requisitionService: MaterialRequisitionService) {
 
 
@@ -75,6 +75,8 @@ export class CreateComponent implements OnInit, OnDestroy {
     return this.form.get('items') as FormArray;
   }
 
+  get route() {return this._route}
+
   createItemFormGroup(item: MRFItemModel) {
     return this.fb.group({
       id: this.fb.control(item.id),
@@ -88,6 +90,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       approved_qty: this.fb.control(item.verified_qty,
         {validators: [Validators.min(0), Validators.max(item.verified_qty!)]}),
       worksheet_id: this.fb.control(item.worksheet_id),
+      worksheet: this.fb.control(item.worksheet),
       product: this.fb.control(item.product),
     })
   }

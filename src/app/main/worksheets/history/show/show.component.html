@@ -83,7 +83,7 @@
                 rows="4">{{selectedEntry?.remark?.description}}</textarea>
     </div>
   </div>
-  <nav ngbNav activeId="items" class="nav-tabs my-3" #outlet="ngbNav">
+  <nav ngbNav [(activeId)]="popupActiveTab" class="nav-tabs my-3" #outlet="ngbNav">
     <div ngbNavItem="items">
       <a ngbNavLink>Product Item Entries</a>
       <ng-template ngbNavContent>
@@ -151,14 +151,16 @@
         </td>
         <td>
           <span class="td-inline-label">Contract Type</span>
-          <div class="d-flex pb-2">
+          <ng-template #contractViewFallback>
             {{entry?.contract?.category_title}}
-          </div>
-          <a *ngIf="entry.customer_contract_id" [relativeTo]="route" target="_blank"
-             routerLink="../../../customer-contracts/history/{{entry.customer_contract_id}}">
-            <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
-            view
-          </a>
+          </ng-template>
+          <ng-container *can="'contracts.view';else contractViewFallback">
+            <a *ngIf="entry.customer_contract_id" [relativeTo]="route" target="_blank"
+               routerLink="../../../customer-contracts/history/{{entry.customer_contract_id}}">
+              <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+              {{entry?.contract?.category_title}}
+            </a>
+          </ng-container>
         </td>
       </tr>
     </ng-container>

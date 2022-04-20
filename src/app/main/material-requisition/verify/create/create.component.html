@@ -68,11 +68,16 @@
         </td>
         <td>
           <span class="td-inline-label">Worksheet</span>
-          <a *ngIf="group.get('worksheet_id')?.value" routerLink="/main/worksheets/"
-             target="_blank">
-            <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
-            view
-          </a>
+          <ng-template #worksheetViewFallback>
+            {{group.get('worksheet')?.value?.sn}}
+          </ng-template>
+          <ng-container *can="'worksheet.view';else worksheetViewFallback">
+            <a *ngIf="group.get('worksheet_id')?.value" [relativeTo]="route" target="_blank"
+               routerLink="../../../worksheets/history/{{group.get('worksheet_id')?.value}}">
+              <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+              {{group.get('worksheet')?.value?.sn}}
+            </a>
+          </ng-container>
         </td>
         <td>
           <span class="td-inline-label">Qty Requested</span>

@@ -2,6 +2,7 @@ import { UserModel } from './user.model';
 import { ProductModel } from './product.model';
 import { CustomerModel } from './customer.model';
 import { StockBalanceActivityModel } from './stock-balance-activity.model';
+import { WorksheetModel } from './worksheet.model';
 
 export enum MRFPurposeCode {
   DEMO = 'DEMO',
@@ -33,6 +34,7 @@ export interface MRFItemModel {
   approved_qty?: number;
   issued_qty?: number;
   worksheet_id?: number;
+  worksheet?: WorksheetModel;
   product?: ProductModel;
   customer?: CustomerModel;
   cartButtonBusy?: boolean;

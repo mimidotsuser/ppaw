@@ -60,7 +60,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       return;
     }
     this.subSink = this.rfqService
-      .fetch(this.pagination, {include: 'purchaseOrder,createdBy,vendors,items'})
+      .fetch(this.pagination, {include: 'purchaseOrder,createdBy,vendors,items,purchaseRequest'})
       .subscribe({
         next: (res) => {
           this.pagination.total = res.total;

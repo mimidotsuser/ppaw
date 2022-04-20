@@ -12,7 +12,8 @@
 
     <div class="col-md-5 gap-2 justify-content-end d-flex">
       <div class="d-md-block">
-        <a type="button" class="btn btn-outline-primary" routerLink="../create">
+        <a type="button" class="btn btn-outline-primary" routerLink="../create"
+           *can="'contracts.create'">
           + New Contract
         </a>
       </div>
@@ -40,7 +41,7 @@
       <td>
         <span class="td-inline-label">Contract No.</span>
         <a routerLink="{{contract.id}}" [relativeTo]="route" class="text-decoration-none">
-        {{contract.sn}}
+          {{contract.sn}}
         </a>
       </td>
       <td>
@@ -85,10 +86,12 @@
                 View contract
               </a>
 
-              <a *ngIf="contract.active" routerLink="../edit/{{contract.id}}" [relativeTo]="route"
-                 ngbDropdownItem>
-                Edit contract
-              </a>
+              <ng-container *can="'contracts.edit'">
+                <a *ngIf="contract.active" routerLink="../edit/{{contract.id}}" [relativeTo]="route"
+                   ngbDropdownItem>
+                  Edit contract
+                </a>
+              </ng-container>
             </div>
           </div>
         </div>
@@ -101,7 +104,8 @@
         <td class="text-center py-3" colspan="9">
           <ng-container *ngIf="!searchInput.value;else noResults">
             There are no contracts.&nbsp;
-            <a class="text-decoration-none" routerLink="../create" [relativeTo]="route">
+            <a class="text-decoration-none" routerLink="../create" [relativeTo]="route"
+               *can="'contracts.create'">
               Click here to create new contract.
             </a>
           </ng-container>

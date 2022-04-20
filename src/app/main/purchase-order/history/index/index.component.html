@@ -4,7 +4,8 @@
     </div>
 
     <div class="d-md-block">
-      <a class="btn btn-outline-primary" routerLink="../create" [relativeTo]="route">
+      <a class="btn btn-outline-primary" routerLink="../create" [relativeTo]="route"
+         *can="'purchaseOrder.create'">
         + New Request
       </a>
     </div>
@@ -42,11 +43,19 @@
       </td>
       <td>
         <span class="td-inline-label">RFQ </span>
-        <a *ngIf="request.rfq_id" [relativeTo]="route" target="_blank"
-           routerLink="../../request-for-quotations/history/{{request.rfq_id}}">
-          <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
-          view
-        </a>
+        <ng-template #rfqViewFallback>
+          {{request.rfq?.sn}}
+        </ng-template>
+
+        <ng-container *can="'rfq.view';else:rfqViewFallback">
+          <a *ngIf="request.rfq_id" [relativeTo]="route" target="_blank"
+             class="text-decoration-none"
+             routerLink="../../request-for-quotations/history/{{request.rfq_id}}">
+            <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+            {{request.rfq?.sn}}
+          </a>
+
+        </ng-container>
       </td>
       <td>
         <span class="td-inline-label">Created On</span>
@@ -82,7 +91,9 @@
       <tr class="table-hover">
         <td class="text-center py-5" colspan="8">
           There are no purchase orders available at the moment.
-          <a class="text-decoration-none" routerLink="create">Create new PO</a>
+          <a class="text-decoration-none" routerLink="create" *can="'purchaseOrder.create'">
+            Create new PO
+          </a>
         </td>
       </tr>
     </ng-container>

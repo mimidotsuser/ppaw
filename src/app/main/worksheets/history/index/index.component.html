@@ -47,7 +47,8 @@
 
 
     <div class="d-md-block">
-      <a class="btn btn-outline-primary" routerLink="../create" [relativeTo]="route">
+      <a class="btn btn-outline-primary" routerLink="../create" [relativeTo]="route"
+         *can="'worksheet.create'">
         + New Request
       </a>
     </div>
@@ -70,7 +71,7 @@
     <tr *ngFor="let worksheet of worksheets">
       <td>
         <span class="td-inline-label">Reference No.</span>
-        <a class="text-decoration-none" routerLink="{{worksheet.id}}" [relativeTo]="route" >
+        <a class="text-decoration-none" routerLink="{{worksheet.id}}" [relativeTo]="route">
           {{worksheet.sn}}
         </a>
       </td>

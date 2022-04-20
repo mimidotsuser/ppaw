@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faExternalLinkAlt, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { GoodsReceiptNoteService } from '../../services/goods-receipt-note.service';
 import { GoodsReceiptNoteModel } from '../../../../models/goods-receipt-note.model';
 import { PaginationModel } from '../../../../models/pagination.model';
-import { FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-index',
@@ -14,6 +14,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 export class IndexComponent implements OnInit, OnDestroy {
 
   faFilter = faFilter;
+  faExternalLinkAlt = faExternalLinkAlt;
   pagination: PaginationModel = {page: 1, limit: 25, total: 0}
   private _requests: GoodsReceiptNoteModel[] = [];
   private _subscriptions: Subscription[] = []

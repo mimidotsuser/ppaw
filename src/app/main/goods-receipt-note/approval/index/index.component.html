@@ -67,7 +67,16 @@
       </td>
       <td>
         <span class="td-inline-label">PO No.</span>
-        {{request.purchase_order?.sn}}
+        <ng-template #poViewFallback>
+          {{request.purchase_order?.sn}}
+        </ng-template>
+        <ng-container *can="'purchaseOrder.view';else poViewFallback">
+          <a *ngIf="request.purchase_order_id" target="_blank"
+             routerLink="../../purchase-orders/history/{{request.purchase_order_id}}">
+            <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+            {{request.purchase_order?.sn}}
+          </a>
+        </ng-container>
       </td>
       <td>
         <span class="td-inline-label">Supplier</span>

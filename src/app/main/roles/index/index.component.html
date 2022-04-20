@@ -7,7 +7,8 @@
     </div>
 
     <div class="d-md-block">
-      <a routerLink="/main/roles/create" class="btn btn-outline-primary">+ New role</a>
+      <a routerLink="/main/roles/create" class="btn btn-outline-primary"
+         *can="'roles.create'">+ New role</a>
     </div>
 
   </div>
@@ -50,8 +51,11 @@
                 <fa-icon [icon]="faEllipsisV"></fa-icon>
               </button>
               <div ngbDropdownMenu aria-labelledby="dp">
-                <a routerLink="edit/{{role.id}}" ngbDropdownItem>Edit</a>
-                <button type="button" ngbDropdownItem (click)="deleteRole(role)">Delete</button>
+                <a routerLink="edit/{{role.id}}" ngbDropdownItem *can="'roles.edit'">Edit</a>
+                <button type="button" ngbDropdownItem (click)="deleteRole(role)"
+                        *can="'roles.delete'">
+                  Delete
+                </button>
               </div>
             </div>
           </div>

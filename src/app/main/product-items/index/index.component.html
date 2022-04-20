@@ -12,13 +12,14 @@
 
     <div class="col-md-5 gap-2 justify-content-end d-flex">
       <div class="d-md-block">
-        <button type="button" class="btn btn-outline-primary"
+        <button type="button" class="btn btn-outline-primary" *can="'productItems.create'"
                 (click)="openCreateForm()">
           + New Product Item
         </button>
       </div>
       <div class="d-md-block ">
-        <a type="button" class="btn btn-outline-success d-none" routerLink="create">
+        <a type="button" class="btn btn-outline-success d-none" routerLink="create"
+           *can="'productItems.create'">
           + Bulk Items Entry
         </a>
       </div>
@@ -93,18 +94,25 @@
               <fa-icon [icon]="faEllipsisV"></fa-icon>
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
-              <a routerLink="{{item.id}}/activities" ngbDropdownItem>
+              <a routerLink="{{item.id}}/activities" ngbDropdownItem
+                 *can="'productItemActivity.view'">
                 View all activity logs
               </a>
-              <a ngbDropdownItem *ngIf="item.purchase_order_id"
-                 routerLink="../purchase-orders/history/{{item.purchase_order_id}}">
-                View purchase order
-              </a>
-              <a ngbDropdownItem *ngIf="item?.latest_activity?.customer_contract_id"
-                 routerLink="../customer-contracts/history/1">
-                View contract
-              </a>
-              <button ngbDropdownItem (click)="showEditItemForm(item)">Edit Item</button>
+              <ng-container *can="'purchaseOrder.view'">
+                <a ngbDropdownItem *ngIf="item.purchase_order_id"
+                   routerLink="../purchase-orders/history/{{item.purchase_order_id}}">
+                  View purchase order
+                </a>
+              </ng-container>
+              <ng-container *can="'contracts.view'">
+                <a ngbDropdownItem *ngIf="item?.latest_activity?.customer_contract_id"
+                   routerLink="../customer-contracts/history/1">
+                  View contract
+                </a>
+              </ng-container>
+              <button ngbDropdownItem (click)="showEditItemForm(item)" *can="'productItems.edit'">
+                Edit Item
+              </button>
             </div>
           </div>
         </div>
@@ -117,7 +125,7 @@
         <td class="text-center py-5" colspan="9">
           <ng-container *ngIf="!searchInput.value;else noResults">
             There is no product items.&nbsp;
-            <a class="text-decoration-none" (click)="openCreateForm()">
+            <a class="text-decoration-none" (click)="openCreateForm()" *can="'productItems.create'">
               Click to add a new item
             </a>
           </ng-container>

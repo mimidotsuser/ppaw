@@ -3,6 +3,7 @@ import { UOMModel } from './u-o-m.model';
 import { VendorModel } from './vendor.model';
 import { ProductModel } from './product.model';
 import { PurchaseOrderModel } from './purchase-order.model';
+import { PurchaseRequestModel } from './purchase-request.model';
 
 
 export interface RFQItemModel {
@@ -23,6 +24,7 @@ export interface RFQModel {
   id: number;
   sn: string;
   purchase_request_id?: number;
+  purchase_request?: PurchaseRequestModel;
   closing_date: string;
   items: RFQItemModel[],
   vendors?: VendorModel[]

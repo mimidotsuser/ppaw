@@ -55,7 +55,7 @@
 
     <div class="col-md-5 gap-2 justify-content-end d-flex">
       <div class="d-md-block">
-        <button type="button" class="btn btn-outline-primary"
+        <button type="button" class="btn btn-outline-primary" *can="'productItemActivity.create'"
                 (click)="showLocationFormPopup=!showLocationFormPopup"
                 [disabled]="!productItem?.id">
           + Update Item Status
@@ -98,7 +98,7 @@
     <tr>
       <th>Event type</th>
       <th>Location</th>
-      <th>Worksheet</th>
+      <th *can="'worksheet.view'">Worksheet</th>
       <th>Contract</th>
       <th>Warrant</th>
       <th>Created By</th>
@@ -118,7 +118,7 @@
           <span class="td-inline-label">Location</span>
           {{activity?.location?.name}}
         </td>
-        <td>
+        <td *can="'worksheet.view'">
           <span class="td-inline-label">Worksheet</span>
           <a *ngIf="activity.eventable_type=='worksheet'" [relativeTo]="route" target="_blank"
              routerLink="../../../worksheets/history/{{activity.eventable_id}}">
@@ -127,13 +127,16 @@
         </td>
         <td>
           <span class="td-inline-label">Contract</span>
-          <div class="d-flex pb-2">
+          <ng-template #contractViewFallback>
             {{activity?.contract?.category_title}}
-          </div>
-          <a *ngIf="activity.customer_contract_id" [relativeTo]="route" target="_blank"
-             routerLink="../../../customer-contracts/history/{{activity.customer_contract_id}}">
-            <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
-            view</a>
+          </ng-template>
+          <ng-container *can="'contracts.view';else contractViewFallback">
+            <a *ngIf="activity.customer_contract_id" [relativeTo]="route" target="_blank"
+               routerLink="../../../customer-contracts/history/{{activity.customer_contract_id}}">
+              <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+              {{activity?.contract?.category_title}}
+            </a>
+          </ng-container>
         </td>
         <td>
           <span class="td-inline-label">Warranty</span>
@@ -214,10 +217,7 @@
       <tr>
         <td class="text-center py-3" colspan="9">
           <ng-container *ngIf="!searchInput.value;else noResults">
-            There is no product items.&nbsp;
-            <a class="text-decoration-none">
-              Click to add a new item
-            </a>
+            There are no activities at the moment&nbsp;
           </ng-container>
           <ng-template #noResults>
             No data matching filtered criteria

@@ -8,7 +8,7 @@
 
     <div class="d-md-block">
       <button type="button" class="btn btn-outline-primary"
-              (click)="showCreateProductFormPopup()">
+              (click)="showCreateProductFormPopup()" *can="'products.create'">
         + New Machine Item
       </button>
     </div>
@@ -73,8 +73,13 @@
             </button>
             <div ngbDropdownMenu aria-labelledby="dp">
 
-              <button ngbDropdownItem (click)="showProductEditForm(prod)">Edit</button>
-              <button ngbDropdownItem (click)="deleteProduct(prod)">Delete</button>
+              <button ngbDropdownItem (click)="showProductEditForm(prod)"
+                      *can="'productItems.edit'">
+                Edit
+              </button>
+              <button ngbDropdownItem (click)="deleteProduct(prod)" *can="'products.delete'">
+                Delete
+              </button>
             </div>
           </div>
         </div>
@@ -85,7 +90,8 @@
       <tr class="no-data">
         <td class="text-center py-4" colspan="7">
           There is no data at the moment yet.
-          <a role="button" class="text-decoration-none" (click)="showCreateProductFormPopup()">
+          <a role="button" class="text-decoration-none" (click)="showCreateProductFormPopup()"
+             *can="'products.create'">
             Add new item
           </a>
         </td>

@@ -22,7 +22,7 @@ export enum Resources {
   customers = 'customers',
   products = 'products',
   productItems = 'productItems',
-  productItemsTracking = 'tracking',
+  productItemActivity = 'productItemActivity',
   users = 'users',
   roles = 'roles',
   organizationSettings = 'organizationSettings',

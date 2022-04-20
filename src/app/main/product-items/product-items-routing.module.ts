@@ -10,7 +10,7 @@ const routes: Routes = [
       {
         path: ':id/activities',
         loadChildren: () => import('./activities/activities.module').then(m => m.ActivitiesModule),
-        data: {resource: Resources.productItems, action: Actions.view,
+        data: {resource: Resources.productItemActivity, action: Actions.view,
         title:'Product Item Activities',breadcrumb:'History logs'
         }
       },

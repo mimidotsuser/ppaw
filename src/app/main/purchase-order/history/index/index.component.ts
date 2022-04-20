@@ -69,7 +69,8 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   loadPurchaseOrders() {
     if (this.tableCountEnd <= this.requests.length) {return;}
-    this.subSink = this.purchaseOrderService.fetch(this.pagination, {include: 'items,createdBy'})
+    this.subSink = this.purchaseOrderService.fetch(this.pagination,
+      {include: 'items,createdBy,rfq'})
       .subscribe((res) => {
         this._requests = this._requests.concat(res.data);
         this.pagination.total = res.total;

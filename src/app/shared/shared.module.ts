@@ -10,6 +10,7 @@ import { FilterPipe } from './pipes/filter.pipe';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { PaginatePipe } from './pipes/paginate.pipe';
+import { CanDirective } from './directives/can.directive';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { PaginatePipe } from './pipes/paginate.pipe';
     FilterPipe,
     PaginatePipe,
     PaginationComponent,
+    CanDirective,
   ],
   imports: [
     CommonModule,
@@ -34,7 +36,8 @@ import { PaginatePipe } from './pipes/paginate.pipe';
     ActivityTimelineComponent,
     FilterPipe,
     PaginatePipe,
-    PaginationComponent
+    PaginationComponent,
+    CanDirective,
   ],
 })
 export class SharedModule {}
