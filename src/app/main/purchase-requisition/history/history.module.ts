@@ -19,7 +19,7 @@ import { Actions, Resources } from '../../../utils/permissions';
       {
         path: ':id', component: ShowComponent,
         data: {
-          resource: Resources.purchaseRequisition, action: Actions.view,
+          resource: Resources.purchaseRequests, action: Actions.view,
           title: 'Purchase Request Summary',
           breadcrumb: 'PR Summary'
         }

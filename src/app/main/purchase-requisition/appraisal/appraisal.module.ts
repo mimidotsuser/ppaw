@@ -23,7 +23,7 @@ import { Actions, Resources } from '../../../utils/permissions';
         path: ':id',
         component: CreateComponent,
         data: {
-          resource: Resources.purchaseRequisition,
+          resource: Resources.purchaseRequests,
           action: Actions.verify,
           title: 'Check Purchase Request',
           breadcrumb: 'verify'

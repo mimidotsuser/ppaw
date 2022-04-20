@@ -10,7 +10,7 @@ const routes: Routes = [{
       path: 'history',
       loadChildren: () => import('./history/history.module').then(m => m.HistoryModule),
       data: {
-        resource: Resources.purchaseRequisition, action: Actions.view,
+        resource: Resources.purchaseRequests, action: Actions.view,
         title: 'All Purchase Requests',
         breadcrumb: 'Purchase Request Forms'
       }
@@ -19,7 +19,7 @@ const routes: Routes = [{
       path: 'create',
       loadChildren: () => import('./create/create.module').then(m => m.CreateModule),
       data: {
-        resource: Resources.purchaseRequisition,
+        resource: Resources.purchaseRequests,
         action: Actions.create,
         title: 'Create Purchase Request',
         breadcrumb: 'Purchase Request Form'
@@ -29,7 +29,7 @@ const routes: Routes = [{
       path: 'check',
       loadChildren: () => import('./appraisal/appraisal.module').then(m => m.AppraisalModule),
       data: {
-        resource: Resources.purchaseRequisition, action: Actions.verify,
+        resource: Resources.purchaseRequests, action: Actions.verify,
         title: 'Check Purchase Requests',
         breadcrumb: 'Purchase Request Forms'
       }
@@ -38,7 +38,7 @@ const routes: Routes = [{
       path: 'approve',
       loadChildren: () => import('./approval/approval.module').then(m => m.ApprovalModule),
       data: {
-        resource: Resources.purchaseRequisition, action: Actions.verify,
+        resource: Resources.purchaseRequests, action: Actions.verify,
         title: 'Purchase Request Approval',
         breadcrumb: 'Purchase Request Forms'
       }

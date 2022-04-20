@@ -11,7 +11,7 @@ export enum Actions {
 export enum Resources {
   materialRequisition = 'materialRequisition',
   checkout = 'checkout',
-  purchaseRequisition = 'purchaseRequests',
+  purchaseRequests = 'purchaseRequests',
   rfq = 'rfqs',
   purchaseOrder = 'purchaseOrders',
   inspectionNote = 'inspectionNote',

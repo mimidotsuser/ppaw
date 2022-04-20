@@ -34,10 +34,16 @@ export class AuthService {
     return this.storageService.user;
   }
 
-  can(resource: keyof typeof Resources, action: keyof typeof Actions): boolean {
+  can(resource: Resources, action: keyof typeof Actions): boolean {
     if (!this.user?.role?.permissions) {return false}
     return this.user?.role.permissions
       .findIndex((perm) => perm.name === `${resource}.${action}`) > -1
+  }
+
+  hasAccess(obj: { [key in keyof typeof Actions]?: Resources[] }) {
+    return (Object.keys(obj) as (keyof typeof Actions)[]).some((key) => {
+      return obj[ key ]!.some((resource) => this.can(resource, key))
+    });
   }
 
   redirectToSystemLoginPage(previousPath?: string) {

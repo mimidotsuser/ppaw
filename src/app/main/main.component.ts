@@ -29,6 +29,7 @@ import { HttpService } from '../core/services/http.service';
 import { MetaService } from '../core/services/meta.service';
 import { AuthService } from '../core/services/auth.service';
 import { DownloadService } from '../core/services/download.service';
+import { Resources } from '../utils/permissions';
 
 @Component({
   selector: 'app-main',
@@ -102,42 +103,72 @@ export class MainComponent implements OnInit, OnDestroy {
       },
       inventory_requisition: {
         title: 'Material Requisition',
-        display: true,
+        display: this.authService.hasAccess({
+          create: [Resources.materialRequisition],
+          view: [Resources.materialRequisition],
+          verify: [Resources.materialRequisition],
+          approve: [Resources.materialRequisition],
+        }),
         icon: faWarehouse,
         items: [
-          {title: 'New request', url: 'material-requisition/create', display: true},
-          {title: 'All requests', url: 'material-requisition/history', display: true, exact: false},
+          {
+            title: 'New request',
+            url: 'material-requisition/create',
+            display: this.authService.can(Resources.materialRequisition, 'create')
+          },
+          {
+            title: 'All requests',
+            url: 'material-requisition/history',
+            display: this.authService.can(Resources.materialRequisition, 'view'),
+            exact: false
+          },
           {
             title: 'Verify requests', url: 'material-requisition/verification',
-            display: true,
+            display:  this.authService.can(Resources.materialRequisition, 'verify'),
             exact: false
           },
           {
             title: 'Approve requests',
             url: 'material-requisition/approval',
-            display: true,
+            display:  this.authService.can(Resources.materialRequisition, 'approve'),
             exact: false
           },
         ]
       },
       checkout: {
         title: 'Checkout',
-        display: true,
+        display: this.authService.hasAccess({
+          'create': [Resources.checkout],
+        }),
         icon: faPeopleCarry,
         items: [
-          {title: 'Checkout Requests', url: 'checkout/issue-requests', display: true, exact: false},
+          {
+            title: 'Checkout Requests',
+            url: 'checkout/issue-requests',
+            display: this.authService.can(Resources.checkout, 'create'),
+            exact: false
+          },
         ]
       },
       purchase_requests: {
         title: 'Purchase Requests',
-        display: true,
+        display: this.authService.hasAccess({
+          create: [Resources.purchaseRequests],
+          view: [Resources.purchaseRequests],
+          verify: [Resources.purchaseRequests],
+          approve: [Resources.purchaseRequests],
+        }),
         icon: faShoppingBasket,
         items: [
-          {title: 'New Requests', url: 'purchase-requisition/create', display: true},
+          {
+            title: 'New Requests',
+            url: 'purchase-requisition/create',
+            display: this.authService.can(Resources.purchaseRequests, 'create')
+          },
           {
             title: 'All Purchase Requests',
             url: 'purchase-requisition/history',
-            display: true,
+            display: this.authService.can(Resources.purchaseRequests, 'view'),
             exact: false
           },
           {
@@ -155,138 +186,183 @@ export class MainComponent implements OnInit, OnDestroy {
       },
       rfq: {
         title: 'RFQ',
-        display: true,
+        display: this.authService.hasAccess({
+          create: [Resources.rfq],
+          view: [Resources.rfq],
+        }),
         icon: faFileInvoiceDollar,
         items: [
-          {title: 'New RFQ', url: 'request-for-quotations/create', display: true, exact: false},
-          {title: 'All RFQ\'s', url: 'request-for-quotations/history', display: true, exact: false},
+          {
+            title: 'New RFQ',
+            url: 'request-for-quotations/create',
+            display: this.authService.can(Resources.rfq, 'create'),
+            exact: false
+          },
+          {
+            title: 'All RFQ\'s',
+            url: 'request-for-quotations/history',
+            display: this.authService.can(Resources.rfq, 'view'),
+            exact: false
+          },
         ]
       },
       lpo: {
         title: 'Purchase Orders',
-        display: true,
+        display: this.authService.hasAccess({
+          create: [Resources.purchaseOrder],
+          view: [Resources.purchaseOrder],
+        }),
         icon: faShoppingCart,
         items: [
-          {title: 'New Purchase Order', url: 'purchase-orders/create', display: true, exact: false},
+          {
+            title: 'New Purchase Order',
+            url: 'purchase-orders/create',
+            display: this.authService.can(Resources.purchaseOrder, 'create'),
+            exact: false
+          },
           {
             title: 'All Purchase Orders',
             url: 'purchase-orders/history',
-            display: true,
+            display: this.authService.can(Resources.purchaseOrder, 'view'),
             exact: false
           },
         ]
       },
       checkin: {
         title: 'Products Checkin',
-        display: true,
+        display: this.authService.hasAccess({
+          create: [Resources.goodsReceiptNote, Resources.standByCheckIn],
+          view: [Resources.standByCheckIn],
+        }),
         icon: faDolly,
         items: [
-          {title: 'Purchased Products', url: 'goods-receipt-note/create', display: true},
+          {
+            title: 'Purchased Products',
+            url: 'goods-receipt-note/create',
+            display: this.authService.can(Resources.goodsReceiptNote, 'create')
+          },
           {
             title: 'Spare Standby Reminder',
             url: 'standby-spare-checkin',
-            display: true,
+            display: this.authService.can(Resources.standByCheckIn, 'view'),
             exact: false
           },
         ]
       },
       inspection: {
         title: 'Products Inspection',
-        display: true,
+        display: this.authService.hasAccess({
+          create: [Resources.inspectionNote],
+          view: [Resources.inspectionNote],
+        }),
         icon: faCheckDouble,
         items: [
           {
             title: 'Inspection Requests', url: 'inspection-note/purchased-products',
-            display: true,
+            display: this.authService.can(Resources.inspectionNote, 'create'),
             exact: false
           },
           {
             title: 'Inspection History', url: 'inspection-note/history',
-            display: true,
+            display: this.authService.can(Resources.inspectionNote, 'view'),
             exact: false
           }]
       },
       post_inspection: {
         title: 'Post Inspection',
         icon: faClipboardCheck,
-        display: true,
+        display: this.authService.hasAccess({
+          approve: [Resources.goodsReceiptNote],
+          view: [Resources.goodsReceiptNote],
+        }),
         items: [
           {
             title: 'GRN/RGA Approval', url: 'goods-receipt-note/approval',
-            display: true,
+            display: this.authService.can(Resources.goodsReceiptNote, 'approve'),
             exact: false
           },
           {
             title: 'All GRN/RGA Docs', url: 'goods-receipt-note/history',
-            display: true,
+            display: this.authService.can(Resources.goodsReceiptNote, 'view'),
             exact: false
           }]
       },
       stock_balance: {
         title: 'Tracking & Balances',
-        display: true,
+        display: this.authService.hasAccess({
+          view: [Resources.stockBalance, Resources.productItems],
+          create: [Resources.productItems],
+          edit: [Resources.stockBalance],
+        }),
         icon: faCubes,
         items: [
           {
-            title: 'Product Tracking',
+            title: 'Product Items & Tracking',
             url: 'product-items',
-            display: true,
+            display: this.authService.can(Resources.productItems, 'view'),
             exact: false
           },
           {
             title: 'Stock Balances', url: 'stock-balances',
-            display: true
+            display: this.authService.can(Resources.stockBalance, 'view')
           },
         ]
       },
       worksheets: {
         title: 'Worksheets',
-        display: true,
+        display: this.authService.hasAccess({
+          view: [Resources.worksheet],
+          create: [Resources.worksheet],
+        }),
         icon: faBook,
         items: [
           {
             title: 'New Worksheet', url: 'worksheets/create',
-            display: true
+            display: this.authService.can(Resources.worksheet, 'create')
           }, {
             title: 'All Worksheets', url: 'worksheets/history',
-            display: true, exact: false
+            display: this.authService.can(Resources.worksheet, 'view'), exact: false
           },
         ]
       },
       customers: {
         title: 'Clients & Contracts',
-        display: true,
+        display: this.authService.hasAccess({
+          view: [Resources.contracts, Resources.customers],
+        }),
         icon: faAddressBook,
         items: [
           {
             title: 'All Customers', url: 'customers',
-            display: true
+            display: this.authService.can(Resources.customers, 'view')
           },
           {
             title: 'All Contracts', url: 'customer-contracts',
-            display: true,
+            display: this.authService.can(Resources.contracts, 'view'),
             exact: false
           },
         ]
       },
       adminstration: {
         title: 'Administration',
-        display: true,
+        display: this.authService.hasAccess({
+          view: [Resources.products, Resources.users, Resources.roles],
+        }),
         icon: faUserShield,
         items: [
           {
             title: 'Inventory Products',
             url: 'products',
-            display: true,
+            display: this.authService.can(Resources.products, 'view'),
             exact: false
           },
           {
             title: 'Staff Accounts', url: 'users',
-            display: true
+            display: this.authService.can(Resources.users, 'view')
           },
           {
             title: 'User Roles', url: 'roles',
-            display: true
+            display: this.authService.can(Resources.roles, 'view')
           },
         ]
       }
