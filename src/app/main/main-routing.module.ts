@@ -85,6 +85,10 @@ const routes: Routes = [
         loadChildren: () => import('./customer-contracts/customer-contracts.module').then(m => m.CustomerContractsModule),
         data: {title: 'All Customer Contracts', breadcrumb: 'Customer Contracts'}
       },
+      { path: 'standby-spare-checkin',
+        loadChildren: () => import('./standby-spare-checkin/standby-spare-checkin.module').then(m => m.StandbySpareCheckinModule),
+        data: {title: 'Standby Spare Checkin', breadcrumb: 'Standby Spare Checkin'}
+      },
       {
         path: 'not-authorized',
         loadChildren: () => import('./not-authorized/not-authorized.module').then(m => m.NotAuthorizedModule),

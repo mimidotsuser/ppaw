@@ -1,0 +1,90 @@
+<form [formGroup]="form">
+  <div class="container-fluid">
+    <div class="row my-4">
+      <div class="col-md-3 mb-3">
+        <label for="material_request" class="form-label required">Material request</label>
+        <material-request-typeahead controlName="material_request" customId="material_request"
+                                    stage="issued" (change)="onMaterialRequestSelect()">
+        </material-request-typeahead>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="container-fluid px-sm-0 px-md-3">
+    <table class="table table-responsive table-bordered table-block-sm">
+      <thead>
+      <tr>
+        <td>S/N</td>
+        <th class="product-column">Item</th>
+        <th>M-PN</th>
+        <th>Approved Qty</th>
+        <th>Already Received</th>
+        <th class="input-column">Received Qty</th>
+      </tr>
+      </thead>
+      <tbody formArrayName="items">
+      <tr
+        *ngFor="let group of itemsFormArray.controls|slice:tableCountStart:tableCountEnd;index as i"
+        [formGroup]="$any(group)">
+        <td>
+          <span class="td-inline-label">S/N</span>
+          {{i + 1}}
+        </td>
+        <td>
+          <span class="td-inline-label">Item</span>
+          <div class="d-flex flex-column">
+            {{group.get('product')?.value?.item_code}}
+            <small class="text-muted">
+              {{group.get('product')?.value?.local_description || group.get('product')?.value?.description}}
+            </small>
+          </div>
+        </td>
+        <td>
+          <span class="td-inline-label">M-PN</span>
+          {{group.get('product')?.value?.manufacturer_part_number}}
+        </td>
+        <td>
+          <span class="td-inline-label">Approved Qty</span>
+          {{group.get('approved_qty')?.value}}
+        </td>
+        <td>
+          <span class="td-inline-label">Already Received</span>
+          {{group.get('received_qty')?.value}}
+        </td>
+        <td>
+          <span class="td-inline-label">Received Qty</span>
+          <input type="number" min="0" formControlName="qty" class="form-control"
+                 (blur)="synchronizeReceivedQty($any(group))">
+        </td>
+      </tr>
+      <ng-container *ngIf="itemsFormArray.length==0">
+        <tr>
+          <td colspan="8">
+            <div class="py-5 text-center">
+              Select material request to autofill request items
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+    <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+      <pagination [meta]="pagination"></pagination>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="col-md-6 mb-3">
+      <label for="remarks" class="form-label">Remarks</label>
+      <textarea id="remarks" class="form-control" rows="4" formControlName="remarks"></textarea>
+    </div>
+
+    <div class="d-flex my-4">
+      <button type="button" class="btn btn-primary btn-submit btn-lg" (click)="submitForm()"
+              [disabled]="this.form.invalid">
+        Submit
+      </button>
+    </div>
+  </div>
+
+</form>

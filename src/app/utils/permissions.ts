@@ -14,7 +14,6 @@ export enum Resources {
   purchaseRequisition = 'purchaseRequests',
   rfq = 'rfqs',
   purchaseOrder = 'purchaseOrders',
-  checkin = 'productCheckIn',
   inspectionNote = 'inspectionNote',
   goodsReceiptNote = 'goodsReceiptNote',
   stockBalance = 'stockBalances',
@@ -28,4 +27,5 @@ export enum Resources {
   roles = 'roles',
   organizationSettings = 'organizationSettings',
   vendors = 'vendors',
+  standByCheckIn = 'standByCheckIn'
 }

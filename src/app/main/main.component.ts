@@ -130,7 +130,12 @@ export class MainComponent implements OnInit, OnDestroy {
       icon: faDolly,
       items: [
         {title: 'Purchased Products', url: 'goods-receipt-note/create', display: true},
-        {title: 'Spare Standby Reminder', url: 'checkin/standby-reminder', display: true},
+        {
+          title: 'Spare Standby Reminder',
+          url: 'standby-spare-checkin',
+          display: true,
+          exact: false
+        },
       ]
     },
     inspection: {

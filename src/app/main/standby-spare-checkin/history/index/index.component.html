@@ -1,0 +1,82 @@
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+    <div class="col-sm-6 col-md-3 data-filters">
+    </div>
+
+    <div class="d-md-block">
+      <a class="btn btn-outline-primary" routerLink="../create" [relativeTo]="route">
+        + Standby Spare Checkin
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <table class="table table-hover table-block-sm">
+    <thead>
+    <tr>
+      <th>S/N</th>
+      <th>Item</th>
+      <th>Material Request</th>
+      <th>Qty Before</th>
+      <th>Qty After</th>
+      <th>Created On</th>
+      <th>Created By</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let row of requests|slice:tableCountStart:tableCountEnd;index as i">
+      <td>
+        <span class="td-inline-label">S/N</span>
+        {{i + 1}}
+      </td>
+      <td>
+        <span class="td-inline-label">Item</span>
+        <div class="d-flex flex-column">
+          {{row.product?.item_code}}
+          <small class="text-muted">
+            {{row.product?.local_description || row.product?.description}}
+          </small>
+        </div>
+      </td>
+      <td>
+        <span class="td-inline-label">Material Request</span>
+        {{row.event?.sn}}
+      </td>
+      <td>
+        <span class="td-inline-label">Qty Before</span>
+        {{row.qty_in_before}}
+      </td>
+      <td>
+        <span class="td-inline-label">Qty After</span>
+        {{row.qty_in_after}}
+      </td>
+      <td>
+        <span class="td-inline-label">Requested On</span>
+        {{row.created_at|date}}
+      </td>
+      <td>
+        <span class="td-inline-label">Created By</span>
+        {{row.created_by?.first_name || ''}}
+        {{row.created_by?.last_name || ''}}
+      </td>
+      <td>
+      </td>
+    </tr>
+    <ng-container *ngIf="requests.length === 0">
+      <tr>
+        <td class="text-center py-5" colspan="7">
+          There are no data available at the moment.
+          <a class="text-decoration-none" routerLink="../create" [relativeTo]="route">
+
+          </a>
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+    <pagination [meta]="pagination" (pageChange)="loadRequests()"></pagination>
+  </div>
+</div>

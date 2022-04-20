@@ -1,6 +1,7 @@
 import { UserModel } from './user.model';
 import { ProductModel } from './product.model';
 import { CustomerModel } from './customer.model';
+import { StockBalanceActivityModel } from './stock-balance-activity.model';
 
 export enum MRFPurposeCode {
   DEMO = 'DEMO',
@@ -61,5 +62,6 @@ export interface MRFModel {
   created_at?: string;
   created_by_id?: string;
   created_by?: UserModel;
+  balance_activities?: StockBalanceActivityModel[]
 }
 

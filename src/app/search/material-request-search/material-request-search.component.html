@@ -1,0 +1,21 @@
+<typeahead-input [path]="path" [resultTemplate]="resultTemplate" [outputFormatter]="outputFormatter"
+                 [controlName]="controlName" [control]="control" [customId]="customId"
+                 [queryParams]="queryParams">
+</typeahead-input>
+
+
+<ng-template let-results="result" #resultTemplate>
+  <ng-container *ngIf="results;else noResultsTemplate">
+    <div class="title">
+      {{results.sn}}
+    </div>
+    <div class="subtitle ">
+      {{results.first_name}}
+      {{results.last_name}}
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #noResultsTemplate>
+  No results found
+</ng-template>
