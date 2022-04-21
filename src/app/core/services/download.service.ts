@@ -33,8 +33,9 @@ export class DownloadService {
             filename = extractFilenameFromHeader(res.headers.get('Content-Disposition'), filename);
             this._downloadRequests[ index ].filename = filename;
 
+            const contentType=filename.endsWith('.zip')?'application/zip':'application/pdf'
             //download
-            this.fileService.saveBlobToFile([res.body], filename);
+            this.fileService.saveBlobToFile([res.body], filename,contentType);
 
           } else {
             this._downloadRequests.splice(index, 1);
