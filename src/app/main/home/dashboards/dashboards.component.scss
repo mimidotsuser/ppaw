@@ -1,13 +1,14 @@
 .chart-card {
-  border: solid 1px #dddddd;
+  border: solid 1px #e7e7e7;
+  height: 100%;
 
   .chart-header {
     height: 32px;
-    background: #dddddd;
+    background: #e7e7e7;
     vertical-align: middle;
     text-transform: uppercase;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 12px;
     padding-left: 5px;
   }
 
@@ -24,5 +25,11 @@
 
   &.customer-visits-graph .chart-body {
     padding-bottom: 15px;
+  }
+
+  .form-control,
+  .form-label,
+  ::ng-deep .ng-option {
+    font-size: 13px;
   }
 }

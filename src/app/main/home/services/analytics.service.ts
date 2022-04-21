@@ -4,6 +4,7 @@ import { HttpService } from '../../../core/services/http.service';
 import {
   ProductItemByLocationAnalytics,
   ProductOutOfStockAnalytics,
+  WorksheetByAuthorAnalytics,
   WorksheetByCustomerAnalytics
 } from '../../../models/analytics.model';
 import { HomeModule } from '../home.module';
@@ -28,15 +29,28 @@ export class AnalyticsService {
       .pipe(map((res: { data: ProductOutOfStockAnalytics[] }) => res.data))
   }
 
-  fetchWorksheetsByCustomer(): Observable<WorksheetByCustomerAnalytics[]> {
-    return this.httpService.get(this.httpService.endpoint.worksheetsCountByCustomer)
+  fetchWorksheetsByCustomer(startDate: string, endDate: string, customersIds?: number[]): Observable<WorksheetByCustomerAnalytics[]> {
+    const params: { [ key: string ]: string } = {}
+    if (startDate || endDate) {
+      params[ 'between' ] = `${startDate},${endDate}`
+    }
+    if (customersIds) {
+      params[ 'customerIds' ] = customersIds.join(',');
+    }
+    return this.httpService.get(this.httpService.endpoint.worksheetsCountByCustomer, {params})
       .pipe(map((res: { data: WorksheetByCustomerAnalytics[] }) => res.data))
   }
+
+
+  fetchWorksheetsByAuthor():Observable<WorksheetByAuthorAnalytics[]> {
+    return this.httpService.get(this.httpService.endpoint.worksheetsCountByAuthor)
+      .pipe(map((res: { data: WorksheetByAuthorAnalytics[] }) => res.data))
+  }
+
 
   fetchCustomers(): Observable<CustomerModel[]> {
     return this.httpService
       .get(this.httpService.endpoint.customers, {params: {limit: 300}})
       .pipe(map((res) => res.data));
   }
-
 }

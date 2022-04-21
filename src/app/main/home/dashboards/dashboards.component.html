@@ -1,66 +1,97 @@
 <div class="ms-3 me-3 mt-5 mb-5">
-  <div class="d-flex gap-4 flex-wrap">
-    <div class="col-md-4 chart-card pie-chart-graph">
-      <div class="chart-header d-flex align-items-center">
-        Machines Count By Location
-      </div>
-      <div class="chart-body">
-        <canvas baseChart
-                [type]="'pie'"
-                [data]="productItemsByLocation"
-                [options]="pieChartOptions">
-        </canvas>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="chart-card pie-chart-graph">
+        <div class="chart-header d-flex align-items-center">
+          Machines Count By Location
+        </div>
+        <div class="chart-body">
+          <canvas baseChart
+                  [type]="'pie'"
+                  [data]="productItemsByLocation"
+                  [options]="pieChartOptions"
+                  [plugins]="pieChartPlugins">
+          </canvas>
+        </div>
       </div>
     </div>
-    <div class="col-md-4 chart-card  pie-chart-graph">
-      <div class="chart-header d-flex align-items-center">
-        Products Out Of Stock Count
+    <div class="col-md-4">
+      <div class="chart-card  pie-chart-graph">
+        <div class="chart-header d-flex align-items-center">
+          Products Out Of Stock Count
+        </div>
+        <div class="chart-body">
+          <canvas baseChart
+                  [type]="'pie'"
+                  [data]="productsOutOfStock"
+                  [options]="pieChartOptions"
+                  [plugins]="pieChartPlugins">
+          </canvas>
+        </div>
       </div>
-      <div class="chart-body">
-        <canvas baseChart
-                [type]="'pie'"
-                [data]="productsOutOfStock"
-                [options]="pieChartOptions">
-        </canvas>
+    </div>
+    <div class="col-md-4">
+      <div class="chart-card  pie-chart-graph">
+        <div class="chart-header d-flex align-items-center">
+        Top Worksheets Count By Engineer <small class="d-inline"> &nbsp;(Past 6 months)</small>
+        </div>
+        <div class="chart-body">
+          <canvas baseChart
+                  [type]="'pie'"
+                  [data]="worksheetsByAuthor"
+                  [options]="pieChartOptions"
+                  [plugins]="pieChartPlugins">
+          </canvas>
+        </div>
       </div>
     </div>
 
-    <div class="col-md-12 mt-3 chart-card customer-visits-graph">
-      <div class="chart-header d-flex align-items-center">
-        Customer Visits Count
-      </div>
-      <div class="my-3 d-flex justify-content-start">
-        <div class="empty  ps-4"></div>
-        <div class="d-flex flex-wrap gap-3">
-          <div>
-            <label for="from" class="form-label">From </label>
-            <input type="date" class="form-control">
-          </div>
-          <div>
-            <label for="from" class="form-label">To </label>
-            <input type="date" class="form-control">
-          </div>
-          <div>
-            <label for="customers" class="form-label">Customers </label>
-            <ng-select [items]="customers()" bindLabel="name" [multiple]="true"
-                       [formControl]="customersControl" labelForId="customers">
-              <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
-                <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
-                       [ngModelOptions]="{standalone:true}" class="form-check-inline">
-                {{item.name}}
-              </ng-template>
-            </ng-select>
+    <div class="col-md-12 mt-5">
+      <div class="chart-card customer-visits-graph">
+        <div class="chart-header d-flex align-items-center">
+          Customer Visits Count
+        </div>
+        <div class="my-3 d-flex justify-content-start">
+          <div class="empty  ps-md-4"></div>
+          <div class="d-flex flex-wrap gap-3 w-100 align-items-center px-md-0 px-2">
+            <div class="col-md-2 mb-3">
+              <label for="from" class="form-label">From </label>
+              <input type="date" class="form-control"
+                     [formControl]="worksheetsStartDateFilterControl">
+            </div>
+            <div class="col-md-2 mb-3">
+              <label for="from" class="form-label">To </label>
+              <input type="date" class="form-control" [formControl]="worksheetsEndDateFilterControl"
+                     [min]="worksheetsEndDateFilterMin">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="customers" class="form-label">Customers </label>
+              <ng-select [items]="customers()" bindLabel="name" [multiple]="true"
+                         [formControl]="worksheetCustomersFilterControl" labelForId="customers">
+                <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
+                  <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
+                         [ngModelOptions]="{standalone:true}" class="form-check-inline">
+                  {{item.name}} | {{item.branch || item.region}}
+                </ng-template>
+              </ng-select>
+            </div>
+            <div class="col-md-2 mb-3 pt-md-4">
+              <button type="button" class="btn btn-outline-primary"
+                      (click)="submitWorksheetDataFilters()">
+                Apply filters
+              </button>
+            </div>
           </div>
 
         </div>
-
-      </div>
-      <div class="chart-body">
-        <canvas baseChart
-                [type]="'line'"
-                [data]="worksheetsByCustomer"
-                [options]="lineChartOptions">
-        </canvas>
+        <div class="chart-body">
+          <canvas baseChart
+                  [type]="'line'"
+                  [data]="worksheetsByCustomer"
+                  [options]="lineChartOptions"
+                  [plugins]="lineChartsPlugins">
+          </canvas>
+        </div>
       </div>
     </div>
   </div>
