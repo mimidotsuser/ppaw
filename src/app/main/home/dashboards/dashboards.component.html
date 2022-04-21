@@ -56,13 +56,13 @@
           <div class="d-flex flex-wrap gap-3 w-100 align-items-center px-md-0 px-2">
             <div class="col-md-2 mb-3">
               <label for="from" class="form-label">From </label>
-              <input type="date" class="form-control"
+              <input type="date" class="form-control" id="from"
                      [formControl]="worksheetsStartDateFilterControl">
             </div>
             <div class="col-md-2 mb-3">
-              <label for="from" class="form-label">To </label>
+              <label for="to" class="form-label">To </label>
               <input type="date" class="form-control" [formControl]="worksheetsEndDateFilterControl"
-                     [min]="worksheetsEndDateFilterMin">
+                     [min]="worksheetsEndDateFilterMin" id="to">
             </div>
             <div class="col-md-4 mb-3">
               <label for="customers" class="form-label">Customers </label>
@@ -71,7 +71,7 @@
                 <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
                   <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
                          [ngModelOptions]="{standalone:true}" class="form-check-inline">
-                  {{item.name}} | {{item.branch || item.region}}
+                  {{item.name}} | {{item?.branch || item?.region}}
                 </ng-template>
               </ng-select>
             </div>
