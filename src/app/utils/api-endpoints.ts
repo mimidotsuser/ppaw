@@ -67,4 +67,8 @@ export enum V1Endpoints {
 
   standbySpareCheckin = '/standby-spare-checkin',
   stockBalanceActivities = '/stock-balance-activities',
+
+  productItemsCountByLocation = '/analytics/product-items/count-by-location',
+  productsOutOfStockCount = '/analytics/products/count-out-of-stock',
+  worksheetsCountByCustomer = '/analytics/worksheets/count-by-customer',
 }

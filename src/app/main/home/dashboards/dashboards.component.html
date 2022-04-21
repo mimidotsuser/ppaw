@@ -1,0 +1,67 @@
+<div class="ms-3 me-3 mt-5 mb-5">
+  <div class="d-flex gap-4 flex-wrap">
+    <div class="col-md-4 chart-card pie-chart-graph">
+      <div class="chart-header d-flex align-items-center">
+        Machines Count By Location
+      </div>
+      <div class="chart-body">
+        <canvas baseChart
+                [type]="'pie'"
+                [data]="productItemsByLocation"
+                [options]="pieChartOptions">
+        </canvas>
+      </div>
+    </div>
+    <div class="col-md-4 chart-card  pie-chart-graph">
+      <div class="chart-header d-flex align-items-center">
+        Products Out Of Stock Count
+      </div>
+      <div class="chart-body">
+        <canvas baseChart
+                [type]="'pie'"
+                [data]="productsOutOfStock"
+                [options]="pieChartOptions">
+        </canvas>
+      </div>
+    </div>
+
+    <div class="col-md-12 chart-card customer-visits-graph">
+      <div class="chart-header d-flex align-items-center">
+        Customer Visits Count
+      </div>
+      <div class="my-3 d-flex justify-content-start">
+        <div class="empty  ps-4"></div>
+        <div class="d-flex flex-wrap gap-3">
+          <div>
+            <label for="from" class="form-label">From </label>
+            <input type="date" class="form-control">
+          </div>
+          <div>
+            <label for="from" class="form-label">To </label>
+            <input type="date" class="form-control">
+          </div>
+          <div>
+            <label for="customers" class="form-label">Customers </label>
+            <ng-select [items]="customers()" bindLabel="name" [multiple]="true"
+                       [formControl]="customersControl" labelForId="customers">
+              <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
+                <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
+                       [ngModelOptions]="{standalone:true}" class="form-check-inline">
+                {{item.name}}
+              </ng-template>
+            </ng-select>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="chart-body">
+        <canvas baseChart
+                [type]="'line'"
+                [data]="worksheetsByCustomer"
+                [options]="lineChartOptions">
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>
