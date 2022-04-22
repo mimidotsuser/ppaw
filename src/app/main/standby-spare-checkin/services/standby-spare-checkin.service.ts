@@ -5,9 +5,10 @@ import { map, Observable } from 'rxjs';
 import { HttpResponseModel } from '../../../models/response.model';
 import { StandbySpareCheckinModel } from '../../../models/standby-spare-checkin.model';
 import { MRFModel } from '../../../models/m-r-f.model';
+import { StandbySpareCheckinModule } from '../standby-spare-checkin.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: StandbySpareCheckinModule
 })
 export class StandbySpareCheckinService {
 

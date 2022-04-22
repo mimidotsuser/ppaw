@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { EditComponent } from './edit/edit.component';
+import { SharedModule } from '../../../shared/shared.module';
 
 
 @NgModule({
@@ -10,7 +11,12 @@ import { EditComponent } from './edit/edit.component';
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([{path: 'edit', component: EditComponent}])
-  ]
+    RouterModule.forChild([{
+      path: 'edit', component: EditComponent, data: {
+        title: 'Change Password', breadcrumb: 'Edit current password'
+      }
+    }]),
+    SharedModule,
+  ],
 })
 export class PasswordModule {}

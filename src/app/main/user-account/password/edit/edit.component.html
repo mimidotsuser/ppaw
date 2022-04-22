@@ -1,1 +1,48 @@
-<p>edit works!</p>
+<div class="container">
+  <form class="row mt-5" [formGroup]="form">
+    <div class="col-md-4 mb-3">
+      <label for="current_password" class="form-label required">Current Password</label>
+      <input type="password" id="current_password" class="form-control"
+             formControlName="old_password">
+    </div>
+    <div class="col-12"></div>
+    <div class="col-md-4 mb-3">
+      <label for="password" class="form-label required">New Password</label>
+      <input type="password" id="password" class="form-control" formControlName="password">
+      <small class="help-text text-danger d-block" *ngIf="form.get('password')?.touched &&
+            form.get('password')?.hasError('maxlength')">
+        Password cannot exceed 17 characters
+      </small>
+      <small class="help-text">
+        Must contain
+        <span
+          [ngClass]="{'text-success':validationStatus.lengthOk,'text-danger':passwordInvalid && !validationStatus.lengthOk }">
+          at least eight characters
+        </span>
+        , with <span
+        [ngClass]="{'text-success':validationStatus.hasLetters,'text-danger':passwordInvalid && !validationStatus.hasLetters}"> at least 1 letter</span>
+        and <span
+        [ngClass]="{'text-success':validationStatus.hasNumbers,'text-danger':passwordInvalid && !validationStatus.hasNumbers}">1 number </span>.
+        Allowed special characters: {{'@+}{,#)(.-=/!'}}
+      </small>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="confirm_password" class="form-label required">Confirm Password</label>
+      <input type="password" id="confirm_password" class="form-control"
+             formControlName="password_confirmation">
+
+      <ng-container *ngIf="form.get('password')!.touched  &&
+    form.get('password_confirmation')?.touched ">
+        <small class="error-text text-danger"
+               *ngIf="form.get('password_confirmation')?.hasError('noMatch')">
+          Passwords don't match!
+        </small>
+      </ng-container>
+    </div>
+    <div class="d-flex my-4">
+      <button type="submit" class="btn btn-primary" (click)="submitForm()"
+              [disabled]="form.invalid">Update
+      </button>
+    </div>
+  </form>
+</div>

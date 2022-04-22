@@ -72,4 +72,7 @@ export enum V1Endpoints {
   productsOutOfStockCount = '/analytics/products/count-out-of-stock',
   worksheetsCountByCustomer = '/analytics/worksheets/count-by-customer',
   worksheetsCountByAuthor = '/analytics/worksheets/count-by-author',
+
+  userProfile = '/user-profile',
+  accountPassword = '/account-password',
 }

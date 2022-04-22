@@ -1,1 +1,27 @@
-<p>edit works!</p>
+<div class="container">
+  <form class="row mt-5" [formGroup]="form">
+    <div class="col-md-4 mb-3">
+      <label for="firstname" class="form-label required">First Name</label>
+      <input type="text" id="firstname" class="form-control" formControlName="first_name">
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="lastname" class="form-label">Last Name</label>
+      <input type="text" id="lastname" class="form-control" formControlName="last_name">
+    </div>
+    <div class="col-12"></div>
+    <div class="col-md-4 mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="text" id="email" class="form-control" formControlName="email">
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="role" class="form-label ">Role</label>
+      <input type="text" id="role" class="form-control" formControlName="role">
+    </div>
+    <div class="col-12"></div>
+    <div class="d-flex my-4">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid" (click)="submitForm()">
+        Update
+      </button>
+    </div>
+  </form>
+</div>
