@@ -16,3 +16,18 @@
     margin: 4px;
   }
 }
+
+.password-input-group {
+  white-space: nowrap;
+  position: relative;
+  display: block;
+
+  .form-control {
+    display: inline-block;
+  }
+
+  .icon {
+    display: inline-block;
+    margin: -2rem;
+  }
+}

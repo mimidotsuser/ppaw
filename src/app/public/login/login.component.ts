@@ -14,11 +14,12 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  form: FormGroup;
-  private _subscriptions: Subscription[] = [];
   flashMessage: null | string = null;
   emailPattern = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,24}$';
   submitting = false;
+  revealPassword = false;
+  private _subscriptions: Subscription[] = [];
+  form: FormGroup;
 
   constructor(private meta: MetaService, private fb: FormBuilder, private route: ActivatedRoute,
               private router: Router, private httpService: HttpService,

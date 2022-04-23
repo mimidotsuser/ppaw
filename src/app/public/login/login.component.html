@@ -28,8 +28,20 @@
         <small>Forgot your password?</small>
       </a>
     </div>
-    <input type="password" class="form-control" id="password" placeholder="Password"
+    <div class="password-input-group">
+    <input [type]="revealPassword?'text':'password'" class="form-control" id="password"
+           placeholder="Password"
            formControlName="password" autocomplete="current-password">
+    <svg viewBox="0 0 24 24" fill="#8494A5" height="24" width="24" class="icon"
+         (click)="revealPassword=!revealPassword">
+      <ng-container *ngIf="revealPassword;else hidePasswordIcon">
+        <use xlink:href="#showPasswordIcon"></use>
+      </ng-container>
+      <ng-template #hidePasswordIcon>
+        <use xlink:href="#hidePasswordIcon"></use>
+      </ng-template>
+    </svg>
+    </div>
   </div>
 
   <div class="col-12 d-flex justify-content-end">

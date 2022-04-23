@@ -23,14 +23,25 @@
       <div class="col-12 pb-3"></div>
     </ng-template>
     <div class="col-12 mb-3">
-      <label for="username" class="form-label">Email</label>
+      <label for="username" class="form-label required">Email</label>
       <input type="email" class="form-control" id="username" formControlName="username"
              autocomplete="username">
     </div>
     <div class="col-12 mb-3">
-      <label for="password" class="form-label">New password</label>
-      <input type="password" class="form-control" id="password" formControlName="password"
-             autocomplete="new-password">
+      <label for="password" class="form-label required">New password</label>
+      <div class="password-input-group">
+        <input [type]="revealPassword?'text':'password'" class="form-control" id="password"
+               formControlName="password" autocomplete="new-password">
+        <svg viewBox="0 0 24 24" fill="#8494A5" height="24" width="24" class="icon"
+             (click)="revealPassword=!revealPassword">
+          <ng-container *ngIf="revealPassword;else hidePasswordIcon">
+            <use xlink:href="#showPasswordIcon"></use>
+          </ng-container>
+          <ng-template #hidePasswordIcon>
+            <use xlink:href="#hidePasswordIcon"></use>
+          </ng-template>
+        </svg>
+      </div>
       <small class="help-text text-danger d-block" *ngIf="form.get('password')?.touched &&
             form.get('password')?.hasError('maxlength')">
         Password cannot exceed 17 characters
@@ -41,16 +52,27 @@
         <span [ngClass]="{'text-del':validationStatus.lengthOk}"> at least eight characters</span>
         , with <span [ngClass]="{'text-del':validationStatus.hasLetters}"> at least 1 letter</span>
         and <span [ngClass]="{'text-del':validationStatus.hasNumbers}">1 number </span> .
-        Allowed  special characters: {{'@+}{,#)(.-=/!'}}
+        Allowed special characters: {{'@+}{,#)(.-=/!'}}
       </small>
 
     </div>
     <div class="col-12 mb-3">
-      <div class="col-12 d-flex justify-content-between">
-        <label for="password-confirm" class="form-label">Confirm Password</label>
+      <div>
+        <label for="p-confirm" class="form-label required">Confirm Password</label>
       </div>
-      <input type="password" class="form-control" id="password-confirm"
-             formControlName="password_confirmation" autocomplete="new-password">
+      <div class="password-input-group">
+        <input [type]="revealConfirmPassword?'text':'password'" class="form-control" id="p-confirm"
+               formControlName="password_confirmation" autocomplete="new-password">
+        <svg viewBox="0 0 24 24" fill="#8494A5" height="24" width="24" class="icon"
+             (click)="revealConfirmPassword=!revealConfirmPassword">
+          <ng-container *ngIf="revealConfirmPassword;else hidePasswordIcon">
+            <use xlink:href="#showPasswordIcon"></use>
+          </ng-container>
+          <ng-template #hidePasswordIcon>
+            <use xlink:href="#hidePasswordIcon"></use>
+          </ng-template>
+        </svg>
+      </div>
       <small class="error-text text-danger" *ngIf="form.get('password')!.touched  &&
     form.get('password_confirmation')?.touched &&
        form.get('password_confirmation')?.hasError('noMatch')">
@@ -65,7 +87,8 @@
         </button>
       </ng-container>
       <ng-template #submitButton>
-        <button type="submit" class="btn btn-primary" (click)="recoverPassword()">
+        <button type="submit" class="btn btn-primary" (click)="recoverPassword()"
+                [disabled]="form.invalid">
           {{submitButtonLabel}}
         </button>
       </ng-template>

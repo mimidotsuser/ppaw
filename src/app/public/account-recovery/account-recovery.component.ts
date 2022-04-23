@@ -12,8 +12,6 @@ import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
   styleUrls: ['./account-recovery.component.scss']
 })
 export class AccountRecoveryComponent implements OnInit {
-  private _subscriptions: Subscription[] = [];
-  form: FormGroup;
   passwordPattern = '^(?=.*[A-Za-z])(?=.*\\d)[@+}{,)(#.-=/!A-Za-z\\d]{8,}$'
   emailPattern = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,24}$';
   validationStatus = {lengthOk: false, hasLetters: false, hasNumbers: false}
@@ -22,6 +20,10 @@ export class AccountRecoveryComponent implements OnInit {
   flashErrorMessage: null | string = null;
   formTitle = 'Account Password Recovery';
   submitButtonLabel = 'Reset Password'
+  revealPassword = false;
+  revealConfirmPassword = false;
+  private _subscriptions: Subscription[] = [];
+  form: FormGroup;
 
   constructor(private meta: MetaService, private fb: FormBuilder, private route: ActivatedRoute,
               private httpService: HttpService, private router: Router) {

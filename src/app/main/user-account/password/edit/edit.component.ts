@@ -13,6 +13,9 @@ import { matchValues } from '../../../../utils/validators/match-values';
 export class EditComponent implements OnInit, OnDestroy {
 
   validationStatus = {lengthOk: false, hasLetters: false, hasNumbers: false}
+  revealOldPassword = false;
+  revealPassword = false;
+  revealConfirmPassword = false;
   private _subscriptions: Subscription[] = [];
   private _passwordPattern = '^(?=.*[A-Za-z])(?=.*\\d)[@+}{,)(#.-=/!A-Za-z\\d]{8,}$'
   form: FormGroup;
