@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.flashMessage = null;
     this.submitting = true;
 
-    this.httpService.get(this.httpService.endpoint.csrf).subscribe({
+    this.subSink = this.httpService.get(this.httpService.endpoint.csrf).subscribe({
       next: () => {
         this.subSink = this.httpService.post(this.httpService.endpoint.login, this.form.value)
           .subscribe(
