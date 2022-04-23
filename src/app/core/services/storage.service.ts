@@ -6,14 +6,21 @@ import { Observable, Subject } from 'rxjs';
 export class StorageService {
 
   private _userAccountCleared: Subject<boolean> = new Subject<boolean>();
+  private cache: { [ key: string ]: any } = {};
 
   constructor() {
     this.storageChangesListener();
   }
 
   get user(): UserModel | null {
+    if (this.cache[ 'user' ]) {return this.cache[ 'user' ]}
     const u = window.localStorage.getItem('user');
-    return u ? JSON.parse(u) : null;
+
+    if (u) {
+      this.cache[ 'user' ] = JSON.parse(u);
+      return this.cache[ 'user' ];
+    }
+    return null;
   }
 
   /**
@@ -21,6 +28,7 @@ export class StorageService {
    * @param user
    */
   set user(user: UserModel | null) {
+    this.cache[ 'user' ] = user;
     if (user) {
       window.localStorage.setItem('user', JSON.stringify(user));
     } else {
