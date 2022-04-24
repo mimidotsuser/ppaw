@@ -22,7 +22,7 @@ export function emptyState(message: string = 'No data available') {
       ctx.save();
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.font='16px Lato'
+      ctx.font = '16px Lato'
       ctx.fillText(message, centerX, centerY);
       ctx.restore();
 

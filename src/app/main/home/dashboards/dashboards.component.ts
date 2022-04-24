@@ -13,7 +13,6 @@ import {
 import { CustomerModel } from '../../../models/customer.model';
 import { addDaysToDate } from '../../../utils/utils';
 import { serializeDate } from '../../../utils/serializers/date';
-import { emptyState } from '../../../utils/chart.js/empty-state';
 
 @Component({
   selector: 'app-dashboards',
@@ -23,11 +22,12 @@ import { emptyState } from '../../../utils/chart.js/empty-state';
 })
 export class DashboardsComponent implements OnInit, OnDestroy {
   private _subscriptions: Subscription[] = [];
-  private _productsOutOfStock: ProductOutOfStockAnalytics[] = [];
-  private _productItemsByLocation: ProductItemByLocationAnalytics[] = [];
-  private _worksheetsByCustomer: WorksheetByCustomerAnalytics[] = [];
   private _customers: CustomerModel[] = [];
-  private _worksheetsByAuthor: WorksheetByAuthorAnalytics[] = [];
+  private _worksheetsByCustomer: WorksheetByCustomerAnalytics[] = [];
+  productsOutOfStock?: ChartData<'pie'>
+  productItemsByLocation?: ChartData<'pie'>
+  worksheetsByAuthor?: ChartData<'pie'>
+  worksheetsByCustomer?: ChartData<'line'>
   worksheetCustomersFilterControl: FormControl;
   worksheetsStartDateFilterControl: FormControl;
   worksheetsEndDateFilterControl: FormControl;
@@ -75,9 +75,6 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     }
   }
 
-  get pieChartPlugins() {
-    return [emptyState()]
-  }
 
   get lineChartOptions(): ChartOptions<'line'> {
     return {
@@ -99,30 +96,98 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     }
   }
 
-  get lineChartsPlugins() {
-    return [emptyState()]
+  get customers() {return this._customers}
+
+
+  private loadAnalyticsData() {
+    //worksheets by clients
+    this.loadUsersCustomerVisits();
+
+    //out of stock
+    this.subSink = this.analyticsService.fetchProductsOutOfStock()
+      .subscribe({
+        next: (model) => {
+          this.productsOutOfStock = this.mapProductsOutOfStockData(model)
+        }
+      });
+
+    //items by location
+    this.subSink = this.analyticsService.fetchProductItemsByLocation()
+      .subscribe({
+        next: (model) => {
+          this.productItemsByLocation = this.mapProductItemsByLocationData(model)
+        }
+      });
+
+    //worksheets by author
+    this.subSink = this.analyticsService.fetchWorksheetsByAuthor()
+      .subscribe({
+        next: (model) => {
+          this.worksheetsByAuthor = this.mapWorksheetsByAuthorData(model)
+        }
+      });
+
   }
 
-  get productsOutOfStock(): ChartData<'pie'> {
+  private loadUsersCustomerVisits() {
+    const customersIds = !this.worksheetCustomersFilterControl.value ? undefined :
+      (this.worksheetCustomersFilterControl.value as CustomerModel[]).map((customer) => customer.id);
+
+    const startDate = serializeDate(this.worksheetsStartDateFilterControl.value);
+    const endDate = serializeDate(this.worksheetsEndDateFilterControl.value);
+
+    this.subSink = this.analyticsService.fetchWorksheetsByCustomer(startDate, endDate, customersIds)
+      .subscribe({
+        next: (model) => {
+          this.worksheetsByCustomer = this.mapWorksheetsByCustomerData(model);
+          this._worksheetsByCustomer = model;
+        }
+      })
+  }
+
+  private loadCustomers() {
+    this.subSink = this.analyticsService.fetchCustomers()
+      .subscribe({
+        next: (model) => {
+          this._customers = model;
+
+          //set selected customers
+          if (!this.worksheetCustomersFilterControl.value) {
+            this.patchSelectedCustomers();
+          }
+        }
+      })
+  }
+
+  mapProductsOutOfStockData(model: ProductOutOfStockAnalytics[]) {
     return {
       datasets: [
-        {data: this._productsOutOfStock.map((row) => row.total)}
+        {data: model.map((row) => row.total)}
       ],
-      labels: this._productsOutOfStock.map((row) => row.name)
+      labels: model.map((row) => row.name)
     }
   }
 
-  get productItemsByLocation(): ChartData<'pie'> {
+  mapProductItemsByLocationData(model: ProductItemByLocationAnalytics[]): ChartData<'pie'> {
     return {
       datasets: [
-        {data: this._productItemsByLocation.map((row) => row.total)}
+        {data: model.map((row) => row.total)}
       ],
-      labels: this._productItemsByLocation.map((row) => row.location)
+      labels: model.map((row) => row.location)
     }
   }
 
-  get worksheetsByCustomer(): ChartData<'line'> {
-    const uniqueLabels: { [ key: string ]: string } = this._worksheetsByCustomer
+  mapWorksheetsByAuthorData(model: WorksheetByAuthorAnalytics[]): ChartData<'pie'> {
+    return {
+      datasets: [
+        {data: model.map((row) => row.total)}
+      ],
+      labels: model.map((row) => row.name)
+    }
+  }
+
+  mapWorksheetsByCustomerData(model: WorksheetByCustomerAnalytics[]): ChartData<'line'> {
+    const uniqueLabels: { [ key: string ]: string } = model
       .reduce((acc, row) => {
         const createdAt: string = this.datePipe.transform(row.created_at)!;
         acc[ createdAt ] = row.created_at;
@@ -132,7 +197,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     const labels = Object.keys(uniqueLabels)
 
     return {
-      datasets: this._worksheetsByCustomer.reduce((acc, row, index) => {
+      datasets: model.reduce((acc, row, index) => {
         const obj = acc.find((dataset) => dataset.id === row.customer_id);
         if (obj) {
           obj.data[ index ] = row.total
@@ -152,68 +217,6 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     }
   }
 
-  get worksheetsByAuthor(): ChartData<'pie'> {
-    return {
-      datasets: [
-        {data: this._worksheetsByAuthor.map((row) => row.total)}
-      ],
-      labels: this._worksheetsByAuthor.map((row) => row.name)
-    }
-  }
-
-
-  customers() {return this._customers}
-
-  private loadAnalyticsData() {
-    //worksheets by clients
-    this.loadUsersCustomerVisits();
-
-    //out of stock
-    this.subSink = this.analyticsService.fetchProductsOutOfStock()
-      .subscribe({
-        next: (model) => this._productsOutOfStock = model
-      });
-
-    //items by location
-    this.subSink = this.analyticsService.fetchProductItemsByLocation()
-      .subscribe({
-        next: (model) => this._productItemsByLocation = model
-      });
-
-    //worksheets by author
-    this.subSink = this.analyticsService.fetchWorksheetsByAuthor()
-      .subscribe({
-        next: (model) => this._worksheetsByAuthor = model
-      });
-
-  }
-
-  private loadUsersCustomerVisits() {
-    const customersIds = !this.worksheetCustomersFilterControl.value ? undefined :
-      (this.worksheetCustomersFilterControl.value as CustomerModel[]).map((customer) => customer.id);
-
-    const startDate = serializeDate(this.worksheetsStartDateFilterControl.value);
-    const endDate = serializeDate(this.worksheetsEndDateFilterControl.value);
-
-    this.subSink = this.analyticsService.fetchWorksheetsByCustomer(startDate, endDate, customersIds)
-      .subscribe({
-        next: (model) => this._worksheetsByCustomer = model
-      })
-  }
-
-  private loadCustomers() {
-    this.subSink = this.analyticsService.fetchCustomers()
-      .subscribe({
-        next: (model) => {
-          this._customers = model;
-
-          //set selected customers
-          if (!this.worksheetCustomersFilterControl.value) {
-            this.patchSelectedCustomers();
-          }
-        }
-      })
-  }
 
   private patchSelectedCustomers() {
     const selectedUniqueCustomerIds: { [ key: number ]: number } = this._worksheetsByCustomer

@@ -1,10 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { NgChartsModule } from 'ng2-charts';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+import {
+  ArcElement,
+  CategoryScale,
+  Legend,
+  LinearScale,
+  LineController,
+  LineElement,
+  PieController,
+  PointElement,
+  Tooltip
+} from 'chart.js';
 import { DashboardsComponent } from './dashboards.component';
+import { WidgetsModule as DashboardWidgetsModule } from '../widgets/widgets.module';
 
 
 @NgModule({
@@ -14,7 +25,8 @@ import { DashboardsComponent } from './dashboards.component';
   imports: [
     CommonModule,
     RouterModule.forChild([{path: '', component: DashboardsComponent}]),
-    NgChartsModule,
+    DashboardWidgetsModule.forRoot([Tooltip, Legend, PieController,
+      LineController, LineElement, PointElement, CategoryScale, LinearScale, ArcElement]),
     NgSelectModule,
     FormsModule,
     ReactiveFormsModule

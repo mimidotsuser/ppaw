@@ -9,8 +9,7 @@
           <canvas baseChart
                   [type]="'pie'"
                   [data]="productItemsByLocation"
-                  [options]="pieChartOptions"
-                  [plugins]="pieChartPlugins">
+                  [options]="pieChartOptions">
           </canvas>
         </div>
       </div>
@@ -24,8 +23,7 @@
           <canvas baseChart
                   [type]="'pie'"
                   [data]="productsOutOfStock"
-                  [options]="pieChartOptions"
-                  [plugins]="pieChartPlugins">
+                  [options]="pieChartOptions">
           </canvas>
         </div>
       </div>
@@ -39,8 +37,7 @@
           <canvas baseChart
                   [type]="'pie'"
                   [data]="worksheetsByAuthor"
-                  [options]="pieChartOptions"
-                  [plugins]="pieChartPlugins">
+                  [options]="pieChartOptions">
           </canvas>
         </div>
       </div>
@@ -66,7 +63,7 @@
             </div>
             <div class="col-md-4 mb-3">
               <label for="customers" class="form-label">Customers </label>
-              <ng-select [items]="customers()" bindLabel="name" [multiple]="true"
+              <ng-select [items]="customers" bindLabel="name" [multiple]="true"
                          [formControl]="worksheetCustomersFilterControl" labelForId="customers">
                 <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
                   <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
@@ -88,8 +85,7 @@
           <canvas baseChart
                   [type]="'line'"
                   [data]="worksheetsByCustomer"
-                  [options]="lineChartOptions"
-                  [plugins]="lineChartsPlugins">
+                  [options]="lineChartOptions">
           </canvas>
         </div>
       </div>
