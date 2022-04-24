@@ -87,7 +87,9 @@ export class DashboardsComponent implements OnInit, OnDestroy {
         },
       },
       scales: {
-        y: {min: 0, ticks: {stepSize: 1}},
+        y: {min: 0, ticks: {stepSize: 1},},
+        x: {ticks: {minRotation: 45}}
+
       },
 
       plugins: {
