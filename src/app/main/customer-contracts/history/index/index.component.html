@@ -31,13 +31,11 @@
       <th>Cover Type</th>
       <th>Start Date</th>
       <th>Contract End</th>
-      <th>Archived</th>
       <th class="actions-column"></th>
     </tr>
     </thead>
     <tbody>
-    <tr
-      *ngFor="let contract of contracts|slice:tableCountStart:tableCountEnd">
+    <tr *ngFor="let contract of contracts|slice:tableCountStart:tableCountEnd">
       <td>
         <span class="td-inline-label">Contract No.</span>
         <a routerLink="{{contract.id}}" [relativeTo]="route" class="text-decoration-none">
@@ -66,10 +64,6 @@
       <td>
         <span class="td-inline-label">Contract End</span>
         {{contract.expiry_date|date}}
-      </td>
-      <td>
-        <span class="td-inline-label">Archived</span>
-        {{contract.active ? '' : 'Yes'}}
       </td>
       <td>
         <div class="d-flex flex-column gap-2">
@@ -101,7 +95,7 @@
 
     <ng-container *ngIf="contracts.length===0 && !loadingMainContent">
       <tr>
-        <td class="text-center py-5" colspan="9">
+        <td class="text-center py-5" colspan="8">
           <ng-container *ngIf="!searchInput.value;else noResults">
             There are no contracts.&nbsp;
             <a class="text-decoration-none" routerLink="../create" [relativeTo]="route"
@@ -118,7 +112,7 @@
 
     <ng-container *ngIf="loadingMainContent">
       <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
-        <td *ngFor="let x of [].constructor(7)">
+        <td *ngFor="let x of [].constructor(6)">
           <div class="placeholder w-100 h-100 py-3"></div>
         </td>
       </tr>

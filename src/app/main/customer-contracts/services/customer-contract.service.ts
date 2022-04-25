@@ -18,7 +18,7 @@ export class CustomerContractService {
   constructor(private httpService: HttpService) { }
 
   fetch(meta: PaginationModel): Observable<HttpResponseModel<CustomerContractModel>> {
-    const params = {...meta, include: 'customer'};
+    const params = {...meta, include: 'customer', active: true};
     return this.httpService.get(this.httpService.endpoint.customerContracts, {params})
   }
 

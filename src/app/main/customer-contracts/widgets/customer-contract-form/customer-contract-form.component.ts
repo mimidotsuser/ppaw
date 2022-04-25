@@ -59,9 +59,9 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
 
   get contractCategories() {
     return [
-      {code: 'FULL', title: 'Full cover'},
+      {code: 'FULL', title: 'Comprehensive'},
       {code: 'LABOUR_ONLY', title: 'Labour Only'},
-      {code: 'LEASE', title: 'Lease cover'}
+      {code: 'LEASE', title: 'Lease Cover'}
     ]
   }
 
@@ -134,7 +134,7 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
 
     this.loadingMainContent = true;
     this.subSink = this.customerContractService
-      .fetchCustomerProductItems(this.form.value.customer.id, this.pagination)
+      .fetchCustomerProductItems(this.form.get('customer')?.value?.id, this.pagination)
       .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
@@ -153,7 +153,11 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
   }
 
   patchForm() {
+    this.form.get('customer')?.enable();
+
     if (!this._model) {return}
+
+    this.form.get('customer')?.disable();
 
     this.form.patchValue({
       customer: this._model.customer,
@@ -161,7 +165,6 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
       start_date: new Date(this._model.start_date).toISOString().slice(0, 10),
       expiry_date: new Date(this._model.expiry_date).toISOString().slice(0, 10)
     });
-
     this.loadProductItems();
   }
 

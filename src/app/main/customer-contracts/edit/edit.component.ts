@@ -46,7 +46,7 @@ export class EditComponent implements OnInit, OnDestroy {
       expiry_date: form.value.expiry_date,
       category_code: form.value.category.code,
       category_title: form.value.category.title,
-      customer_id: form.value.customer.id,
+      customer_id: form.get('customer')?.value?.id,
       contract_items: (form.value.contract_items as CustomerContractFormModel[])
         .filter((item) => item.selected)
         .map((item) => ({product_item_id: item.productItem.id}))
