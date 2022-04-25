@@ -6,7 +6,7 @@ import {
   NavigationStart,
   Router
 } from '@angular/router';
-import { filter, finalize, Subscription } from 'rxjs';
+import { filter, Subscription, tap } from 'rxjs';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {
   faAddressBook,
@@ -56,7 +56,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
     this.subSink = this.router.events
       .pipe(filter((evt) => evt instanceof NavigationStart))
-      .pipe(finalize(() => this.hideSidebarMenu = true))
+      .pipe(tap(() => this.hideSidebarMenu = true))
       .subscribe()
 
     this.subSink = this.router.events
