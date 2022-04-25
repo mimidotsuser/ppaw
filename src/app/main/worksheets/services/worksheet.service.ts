@@ -7,6 +7,9 @@ import { WorksheetModel } from '../../../models/worksheet.model';
 import { ProductCategoryModel } from '../../../models/product-category.model';
 import { PaginationModel } from '../../../models/pagination.model';
 import { HttpResponseModel } from '../../../models/response.model';
+import { CustomerModel } from '../../../models/customer.model';
+import { UserModel } from '../../../models/user.model';
+import { WorksheetFiltersModel } from '../../../models/filters.model';
 
 @Injectable({
   providedIn: WorksheetsModule
@@ -15,8 +18,11 @@ export class WorksheetService {
 
   constructor(private httpService: HttpService) { }
 
-  fetch(meta: PaginationModel): Observable<HttpResponseModel<WorksheetModel>> {
-    const params = {...meta, include: 'createdBy,customer'}
+  fetch(meta: PaginationModel, filters?: WorksheetFiltersModel): Observable<HttpResponseModel<WorksheetModel>> {
+    let params = {...meta, include: 'createdBy,customer'}
+    if (filters) {
+      params = {...filters, ...params}
+    }
     return this.httpService.get(this.httpService.endpoint.worksheets, {params})
   }
 
@@ -48,4 +54,13 @@ export class WorksheetService {
       .pipe(map((res: { data: ProductCategoryModel[] }) => res.data));
   }
 
+  fetchCustomers(params: {}): Observable<HttpResponseModel<CustomerModel>> {
+    return this.httpService
+      .get(this.httpService.endpoint.customers, {params: params});
+  }
+
+  fetchUsers(param: {}): Observable<HttpResponseModel<UserModel>> {
+    return this.httpService
+      .get(this.httpService.endpoint.users, {params: param})
+  }
 }
