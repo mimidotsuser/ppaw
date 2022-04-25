@@ -30,10 +30,19 @@ export class CreateComponent implements OnInit, OnDestroy {
               private fb: FormBuilder, private router: Router) {
 
     this.subSink = this.inspectionService.fetchRequest(this.route.snapshot.params[ 'id' ])
-      .subscribe((model) => {
-        this.model = model;
-        this.pagination.total = this.model.items.length;
-        model.items.map((item) => this.renderInspectionItemsFormGroup(item));
+      .subscribe({
+        next: (model) => {
+          this.model = model;
+          this.pagination.total = this.model.items.length;
+          model.items.map((item) => this.renderInspectionItemsFormGroup(item));
+        },
+        error: (e) => {
+          if (e.status === 403) {
+            this.router.navigate(['../../../not-authorized'], {relativeTo: this.route})
+          } else if (e.status === 404) {
+            this.router.navigate(['../../../not-found'], {relativeTo: this.route})
+          }
+        }
       });
 
     this.initMainForm()

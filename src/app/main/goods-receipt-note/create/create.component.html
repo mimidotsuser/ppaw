@@ -8,11 +8,6 @@
                             (change)="onPurchaseOrderSelected()">
         </po-typeahead-input>
       </div>
-      <div class="col-lg-4 col-md-6 mb-3">
-        <label for="reference" class="form-label required">Delivery Note / Packaging List
-          No.</label>
-        <input type="text" class="form-control" id="reference" formControlName="reference">
-      </div>
     </div>
   </div>
 
@@ -120,8 +115,13 @@
           </option>
         </select>
       </div>
+      <div class="col-lg-4 mb-3">
+        <label for="reference" class="form-label required">Delivery Note / Packaging List
+          No.</label>
+        <input type="text" class="form-control" id="reference" formControlName="reference">
+      </div>
       <div class="col-12"></div>
-      <div class="col-md-6 mb-3">
+      <div class="col-md-7 mb-3">
         <label for="remarks" class="form-label required">Remarks</label>
         <textarea id="remarks" class="form-control" rows="4" formControlName="remarks"></textarea>
       </div>
