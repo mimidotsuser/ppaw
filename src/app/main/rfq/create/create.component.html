@@ -23,7 +23,7 @@
             {{item.name}}
           </ng-template>
           <ng-template ng-footer-tmp>
-            <a role="button" class="btn btn-outline-primary border-0"
+            <a role="button" class="btn btn-outline-primary border-0" *can="'vendors.create'"
                (click)="showVendorForm(vc,vendorFormComponent.form)">
               <small> + Create new vendor </small>
             </a>
@@ -82,7 +82,7 @@
         </td>
         <td>
           <span class="td-inline-label">UOM</span>
-          <select class="form-select" formControlName="uom"  [compareWith]="uomComparator">
+          <select class="form-select" formControlName="uom" [compareWith]="uomComparator">
             <option *ngFor="let uom of unitOfMeasure"
                     [ngValue]="uom">{{uom.title}} {{uom.unit}}</option>
           </select>
@@ -119,22 +119,30 @@
   </div>
   <div class="container-fluid">
     <div class="d-flex my-4">
-      <div class="input-group submit-buttons">
-        <button type="button" class="btn btn-primary btn-submit btn-lg" (click)="submitRFQForm()"
-                [disabled]="this.form.invalid">
-          Generate RFQ
+      <ng-container *ngIf="formSubmissionBusy;else submitButton">
+        <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+          <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+          Please wait ...
         </button>
-        <div ngbDropdown class="d-inline-block" placement="bottom-end">
-          <button class="btn btn-primary dropdown-toggle-split  btn-submit btn-lg" id="dp"
-                  [disabled]="this.form.invalid" ngbDropdownToggle>
+      </ng-container>
+      <ng-template #submitButton>
+        <div class="input-group submit-buttons">
+          <button type="button" class="btn btn-primary btn-submit btn-lg" (click)="submitRFQForm()"
+                  [disabled]="this.form.invalid">
+            Generate RFQ
           </button>
-          <div ngbDropdownMenu aria-labelledby="dp">
-            <button ngbDropdownItem (click)="submitRFQForm(false)">
-              Submit only
+          <div ngbDropdown class="d-inline-block" placement="bottom-end">
+            <button class="btn btn-primary dropdown-toggle-split  btn-submit btn-lg" id="dp"
+                    [disabled]="this.form.invalid" ngbDropdownToggle>
             </button>
+            <div ngbDropdownMenu aria-labelledby="dp">
+              <button ngbDropdownItem (click)="submitRFQForm(false)">
+                Submit only
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-template>
     </div>
   </div>
 
@@ -192,14 +200,21 @@
   <app-vendor-form #vendorFormComponent>
 
     <div class="col-12 d-flex gap-2 mt-3">
-      <button type="button" class="btn btn-primary"
-              (click)="submitVendor(vendorFormComponent.form)">
-        CREATE
-      </button>
-
-      <button type="button" class="btn btn-cancel" (click)="showVendorCreateFormPopup=false">
-        CANCEL
-      </button>
+      <ng-container *ngIf="vendorFormSubmissionBusy;else submitVendorFormButton">
+        <button type="button" disabled class="btn btn-primary">
+          <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+          Please wait ...
+        </button>
+      </ng-container>
+      <ng-template #submitVendorFormButton>
+        <button type="button" class="btn btn-primary"
+                (click)="submitVendor(vendorFormComponent.form)">
+          CREATE
+        </button>
+        <button type="button" class="btn btn-cancel" (click)="showVendorCreateFormPopup=false">
+          CANCEL
+        </button>
+      </ng-template>
     </div>
   </app-vendor-form>
 </app-side-popup>

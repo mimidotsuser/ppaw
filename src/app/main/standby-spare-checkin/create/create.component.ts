@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { PaginationModel } from '../../../models/pagination.model';
 import { StandbySpareCheckinService } from '../services/standby-spare-checkin.service';
 import { MRFModel, MRFPurposeCode } from '../../../models/m-r-f.model';
@@ -13,8 +13,11 @@ import { StockBalanceActivityModel } from '../../../models/stock-balance-activit
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
+
 export class CreateComponent implements OnInit, OnDestroy {
 
+  formSubmissionBusy = false;
+  loadingMainContent = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 15}
   private _subscriptions: Subscription[] = [];
   form: FormGroup;
@@ -69,8 +72,10 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     if (!this.form.value.material_request) {return}
 
+    this.loadingMainContent = true;
     //fetch material request items
     this.subSink = this.service.fetchMaterialRequest((this.form.value.material_request as MRFModel).id)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (model) => {
           const spareItems = model.items.filter((item) => {
@@ -156,7 +161,9 @@ export class CreateComponent implements OnInit, OnDestroy {
       items: (this.form.value as CheckInFormModel).items
         .map((item) => ({product_id: item.product.id, qty: item.qty}))
     }
+    this.formSubmissionBusy = true;
     this.subSink = this.service.create(payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => this.router.navigate(['../'], {relativeTo: this.route})
           .then(() => {

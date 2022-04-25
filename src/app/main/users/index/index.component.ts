@@ -5,7 +5,8 @@ import { UserAccountStatus, UserModel } from '../../../models/user.model';
 import { UserService } from '../services/user.service';
 import { RoleService } from '../../roles/services/role.service';
 import { RoleModel } from '../../../models/role.model';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
+import { PaginationModel } from '../../../models/pagination.model';
 
 @Component({
   selector: 'app-index',
@@ -16,30 +17,29 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   faEllipsisV = faEllipsisV;
 
-  searchControl: FormControl;
-  selectedModel: UserModel | null = null;
   showUserFormPopup = false;
-  _users: UserModel[] = [];
-  _roles: RoleModel[] = [];
+  loadingMainContent = false;
+  formSubmissionBusy = false;
+  selectedModel: UserModel | null = null;
+  pagination: PaginationModel = {limit: 15, total: 0, page: 1};
+  private _users: UserModel[] = [];
+  private _roles: RoleModel[] = [];
   private _subscriptions: Subscription[] = [];
-  pagination = {
-    limit: 15,
-    total: 0,
-    page: 1
-  };
+  searchControl: FormControl;
 
   constructor(private userService: UserService, private roleService: RoleService,
               private fb: FormBuilder) {
     this.searchControl = this.fb.control('');
+    this.loadUsers();
   }
 
   ngOnInit(): void {
-
-    this.subSink = this.userService.fetchAll
-      .subscribe((users) => this._users = users)
-
     this.subSink = this.roleService.fetchAll
       .subscribe((roles) => this._roles = roles)
+  }
+
+  set subSink(v: Subscription) {
+    this._subscriptions.push(v);
   }
 
   get users() {
@@ -50,8 +50,25 @@ export class IndexComponent implements OnInit, OnDestroy {
     return this._roles;
   }
 
-  set subSink(v: Subscription) {
-    this._subscriptions.push(v);
+  get statuses() {
+    return UserAccountStatus;
+  }
+
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
+  }
+
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
+  }
+
+  loadUsers() {
+    if (this.tableCountEnd <= this._users.length) {return;}
+
+    this.loadingMainContent = true;
+    this.subSink = this.userService.fetchAll
+      .pipe(finalize(() => this.loadingMainContent = false))
+      .subscribe((users) => this._users = users)
   }
 
   resolveUserStatus(code: keyof typeof UserAccountStatus): string {
@@ -69,10 +86,6 @@ export class IndexComponent implements OnInit, OnDestroy {
       return 'bg-warning'
     }
     return 'bg-secondary';
-  }
-
-  get statuses() {
-    return UserAccountStatus;
   }
 
   showCreateUserPopup() {
@@ -98,8 +111,10 @@ export class IndexComponent implements OnInit, OnDestroy {
     form.markAllAsTouched();
     if (form.invalid) {return}
 
+    this.formSubmissionBusy = true;
     if (this.selectedModel?.id) {
       this.subSink = this.userService.update(this.selectedModel!.id, form.value)
+        .pipe(finalize(() => this.formSubmissionBusy = false))
         .subscribe((user) => {
           const index = this.users.findIndex((u) => u.id === user.id);
           if (index > -1) {
@@ -112,6 +127,7 @@ export class IndexComponent implements OnInit, OnDestroy {
     }
 
     this.subSink = this.userService.create(form.value)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: (user) => {
           this.users.unshift(user);

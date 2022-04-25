@@ -26,8 +26,9 @@
       <th></th>
     </tr>
     </thead>
-    <tbody *ngIf="(users|filter:this.searchControl.value) as data">
-    <tr *ngFor="let user of data|paginate:pagination">
+    <tbody>
+
+    <tr *ngFor="let user of users|paginate:pagination|filter:this.searchControl.value">
 
       <td>
         <span class="td-inline-label">Name</span>
@@ -80,11 +81,30 @@
       </td>
     </tr>
 
-    <ng-container *ngIf="this.searchControl.value && data.length==0">
+    <ng-container *ngIf="users.length==0">
       <tr class="no-data">
-        <td colspan="4" class="py-3 text-center"> No data matching the searched criteria</td>
+        <td colspan="4" class="py-3 text-center">
+          <div *ngIf="this.searchControl.value;else noData">
+            No data matching the searched criteria
+          </div>
+          <ng-template #noData>
+            No data at the moment
+          </ng-template>
+        </td>
       </tr>
     </ng-container>
+
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td *ngFor="let x of [].constructor(3)">
+          <div class="placeholder w-100 h-100 py-3"></div>
+        </td>
+        <td colspan="2">
+          <div class="placeholder w-100 h-100 py-3"></div>
+        </td>
+      </tr>
+    </ng-container>
+
     </tbody>
   </table>
 
@@ -99,16 +119,23 @@
 
   <app-user-form [roles]="roles" [model]="this.selectedModel" #userFormComponent>
     <div class="d-flex gap-2 col-12">
-
-      <button type="submit" class="btn btn-primary" *ngIf="!this.selectedModel?.id"
-              (click)="saveUserForm(userFormComponent.form)">
-        CREATE
-      </button>
-      <button type="submit" class="btn btn-primary" *ngIf="this.selectedModel?.id"
-              (click)="saveUserForm(userFormComponent.form)">
-        UPDATE
-      </button>
-      <button type="button" class="btn btn-cancel"
+      <ng-container *ngIf="formSubmissionBusy;else submitButton">
+        <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+          <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+          Please wait ...
+        </button>
+      </ng-container>
+      <ng-template #submitButton>
+        <button type="submit" class="btn btn-primary" *ngIf="!this.selectedModel?.id"
+                (click)="saveUserForm(userFormComponent.form)">
+          CREATE
+        </button>
+        <button type="submit" class="btn btn-primary" *ngIf="this.selectedModel?.id"
+                (click)="saveUserForm(userFormComponent.form)">
+          UPDATE
+        </button>
+      </ng-template>
+      <button type="button" class="btn btn-cancel" [disabled]="formSubmissionBusy"
               (click)="this.closeFormPopup(userFormComponent.form)">
         CANCEL
       </button>

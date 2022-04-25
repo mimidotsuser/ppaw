@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { finalize, Subscription } from 'rxjs';
 import { PaginationModel } from '../../../../models/pagination.model';
-import { Subscription } from 'rxjs';
 import { StandbySpareCheckinModel } from '../../../../models/standby-spare-checkin.model';
 import { StandbySpareCheckinService } from '../../services/standby-spare-checkin.service';
 
@@ -12,6 +12,7 @@ import { StandbySpareCheckinService } from '../../services/standby-spare-checkin
 })
 export class IndexComponent implements OnInit, OnDestroy {
 
+  loadingMainContent = true;
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   private _subscriptions: Subscription[] = [];
   private _requests: StandbySpareCheckinModel[] = [];
@@ -41,10 +42,10 @@ export class IndexComponent implements OnInit, OnDestroy {
   get requests() {return this._requests}
 
   loadRequests() {
-    if (this.tableCountEnd <= this.requests.length) {
-      return;
-    }
+    if (this.tableCountEnd <= this.requests.length) {return;}
+    this.loadingMainContent = true;
     this.subSink = this.service.fetch(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this.pagination.total = res.total;

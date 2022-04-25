@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { MRFItemModel, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
@@ -15,9 +15,10 @@ import { PaginationModel } from '../../../../models/pagination.model';
 export class CreateComponent implements OnInit, OnDestroy {
 
   faExternalLinkAlt = faExternalLinkAlt;
-  model?: MRFModel;
+  formSubmissionBusy = false;
   private _subscriptions: Subscription[] = [];
   pagination: PaginationModel = {total: 0, page: 1, limit: 15};
+  model?: MRFModel;
   form: FormGroup;
 
   constructor(private _route: ActivatedRoute, private router: Router, private fb: FormBuilder,
@@ -26,9 +27,17 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     this.subSink = this.requisitionService
       .fetchRequestPendingApproval(this.route.snapshot.params[ 'id' ])
-      .subscribe((v) => {
-        this.model = v;
-        this.renderItemsForm();
+      .subscribe({
+        next: (v) => {
+          this.model = v;
+          this.renderItemsForm();
+        }, error: (e) => {
+          if (e.status === 403) {
+            this.router.navigate(['../../../not-authorized'], {relativeTo: this.route})
+          } else if (e.status === 404) {
+            this.router.navigate(['../../../not-found'], {relativeTo: this.route})
+          }
+        }
       });
 
 
@@ -114,7 +123,9 @@ export class CreateComponent implements OnInit, OnDestroy {
         return {id: group.get('id')?.value, approved_qty: group.get('approved_qty')?.value}
       })
     }
+    this.formSubmissionBusy = true;
     this.subSink = this.requisitionService.createApprovalRequest(this.model!.id, payload)
+      .pipe(finalize(() => {this.formSubmissionBusy = false}))
       .subscribe({
         next: () => {
           this.router.navigate(['../'], {relativeTo: this.route})

@@ -21,7 +21,6 @@
     </tr>
     </thead>
     <tbody>
-    <ng-container *ngIf="requests.length>0;else noData">
       <tr
         *ngFor="let request of requests | slice:tableCountStart:tableCountEnd | filter:this.searchInput.value">
         <td>
@@ -55,14 +54,33 @@
           </div>
         </td>
       </tr>
-    </ng-container>
-    <ng-template #noData>
+    <ng-container  *ngIf="requests.length===0 && !loadingMainContent">
       <tr>
-        <td class="text-center py-3" colspan="5">
+        <td class="text-center py-5" colspan="5">
           No items pending action.
         </td>
       </tr>
-    </ng-template>
+    </ng-container>
+
+      <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td colspan="2">
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+      </tr>
+    </ng-container>
 
     </tbody>
   </table>

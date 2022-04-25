@@ -68,7 +68,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let worksheet of worksheets">
+    <tr *ngFor="let worksheet of worksheets|slice:tableCountStart:tableCountEnd">
       <td>
         <span class="td-inline-label">Reference No.</span>
         <a class="text-decoration-none" routerLink="{{worksheet.id}}" [relativeTo]="route">
@@ -117,13 +117,32 @@
       </td>
     </tr>
 
-    <ng-container *ngIf="worksheets.length==0">
-
+    <ng-container *ngIf="worksheets.length===0 && !loadingMainContent">
       <tr>
         <td colspan="7">
           <div class="py-5 text-center">
             No worksheets entries found at moment.
           </div>
+        </td>
+      </tr>
+    </ng-container>
+
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td colspan="2">
+          <div class="placeholder w-100 h-100 py-3"></div>
         </td>
       </tr>
     </ng-container>

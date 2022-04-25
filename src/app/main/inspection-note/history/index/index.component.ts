@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import {
   faEllipsisV,
   faExternalLinkAlt,
@@ -26,6 +26,7 @@ export class IndexComponent implements OnInit {
   faEye = faEye;
   faFilePdf = faFilePdf;
   faExternalLinkAlt = faExternalLinkAlt;
+  loadingMainContent = false;
   pagination: PaginationModel = {page: 1, limit: 25, total: 0}
   private _requests: InspectionModel[] = [];
   private _subscriptions: Subscription[] = []
@@ -62,7 +63,9 @@ export class IndexComponent implements OnInit {
     if (this.tableCountEnd <= this._requests.length) {
       return;
     }
+    this.loadingMainContent = true;
     this.subSink = this.inspectionService.fetchHistory(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this._requests = this._requests.concat(res.data);

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PaginationModel } from '../../../../models/pagination.model';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RequestForQuotationService } from '../../services/request-for-quotation.service';
@@ -13,6 +13,7 @@ import { RFQItemModel, RFQModel } from '../../../../models/r-f-q.model';
 })
 export class ShowComponent implements OnInit, OnDestroy {
 
+  loadingMainContent = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 15}
   private _subscriptions: Subscription[] = []
   searchInput: FormControl;
@@ -52,7 +53,9 @@ export class ShowComponent implements OnInit, OnDestroy {
   get route() {return this._route}
 
   loadRequest() {
+    this.loadingMainContent = true;
     this.subSink = this.requisitionService.findById(this.route.snapshot.params[ 'id' ])
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe((model) => {
         this.model = model;
         this.pagination.total = model.items?.length;

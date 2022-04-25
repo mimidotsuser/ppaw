@@ -107,10 +107,18 @@
       <textarea id="remarks" class="form-control" formControlName="remarks"></textarea>
     </div>
     <div class="col-12">
-      <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submitForm()"
-              [disabled]="form.invalid">
-        SUBMIT
-      </button>
+      <ng-container *ngIf="formSubmissionBusy;else submitButton">
+        <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+          <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+          Please wait ...
+        </button>
+      </ng-container>
+      <ng-template #submitButton>
+        <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submitForm()"
+                [disabled]="form.invalid">
+          SUBMIT
+        </button>
+      </ng-template>
     </div>
   </div>
 

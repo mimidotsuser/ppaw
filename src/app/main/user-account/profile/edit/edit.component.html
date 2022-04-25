@@ -19,9 +19,18 @@
     </div>
     <div class="col-12"></div>
     <div class="d-flex my-4">
-      <button type="submit" class="btn btn-primary" [disabled]="form.invalid" (click)="submitForm()">
-        Update
-      </button>
+      <ng-container *ngIf="formSubmissionBusy;else submitButton">
+        <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+          <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+          Please wait ...
+        </button>
+      </ng-container>
+      <ng-template #submitButton>
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid"
+                (click)="submitForm()">
+          Update
+        </button>
+      </ng-template>
     </div>
   </form>
 </div>

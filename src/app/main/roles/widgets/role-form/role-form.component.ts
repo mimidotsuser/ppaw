@@ -7,11 +7,11 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
-import { SlicePipe } from '@angular/common';
 import { RoleModel } from '../../../../models/role.model';
 import { PermissionModel } from '../../../../models/permission.model';
 import { FilterPipe } from '../../../../shared/pipes/filter.pipe';
 import { Subscription } from 'rxjs';
+import { PaginationModel } from '../../../../models/pagination.model';
 
 @Component({
   selector: 'app-role-form[permissions]',
@@ -25,15 +25,11 @@ export class RoleFormComponent implements OnInit, OnDestroy {
 
   @Input() set permissions(val: PermissionModel[]) { this.updateFormPermissions(val)} ;
 
-  form: FormGroup;
-  searchControl: FormControl;
   role: RoleModel | null = null;
-  pagination = {
-    page: 1,
-    limit: 10,
-    total: 0
-  }
+  pagination: PaginationModel = {page: 1, limit: 10, total: 0}
   private _subscriptions: Subscription[] = [];
+  searchControl: FormControl;
+  form: FormGroup;
 
   constructor(private fb: FormBuilder, private filterPipe: FilterPipe<AbstractControl>) {
     this.searchControl = this.fb.control('');

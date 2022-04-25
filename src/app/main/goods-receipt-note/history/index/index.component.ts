@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faEllipsisV, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { GoodsReceiptNoteService } from '../../services/goods-receipt-note.service';
 import { PaginationModel } from '../../../../models/pagination.model';
@@ -9,7 +10,6 @@ import {
   GoodsReceiptNoteModel,
   GRNReceiptNoteStage
 } from '../../../../models/goods-receipt-note.model';
-import { ActivatedRoute } from '@angular/router';
 import { InspectionModel } from '../../../../models/inspection.model';
 
 @Component({
@@ -20,6 +20,7 @@ import { InspectionModel } from '../../../../models/inspection.model';
 export class IndexComponent implements OnInit, OnDestroy {
   faFilter = faFilter;
   faEllipsisV = faEllipsisV;
+  loadingMainContent = false;
   pagination: PaginationModel = {page: 1, limit: 25, total: 0}
   private _requests: GoodsReceiptNoteModel[] = [];
   private _subscriptions: Subscription[] = []
@@ -45,11 +46,11 @@ export class IndexComponent implements OnInit, OnDestroy {
   get route() {return this._route}
 
   loadRequests() {
-    if (this.tableCountEnd <= this._requests.length) {
-      return;
-    }
+    if (this.tableCountEnd <= this._requests.length) {return;}
 
+    this.loadingMainContent = true;
     this.subSink = this.goodsReceiptNoteService.fetch(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this._requests = this._requests.concat(res.data);

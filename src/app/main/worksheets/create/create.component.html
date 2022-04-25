@@ -62,7 +62,8 @@
           <td colspan="5" class="text-center py-5">
             <ng-container *ngIf="form.value.customer;else noDataWithCustomer">
               No item added. Click
-              <a class="text-decoration-none" (click)="showAddWorksheetEntryForm()">&nbsp;here&nbsp;</a>
+              <a class="text-decoration-none"
+                 (click)="showAddWorksheetEntryForm()">&nbsp;here&nbsp;</a>
               to add
             </ng-container>
             <ng-template #noDataWithCustomer>
@@ -82,10 +83,18 @@
     </div>
 
     <div class="d-flex justify-content-start mt-5">
-      <button type="btn" class="btn btn-primary btn-lg btn-submit" (click)="submitForm()"
-              [disabled]="form.invalid">
-        Submit
-      </button>
+      <ng-container *ngIf="formSubmissionBusy;else submitButton">
+        <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+          <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+          Please wait ...
+        </button>
+      </ng-container>
+      <ng-template #submitButton>
+        <button type="btn" class="btn btn-primary btn-lg btn-submit" (click)="submitForm()"
+                [disabled]="form.invalid">
+          Submit
+        </button>
+      </ng-template>
     </div>
 
   </div>
@@ -98,7 +107,8 @@
     <div class="col-md-6 mb-3">
       <label for="entry_category" class="form-label required">Entry Category</label>
       <select id="entry_category" class="form-select" formControlName="category"
-              [compareWith]="selectedEntryCategoryComparator" (change)="onFormEntryCategorySelection()">
+              [compareWith]="selectedEntryCategoryComparator"
+              (change)="onFormEntryCategorySelection()">
         <option *ngFor="let category of workCategories" [ngValue]="category">
           {{category.title}}
         </option>

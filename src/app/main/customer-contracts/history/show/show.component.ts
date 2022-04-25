@@ -3,7 +3,7 @@ import { CustomerContractModel } from '../../../../models/customer-contract.mode
 import { CustomerContractService } from '../../services/customer-contract.service';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { PaginationModel } from '../../../../models/pagination.model';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ShowComponent implements OnInit, OnDestroy {
 
+  loadingMainContent = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 15}
   private _subscriptions: Subscription[] = []
   model?: CustomerContractModel;
@@ -53,7 +54,9 @@ export class ShowComponent implements OnInit, OnDestroy {
   get route() {return this._route}
 
   loadContract() {
+    this.loadingMainContent = true;
     this.subSink = this.customerContractService.fetchById(this.route.snapshot.params[ 'id' ])
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (model) => {
           this.model = model;

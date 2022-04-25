@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { finalize, Subscription } from 'rxjs';
 import { PurchaseRequestModel } from '../../../../models/purchase-request.model';
-import { Subscription } from 'rxjs';
 import { PurchaseRequisitionService } from '../../services/purchase-requisition.service';
 import { PaginationModel } from '../../../../models/pagination.model';
 
@@ -11,9 +11,11 @@ import { PaginationModel } from '../../../../models/pagination.model';
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit {
+
+  loadingMainContent = true;
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
-  _requests: PurchaseRequestModel[] = [];
-  _subscriptions: Subscription[] = [];
+  private _requests: PurchaseRequestModel[] = [];
+  private _subscriptions: Subscription[] = [];
   searchInput: FormControl;
 
   constructor(private fb: FormBuilder,
@@ -42,7 +44,13 @@ export class IndexComponent implements OnInit {
   }
 
   loadRequests() {
+    if (this.tableCountEnd <= this._requests.length) {
+      return;
+    }
+
+    this.loadingMainContent = true;
     this.subSink = this.purchaseRequisitionService.fetchRequestsPendingApproval(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe((res) => {
         this.pagination.total = res.total;
         this._requests = res.data;

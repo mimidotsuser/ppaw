@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { PurchaseOrderService } from '../services/purchase-order.service';
@@ -23,6 +23,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   pagination: PaginationModel = {total: 0, page: 1, limit: 25};
   showAdhocLPOItemFormPopup = false;
   showCreateVendorFormPopup = false
+  formSubmissionBusy = false;
+  vendorFormSubmissionBusy = false
   currencies: CurrencyModel[] = [];
   private _vendors: VendorModel[] = [];
   private _uom: UOMModel[] = [];
@@ -264,7 +266,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       //remove the item if the form group has no RFQ order item
       if (!group.get('rfq_item')?.value) {
         this.requestItemsForm.removeAt(index);
-        this.pagination.total -=1 ;
+        this.pagination.total -= 1;
       } else {
         //reset the quantity to zero
         this.requestItemsForm.at(index).patchValue({qty: 0});
@@ -339,7 +341,9 @@ export class CreateComponent implements OnInit, OnDestroy {
       items
     }
 
+    this.formSubmissionBusy = true;
     this.subSink = this.purchaseOrderService.create(payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: (model) => {
           this.requestItemsForm.clear();
@@ -364,8 +368,10 @@ export class CreateComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.vendorFormSubmissionBusy = true;
     //submit the client data
     this.vendorService.create(form.value)
+      .pipe(finalize(() => this.vendorFormSubmissionBusy = false))
       .subscribe((vendor: VendorModel) => {
         //add it into the RFQ form vendors list (set as selected)
         this._vendors = [...this.vendors, vendor];

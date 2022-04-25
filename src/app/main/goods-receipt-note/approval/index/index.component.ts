@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faExternalLinkAlt, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { GoodsReceiptNoteService } from '../../services/goods-receipt-note.service';
 import { GoodsReceiptNoteModel } from '../../../../models/goods-receipt-note.model';
@@ -15,6 +15,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   faFilter = faFilter;
   faExternalLinkAlt = faExternalLinkAlt;
+  loadingMainContent = false;
   pagination: PaginationModel = {page: 1, limit: 25, total: 0}
   private _requests: GoodsReceiptNoteModel[] = [];
   private _subscriptions: Subscription[] = []
@@ -46,10 +47,10 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   loadRequests() {
-    if (this.tableCountEnd <= this._requests.length) {
-      return;
-    }
+    if (this.tableCountEnd <= this._requests.length) {return;}
+    this.loadingMainContent = true;
     this.subSink = this.goodsReceiptNoteService.fetchRequestsPendingApproval(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this._requests = this._requests.concat(res.data);

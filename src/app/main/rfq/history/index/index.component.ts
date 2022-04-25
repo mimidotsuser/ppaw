@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import {
   faEllipsisV,
@@ -18,11 +18,12 @@ import { RequestForQuotationService } from '../../services/request-for-quotation
 })
 export class IndexComponent implements OnInit, OnDestroy {
 
-  showRFQSummaryPopup = false;
-  faEllipsisV = faEllipsisV;
-  faFilePdf = faFilePdf;
   faEye = faEye;
+  faFilePdf = faFilePdf;
+  faEllipsisV = faEllipsisV;
   faExternalLinkAlt = faExternalLinkAlt;
+  showRFQSummaryPopup = false;
+  loadingMainContent = false;
   selectedModel: RFQModel | null = null;
   _rfqRequests: RFQModel[] = [];
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
@@ -56,11 +57,11 @@ export class IndexComponent implements OnInit, OnDestroy {
   get route() {return this._route}
 
   loadRequestForQuotations() {
-    if (this.tableCountEnd <= this.requests.length) {
-      return;
-    }
+    if (this.tableCountEnd <= this.requests.length) {return;}
+    this.loadingMainContent = true;
     this.subSink = this.rfqService
       .fetch(this.pagination, {include: 'purchaseOrder,createdBy,vendors,items,purchaseRequest'})
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this.pagination.total = res.total;

@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   flashMessage: null | string = null;
   emailPattern = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,24}$';
-  submitting = false;
+  formSubmissionBusy = false;
   revealPassword = false;
   private _subscriptions: Subscription[] = [];
   form: FormGroup;
@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.form.markAllAsTouched();
     if (this.form.invalid) {return}
     this.flashMessage = null;
-    this.submitting = true;
+    this.formSubmissionBusy = true;
 
     this.subSink = this.httpService.get(this.httpService.endpoint.csrf).subscribe({
       next: () => {
@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                 this.authService.redirectToMainSystemPage();
               },
               error: (err) => {
-                this.submitting = false;
+                this.formSubmissionBusy = false;
                 if (err.status === 401) {
                   this.flashMessage = 'Incorrect email/password combination';
                 } else {
@@ -69,7 +69,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             });
       },
       error: (err) => {
-        this.submitting = false;
+        this.formSubmissionBusy = false;
         if (err.status === 0 && window.navigator && !window.navigator.onLine) {
           this.flashMessage = 'Check you internet connection';
         } else {

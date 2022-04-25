@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faEllipsisV, faEye, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { PaginationModel } from '../../../../models/pagination.model';
 import {
@@ -22,6 +22,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   faEllipsisV = faEllipsisV;
   faEye = faEye
   faFilePdf = faFilePdf;
+  loadingMainContent = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   showRequestHistoryPopup = false
   selectedModel: PurchaseRequestModel | null = null;
@@ -54,7 +55,13 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   loadRequests() {
+    if (this.tableCountEnd <= this._requests.length) {
+      return;
+    }
+
+    this.loadingMainContent = true;
     this.subSink = this.purchaseRequisitionService.fetch(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe((res) => {
         this.pagination.total = res.total;
         this._requests = res.data;

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { finalize, Subscription } from 'rxjs';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { MaterialRequisitionService } from '../../services/material-requisition.service';
 import { MRFItemModel, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
@@ -15,9 +15,10 @@ import { PaginationModel } from '../../../../models/pagination.model';
 export class CreateComponent implements OnInit, OnDestroy {
 
   faExternalLinkAlt = faExternalLinkAlt;
-  model?: MRFModel;
-  private _subscriptions: Subscription[] = [];
+  formSubmissionBusy = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 15};
+  private _subscriptions: Subscription[] = [];
+  model?: MRFModel;
   form: FormGroup;
 
   constructor(private _route: ActivatedRoute, private router: Router, private fb: FormBuilder,
@@ -25,10 +26,20 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     this.subSink = this.requisitionService
       .fetchRequestPendingVerification(this.route.snapshot.params[ 'id' ])
-      .subscribe((v) => {
-        this.model = v;
-        this.pagination.total = v.items.length;
-        this.renderItemsForm();
+      .subscribe({
+        next: (v) => {
+          this.model = v;
+          this.pagination.total = v.items.length;
+          this.renderItemsForm();
+        },
+        error: (e) => {
+          if (e.status === 403) {
+            this.router.navigate(['../../../not-authorized'], {relativeTo: this.route})
+          } else if (e.status === 404) {
+            this.router.navigate(['../../../not-found'], {relativeTo: this.route})
+          }
+
+        }
       });
 
 
@@ -104,7 +115,9 @@ export class CreateComponent implements OnInit, OnDestroy {
         return {id: group.get('id')?.value, verified_qty: group.get('verified_qty')?.value}
       })
     }
+    this.formSubmissionBusy = true;
     this.subSink = this.requisitionService.createVerificationRequest(this.model!.id, payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
           this.router.navigate(['../'], {relativeTo: this.route})

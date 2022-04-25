@@ -6,7 +6,7 @@ import {
   NavigationStart,
   Router
 } from '@angular/router';
-import { filter, Subscription, tap } from 'rxjs';
+import { filter, finalize, Subscription } from 'rxjs';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {
   faAddressBook,
@@ -56,7 +56,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
     this.subSink = this.router.events
       .pipe(filter((evt) => evt instanceof NavigationStart))
-      .pipe(tap(() => this.hideSidebarMenu = true))
+      .pipe(finalize(() => this.hideSidebarMenu = true))
       .subscribe()
 
     this.subSink = this.router.events
@@ -124,13 +124,13 @@ export class MainComponent implements OnInit, OnDestroy {
           },
           {
             title: 'Verify requests', url: 'material-requisition/verification',
-            display:  this.authService.can(Resources.materialRequisition, 'verify'),
+            display: this.authService.can(Resources.materialRequisition, 'verify'),
             exact: false
           },
           {
             title: 'Approve requests',
             url: 'material-requisition/approval',
-            display:  this.authService.can(Resources.materialRequisition, 'approve'),
+            display: this.authService.can(Resources.materialRequisition, 'approve'),
             exact: false
           },
         ]
@@ -361,7 +361,7 @@ export class MainComponent implements OnInit, OnDestroy {
             display: this.authService.can(Resources.users, 'view')
           },
           {
-            title: 'User Roles', url: 'roles',
+            title: 'User Roles', url: 'roles', exact: false,
             display: this.authService.can(Resources.roles, 'view')
           },
         ]

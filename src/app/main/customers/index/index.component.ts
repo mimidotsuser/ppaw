@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { finalize, Subscription } from 'rxjs';
 import { CustomerService } from '../services/customer.service';
 import { CustomerModel } from '../../../models/customer.model';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { PaginationModel } from '../../../models/pagination.model';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-index',
@@ -13,13 +13,15 @@ import { Subscription } from 'rxjs';
 })
 export class IndexComponent implements OnInit, OnDestroy {
 
-  model: CustomerModel = {id: 0, name: ''}
-  searchControl: FormControl;
   faEllipsisV = faEllipsisV;
   showCustomerFormPopup = false;
+  loadingMainContent = true;
+  formSubmissionBusy = false;
+  model: CustomerModel = {id: 0, name: ''}
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   private _customers: CustomerModel[] = [];
   private _subscriptions: Subscription[] = []
+  searchControl: FormControl;
 
   constructor(private customerService: CustomerService, private fb: FormBuilder) {
     this.searchControl = this.fb.control('');
@@ -33,6 +35,14 @@ export class IndexComponent implements OnInit, OnDestroy {
     this._subscriptions.push(value);
   }
 
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
+  }
+
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
+  }
+
 
   get customers(): CustomerModel[] {
     return this._customers;
@@ -40,24 +50,16 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   loadCustomers() {
     //if data has already been loaded, don't re-fetch it
-    if (this.tableCountEnd <= this.customers.length) {
-      return;
-    }
+    if (this.tableCountEnd <= this.customers.length) {return;}
+    this.loadingMainContent = true;
     this.subSink = this.customerService.fetch(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this._customers = this._customers.concat(res.data);
           this.pagination.total = res.total;
         }
       })
-  }
-
-  get tableCountStart() {
-    return (this.pagination.page - 1) * this.pagination.limit
-  }
-
-  get tableCountEnd() {
-    return this.pagination.page * this.pagination.limit
   }
 
   showCreateForm(parent?: CustomerModel) {
@@ -95,10 +97,13 @@ export class IndexComponent implements OnInit, OnDestroy {
     if (payload.parent) {
       payload.parent_id = payload.parent.id;
     }
+
     delete payload.parent;
+    this.formSubmissionBusy = true;
 
     if (this.model.id > 0) {
       this.subSink = this.customerService.update(this.model.id, payload)
+        .pipe(finalize(() => this.formSubmissionBusy = false))
         .subscribe((model) => {
           const index = this.customers.findIndex((c) => c.id === model.id);
           if (index > -1) {
@@ -109,6 +114,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         })
     } else {
       this.subSink = this.customerService.create(payload)
+        .pipe(finalize(() => this.formSubmissionBusy = false))
         .subscribe((model) => {
           this.customers.push(model);
           this.showCustomerFormPopup = false;

@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { finalize, Subscription } from 'rxjs';
 import {
   GoodsReceiptNoteItemModel,
   GoodsReceiptNoteModel,
   GRNReceiptNoteStage
 } from '../../../../models/goods-receipt-note.model';
 import { PaginationModel } from '../../../../models/pagination.model';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { GoodsReceiptNoteService } from '../../services/goods-receipt-note.service';
 import { InspectionChecklistModel, InspectionModel } from '../../../../models/inspection.model';
 
@@ -18,8 +18,9 @@ import { InspectionChecklistModel, InspectionModel } from '../../../../models/in
 })
 export class CreateComponent implements OnInit, OnDestroy {
 
-  private _subscriptions: Subscription[] = [];
+  formSubmissionBusy = true;
   pagination: PaginationModel = {page: 1, limit: 15, total: 0};
+  private _subscriptions: Subscription[] = [];
   model?: GoodsReceiptNoteModel & { inspection_note: InspectionModel };
   form!: FormGroup;
   remarks: FormControl;
@@ -84,7 +85,9 @@ export class CreateComponent implements OnInit, OnDestroy {
       approved: approved,
       remarks: this.remarks.value
     }
+    this.formSubmissionBusy = true;
     this.subSink = this.goodsReceiptNoteService.createApproval(this.model!.id, payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
           this.router.navigate(['../../'], {relativeTo: this.route})
@@ -96,6 +99,6 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._subscriptions.map((sub)=>sub.unsubscribe())
+    this._subscriptions.map((sub) => sub.unsubscribe())
   }
 }

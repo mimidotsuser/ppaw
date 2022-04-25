@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faEllipsisV, faExternalLinkAlt, faFilter } from '@fortawesome/free-solid-svg-icons';
 import {
   ProductItemActivityCategoryCode,
@@ -25,6 +25,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   faFilter = faFilter;
   faExternalLinkAlt = faExternalLinkAlt;
   showLocationFormPopup = false;
+  loadingMainContent = false;
+  formSubmissionBusy = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 25};
   private _productItem?: ProductItemModel;
   private _activities: ProductItemActivityModel[] = [];
@@ -135,12 +137,12 @@ export class IndexComponent implements OnInit, OnDestroy {
   get route() {return this._route;}
 
   loadActivities() {
-    if (this.tableCountEnd <= this._activities.length) {
-      return;
-    }
+    if (this.tableCountEnd <= this._activities.length) {return;}
+
+    this.loadingMainContent = true;
     this.subSink = this.productItemService.fetchActivities(
-      this._route.snapshot.params[ 'id' ],
-      this.pagination)
+      this._route.snapshot.params[ 'id' ], this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this.pagination.total = res.total;
@@ -231,17 +233,28 @@ export class IndexComponent implements OnInit, OnDestroy {
       payload.purpose_code = this.form.value.purpose_code;
     }
 
+    this.formSubmissionBusy = true;
     this.subSink = this.productItemService
       .createActivity(this._route.snapshot.params[ 'id' ], payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: (res) => {
           this._activities.unshift(res);
           this.form.patchValue({
             current_location: res?.location?.name,
-            warrant_start: res.warrant?.warrant_start,
-            warrant_end: res?.warrant?.warrant_end,
-            purpose_code: res?.covenant
+            purpose_code: res?.covenant,
+            description: null
           })
+          if (res.warrant?.warrant_start) {
+            this.form.patchValue({
+              warrant_start: new Date(res.warrant.warrant_start).toISOString().slice(0, 10)
+            });
+          }
+          if (res.warrant?.warrant_end) {
+            this.form.patchValue({
+              warrant_end: new Date(res.warrant.warrant_end).toISOString().slice(0, 10)
+            })
+          }
           this.showLocationFormPopup = false;
         }
       })

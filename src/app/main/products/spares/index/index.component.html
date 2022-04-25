@@ -84,7 +84,7 @@
         </div>
       </td>
     </tr>
-    <ng-container *ngIf="products.length===0">
+    <ng-container *ngIf="products.length===0 && !loadingMainContent">
       <tr class="no-data">
         <td class="text-center py-4" colspan="7">
           There is no data at the moment yet.
@@ -92,6 +92,16 @@
              *can="'products.create'">
             Add new item
           </a>
+        </td>
+      </tr>
+    </ng-container>
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td *ngFor="let x of [].constructor(6)">
+          <div class="placeholder w-100 h-100 py-3"></div>
+        </td>
+        <td colspan="2">
+          <div class="placeholder w-100 h-100 py-3"></div>
         </td>
       </tr>
     </ng-container>
@@ -109,15 +119,23 @@
                       #spareFormComponent>
       <div class="d-flex gap-2">
 
-        <button type="submit" class="btn btn-primary" *ngIf="!this.selectedModel?.id"
-                (click)="saveProductForm(spareFormComponent.form)">
-          CREATE
-        </button>
-        <button type="submit" class="btn btn-primary" *ngIf="this.selectedModel?.id"
-                (click)="saveProductForm(spareFormComponent.form)">
-          UPDATE
-        </button>
-        <button type="button" class="btn btn-cancel"
+        <ng-container *ngIf="formSubmissionBusy;else submitButton">
+          <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+            <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+            Please wait ...
+          </button>
+        </ng-container>
+        <ng-template #submitButton>
+          <button type="submit" class="btn btn-primary" *ngIf="!this.selectedModel?.id"
+                  (click)="saveProductForm(spareFormComponent.form)">
+            CREATE
+          </button>
+          <button type="submit" class="btn btn-primary" *ngIf="this.selectedModel?.id"
+                  (click)="saveProductForm(spareFormComponent.form)">
+            UPDATE
+          </button>
+        </ng-template>
+        <button type="button" class="btn btn-cancel" [disabled]="formSubmissionBusy"
                 (click)="this.closeProductFormPopup(spareFormComponent.form)">
           CANCEL
         </button>

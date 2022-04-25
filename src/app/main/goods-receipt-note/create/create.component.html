@@ -78,17 +78,32 @@
         <tr>
           <td colspan="7">
             <div class="py-5 text-center">
-              <ng-container *ngIf="isBusy;else noData">
-                <span class="loading-state-text">Retrieving related data</span>
-                <fa-icon [icon]="faSpinner" [spin]="true"></fa-icon>
-              </ng-container>
-              <ng-template #noData>
-                Search purchase order to autofill request items
-              </ng-template>
+              Search purchase order to autofill request items
             </div>
           </td>
         </tr>
       </ng-container>
+
+      <ng-container *ngIf="loadingMainContent">
+        <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+          <td>
+            <div class="placeholder w-100 py-3"></div>
+          </td>
+          <td>
+            <div class="placeholder w-100 py-3"></div>
+          </td>
+          <td>
+            <div class="placeholder w-100 py-3"></div>
+          </td>
+          <td>
+            <div class="placeholder w-100 py-3"></div>
+          </td>
+          <td>
+            <div class="placeholder w-100 h-100 py-3"></div>
+          </td>
+        </tr>
+      </ng-container>
+
       </tbody>
     </table>
     <div class="pagination-col d-flex justify-content-end w-100 pr-5">
@@ -112,10 +127,18 @@
       </div>
     </div>
     <div class="d-flex my-4">
-      <button type="button" class="btn btn-primary btn-submit btn-lg" [disabled]="form.invalid"
-              (click)="submitForm()">
-        Submit
-      </button>
+      <ng-container *ngIf="formSubmissionBusy;else submitButton">
+        <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+          <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+          Please wait ...
+        </button>
+      </ng-container>
+      <ng-template #submitButton>
+        <button type="button" class="btn btn-primary btn-submit btn-lg" [disabled]="form.invalid"
+                (click)="submitForm()">
+          Submit
+        </button>
+      </ng-template>
     </div>
   </div>
 

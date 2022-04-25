@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faFilter, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
 import { PurchaseRequisitionService } from '../services/purchase-requisition.service';
@@ -20,6 +20,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   faShoppingCart = faShoppingCart
   faFilter = faFilter
   showCartPopup = false;
+  loadingMainContent = false;
+  formSubmissionBusy = false;
   pagination: PaginationModel = {page: 1, limit: 25, total: 0}
   private _itemBalance: ProductBalanceModel[] = [];
   private _subscriptions: Subscription[] = [];
@@ -64,7 +66,12 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   loadProductBalances() {
+    if (this.tableCountEnd <= this._itemBalance.length) {
+      return;
+    }
+    this.loadingMainContent = true;
     this.subSink = this.purchaseRequisitionService.fetchProductBalances(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this._itemBalance = res.data;
@@ -145,7 +152,9 @@ export class CreateComponent implements OnInit, OnDestroy {
           return {product_id: item.product.id, requested_qty: item.request_qty}
         })
     }
+    this.formSubmissionBusy = true;
     this.subSink = this.purchaseRequisitionService.create(payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
           this.form.reset();

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { PaginationModel } from '../../../../models/pagination.model';
 import { InspectionChecklistModel, InspectionModel } from '../../../../models/inspection.model';
@@ -20,6 +20,7 @@ import { GoodsReceiptNoteService } from '../../services/goods-receipt-note.servi
 export class ShowComponent implements OnInit, OnDestroy {
 
   faFilePdf = faFilePdf;
+  loadingMainContent = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 15}
   private _subscriptions: Subscription[] = []
   searchInput: FormControl;
@@ -66,7 +67,9 @@ export class ShowComponent implements OnInit, OnDestroy {
   }
 
   loadRequest() {
+    this.loadingMainContent = true;
     this.subSink = this.noteService.findById(this.route.snapshot.params[ 'id' ])
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe((model) => {
         this.model = model;
         this.pagination.total = model?.items?.length || 0;

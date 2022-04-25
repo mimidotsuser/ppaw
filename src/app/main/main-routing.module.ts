@@ -85,7 +85,8 @@ const routes: Routes = [
         loadChildren: () => import('./customer-contracts/customer-contracts.module').then(m => m.CustomerContractsModule),
         data: {title: 'All Customer Contracts', breadcrumb: 'Customer Contracts'}
       },
-      { path: 'standby-spare-checkin',
+      {
+        path: 'standby-spare-checkin',
         loadChildren: () => import('./standby-spare-checkin/standby-spare-checkin.module').then(m => m.StandbySpareCheckinModule),
         data: {title: 'Standby Spare Checkin', breadcrumb: 'Standby Spare Checkin'}
       },
@@ -96,8 +97,13 @@ const routes: Routes = [
       },
       {path: '', redirectTo: 'home', pathMatch: 'full'},
       {
-        path: '**',
+        path: 'not-found',
         loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule),
+        data: {title: 'Not Found', breadcrumb: 'Not Found'}
+      },
+      {
+        path: '**',
+        redirectTo: 'not-found'
       }
     ]
   },

@@ -99,9 +99,9 @@
 
     </tr>
 
-    <ng-container *ngIf="contracts.length===0">
+    <ng-container *ngIf="contracts.length===0 && !loadingMainContent">
       <tr>
-        <td class="text-center py-3" colspan="9">
+        <td class="text-center py-5" colspan="9">
           <ng-container *ngIf="!searchInput.value;else noResults">
             There are no contracts.&nbsp;
             <a class="text-decoration-none" routerLink="../create" [relativeTo]="route"
@@ -115,6 +115,15 @@
         </td>
       </tr>
     </ng-container>
+
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td *ngFor="let x of [].constructor(7)">
+          <div class="placeholder w-100 h-100 py-3"></div>
+        </td>
+      </tr>
+    </ng-container>
+
     </tbody>
   </table>
   <div class="pagination-col d-flex justify-content-end w-100 pr-5">

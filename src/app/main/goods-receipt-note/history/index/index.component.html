@@ -121,10 +121,17 @@
         </div>
       </td>
     </tr>
-    <ng-container *ngIf="requests?.length===0">
+    <ng-container *ngIf="requests?.length===0 && !loadingMainContent">
       <tr>
         <td class="text-center py-5" colspan="8">
           No items at the moment.
+        </td>
+      </tr>
+    </ng-container>
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td *ngFor="let x of [].constructor(8)">
+          <div class="placeholder w-100 h-100 py-3"></div>
         </td>
       </tr>
     </ng-container>

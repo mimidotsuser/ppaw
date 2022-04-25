@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription, tap } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { PaginationModel } from '../../../../models/pagination.model';
 import { CustomerContractService } from '../../services/customer-contract.service';
 import { ProductItemModel } from '../../../../models/product-item.model';
@@ -13,18 +13,18 @@ import { CustomerContractModel } from '../../../../models/customer-contract.mode
 })
 export class CustomerContractFormComponent implements OnInit, OnDestroy {
 
-  @Input() set model(value: CustomerContractModel | null) {
-    this._model = value;
-    this.patchForm();
-  };
-
-  isBusy = false;
+  loadingMainContent = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 35}
   private _subscriptions: Subscription[] = [];
   private _model: CustomerContractModel | null = null;
   searchInput: FormControl;
   form: FormGroup;
 
+  @Input()
+  set model(value: CustomerContractModel | null) {
+    this._model = value;
+    this.patchForm();
+  };
 
   constructor(private fb: FormBuilder, private customerContractService: CustomerContractService) {
     this.form = this.fb.group({
@@ -130,14 +130,12 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
 
   loadProductItems() {
     //if data has already been loaded, don't re-fetch it
-    if (this.tableCountEnd <= this.contractItemsFormArray.length) {
-      return;
-    }
+    if (this.tableCountEnd <= this.contractItemsFormArray.length) {return;}
 
-    this.isBusy = true;
+    this.loadingMainContent = true;
     this.subSink = this.customerContractService
       .fetchCustomerProductItems(this.form.value.customer.id, this.pagination)
-      .pipe(tap(x => this.isBusy = false))
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this.pagination.total = res.total;

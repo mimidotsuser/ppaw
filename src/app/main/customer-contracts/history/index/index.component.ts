@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { PaginationModel } from '../../../../models/pagination.model';
 import { CustomerContractModel } from '../../../../models/customer-contract.model';
@@ -14,6 +14,7 @@ import { CustomerContractService } from '../../services/customer-contract.servic
 })
 export class IndexComponent implements OnInit, OnDestroy {
   faEllipsisV = faEllipsisV;
+  loadingMainContent = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   private _contracts: CustomerContractModel[] = [];
   private _subscriptions: Subscription[] = [];
@@ -49,8 +50,10 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   loadContracts() {
-
+    if (this.tableCountEnd <= this._contracts.length) {return;}
+    this.loadingMainContent = true;
     this.subSink = this.contractService.fetch(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this.pagination.total = res.total;

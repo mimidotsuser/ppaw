@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription, tap } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faEllipsisV, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { MRFPurposeCode } from '../../../models/m-r-f.model';
 import { WorksheetModel } from '../../../models/worksheet.model';
@@ -21,6 +21,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   faSpinner = faSpinner;
   showPopupForm = false;
   loadingProductMaxQty = false;
+  formSubmitting = false;
   private _subscriptions: Subscription[] = [];
   private _productCategories: ProductCategoryModel[] = [];
   private _formModelOnEdit: FormModel | null = null;
@@ -189,7 +190,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.loadingProductMaxQty = true
 
     this.subSink = this.requisitionService.fetchMaxAllowedRequestQty(this.form.value.product)
-      .pipe(tap(() => this.loadingProductMaxQty = false))
+      .pipe(finalize(() => this.loadingProductMaxQty = false))
       .subscribe({
         next: (available) => {
 
@@ -271,7 +272,9 @@ export class CreateComponent implements OnInit, OnDestroy {
       })
     }
 
+    this.formSubmitting = true;
     this.subSink = this.requisitionService.create(payload)
+      .pipe(finalize(() => this.formSubmitting = false))
       .subscribe({
         next: () => {
           this._formRequestItems = [];

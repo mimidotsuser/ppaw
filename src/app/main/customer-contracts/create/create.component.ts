@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerContractService } from '../services/customer-contract.service';
@@ -13,6 +13,8 @@ import { CustomerModel } from '../../../models/customer.model';
   styleUrls: ['./create.component.scss']
 })
 export class CreateComponent implements OnInit, OnDestroy {
+
+  formSubmissionBusy = false;
   private _subscriptions: Subscription[] = [];
 
   constructor(private _route: ActivatedRoute, private contractService: CustomerContractService,
@@ -32,6 +34,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     form.markAllAsTouched();
     if (form.invalid) {return}
 
+    this.formSubmissionBusy = true;
     const payload = {
       start_date: form.value.start_date,
       expiry_date: form.value.expiry_date,
@@ -44,6 +47,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
 
     this.subSink = this.contractService.create(payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
           this.router.navigate(['../'], {relativeTo: this.route})

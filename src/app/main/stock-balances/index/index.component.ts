@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faEllipsisV, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
 import { StockBalanceService } from '../services/stock-balance.service';
@@ -12,18 +12,16 @@ import { PaginationModel } from '../../../models/pagination.model';
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit, OnDestroy {
-  searchInput: FormControl;
-  form: FormGroup;
   faFilter = faFilter
   faEllipsisV = faEllipsisV;
+  loadingMainContent = false;
+  showAdjustmentFormPopup = false;
+  formSubmissionBusy = false;
+  pagination: PaginationModel = {total: 0, page: 1, limit: 5}
   private _itemsBalances: ProductBalanceModel[] = []
   private _subscriptions: Subscription[] = []
-  pagination: PaginationModel = {
-    total: 0,
-    page: 1,
-    limit: 5
-  }
-  showAdjustmentFormPopup = false;
+  searchInput: FormControl;
+  form: FormGroup;
 
   constructor(private stockBalanceService: StockBalanceService, private fb: FormBuilder) {
 
@@ -52,11 +50,10 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   loadProductBalances() {
     //if data has already been loaded, don't re-fetch it
-    if (this.tableCountEnd <= this._itemsBalances.length) {
-      return;
-    }
-
+    if (this.tableCountEnd <= this._itemsBalances.length) {return;}
+    this.loadingMainContent = true;
     this.subSink = this.stockBalanceService.fetchAll(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this._itemsBalances = this._itemsBalances.concat(res.data);
@@ -90,9 +87,11 @@ export class IndexComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {return}
     if (!this.form.dirty) {this.showAdjustmentFormPopup = false;}
 
-    const payload={total_qty_in: this.form.get('total_qty_in')?.value}
+    this.formSubmissionBusy = true;
+    const payload = {total_qty_in: this.form.get('total_qty_in')?.value}
     this.subSink = this.stockBalanceService
       .update(this.form.get('id')?.value as number, payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe((model) => {
         const index = this.itemsBalances.findIndex((b) => b.id === model.id);
         if (index > -1) {

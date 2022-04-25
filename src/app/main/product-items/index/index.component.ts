@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { environment } from '../../../../environments/environment';
 import {
@@ -21,12 +21,14 @@ import { serializeDate } from '../../../utils/serializers/date';
 export class IndexComponent implements OnInit, OnDestroy {
 
   faEllipsisV = faEllipsisV;
+  loadingMainContent = false;
+  showProductItemFormPopup = false;
+  formSubmissionBusy = false;
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25};
   private _productItems: ProductItemModel[] = [];
   private _subscriptions: Subscription[] = []
   private _productCategories: ProductCategoryModel[] = [];
   private _warehouses: WarehouseModel[] = [];
-  pagination: PaginationModel = {total: 0, page: 1, limit: 25};
-  showProductItemFormPopup = false;
   minAllowedWarrantEndDate?: string;
   searchInput: FormControl;
   form: FormGroup;
@@ -79,11 +81,11 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   loadProductItems() {
     //if data has already been loaded, don't re-fetch it
-    if (this.tableCountEnd <= this._productItems.length) {
-      return;
-    }
+    if (this.tableCountEnd <= this._productItems.length) {return;}
 
+    this.loadingMainContent = true;
     this.subSink = this.productItemService.fetch(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this._productItems = this._productItems.concat(res.data);
@@ -200,6 +202,8 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.form.markAllAsTouched();
     if (this.form.invalid) {return}
 
+    this.formSubmissionBusy = true;
+
     let payload: { [ key: string ]: string | number | boolean } = {
       product_id: this.form.value.product.id,
       serial_number: this.form.value.serial_number,
@@ -235,11 +239,12 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   createProductItem(payload: object) {
     this.subSink = this.productItemService.create(payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: (model) => {
           this.productItems.unshift(model);
           this.showProductItemFormPopup = false;
-          this.pagination.total =  this.pagination.total+1;
+          this.pagination.total = this.pagination.total + 1;
         }
       });
   }

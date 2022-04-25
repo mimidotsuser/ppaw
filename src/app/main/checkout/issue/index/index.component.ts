@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { MRFModel } from '../../../../models/m-r-f.model';
 import { CheckoutService } from '../../services/checkout.service';
@@ -15,6 +15,7 @@ export class IndexComponent implements OnInit {
 
   faEllipsisV = faEllipsisV;
   requests: MRFModel[] = [];
+  loadingMainContent = false;
   private _subscriptions: Subscription[] = [];
   pagination: PaginationModel = {total: 0, page: 1, limit: 25};
   searchInput: FormControl;
@@ -47,7 +48,9 @@ export class IndexComponent implements OnInit {
       return;
     }
 
+    this.loadingMainContent = true;
     this.subSink = this.checkoutService.fetch(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe((res) => {
         this.pagination.total = res.total;
         this.requests = this.requests.concat(res.data);

@@ -93,10 +93,33 @@
       </tr>
     </ng-container>
 
-    <ng-container *ngIf="items.length===0">
+    <ng-container *ngIf="items.length===0 && !loadingMainContent">
       <tr>
         <td colspan="8" class="py-5">
           <div class="text-center">No data</div>
+        </td>
+      </tr>
+    </ng-container>
+
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 h-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 h-100 py-3"></div>
         </td>
       </tr>
     </ng-container>

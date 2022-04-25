@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { UserAccountService } from '../../services/user-account.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
@@ -11,6 +11,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 })
 export class EditComponent implements OnInit, OnDestroy {
 
+  formSubmissionBusy = false;
   private _subscriptions: Subscription[] = [];
   form: FormGroup;
 
@@ -47,21 +48,26 @@ export class EditComponent implements OnInit, OnDestroy {
   submitForm() {
     this.form.markAllAsTouched();
     if (this.form.invalid || !this.form.dirty) {return}
-    this.subSink = this.userAccountService.update(this.authService.user?.id || 0, {
-      first_name: this.form.value.first_name,
-      last_name: this.form.value.last_name
-    }).subscribe({
-      next: (model) => {
-        const user = this.authService.user;
-        if (user) {
-          user.first_name = model.first_name;
-          user.last_name = model.last_name;
-          this.authService.user = user;
-        }
 
-        alert('Account updated successfully')
-      }
-    })
+    this.formSubmissionBusy = true;
+    this.subSink = this.userAccountService
+      .update(this.authService.user?.id || 0, {
+        first_name: this.form.value.first_name,
+        last_name: this.form.value.last_name
+      })
+      .pipe(finalize(() => this.formSubmissionBusy = false))
+      .subscribe({
+        next: (model) => {
+          const user = this.authService.user;
+          if (user) {
+            user.first_name = model.first_name;
+            user.last_name = model.last_name;
+            this.authService.user = user;
+          }
+
+          alert('Account updated successfully')
+        }
+      })
   }
 
   ngOnDestroy(): void {

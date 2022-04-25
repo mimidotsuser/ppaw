@@ -119,12 +119,22 @@
         <textarea id="remarks" class="form-control" [formControl]="remarks" rows="4"></textarea>
       </div>
       <div class="col-12 my-3 d-flex gap-2">
-        <button type="submit" class="btn btn-primary btn-lg btn-submit" [disabled]="remarks.invalid"
-                (click)="submitForm()">
-          Approve
-        </button>
+        <ng-container *ngIf="formSubmissionBusy;else submitButton">
+          <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+            <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+            Please wait ...
+          </button>
+        </ng-container>
+        <ng-template #submitButton>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-submit"
+                  [disabled]="remarks.invalid"
+                  (click)="submitForm()">
+            Approve
+          </button>
+        </ng-template>
         <button type="submit" class="btn btn-outline-primary btn-lg btn-submit"
-                [disabled]="remarks.invalid"
+                [disabled]="remarks.invalid || formSubmissionBusy"
                 (click)="submitForm(false)">
           Reject
         </button>

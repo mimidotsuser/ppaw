@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { finalize, Subscription } from 'rxjs';
 import {
   faEllipsisV,
   faExternalLinkAlt,
@@ -12,7 +13,6 @@ import {
   PurchaseOrderModel
 } from '../../../../models/purchase-order.model';
 import { PurchaseOrderService } from '../../services/purchase-order.service';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-index',
@@ -27,6 +27,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   faEllipsisV = faEllipsisV;
   faExternalLinkAlt = faExternalLinkAlt;
   showLPOSummaryPopup = false;
+  loadingMainContent = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   selectedModel: PurchaseOrderModel | null = null;
   private _requests: PurchaseOrderModel[] = []
@@ -69,8 +70,10 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   loadPurchaseOrders() {
     if (this.tableCountEnd <= this.requests.length) {return;}
+    this.loadingMainContent = true;
     this.subSink = this.purchaseOrderService.fetch(this.pagination,
       {include: 'items,createdBy,rfq'})
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe((res) => {
         this._requests = this._requests.concat(res.data);
         this.pagination.total = res.total;

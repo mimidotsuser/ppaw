@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { PermissionService } from '../services/permission.service';
-import { Subscription } from 'rxjs';
-import { PermissionModel } from '../../../models/permission.model';
-import { FormGroup } from '@angular/forms';
-import { RoleService } from '../services/role.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormGroup } from '@angular/forms';
+import { finalize, Subscription } from 'rxjs';
+import { PermissionService } from '../services/permission.service';
+import { PermissionModel } from '../../../models/permission.model';
+import { RoleService } from '../services/role.service';
 
 @Component({
   selector: 'app-create',
@@ -12,6 +12,8 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./create.component.scss']
 })
 export class CreateComponent implements OnInit, OnDestroy {
+
+  formSubmissionBusy = false;
   private _subscriptions: Subscription[] = [];
   private _permissions: PermissionModel[] = [];
 
@@ -37,12 +39,13 @@ export class CreateComponent implements OnInit, OnDestroy {
     form.markAllAsTouched();
     if (form.invalid) {return}
     const data = form.value;
-
+    this.formSubmissionBusy = true;
     data.permissions = (data.permissions as [{ id: string, selected: boolean }])
       .filter((c) => c.selected)
       .map((selected) => ({id: selected.id}));
 
     this.subSink = this.roleService.create(data)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe(() => {
         this.router.navigate(['../'], {relativeTo: this.route.parent})
       })

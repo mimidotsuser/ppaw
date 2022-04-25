@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { PaginationModel } from '../../../../models/pagination.model';
 import {
   PurchaseOrderItemModel,
@@ -15,6 +15,8 @@ import { PurchaseOrderService } from '../../services/purchase-order.service';
   styleUrls: ['./show.component.scss']
 })
 export class ShowComponent implements OnInit, OnDestroy {
+
+  loadingMainContent = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 15}
   private _subscriptions: Subscription[] = []
   searchInput: FormControl;
@@ -60,7 +62,9 @@ export class ShowComponent implements OnInit, OnDestroy {
   }
 
   loadRequest() {
+    this.loadingMainContent = true;
     this.subSink = this.purchaseOrderService.findById(this.route.snapshot.params[ 'id' ])
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe((model) => {
         this.model = model;
         this.pagination.total = model.items?.length;

@@ -3,7 +3,8 @@
     <div class="col-md-4 mb-3">
       <label for="current_password" class="form-label required">Current Password</label>
       <div class="password-input-group">
-        <input [type]="revealOldPassword?'text':'password'" id="current_password" class="form-control"
+        <input [type]="revealOldPassword?'text':'password'" id="current_password"
+               class="form-control"
                formControlName="old_password">
         <svg viewBox="0 0 24 24" fill="#8494A5" height="24" width="24" class="icon"
              (click)="revealOldPassword=!revealOldPassword">
@@ -74,10 +75,18 @@
       </ng-container>
     </div>
     <div class="d-flex my-4">
-      <button type="submit" class="btn btn-primary" (click)="submitForm()"
-              [disabled]="form.invalid">
-        Update
-      </button>
+      <ng-container *ngIf="formSubmissionBusy;else submitButton">
+        <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+          <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+          Please wait ...
+        </button>
+      </ng-container>
+      <ng-template #submitButton>
+        <button type="submit" class="btn btn-primary" (click)="submitForm()"
+                [disabled]="form.invalid">
+          Update
+        </button>
+      </ng-template>
     </div>
   </form>
 </div>

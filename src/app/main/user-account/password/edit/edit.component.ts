@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, Subscription } from 'rxjs';
 import { UserAccountService } from '../../services/user-account.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { matchValues } from '../../../../utils/validators/match-values';
@@ -12,10 +12,11 @@ import { matchValues } from '../../../../utils/validators/match-values';
 })
 export class EditComponent implements OnInit, OnDestroy {
 
-  validationStatus = {lengthOk: false, hasLetters: false, hasNumbers: false}
   revealOldPassword = false;
   revealPassword = false;
   revealConfirmPassword = false;
+  formSubmissionBusy = false;
+  validationStatus = {lengthOk: false, hasLetters: false, hasNumbers: false}
   private _subscriptions: Subscription[] = [];
   private _passwordPattern = '^(?=.*[A-Za-z])(?=.*\\d)[@+}{,)(#.-=/!A-Za-z\\d]{8,}$'
   form: FormGroup;
@@ -56,9 +57,10 @@ export class EditComponent implements OnInit, OnDestroy {
     this.form.markAllAsTouched();
     this.form.get('confirm_password')?.updateValueAndValidity();
     if (this.form.invalid) {return}
-
+    this.formSubmissionBusy = true;
     this.subSink = this.userAccountService
       .changePassword(this.authService.user?.id || 0, this.form.value)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
           this.form.reset();

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faWindowClose } from '@fortawesome/free-solid-svg-icons';
 import { WorkCategoryCodes, WorkCategoryTitles } from '../../../models/worksheet.model';
 import { ProductItemModel } from '../../../models/product-item.model';
@@ -19,6 +19,7 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   faWindowClose = faWindowClose;
   showAddWorksheetEntryFormPopup = false;
+  formSubmissionBusy = false;
   customerMachines: ProductItemModel[] = [];
   private _productCategories?: ProductCategoryModel[];
   private _subscriptions: Subscription[] = [];
@@ -188,6 +189,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   submitForm() {
     this.form.markAllAsTouched();
     if (this.form.invalid) {return}
+    this.formSubmissionBusy = true;
     const payload = {
       reference: this.form.value.reference,
       customer_id: this.form.value.customer.id,
@@ -212,6 +214,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
 
     this.subSink = this.worksheetService.create(payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
           this.router.navigate(['../history'], {relativeTo: this.route})

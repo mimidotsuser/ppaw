@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faEllipsisV, faEye, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { MRFActivity, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
 import { PaginationModel } from '../../../../models/pagination.model';
@@ -17,6 +17,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   faEllipsisV = faEllipsisV;
   faFilePdf = faFilePdf;
   faEye = faEye;
+  loadingMainContent = false;
   showRequestSummaryPopup = false;
   selectedModel: MRFModel | null = null;
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
@@ -54,10 +55,15 @@ export class IndexComponent implements OnInit, OnDestroy {
   get route() {return this._route;}
 
   loadRequests() {
+    if (this.tableCountEnd <= this._requests.length) {
+      return;
+    }
+    this.loadingMainContent = true;
     this.subSink = this.requisitionService.fetch(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe((res) => {
         this.pagination.total = res.total;
-        this._requests = res.data;
+        this._requests = this._requests.concat(res.data);
       });
   }
 

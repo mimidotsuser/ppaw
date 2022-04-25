@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { faEllipsisV, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { WorksheetModel } from '../../../../models/worksheet.model';
@@ -16,6 +16,7 @@ export class IndexComponent implements OnInit {
 
   faFilter = faFilter
   faEllipsisV = faEllipsisV;
+  loadingMainContent = false;
   private _worksheets: WorksheetModel[] = [];
   private _subscriptions: Subscription[] = [];
   pagination: PaginationModel = {limit: 25, total: 0, page: 1};
@@ -34,6 +35,14 @@ export class IndexComponent implements OnInit {
     this._subscriptions.push(v);
   }
 
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
+  }
+
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
+  }
+
   get worksheets() {
     return this._worksheets;
   }
@@ -41,7 +50,11 @@ export class IndexComponent implements OnInit {
   get route() {return this._route}
 
   loadWorksheets() {
+    if (this.tableCountEnd <= this._worksheets.length) {return;}
+
+    this.loadingMainContent = true;
     this.subSink = this.worksheetService.fetch(this.pagination)
+      .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
           this.pagination.total = res.total;

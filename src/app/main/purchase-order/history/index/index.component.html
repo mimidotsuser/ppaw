@@ -87,13 +87,36 @@
         </div>
       </td>
     </tr>
-    <ng-container *ngIf="requests.length === 0">
+    <ng-container *ngIf="requests.length === 0 && !loadingMainContent">
       <tr class="table-hover">
         <td class="text-center py-5" colspan="8">
           There are no purchase orders available at the moment.
           <a class="text-decoration-none" routerLink="create" *can="'purchaseOrder.create'">
             Create new PO
           </a>
+        </td>
+      </tr>
+    </ng-container>
+
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 py-3"></div>
+        </td>
+        <td>
+          <div class="placeholder w-100 h-100 py-3"></div>
+        </td>
+        <td colspan="2">
+          <div class="placeholder w-100 h-100 py-3"></div>
         </td>
       </tr>
     </ng-container>

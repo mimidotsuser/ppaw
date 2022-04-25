@@ -45,8 +45,11 @@
   </div>
 
   <div class="col-12 d-flex justify-content-end">
-    <ng-container *ngIf="submitting;else submitButton">
-      <button type="button" disabled class="btn btn-primary">Logging in ...</button>
+    <ng-container *ngIf="formSubmissionBusy;else submitButton">
+      <button type="button" disabled class="btn btn-primary">
+        <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+        Logging in ...
+      </button>
     </ng-container>
     <ng-template #submitButton>
       <button type="submit" class="btn btn-primary" (click)="login($event)">Log In</button>

@@ -124,9 +124,9 @@
       </td>
     </tr>
 
-    <ng-container *ngIf="itemsBalances.length===0">
+    <ng-container *ngIf="itemsBalances.length===0 && !loadingMainContent">
       <tr>
-        <td class="text-center py-3" colspan="9">
+        <td class="text-center py-5" colspan="9">
           <ng-container *ngIf="!searchInput.value;else noResults">
             There is no product items.&nbsp;
             <a class="text-decoration-none">
@@ -136,6 +136,14 @@
           <ng-template #noResults>
             No data matching filters criteria
           </ng-template>
+        </td>
+      </tr>
+    </ng-container>
+
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td *ngFor="let x of [].constructor(9)">
+          <div class="placeholder w-100 h-100 py-3"></div>
         </td>
       </tr>
     </ng-container>
@@ -171,10 +179,18 @@
   </div>
 
   <div class="d-flex gap-2">
-    <button type="button" class="btn btn-primary" (click)="updateBalance()">
-      UPDATE
-    </button>
-    <button type="button" class="btn btn-cancel"
+    <ng-container *ngIf="formSubmissionBusy;else submitButton">
+      <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+        <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+        Please wait ...
+      </button>
+    </ng-container>
+    <ng-template #submitButton>
+      <button type="button" class="btn btn-primary" (click)="updateBalance()">
+        UPDATE
+      </button>
+    </ng-template>
+    <button type="button" class="btn btn-cancel" [disabled]="formSubmissionBusy"
             (click)="showAdjustmentFormPopup=false">
       CANCEL
     </button>

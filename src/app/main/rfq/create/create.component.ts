@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { addDaysToDate } from '../../../utils/utils';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import {
@@ -25,6 +25,8 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   showAdhocRFQItemFormPopup = false;
   showVendorCreateFormPopup = false;
+  formSubmissionBusy = false;
+  vendorFormSubmissionBusy = false
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   vendors: VendorModel[] = []
   private _subscriptions: Subscription[] = [];
@@ -278,8 +280,10 @@ export class CreateComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.vendorFormSubmissionBusy = true
     //submit the client data
     this.subSink = this.vendorService.create(form.value)
+      .pipe(finalize(() => this.vendorFormSubmissionBusy = false))
       .subscribe((vendor: VendorModel) => {
         //add it into the RFQ form vendors list (set as selected)
         this.vendors = [...this.vendors, vendor];
@@ -315,7 +319,10 @@ export class CreateComponent implements OnInit, OnDestroy {
       closing_date: serializeDate(this.form.value.closing_date),
       items
     }
+
+    this.formSubmissionBusy = true;
     this.subSink = this.rfqService.create(payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: (model) => {
 

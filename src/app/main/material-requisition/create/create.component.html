@@ -113,10 +113,19 @@
       </ng-container>
     </div>
     <div class="col-12">
-      <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submitForm()"
-              [disabled]="requestItems!.length==0 || warehouseControl.invalid|| remarksControl.invalid">
-        Submit
-      </button>
+
+      <ng-container *ngIf="this.formSubmitting;else submitButton">
+        <button class="btn btn-primary btn-lg btn-submit">
+          <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+          Please wait ...
+        </button>
+      </ng-container>
+      <ng-template #submitButton>
+        <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submitForm()"
+                [disabled]="requestItems!.length==0 || warehouseControl.invalid|| remarksControl.invalid">
+          Submit
+        </button>
+      </ng-template>
     </div>
   </div>
 </div>

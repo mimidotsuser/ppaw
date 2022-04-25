@@ -58,12 +58,34 @@
                  (blur)="synchronizeReceivedQty($any(group))">
         </td>
       </tr>
-      <ng-container *ngIf="itemsFormArray.length==0">
+      <ng-container *ngIf="itemsFormArray.length==0 && !loadingMainContent">
         <tr>
           <td colspan="8">
             <div class="py-5 text-center">
               Select material request to autofill request items
             </div>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="loadingMainContent">
+        <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+          <td>
+            <div class="placeholder w-100 py-3"></div>
+          </td>
+          <td>
+            <div class="placeholder w-100 py-3"></div>
+          </td>
+          <td>
+            <div class="placeholder w-100 py-3"></div>
+          </td>
+          <td>
+            <div class="placeholder w-100 py-3"></div>
+          </td>
+          <td>
+            <div class="placeholder w-100 h-100 py-3"></div>
+          </td>
+          <td colspan="2">
+            <div class="placeholder w-100 h-100 py-3"></div>
           </td>
         </tr>
       </ng-container>
@@ -80,10 +102,18 @@
     </div>
 
     <div class="d-flex my-4">
-      <button type="button" class="btn btn-primary btn-submit btn-lg" (click)="submitForm()"
-              [disabled]="this.form.invalid">
-        Submit
-      </button>
+      <ng-container *ngIf="formSubmissionBusy;else submitButton">
+        <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+          <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+          Please wait ...
+        </button>
+      </ng-container>
+      <ng-template #submitButton>
+        <button type="button" class="btn btn-primary btn-submit btn-lg" (click)="submitForm()"
+                [disabled]="this.form.invalid">
+          Submit
+        </button>
+      </ng-template>
     </div>
   </div>
 

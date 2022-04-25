@@ -30,7 +30,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let prod of products">
+    <tr *ngFor="let prod of products|slice:tableCountStart:tableCountEnd">
       <td>
         <span class="td-inline-label">Item Code</span>
         <div class="d-flex flex-column">
@@ -86,7 +86,7 @@
       </td>
     </tr>
 
-    <ng-container *ngIf="products.length===0">
+    <ng-container *ngIf="products.length===0 && !loadingMainContent">
       <tr class="no-data">
         <td class="text-center py-4" colspan="7">
           There is no data at the moment yet.
@@ -98,10 +98,20 @@
       </tr>
     </ng-container>
 
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td *ngFor="let x of [].constructor(6)">
+          <div class="placeholder w-100 h-100 py-3"></div>
+        </td>
+        <td colspan="2">
+          <div class="placeholder w-100 h-100 py-3"></div>
+        </td>
+      </tr>
+    </ng-container>
     </tbody>
   </table>
   <div class="pagination-col d-flex justify-content-end w-100 pr-5">
-    <pagination [meta]="pagination"></pagination>
+    <pagination [meta]="pagination" (pageChange)="fetchProducts()"></pagination>
   </div>
 </div>
 
@@ -113,15 +123,23 @@
                       #machineFormComponent>
       <div class="d-flex gap-2">
 
-        <button type="submit" class="btn btn-primary" *ngIf="!this.selectedModel?.id"
-                (click)="saveProductForm(machineFormComponent.form)">
-          CREATE
-        </button>
-        <button type="submit" class="btn btn-primary" *ngIf="this.selectedModel?.id"
-                (click)="saveProductForm(machineFormComponent.form)">
-          UPDATE
-        </button>
-        <button type="button" class="btn btn-cancel"
+        <ng-container *ngIf="formSubmissionBusy;else submitButton">
+          <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+            <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+            Please wait ...
+          </button>
+        </ng-container>
+        <ng-template #submitButton>
+          <button type="submit" class="btn btn-primary" *ngIf="!this.selectedModel?.id"
+                  (click)="saveProductForm(machineFormComponent.form)">
+            CREATE
+          </button>
+          <button type="submit" class="btn btn-primary" *ngIf="this.selectedModel?.id"
+                  (click)="saveProductForm(machineFormComponent.form)">
+            UPDATE
+          </button>
+        </ng-template>
+        <button type="button" class="btn btn-cancel" [disabled]="formSubmissionBusy"
                 (click)="this.closeProductFormPopup(machineFormComponent.form)">
           CANCEL
         </button>

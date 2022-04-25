@@ -120,7 +120,7 @@
 
     </tr>
 
-    <ng-container *ngIf="productItems.length===0">
+    <ng-container *ngIf="productItems.length===0 && !loadingMainContent">
       <tr>
         <td class="text-center py-5" colspan="9">
           <ng-container *ngIf="!searchInput.value;else noResults">
@@ -135,6 +135,15 @@
         </td>
       </tr>
     </ng-container>
+
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td *ngFor="let x of [].constructor(6)">
+          <div class="placeholder w-100 h-100 py-3"></div>
+        </td>
+      </tr>
+    </ng-container>
+
     </tbody>
   </table>
   <div class="pagination-col d-flex justify-content-end w-100 pr-5">
@@ -212,18 +221,27 @@
   </div>
   <div class="d-flex gap-2 mt-2">
 
-    <button type="button" class="btn btn-primary" *ngIf="!form.value.id" (click)="submitForm()"
-            [disabled]="form.invalid">
-      CREATE
-    </button>
+    <ng-container *ngIf="formSubmissionBusy;else submitButton">
+      <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+        <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+        Please wait ...
+      </button>
+    </ng-container>
+    <ng-template #submitButton>
+      <button type="button" class="btn btn-primary" *ngIf="!form.value.id" (click)="submitForm()"
+              [disabled]="form.invalid">
+        CREATE
+      </button>
+    </ng-template>
 
     <button type="button" class="btn btn-primary" *ngIf="form.value.id"
-            [disabled]="form.invalid||!form.dirty"
+            [disabled]="form.invalid||!form.dirty || formSubmissionBusy"
             (click)="submitForm()">
       UPDATE
     </button>
 
-    <button type="button" class="btn btn-cancel" (click)="this.closeProductItemFormPopup()">
+    <button type="button" class="btn btn-cancel" (click)="this.closeProductItemFormPopup()"
+            [disabled]="formSubmissionBusy">
       CANCEL
     </button>
   </div>

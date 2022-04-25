@@ -63,10 +63,18 @@
       </tr>
     </ng-container>
 
-    <ng-container *ngIf="!model?.activities || model?.activities?.length===0">
+    <ng-container *ngIf="!loadingMainContent && (!model?.activities || model?.activities?.length===0)">
       <tr>
         <td colspan="8" class="py-5">
           <div class="text-center">No data</div>
+        </td>
+      </tr>
+    </ng-container>
+
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td *ngFor="let x of [].constructor(5)">
+          <div class="placeholder w-100 h-100 py-3"></div>
         </td>
       </tr>
     </ng-container>
@@ -76,7 +84,7 @@
 </div>
 
 
-<div class="container-fluid">
+<div class="container-md-fluid">
   <div class="subtitle">
     Purchase Order Items
   </div>
@@ -123,6 +131,13 @@
         {{item.rejected_qty ? item.rejected_qty : 0}}
       </td>
     </tr>
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td *ngFor="let x of [].constructor(6)">
+          <div class="placeholder w-100 h-100 py-3"></div>
+        </td>
+      </tr>
+    </ng-container>
     </tbody>
   </table>
   <div class="pagination-col d-flex justify-content-end w-100 pr-5">
@@ -134,7 +149,7 @@
 
 <hr>
 
-<div class="container-fluid col-md-10 px-0 px-md-3 ms-0 pb-3">
+<div class="container-md-fluid col-md-10 px-0 px-md-3 ms-0 pb-3">
   <div class="subtitle">
     Inspection Checklist
   </div>
@@ -158,6 +173,13 @@
         {{item.passed ? 'Passed' : 'Failed'}}
       </td>
     </tr>
+    <ng-container *ngIf="loadingMainContent">
+      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+        <td *ngFor="let x of [].constructor(3)">
+          <div class="placeholder w-100 h-100 py-3"></div>
+        </td>
+      </tr>
+    </ng-container>
     </tbody>
   </table>
 

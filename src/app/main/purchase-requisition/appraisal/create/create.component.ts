@@ -7,7 +7,7 @@ import {
 } from '../../../../models/purchase-request.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { PaginationModel } from '../../../../models/pagination.model';
 
 @Component({
@@ -17,10 +17,11 @@ import { PaginationModel } from '../../../../models/pagination.model';
 })
 export class CreateComponent implements OnInit, OnDestroy {
 
+  formSubmissionBusy = false;
   model: PurchaseRequestModel | null = null;
-  form: FormGroup;
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   private _subscriptions: Subscription[] = []
+  form: FormGroup;
 
   constructor(private route: ActivatedRoute, private fb: FormBuilder, private router: Router,
               private purchaseRequisitionService: PurchaseRequisitionService) {
@@ -96,8 +97,10 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.form.markAllAsTouched();
     if (this.form.invalid || !this.model?.id) {return}
 
+    this.formSubmissionBusy = true;
     this.subSink = this.purchaseRequisitionService
       .createVerificationRequest(this.model.id, this.form.value)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe(() => {
         this.router.navigate(['../'], {relativeTo: this.route})
           .then(() => {

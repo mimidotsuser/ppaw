@@ -2,13 +2,23 @@
   <ng-container *ngIf="model && permissions.length>0">
     <app-role-form [permissions]="permissions" [model]="model" #roleForm>
       <div class="mt-3 d-flex gap-2">
-        <button type="submit" [disabled]="!model.editable" class="btn btn-primary"
-                (click)="update(roleForm.form)">UPDATE
-        </button>
-        <a routerLink="/main/roles" class="btn btn-outline-primary btn-cancel">CANCEL</a>
+        <ng-container *ngIf="formSubmissionBusy;else submitButton">
+          <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+            <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+            Please wait ...
+          </button>
+          <button type="button" disabled class="btn btn-outline-primary btn-cancel">
+            CANCEL
+          </button>
+        </ng-container>
+        <ng-template #submitButton>
+          <button type="submit" [disabled]="!model.editable" class="btn btn-primary"
+                  (click)="update(roleForm.form)">UPDATE
+          </button>
+          <a routerLink="/main/roles" class="btn btn-outline-primary btn-cancel">CANCEL</a>
+        </ng-template>
       </div>
     </app-role-form>
   </ng-container>
-
 
 </div>

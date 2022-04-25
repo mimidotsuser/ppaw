@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PermissionService } from '../services/permission.service';
 import { RoleService } from '../services/role.service';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { PermissionModel } from '../../../models/permission.model';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,9 +14,10 @@ import { RoleModel } from '../../../models/role.model';
 })
 export class EditComponent implements OnInit, OnDestroy {
 
-  model!: RoleModel;
+  formSubmissionBusy = false;
   private _permissions: PermissionModel[] = [];
   private _subscriptions: Subscription[] = [];
+  model!: RoleModel;
 
   constructor(private route: ActivatedRoute, private permissionService: PermissionService,
               private roleService: RoleService, private router: Router) {
@@ -45,12 +46,13 @@ export class EditComponent implements OnInit, OnDestroy {
     form.markAllAsTouched();
     if (form.invalid) {return;}
     const data = form.value;
-
+    this.formSubmissionBusy = true;
     data.permissions = (data.permissions as [{ id: string, selected: boolean }])
       .filter((c) => c.selected)
       .map((selected) => ({id: selected.id}));
 
     this.subSink = this.roleService.update(this.model.id, data)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe(() => {
         this.router.navigate(['../../'], {relativeTo: this.route.parent})
       })

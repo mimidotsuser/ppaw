@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { map, Subscription, tap } from 'rxjs';
+import { finalize, map, Subscription } from 'rxjs';
 import { faCartPlus, faSpinner, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { MRFItemModel, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
 import { CheckoutService } from '../../services/checkout.service';
@@ -22,6 +22,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   faTrashAlt = faTrashAlt;
   faSpinner = faSpinner;
   showIssueFormPopup = false;
+  formSubmissionBusy = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 30};
   warehouses: WarehouseModel[] = [];
   private _subscriptions: Subscription[] = [];
@@ -43,8 +44,19 @@ export class CreateComponent implements OnInit, OnDestroy {
           .map((item) => Object.assign(item, {cartButtonBusy: false}));
         return model;
       }))
-      .pipe(tap((model) => this.pagination.total = model.items.length))
-      .subscribe((v) => this.requestModel = v);
+      .subscribe({
+        next: (model) => {
+          this.requestModel = model;
+          this.pagination.total = model.items.length
+        },
+        error: (e) => {
+          if (e.status === 403) {
+            this.router.navigate(['../../../not-authorized'], {relativeTo: this.route})
+          } else if (e.status === 404) {
+            this.router.navigate(['../../../not-found'], {relativeTo: this.route})
+          }
+        }
+      });
 
     this.defaultWarrantStartDate = new Date();
     this.defaultWarrantEndDate = addDaysToDate(this.defaultWarrantStartDate, 365)
@@ -283,7 +295,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       //fetch spares balances for the item if not found
       item.cartButtonBusy = true;
       this.subSink = this.checkoutService.fetchMeldedBalances(item.product_id)
-        .pipe(tap(() => item.cartButtonBusy = false))
+        .pipe(finalize(() => item.cartButtonBusy = false))
         .subscribe({
           next: (productBalances) => {
 
@@ -385,7 +397,9 @@ export class CreateComponent implements OnInit, OnDestroy {
       }
     }
 
+    this.formSubmissionBusy = true
     this.subSink = this.checkoutService.create(this.requestModel!.id!, payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
           this.router.navigate(['../'], {relativeTo: this.route})

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import {
   GoodsReceiptNoteItemModel,
@@ -20,6 +20,7 @@ import { ProductModel } from '../../../../models/product.model';
 export class CreateComponent implements OnInit, OnDestroy {
 
   faTrashAlt = faTrashAlt
+  formSubmissionBusy = false;
   private _subscriptions: Subscription[] = [];
   pagination: PaginationModel = {page: 1, limit: 25, total: 0};
   model?: GoodsReceiptNoteModel;
@@ -125,7 +126,9 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     payload[ 'goods_receipt_note_id' ] = this.model?.id;
 
+    this.formSubmissionBusy = true;
     this.subSink = this.inspectionService.create(payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
           this.router.navigate(['../../'], {relativeTo: this.route})

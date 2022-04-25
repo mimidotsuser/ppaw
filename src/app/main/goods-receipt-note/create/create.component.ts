@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { finalize, Subscription } from 'rxjs';
 import { PurchaseOrderItemModel, PurchaseOrderModel } from '../../../models/purchase-order.model';
 import { ProductModel } from '../../../models/product.model';
 import { WarehouseModel } from '../../../models/warehouse.model';
@@ -14,8 +13,8 @@ import { GoodsReceiptNoteService } from '../services/goods-receipt-note.service'
   styleUrls: ['./create.component.scss']
 })
 export class CreateComponent implements OnInit, OnDestroy {
-  isBusy = false;
-  faSpinner = faSpinner;
+  loadingMainContent = false;
+  formSubmissionBusy = false;
   pagination: PaginationModel = {page: 1, limit: 25, total: 0}
   private _subscriptions: Subscription[] = [];
   private _warehouses: WarehouseModel[] = [];
@@ -74,12 +73,15 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.pagination.total = model?.items?.length || 0;
 
     if (!model) {return}
+    this.loadingMainContent = true;
 
     model.items.map((item) => {
       this.goodsReceiptNoteItemsForm.push(
         this.createGoodsReceiptNoteEntryForm({item})
       )
-    })
+    });
+    this.loadingMainContent = false;
+
   }
 
 
@@ -87,6 +89,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.form.markAllAsTouched();
     if (this.form.invalid) {return}
 
+    this.formSubmissionBusy = true;
     const items = (this.form.value.items as GoodsReceivedItemFormModel[])
       .map((item) => {
         return {
@@ -108,6 +111,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       items
     }
     this.subSink = this.goodsReceiptNoteService.create(payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
           this.goodsReceiptNoteItemsForm.clear();

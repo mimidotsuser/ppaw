@@ -83,7 +83,7 @@ export class AccountRecoveryComponent implements OnInit {
               error: (err) => {
                 this.submitting = false;
                 this.flashErrorMessage = 'Password reset token invalid';
-                if (err.status !== 422) {
+                if (err.status !== 422 && err.status !== 400) {
                   this.flashErrorMessage = 'Something went wrong. Please try again.'
                 }
               }

@@ -74,10 +74,25 @@
         </tr>
       </ng-container>
 
-      <ng-container *ngIf="!model || (model?.product_items?.length||0)===0">
+      <ng-container
+        *ngIf="!loadingMainContent &&( !model || (model?.product_items?.length||0)===0)">
         <tr>
           <td colspan="3" class="py-5">
             <div class="text-center">No data available at the moment</div>
+          </td>
+        </tr>
+      </ng-container>
+
+      <ng-container *ngIf="loadingMainContent">
+        <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+          <td>
+            <div class="placeholder w-100 h-100 py-3"></div>
+          </td>
+          <td>
+            <div class="placeholder w-100 h-100 py-3"></div>
+          </td>
+          <td>
+            <div class="placeholder w-100 h-100 py-3"></div>
           </td>
         </tr>
       </ng-container>
