@@ -80,9 +80,18 @@ export class CreateComponent implements OnInit, OnDestroy {
   loadRequest() {
     this.subSink = this.purchaseRequisitionService
       .fetchRequestPendingApproval(this.route.snapshot.params[ 'id' ])
-      .subscribe((model) => {
-        this.model = model;
-        this.pagination.total = model.items.length;
+      .subscribe({
+        next: (model) => {
+          this.model = model;
+          this.pagination.total = model.items.length;
+        },
+        error: (e) => {
+          if (e.status === 403) {
+            this.router.navigate(['../../../not-authorized'], {relativeTo: this.route})
+          } else if (e.status === 404) {
+            this.router.navigate(['../../../not-found'], {relativeTo: this.route})
+          }
+        }
       });
   }
 
