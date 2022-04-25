@@ -181,12 +181,16 @@
       <customer-typeahead-input controlName="customer" customId="customer">
       </customer-typeahead-input>
     </div>
-    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse && !form.value.id">
-      <label class="form-label">Current contract</label>
-      <select class="form-select" formControlName="contract">
 
+    <div class="mb-3 col-md-6" *ngIf="this.itemOutsideWarehouse && !form.value.id">
+      <label class="form-label required" for="nature_of_release">Nature of release</label>
+      <select id="nature_of_release" class="form-select" formControlName="nature_of_release">
+        <option *ngFor="let purpose of natureOfRelease" [ngValue]="purpose.id">
+          {{purpose.title}}
+        </option>
       </select>
     </div>
+
     <div class="mb-3 col-md-6" *ngIf="!this.itemOutsideWarehouse && !form.value.id">
       <label class="form-label required" id="warehouse">Warehouse</label>
       <select class="form-select" formControlName="warehouse">

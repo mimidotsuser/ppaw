@@ -12,6 +12,7 @@ import { ProductCategoryModel } from '../../../models/product-category.model';
 import { ProductItemService } from '../services/product-item.service';
 import { WarehouseModel } from '../../../models/warehouse.model';
 import { serializeDate } from '../../../utils/serializers/date';
+import { MRFPurposeCode } from '../../../models/m-r-f.model';
 
 @Component({
   selector: 'app-index',
@@ -48,10 +49,10 @@ export class IndexComponent implements OnInit, OnDestroy {
         [Validators.required]),
 
       customer: this.fb.control({}),
-      contract: this.fb.control({}, []),
       purchase_order: this.fb.control({}, []),
       warrant_start: this.fb.control({}, []),
       warrant_end: this.fb.control({}, []),
+      nature_of_release: this.fb.control({}, []),
 
       warehouse: this.fb.control({}, [Validators.required]),
       out_of_order: this.fb.control({}, [Validators.required]),
@@ -132,6 +133,18 @@ export class IndexComponent implements OnInit, OnDestroy {
     return this._warehouses;
   }
 
+  get natureOfRelease(): { id: MRFPurposeCode, title: string, selected?: boolean }[] {
+    return [
+      {id: MRFPurposeCode.SALE, title: 'Customer Sale', selected: true},
+      {id: MRFPurposeCode.STANDBY, title: 'Standby'},
+      {id: MRFPurposeCode.DEMO, title: 'Customer Demo'},
+      {id: MRFPurposeCode.LEASE, title: 'Customer Lease'}];
+  }
+
+  natureOfReleaseOptionsComparator(v1: { id: MRFPurposeCode }, v2: { id: MRFPurposeCode }) {
+    return v1 && v2 ? v1.id === v2.id : false;
+  }
+
   closeProductItemFormPopup() {
     if (this.form.dirty && !window.confirm('Data not saved. Changes will be lost if you continue.')) {
       return
@@ -150,6 +163,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   locationFormChange() {
     if (this.itemOutsideWarehouse) {
       this.form.get('customer')?.addValidators([Validators.required])
+      this.form.get('nature_of_release')?.addValidators([Validators.required])
       this.form.get('warehouse')?.clearValidators();
       this.form.get('out_of_order')?.clearValidators();
 
@@ -157,11 +171,14 @@ export class IndexComponent implements OnInit, OnDestroy {
       this.form.get('warehouse')?.addValidators([Validators.required])
       this.form.get('out_of_order')?.addValidators([Validators.required])
       this.form.get('customer')?.clearValidators();
+      this.form.get('nature_of_release')?.clearValidators()
 
     }
     this.form.get('customer')?.updateValueAndValidity();
     this.form.get('warehouse')?.updateValueAndValidity();
     this.form.get('out_of_order')?.updateValueAndValidity();
+    this.form.get('nature_of_release')?.updateValueAndValidity()
+
   }
 
   showEditItemForm(item: ProductItemModel) {
@@ -217,7 +234,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         customer_id: this.form.value.customer.id,
         warrant_start: this.form.value.warrant_start,
         warrant_end: this.form.value.warrant_end,
-        contract_id: this.form.value.contract_id?.id,
+        nature_of_release: this.form.value.nature_of_release,
         ...payload,
       }
 
