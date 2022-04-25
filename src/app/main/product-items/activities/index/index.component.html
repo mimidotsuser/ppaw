@@ -117,6 +117,13 @@
         <td>
           <span class="td-inline-label">Location</span>
           {{activity?.location?.name}}
+          <div *ngIf="activity?.location_type=='customer'">
+            <small>
+              {{$any(activity?.location)?.branch }}
+              {{$any(activity?.location)?.region ? '|' : ''}}
+              {{$any(activity?.location)?.region }}
+            </small>
+          </div>
         </td>
         <td *can="'worksheet.view'">
           <span class="td-inline-label">Worksheet</span>

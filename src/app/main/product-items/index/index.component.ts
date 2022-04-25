@@ -133,17 +133,14 @@ export class IndexComponent implements OnInit, OnDestroy {
     return this._warehouses;
   }
 
-  get natureOfRelease(): { id: MRFPurposeCode, title: string, selected?: boolean }[] {
+  get natureOfRelease(): { id: MRFPurposeCode, title: string }[] {
     return [
-      {id: MRFPurposeCode.SALE, title: 'Customer Sale', selected: true},
+      {id: MRFPurposeCode.SALE, title: 'Customer Sale'},
       {id: MRFPurposeCode.STANDBY, title: 'Standby'},
       {id: MRFPurposeCode.DEMO, title: 'Customer Demo'},
       {id: MRFPurposeCode.LEASE, title: 'Customer Lease'}];
   }
 
-  natureOfReleaseOptionsComparator(v1: { id: MRFPurposeCode }, v2: { id: MRFPurposeCode }) {
-    return v1 && v2 ? v1.id === v2.id : false;
-  }
 
   closeProductItemFormPopup() {
     if (this.form.dirty && !window.confirm('Data not saved. Changes will be lost if you continue.')) {
@@ -152,11 +149,11 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.showProductItemFormPopup = false;
   }
 
-  openCreateForm(selectedModel?: ProductItemModel) {
+  openCreateForm() {
     this.form.reset();
-    if (selectedModel) {
-      this.form.patchValue({}); //todo
-    }
+    this.form.patchValue({
+      nature_of_release: this.natureOfRelease[ 0 ].id
+    });
     this.showProductItemFormPopup = true;
   }
 
