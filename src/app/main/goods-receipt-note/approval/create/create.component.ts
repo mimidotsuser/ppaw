@@ -18,7 +18,7 @@ import { InspectionChecklistModel, InspectionModel } from '../../../../models/in
 })
 export class CreateComponent implements OnInit, OnDestroy {
 
-  formSubmissionBusy = true;
+  formSubmissionBusy = false;
   pagination: PaginationModel = {page: 1, limit: 15, total: 0};
   private _subscriptions: Subscription[] = [];
   model?: GoodsReceiptNoteModel & { inspection_note: InspectionModel };
