@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { finalize, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { faAngleRight, faAngleUp, faEllipsisV, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisV, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { WorksheetModel } from '../../../../models/worksheet.model';
 import { PaginationModel } from '../../../../models/pagination.model';
 import { WorksheetService } from '../../services/worksheet.service';
@@ -17,8 +17,6 @@ export class IndexComponent implements OnInit {
 
   faFilter = faFilter
   faEllipsisV = faEllipsisV;
-  faAngleRight = faAngleRight;
-  faAngleUp = faAngleUp;
   loadingMainContent = false;
   private _worksheets: WorksheetModel[] = [];
   private _subscriptions: Subscription[] = [];
