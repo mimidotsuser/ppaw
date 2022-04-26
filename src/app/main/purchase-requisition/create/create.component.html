@@ -1,35 +1,7 @@
 <div class="container-fluid">
   <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
-    <div class="data-filters d-flex gap-2 col-6">
-      <div class="col-md-6 mb-1">
-        <input type="text" class="form-control search" [formControl]="searchInput"
-               placeholder="Search item">
-      </div>
-      <div class="col-md-4 mb-1">
-        <div ngbDropdown class="d-inline-block">
-          <button id="dp" ngbDropdownToggle
-                  class="btn btn-outline-secondary hide-dropdown-toggle btn-filter">
-            <fa-icon [icon]="faFilter"></fa-icon>
-            Filters
-          </button>
-          <div ngbDropdownMenu aria-labelledby="dp">
-            <div class="px-2 py-3">
-              <div class="mb-3">
-                <label class="form-label" for="">Product category</label>
-                <select class="form-select" id="product_category">
-                  <option value="all">All</option>
-                  <option value="machine">Machine</option>
-                  <option value="spare">Spare</option>
-                </select>
-              </div>
-              <div class="my-3 d-grid">
-                <button class="btn btn-success btn-lg">Apply filters</button>
-              </div>
-            </div>
+    <div>
 
-          </div>
-        </div>
-      </div>
     </div>
 
     <div class="col-lg-3 justify-content-end d-flex">
