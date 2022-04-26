@@ -3,7 +3,6 @@ import { map, Observable } from 'rxjs';
 import { CustomersModule } from '../customers.module';
 import { HttpService } from '../../../core/services/http.service';
 import { CustomerModel } from '../../../models/customer.model';
-import { PaginationModel } from '../../../models/pagination.model';
 import { HttpResponseModel } from '../../../models/response.model';
 
 @Injectable({
@@ -15,9 +14,9 @@ export class CustomerService {
   constructor(private httpService: HttpService) {
   }
 
-  fetch(meta: PaginationModel): Observable<HttpResponseModel<CustomerModel>> {
+  fetch(params: object): Observable<HttpResponseModel<CustomerModel>> {
     return this.httpService
-      .get(this.httpService.endpoint.customers, {params: {...meta, include: 'parent'}});
+      .get(this.httpService.endpoint.customers, {params: {...params, include: 'parent'}});
   }
 
   create(model: CustomerModel): Observable<CustomerModel> {

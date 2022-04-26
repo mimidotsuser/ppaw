@@ -3,6 +3,7 @@ import { map, Observable } from 'rxjs';
 import { UserModel } from '../../../models/user.model';
 import { HttpService } from '../../../core/services/http.service';
 import { UsersModule } from '../users.module';
+import { HttpResponseModel } from '../../../models/response.model';
 
 @Injectable({providedIn: UsersModule})
 export class UserService {
@@ -11,10 +12,9 @@ export class UserService {
   constructor(private httpService: HttpService) {
   }
 
-  get fetchAll(): Observable<UserModel[]> {
+  fetch(params: object = {include: 'role'}): Observable<HttpResponseModel<UserModel>> {
     return this.httpService
-      .get(this.httpService.endpoint.users, {params: {include: 'role'}})
-      .pipe(map((res: { data: UserModel[] }) => res.data));
+      .get(this.httpService.endpoint.users, {params: {...params}})
   }
 
   create(data: UserModel): Observable<UserModel> {

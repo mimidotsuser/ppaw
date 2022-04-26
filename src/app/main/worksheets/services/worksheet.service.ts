@@ -8,7 +8,6 @@ import { ProductCategoryModel } from '../../../models/product-category.model';
 import { PaginationModel } from '../../../models/pagination.model';
 import { HttpResponseModel } from '../../../models/response.model';
 import { CustomerModel } from '../../../models/customer.model';
-import { UserModel } from '../../../models/user.model';
 import { WorksheetFiltersModel } from '../../../models/filters.model';
 
 @Injectable({
@@ -57,10 +56,5 @@ export class WorksheetService {
   fetchCustomers(params: {}): Observable<HttpResponseModel<CustomerModel>> {
     return this.httpService
       .get(this.httpService.endpoint.customers, {params: params});
-  }
-
-  fetchUsers(param: {}): Observable<HttpResponseModel<UserModel>> {
-    return this.httpService
-      .get(this.httpService.endpoint.users, {params: param})
   }
 }

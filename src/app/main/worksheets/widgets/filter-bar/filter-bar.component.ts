@@ -10,14 +10,16 @@ import {
 } from 'rxjs';
 import { UserModel } from '../../../../models/user.model';
 import { CustomerModel } from '../../../../models/customer.model';
-import { WorksheetService } from '../../services/worksheet.service';
 import { WorksheetFiltersModel } from '../../../../models/filters.model';
 import { serializeDate } from '../../../../utils/serializers/date';
+import { UserService } from '../../../users/services/user.service';
+import { CustomerService } from '../../../customers/services/customer.service';
 
 @Component({
   selector: 'worksheet-filter-bar',
   templateUrl: './filter-bar.component.html',
-  styleUrls: ['./filter-bar.component.scss']
+  styleUrls: ['./filter-bar.component.scss'],
+  providers: [UserService, CustomerService]
 })
 export class FilterBarComponent implements OnInit, OnDestroy {
 
@@ -36,7 +38,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   dateFiltersMax: string;
   endDateFilterMin?: string;
 
-  constructor(private worksheetService: WorksheetService) {
+  constructor(private userService: UserService, private customerService: CustomerService) {
     this.dateFiltersMax = new Date().toISOString().slice(0, 10);
   }
 
@@ -55,6 +57,9 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     return this._filters && Object.values(this._filters).filter((v) => v).length > 0
   }
 
+  get hasFilters() {
+    return this.model && Object.values(this.model).filter((v) => v).length > 0
+  }
 
   customerSearch() {
     this.subSink = this.customerSearch$
@@ -66,11 +71,10 @@ export class FilterBarComponent implements OnInit, OnDestroy {
       .subscribe((searchTerm) => {
 
         this.customerSearchBusy = true;
-        this.subSink = this.worksheetService
-          .fetchCustomers({
-            limit: 10, search: searchTerm,
-            exclude: this._customers.map((c) => c.id).join(',')
-          })
+        this.subSink = this.customerService.fetch({
+          limit: 10, search: searchTerm,
+          exclude: this._customers.map((c) => c.id).join(',')
+        })
           .pipe(finalize(() => this.customerSearchBusy = false))
           .subscribe({
             next: (res) => {
@@ -93,11 +97,10 @@ export class FilterBarComponent implements OnInit, OnDestroy {
       .subscribe((searchTerm) => {
 
         this.userSearchBusy = true;
-        this.subSink = this.worksheetService
-          .fetchUsers({
-            limit: 10, search: searchTerm,
-            exclude: this._users.map((c) => c.id).join(',')
-          })
+        this.subSink = this.userService.fetch({
+          limit: 10, search: searchTerm,
+          exclude: this._users.map((c) => c.id).join(',')
+        })
           .pipe(finalize(() => this.userSearchBusy = false))
           .subscribe({
             next: (res) => {
@@ -132,7 +135,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
       this._filters.created_by = this.model.users.map((x) => x.id).join(',')
     }
 
-    this.filtersChanged.emit(this._filters);
+    this.filtersChanged.emit(this.hasAppliedFilters ? this._filters : undefined);
   }
 
   clearFilters() {

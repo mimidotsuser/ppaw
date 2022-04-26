@@ -68,7 +68,10 @@
 
   <div class="col-md-2 mb-3">
     <div class="d-flex gap-2 flex-row align-items-center mt-2 pt-2 flex-row h-100">
-      <button class="btn btn-dark" (click)="applyFilters()">APPLY</button>
+      <button class="btn btn-dark" (click)="applyFilters()"
+              [disabled]="!hasFilters && !hasAppliedFilters">
+        APPLY
+      </button>
       <button class="btn btn-dark-outline" (click)="clearFilters()" *ngIf="hasAppliedFilters">
         CLEAR
       </button>

@@ -66,9 +66,9 @@ export class IndexComponent implements OnInit, OnDestroy {
     if (this.tableCountEnd <= this._users.length) {return;}
 
     this.loadingMainContent = true;
-    this.subSink = this.userService.fetchAll
+    this.subSink = this.userService.fetch()
       .pipe(finalize(() => this.loadingMainContent = false))
-      .subscribe((users) => this._users = users)
+      .subscribe((users) => this._users = users.data)
   }
 
   resolveUserStatus(code: keyof typeof UserAccountStatus): string {
