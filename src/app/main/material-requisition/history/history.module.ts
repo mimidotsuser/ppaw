@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { NgbCollapseModule, NgbDropdownModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { IndexComponent } from './index/index.component';
 import { ShowComponent } from './show/show.component';
 import { SharedModule } from '../../../shared/shared.module';
-import { RouterModule } from '@angular/router';
 import { Actions, Resources } from '../../../utils/permissions';
-import { NgbDropdownModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
+import { WidgetsModule } from '../widgets/widgets.module';
 
 
 @NgModule({
@@ -28,6 +29,8 @@ import { NgbDropdownModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
     SharedModule,
     NgbDropdownModule,
     NgbNavModule,
+    NgbCollapseModule,
+    WidgetsModule
   ]
 })
 export class HistoryModule {}

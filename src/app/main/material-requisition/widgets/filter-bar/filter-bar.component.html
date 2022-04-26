@@ -1,0 +1,66 @@
+<div class="row filter-bar">
+  <div class="col-md-3 mb-3">
+    <label>Current Stage</label>
+    <ng-select [multiple]="true" [items]="requestStages" class="custom-select" bindLabel="title"
+               [(ngModel)]="model.stages">
+      <ng-template ng-option-tmp let-item="item" let-index="index" let-item$="item$">
+        <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
+               [ngModelOptions]="{standalone:true}" class="form-check-inline">
+        {{item.title}}
+      </ng-template>
+    </ng-select>
+  </div>
+
+  <div class="col-md-3 mb-3">
+    <label>Created By</label>
+
+    <ng-select [multiple]="true" [minTermLength]="2" [items]="users"
+               [typeahead]="userSearch$" typeToSearchText="Please enter 2 or more characters"
+               [trackByFn]="userTrackByFn" [loading]="userSearchBusy"
+               placeholder="Select user" [(ngModel)]="model.users">
+
+      <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+        <div class="ng-value" *ngFor="let item of items|slice:0:1">
+              <span class="ng-value-label">
+                {{$any(item)?.first_name}} {{$any(item)?.last_name}}
+              </span>
+        </div>
+
+        <div class="ng-value" *ngIf="items.length>1">
+          <span class="ng-value-label">{{items.length - 1}} more...</span>
+        </div>
+
+      </ng-template>
+
+      <ng-template ng-option-tmp let-item="item" let-ix="index" let-item$="item$">
+        <input type="checkbox" id="item-{{ix}}" [ngModel]="item$.selected"
+               [ngModelOptions]="{standalone:true}" class="form-check-inline">
+        {{$any(item)?.first_name}} {{$any(item)?.last_name}}
+      </ng-template>
+    </ng-select>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    <label>Created After</label>
+    <input type="date" class="form-control" [(ngModel)]="model.start_date"
+           [max]="dateFiltersMax" (change)="onStartDateChange()">
+  </div>
+
+  <div class="col-md-2 mb-3">
+    <label>Created Before</label>
+    <input type="date" class="form-control" [(ngModel)]="model.end_date"
+           [min]="endDateFilterMin" [max]="dateFiltersMax">
+  </div>
+
+  <div class="col-md-2 mb-3">
+    <div class="d-flex gap-2 flex-row align-items-center mt-2 pt-2 flex-row h-100">
+      <button class="btn btn-dark" (click)="applyFilters()"
+              [disabled]="!hasFilters && !hasAppliedFilters">
+        APPLY
+      </button>
+      <button class="btn btn-dark-outline" (click)="clearFilters()" *ngIf="hasAppliedFilters">
+        CLEAR
+      </button>
+    </div>
+  </div>
+</div>

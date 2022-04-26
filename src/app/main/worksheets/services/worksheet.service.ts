@@ -5,10 +5,8 @@ import { HttpService } from '../../../core/services/http.service';
 import { ProductItemModel } from '../../../models/product-item.model';
 import { WorksheetModel } from '../../../models/worksheet.model';
 import { ProductCategoryModel } from '../../../models/product-category.model';
-import { PaginationModel } from '../../../models/pagination.model';
 import { HttpResponseModel } from '../../../models/response.model';
 import { CustomerModel } from '../../../models/customer.model';
-import { WorksheetFiltersModel } from '../../../models/filters.model';
 
 @Injectable({
   providedIn: WorksheetsModule
@@ -17,12 +15,10 @@ export class WorksheetService {
 
   constructor(private httpService: HttpService) { }
 
-  fetch(meta: PaginationModel, filters?: WorksheetFiltersModel): Observable<HttpResponseModel<WorksheetModel>> {
-    let params = {...meta, include: 'createdBy,customer'}
-    if (filters) {
-      params = {...filters, ...params}
-    }
-    return this.httpService.get(this.httpService.endpoint.worksheets, {params})
+  fetch(query: object): Observable<HttpResponseModel<WorksheetModel>> {
+    let params = {...query, include: 'createdBy,customer'}
+
+    return this.httpService.get(this.httpService.endpoint.worksheets, {params: params})
   }
 
   create(payload: object): Observable<WorksheetModel> {

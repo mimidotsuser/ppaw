@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { finalize, Subscription } from 'rxjs';
-import { faEllipsisV, faEye, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisV, faEye, faFilePdf, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { MRFActivity, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
 import { PaginationModel } from '../../../../models/pagination.model';
 import { MaterialRequisitionService } from '../../services/material-requisition.service';
-import { ActivatedRoute } from '@angular/router';
+import { MaterialRequisitionFiltersModel } from '../../../../models/filters.model';
 
 @Component({
   selector: 'app-index',
@@ -14,6 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class IndexComponent implements OnInit, OnDestroy {
 
+  faFilter = faFilter
   faEllipsisV = faEllipsisV;
   faFilePdf = faFilePdf;
   faEye = faEye;
@@ -23,6 +25,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   private _requests: MRFModel[] = [];
   private _subscriptions: Subscription [] = [];
+  private _requisitionFilters?: MaterialRequisitionFiltersModel
   searchInput: FormControl;
 
 
@@ -59,7 +62,9 @@ export class IndexComponent implements OnInit, OnDestroy {
       return;
     }
     this.loadingMainContent = true;
-    this.subSink = this.requisitionService.fetch(this.pagination)
+
+    this.subSink = this.requisitionService
+      .fetch({...this.pagination, ...this._requisitionFilters || []})
       .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe((res) => {
         this.pagination.total = res.total;
@@ -170,6 +175,13 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   exportSIV(request: MRFModel) {
     this.subSink = this.requisitionService.exportSiv(request);
+  }
+
+  filtersChanged(filters?: MaterialRequisitionFiltersModel) {
+    this._requisitionFilters = filters;
+    this._requests = [];
+    this.loadRequests();
+
   }
 
   ngOnDestroy(): void {

@@ -20,8 +20,8 @@ export class MaterialRequisitionService {
   constructor(private httpService: HttpService, private downloadService: DownloadService) {
   }
 
-  fetch(meta: PaginationModel): Observable<HttpResponseModel<MRFModel>> {
-    const params = {...meta, include: 'items,activities,latestActivity'}
+  fetch(queries: object): Observable<HttpResponseModel<MRFModel>> {
+    const params = {...queries, include: 'items,activities,latestActivity'}
     return this.httpService.get(this.httpService.endpoint.materialRequests, {params});
   }
 

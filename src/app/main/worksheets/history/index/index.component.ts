@@ -54,10 +54,11 @@ export class IndexComponent implements OnInit {
   get route() {return this._route}
 
   loadWorksheets() {
-    if (this.tableCountEnd <= this._worksheets.length && !this.worksheetFilters) {return;}
+    if (this.tableCountEnd <= this._worksheets.length) {return;}
 
     this.loadingMainContent = true;
-    this.subSink = this.worksheetService.fetch(this.pagination, this.worksheetFilters)
+    this.subSink = this.worksheetService
+      .fetch({...this.pagination, ...this.worksheetFilters || []})
       .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {

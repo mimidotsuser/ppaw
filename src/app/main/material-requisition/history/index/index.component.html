@@ -1,13 +1,20 @@
 <div class="container-fluid">
   <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
-    <div class="col-sm-6 col-md-3 data-filters">
+    <div>
+      <button class="btn btn-filter "
+              [ngClass]="materialRequestsFilters.collapsed?'btn-outline-secondary':'btn-secondary'"
+              (click)="materialRequestsFilters.toggle()">
+        <fa-icon [icon]="faFilter"></fa-icon>
+        <span class="ps-2">Filters</span>
+      </button>
     </div>
-
-    <div class="d-md-block">
-      <a class="btn btn-outline-primary" routerLink="create">
-        + New Request
-      </a>
-    </div>
+    <a class="btn btn-outline-primary" routerLink="../create" [relativeTo]="route"
+       *can="'worksheet.create'">
+      + New Request
+    </a>
+  </div>
+  <div class="pb-3 pb-sm-3 filter-bar" #materialRequestsFilters="ngbCollapse" [ngbCollapse]="true">
+    <mrn-filter-bar (filtersChanged)="filtersChanged($event)"></mrn-filter-bar>
   </div>
 </div>
 
