@@ -29,15 +29,9 @@ export class AnalyticsService {
       .pipe(map((res: { data: ProductOutOfStockAnalytics[] }) => res.data))
   }
 
-  fetchWorksheetsByCustomer(startDate: string, endDate: string, customersIds?: number[]): Observable<WorksheetByCustomerAnalytics[]> {
-    const params: { [ key: string ]: string } = {}
-    if (startDate || endDate) {
-      params[ 'between' ] = `${startDate},${endDate}`
-    }
-    if (customersIds) {
-      params[ 'customerIds' ] = customersIds.join(',');
-    }
-    return this.httpService.get(this.httpService.endpoint.worksheetsCountByCustomer, {params})
+  fetchWorksheetsByCustomer(query:object): Observable<WorksheetByCustomerAnalytics[]> {
+    return this.httpService
+      .get(this.httpService.endpoint.worksheetsCountByCustomer, {params: {...query}})
       .pipe(map((res: { data: WorksheetByCustomerAnalytics[] }) => res.data))
   }
 

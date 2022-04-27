@@ -52,32 +52,70 @@
         <div class="my-3 d-flex justify-content-start">
           <div class="empty  ps-md-4"></div>
           <div class="d-flex flex-wrap gap-3 w-100 align-items-center px-md-0 px-2">
-            <div class="col-md-2 mb-3">
-              <label for="from" class="form-label">From </label>
-              <input type="date" class="form-control" id="from"
-                     [formControl]="worksheetsStartDateFilterControl">
-            </div>
-            <div class="col-md-2 mb-3">
-              <label for="to" class="form-label">To </label>
-              <input type="date" class="form-control" [formControl]="worksheetsEndDateFilterControl"
-                     [min]="worksheetsEndDateFilterMin" id="to">
-            </div>
-            <div class="col-md-4 mb-3">
-              <label for="customers" class="form-label">Customers </label>
-              <ng-select [items]="customers" bindLabel="name" [multiple]="true"
-                         [formControl]="worksheetCustomersFilterControl" labelForId="customers">
-                <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
-                  <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
-                         [ngModelOptions]="{standalone:true}" class="form-check-inline">
-                  {{item.name}} | {{item?.branch || item?.region}}
+            <div class="row col-md-10">
+              <div class="col-md-3 mb-3">
+                <label for="from" class="form-label">From </label>
+                <input type="date" class="form-control" id="from" [max]="worksheetsDateFilterMax"
+                       [(ngModel)]="worksheetFilterModel.start_date" (change)="onStartDateChange()">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="to" class="form-label">To </label>
+                <input type="date" class="form-control" [min]="worksheetsEndDateFilterMin" id="to"
+                       [(ngModel)]="worksheetFilterModel.end_date" [max]="worksheetsDateFilterMax">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="customers" class="form-label">Customers </label>
+                <ng-select [items]="customers" bindLabel="name" [multiple]="true"
+                           [(ngModel)]="worksheetFilterModel.customers" labelForId="customers">
+                  <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
+                    <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
+                           [ngModelOptions]="{standalone:true}" class="form-check-inline">
+                    {{item.name}} | {{item?.branch || item?.region}}
+                  </ng-template>
+                </ng-select>
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                  <div class="ng-value" *ngFor="let item of items|slice:0:3">
+                    <span class="ng-value-label">{{$any(item)?.title}}</span>
+                  </div>
+                  <div class="ng-value" *ngIf="items.length>3">
+                    <span class="ng-value-label">{{items.length - 3}} more...</span>
+                  </div>
                 </ng-template>
-              </ng-select>
+              </div>
+              <div class="col-md-5 mb-3">
+                <label>Entry Category</label>
+                <ng-select [multiple]="true" [items]="entryCategories" class="custom-select"
+                           bindLabel="title" [(ngModel)]="worksheetFilterModel.entryCategories">
+                  <ng-template ng-option-tmp let-item="item" let-iy="index" let-item$="item$">
+                    <input type="checkbox" id="item-{{iy}}" [ngModel]="item$.selected"
+                           [ngModelOptions]="{standalone:true}" class="form-check-inline">
+                    {{item.title}}
+                  </ng-template>
+                  <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                    <ng-container *ngIf="entryCategories.length!==items.length">
+                      <div class="ng-value" *ngFor="let item of items|slice:0:1">
+                        <span class="ng-value-label">{{$any(item)?.title}}</span>
+                      </div>
+                      <div class="ng-value" *ngIf="items.length>1">
+                        <span class="ng-value-label">{{items.length - 1}} more...</span>
+                      </div>
+                    </ng-container>
+
+                    <div class="ng-value" *ngIf=" entryCategories.length===items.length">
+                      <span class="ng-value-label">All categories ({{items.length}})</span>
+                    </div>
+                  </ng-template>
+                </ng-select>
+              </div>
+
             </div>
-            <div class="col-md-2 mb-3 pt-md-4 mt-md-1">
-              <button type="button" class="btn btn-outline-primary"
-                      (click)="submitWorksheetDataFilters()">
-                Apply filters
-              </button>
+            <div class="col-md-2 pt-1 h-100">
+              <div class="d-flex gap-2 flex-row mt-md-2 pt-md-4">
+                <button type="button" class="btn btn-outline-primary"
+                        (click)="submitWorksheetDataFilters()">
+                  Apply filters
+                </button>
+              </div>
             </div>
           </div>
 

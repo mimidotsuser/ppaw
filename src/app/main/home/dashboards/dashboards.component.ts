@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ChartData, ChartOptions } from 'chart.js';
 import { AnalyticsService } from '../services/analytics.service';
-import { FormBuilder, FormControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import {
   ProductItemByLocationAnalytics,
@@ -13,6 +12,7 @@ import {
 import { CustomerModel } from '../../../models/customer.model';
 import { addDaysToDate } from '../../../utils/utils';
 import { serializeDate } from '../../../utils/serializers/date';
+import { WorkCategoryCodes, WorkCategoryTitles } from '../../../models/worksheet.model';
 
 @Component({
   selector: 'app-dashboards',
@@ -28,38 +28,42 @@ export class DashboardsComponent implements OnInit, OnDestroy {
   productItemsByLocation?: ChartData<'pie'>
   worksheetsByAuthor?: ChartData<'pie'>
   worksheetsByCustomer?: ChartData<'line'>
-  worksheetCustomersFilterControl: FormControl;
-  worksheetsStartDateFilterControl: FormControl;
-  worksheetsEndDateFilterControl: FormControl;
+  worksheetFilterModel: WorksheetFiltersFormModel = {}
   worksheetsEndDateFilterMin: string;
+  worksheetsDateFilterMax: string;
+  entryCategories: { id: string, title: string }[];
 
-  constructor(private analyticsService: AnalyticsService, private datePipe: DatePipe,
-              private fb: FormBuilder) {
+  constructor(private analyticsService: AnalyticsService, private datePipe: DatePipe) {
 
     //form controls init
-    this.worksheetCustomersFilterControl = this.fb.control(null);
-
     const past3Months = addDaysToDate(new Date(), -90);
-    this.worksheetsStartDateFilterControl = this.fb.control(past3Months.toISOString().slice(0, 10))
-    this.worksheetsEndDateFilterControl = this.fb.control(new Date().toISOString().slice(0, 10))
+    this.worksheetFilterModel.start_date = past3Months.toISOString().slice(0, 10)
+    this.worksheetFilterModel.end_date = new Date().toISOString().slice(0, 10)
+    this.worksheetsDateFilterMax = new Date().toISOString().slice(0, 10)
     this.worksheetsEndDateFilterMin = past3Months.toISOString().slice(0, 10);
 
     //request data
     this.loadAnalyticsData();
     this.loadCustomers();
+
+    this.entryCategories = [
+      {id: WorkCategoryCodes.REPAIR, title: WorkCategoryTitles.REPAIR},
+      {id: WorkCategoryCodes.GENERAL_SERVICING, title: WorkCategoryTitles.GENERAL_SERVICING},
+      {
+        id: WorkCategoryCodes.DELIVERY_AND_INSTALLATION,
+        title: WorkCategoryTitles.DELIVERY_AND_INSTALLATION
+      },
+      {
+        id: WorkCategoryCodes.TRAINING_AND_INSTALLATION,
+        title: WorkCategoryTitles.TRAINING_AND_INSTALLATION
+      },
+      {id: WorkCategoryCodes.TECHNICAL_REPORT, title: WorkCategoryTitles.TECHNICAL_REPORT},
+      {id: WorkCategoryCodes.OTHER, title: WorkCategoryTitles.OTHER},
+    ];
+    this.worksheetFilterModel[ 'entryCategories' ] = this.entryCategories;
   }
 
-  ngOnInit(): void {
-    this.subSink = this.worksheetsStartDateFilterControl.valueChanges
-      .subscribe((val) => {
-        if (!val) {
-          this.worksheetsEndDateFilterControl.patchValue(null);
-        } else {
-          this.worksheetsEndDateFilterMin = this.worksheetsEndDateFilterControl.value;
-
-        }
-      })
-  }
+  ngOnInit(): void {}
 
   set subSink(value: Subscription) {
     this._subscriptions.push(value);
@@ -132,13 +136,28 @@ export class DashboardsComponent implements OnInit, OnDestroy {
   }
 
   private loadUsersCustomerVisits() {
-    const customersIds = !this.worksheetCustomersFilterControl.value ? undefined :
-      (this.worksheetCustomersFilterControl.value as CustomerModel[]).map((customer) => customer.id);
+    const params: { [ key: string ]: string } = {}
 
-    const startDate = serializeDate(this.worksheetsStartDateFilterControl.value);
-    const endDate = serializeDate(this.worksheetsEndDateFilterControl.value);
 
-    this.subSink = this.analyticsService.fetchWorksheetsByCustomer(startDate, endDate, customersIds)
+    if (this.worksheetFilterModel.customers && this.worksheetFilterModel.customers.length > 0) {
+      params[ 'customerIds' ] = this.worksheetFilterModel.customers
+        .map((customer) => customer.id).join(',');
+    }
+
+    if (this.worksheetFilterModel.entryCategories && this.worksheetFilterModel.entryCategories.length > 0) {
+      params[ 'entry_categories' ] = this.worksheetFilterModel.entryCategories
+        .map((category) => category.id).join(',');
+    }
+
+    if (this.worksheetFilterModel.start_date) {
+      params[ 'start_date' ] = serializeDate(this.worksheetFilterModel.start_date)
+    }
+
+    if (this.worksheetFilterModel.end_date) {
+      params[ 'end_date' ] = serializeDate(this.worksheetFilterModel.end_date)
+    }
+
+    this.subSink = this.analyticsService.fetchWorksheetsByCustomer(params)
       .subscribe({
         next: (model) => {
           this.worksheetsByCustomer = this.mapWorksheetsByCustomerData(model);
@@ -154,14 +173,14 @@ export class DashboardsComponent implements OnInit, OnDestroy {
           this._customers = model;
 
           //set selected customers
-          if (!this.worksheetCustomersFilterControl.value) {
+          if (!this.worksheetFilterModel.customers) {
             this.patchSelectedCustomers();
           }
         }
       })
   }
 
-  mapProductsOutOfStockData(model: ProductOutOfStockAnalytics[]) {
+  private mapProductsOutOfStockData(model: ProductOutOfStockAnalytics[]) {
     return {
       datasets: [
         {data: model.map((row) => row.total)}
@@ -170,7 +189,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     }
   }
 
-  mapProductItemsByLocationData(model: ProductItemByLocationAnalytics[]): ChartData<'pie'> {
+  private mapProductItemsByLocationData(model: ProductItemByLocationAnalytics[]): ChartData<'pie'> {
     return {
       datasets: [
         {data: model.map((row) => row.total)}
@@ -179,7 +198,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     }
   }
 
-  mapWorksheetsByAuthorData(model: WorksheetByAuthorAnalytics[]): ChartData<'pie'> {
+  private mapWorksheetsByAuthorData(model: WorksheetByAuthorAnalytics[]): ChartData<'pie'> {
     return {
       datasets: [
         {data: model.map((row) => row.total)}
@@ -188,7 +207,7 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     }
   }
 
-  mapWorksheetsByCustomerData(model: WorksheetByCustomerAnalytics[]): ChartData<'line'> {
+  private mapWorksheetsByCustomerData(model: WorksheetByCustomerAnalytics[]): ChartData<'line'> {
     const uniqueLabels: { [ key: string ]: string } = model
       .reduce((acc, row) => {
         const createdAt: string = this.datePipe.transform(row.created_at)!;
@@ -219,7 +238,6 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     }
   }
 
-
   private patchSelectedCustomers() {
     const selectedUniqueCustomerIds: { [ key: number ]: number } = this._worksheetsByCustomer
       .reduce((acc, row) => {
@@ -232,10 +250,10 @@ export class DashboardsComponent implements OnInit, OnDestroy {
       .map((id) => {
         const customerObj = this._customers.find((cust) => cust.id === +id);
         if (customerObj) {
-          if (!this.worksheetCustomersFilterControl.value) {
-            this.worksheetCustomersFilterControl.patchValue([customerObj]);
+          if (!this.worksheetFilterModel.customers) {
+            this.worksheetFilterModel.customers = [customerObj];
           } else {
-            this.worksheetCustomersFilterControl.patchValue([...this.worksheetCustomersFilterControl.value, customerObj]);
+            this.worksheetFilterModel.customers = ([...this.worksheetFilterModel.customers, customerObj]);
 
           }
         }
@@ -246,7 +264,23 @@ export class DashboardsComponent implements OnInit, OnDestroy {
     this.loadUsersCustomerVisits();
   }
 
+  onStartDateChange() {
+    if (this.worksheetFilterModel.start_date) {
+      this.worksheetsEndDateFilterMin = new Date(this.worksheetFilterModel.start_date)
+        .toISOString().slice(0, 10);
+    } else {
+      this.worksheetsEndDateFilterMin = '';
+    }
+  }
+
   ngOnDestroy(): void {
     this._subscriptions.map((s) => s.unsubscribe())
   }
+}
+
+interface WorksheetFiltersFormModel {
+  start_date?: string,
+  end_date?: string,
+  customers?: CustomerModel[],
+  entryCategories?: { id: string, title: string }[]
 }
