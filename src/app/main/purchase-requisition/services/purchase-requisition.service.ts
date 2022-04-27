@@ -61,9 +61,9 @@ export class PurchaseRequisitionService {
   }
 
 
-  fetch(meta: PaginationModel): Observable<HttpResponseModel<PurchaseRequestModel>> {
+  fetch(queries: object): Observable<HttpResponseModel<PurchaseRequestModel>> {
     return this.httpService.get(this.httpService.endpoint.purchaseRequests,
-      {params: {...meta, include: 'latestActivity,activities,items'}})
+      {params: {...queries, include: 'latestActivity,activities,items'}})
 
   }
 

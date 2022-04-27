@@ -1,13 +1,26 @@
 <div class="container-fluid">
   <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
-    <div class="col-sm-6 col-md-3 data-filters">
+    <div>
+      <button class="btn btn-filter btn-outline-secondary"
+              (click)="purchaseRequestFilters.toggle()">
+        <fa-icon [icon]="faFilter"></fa-icon>
+        <span class="ps-2">Filters</span>
+      </button>
     </div>
-
-    <div class="d-md-block">
-      <a class="btn btn-outline-primary" routerLink="../create" [relativeTo]="route">
-        + New Request
-      </a>
-    </div>
+    <a class="btn btn-outline-primary" routerLink="../create" [relativeTo]="route"
+       *can="'worksheet.create'">
+      + New Request
+    </a>
+  </div>
+  <div class="pb-3 pb-sm-3" #purchaseRequestFilters="ngbCollapse" [ngbCollapse]="true">
+    <purchase-request-filter-bar (filtersChanged)="filtersChanged($event)">
+      <div class="w-100 justify-content-end d-flex d-md-none">
+        <button type="button" class="btn btn-outline-primary border-0"
+                (click)="purchaseRequestFilters.toggle(false)">
+          CANCEL
+        </button>
+      </div>
+    </purchase-request-filter-bar>
   </div>
 </div>
 

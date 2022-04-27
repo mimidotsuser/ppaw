@@ -14,4 +14,4 @@ import { PurchaseRequisitionComponent } from './purchase-requisition.component';
     PurchaseRequisitionRoutingModule
   ]
 })
-export class PurchaseRequisitionModule { }
+export class PurchaseRequisitionModule {}

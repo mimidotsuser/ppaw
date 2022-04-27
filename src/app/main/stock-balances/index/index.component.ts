@@ -17,7 +17,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   loadingMainContent = false;
   showAdjustmentFormPopup = false;
   formSubmissionBusy = false;
-  pagination: PaginationModel = {total: 0, page: 1, limit: 5}
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   private _itemsBalances: ProductBalanceModel[] = []
   private _subscriptions: Subscription[] = []
   searchInput: FormControl;

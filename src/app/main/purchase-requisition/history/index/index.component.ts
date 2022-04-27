@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { finalize, Subscription } from 'rxjs';
-import { faEllipsisV, faEye, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisV, faEye, faFilePdf, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { PaginationModel } from '../../../../models/pagination.model';
 import {
   PRStage,
@@ -9,7 +9,7 @@ import {
   PurchaseRequestModel
 } from '../../../../models/purchase-request.model';
 import { PurchaseRequisitionService } from '../../services/purchase-requisition.service';
-import { FileService } from '../../../../core/services/file.service';
+import { PurchaseRequestFiltersModel } from '../../../../models/filters.model';
 
 @Component({
   selector: 'app-index',
@@ -19,19 +19,20 @@ import { FileService } from '../../../../core/services/file.service';
 export class IndexComponent implements OnInit, OnDestroy {
 
 
-  faEllipsisV = faEllipsisV;
   faEye = faEye
   faFilePdf = faFilePdf;
+  faFilter = faFilter;
+  faEllipsisV = faEllipsisV;
   loadingMainContent = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   showRequestHistoryPopup = false
   selectedModel: PurchaseRequestModel | null = null;
   private _requests: PurchaseRequestModel[] = [];
   private _subscriptions: Subscription[] = [];
-
+  purchaseRequestFilters?: PurchaseRequestFiltersModel;
 
   constructor(private purchaseRequisitionService: PurchaseRequisitionService,
-              public route: ActivatedRoute, private fileService: FileService) {
+              public route: ActivatedRoute) {
     this.loadRequests();
   }
 
@@ -60,7 +61,8 @@ export class IndexComponent implements OnInit, OnDestroy {
     }
 
     this.loadingMainContent = true;
-    this.subSink = this.purchaseRequisitionService.fetch(this.pagination)
+    this.subSink = this.purchaseRequisitionService
+      .fetch({...this.pagination, ...this.purchaseRequestFilters || []})
       .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe((res) => {
         this.pagination.total = res.total;
@@ -98,6 +100,12 @@ export class IndexComponent implements OnInit, OnDestroy {
       return 'Request Approval Stage';
     }
     return 'Request Stage Unknown';
+  }
+
+  filtersChanged(filters?: PurchaseRequestFiltersModel) {
+    this.purchaseRequestFilters = filters;
+    this._requests = [];
+    this.loadRequests();
   }
 
   ngOnDestroy(): void {
