@@ -56,6 +56,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
       {id: WorkCategoryCodes.TECHNICAL_REPORT, title: WorkCategoryTitles.TECHNICAL_REPORT},
       {id: WorkCategoryCodes.OTHER, title: WorkCategoryTitles.OTHER},
     ];
+    this.model[ 'entryCategories' ] = this.entryCategories;
   }
 
   ngOnInit(): void {
