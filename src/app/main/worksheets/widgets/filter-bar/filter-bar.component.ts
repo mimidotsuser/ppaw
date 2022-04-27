@@ -14,6 +14,7 @@ import { WorksheetFiltersModel } from '../../../../models/filters.model';
 import { serializeDate } from '../../../../utils/serializers/date';
 import { UserService } from '../../../users/services/user.service';
 import { CustomerService } from '../../../customers/services/customer.service';
+import { WorkCategoryCodes, WorkCategoryTitles } from '../../../../models/worksheet.model';
 
 @Component({
   selector: 'worksheet-filter-bar',
@@ -34,12 +35,27 @@ export class FilterBarComponent implements OnInit, OnDestroy {
   private _users: UserModel[] = [];
   private _subscriptions: Subscription[] = [];
   private _filters?: WorksheetFiltersModel;
+  entryCategories: { id: string, title: string }[]
   model: FiltersFormModel = {};
   dateFiltersMax: string;
   endDateFilterMin?: string;
 
   constructor(private userService: UserService, private customerService: CustomerService) {
     this.dateFiltersMax = new Date().toISOString().slice(0, 10);
+    this.entryCategories = [
+      {id: WorkCategoryCodes.REPAIR, title: WorkCategoryTitles.REPAIR},
+      {id: WorkCategoryCodes.GENERAL_SERVICING, title: WorkCategoryTitles.GENERAL_SERVICING},
+      {
+        id: WorkCategoryCodes.DELIVERY_AND_INSTALLATION,
+        title: WorkCategoryTitles.DELIVERY_AND_INSTALLATION
+      },
+      {
+        id: WorkCategoryCodes.TRAINING_AND_INSTALLATION,
+        title: WorkCategoryTitles.TRAINING_AND_INSTALLATION
+      },
+      {id: WorkCategoryCodes.TECHNICAL_REPORT, title: WorkCategoryTitles.TECHNICAL_REPORT},
+      {id: WorkCategoryCodes.OTHER, title: WorkCategoryTitles.OTHER},
+    ];
   }
 
   ngOnInit(): void {
@@ -134,6 +150,11 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     if (this.model.users) {
       this._filters.created_by = this.model.users.map((x) => x.id).join(',')
     }
+    if (this.model.entryCategories) {
+      this._filters.entry_categories = this.model.entryCategories
+        .map((x) => x.id).join(',')
+
+    }
 
     this.filtersChanged.emit(this.hasAppliedFilters ? this._filters : undefined);
   }
@@ -142,7 +163,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     //clear query params
 
     //reset local filters model
-    this.model = {customers: [], users: []}
+    this.model = {customers: [], users: [], entryCategories: []}
     this._filters = undefined;
 
     //emit event
@@ -155,6 +176,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
 }
 
 interface FiltersFormModel {
+  entryCategories?: { id: string, title: string }[];
   customers?: CustomerModel[],
   users?: UserModel[],
   start_date?: string,

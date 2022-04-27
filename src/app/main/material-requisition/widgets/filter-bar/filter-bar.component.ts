@@ -111,7 +111,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
     if (this.model.end_date) {this._filters.end_date = serializeDate(this.model.end_date)}
 
     if (this.model.stages) {
-      this._filters.stages = this.model.stages.map((stage)=>stage.id).join(',')
+      this._filters.stages = this.model.stages.map((stage) => stage.id).join(',')
     }
     if (this.model.users) {
       this._filters.created_by = this.model.users.map((x) => x.id).join(',')
@@ -137,7 +137,7 @@ export class FilterBarComponent implements OnInit, OnDestroy {
 }
 
 interface FiltersFormModel {
-  stages?: {id:string,title:string}[],
+  stages?: { id: string, title: string }[],
   users?: UserModel[],
   start_date?: string,
   end_date?: string,
