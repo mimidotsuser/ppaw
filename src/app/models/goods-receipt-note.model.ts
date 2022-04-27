@@ -1,4 +1,4 @@
-import { PurchaseOrderModel } from './purchase-order.model';
+import { PurchaseOrderItemModel, PurchaseOrderModel } from './purchase-order.model';
 import { UserModel } from './user.model';
 import { ProductModel } from './product.model';
 import { WarehouseModel } from './warehouse.model';
@@ -22,6 +22,7 @@ export interface GoodsReceiptNoteItemModel {
   created_by_id: string;
   created_by?: UserModel;
   created_at: string;
+  purchase_order_item?: PurchaseOrderItemModel
 }
 
 export interface GoodsReceiptNoteActivityModel {

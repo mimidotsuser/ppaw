@@ -21,9 +21,15 @@ export class GoodsReceiptNoteService {
       .pipe(map((res: { data: GoodsReceiptNoteModel }) => res.data))
   }
 
-  fetch(meta: PaginationModel, params?: any): Observable<HttpResponseModel<GoodsReceiptNoteModel>> {
-    params = {hasRejectedItems: true, include: 'latestActivity,purchaseOrder,createdBy', ...params}
-    return this.httpService.get(this.httpService.endpoint.goodsReceiptNote, {params});
+  fetch(query: object): Observable<HttpResponseModel<GoodsReceiptNoteModel>> {
+
+    return this.httpService.get(this.httpService.endpoint.goodsReceiptNote,
+      {
+        params: {
+          hasRejectedItems: true,
+          include: 'latestActivity,purchaseOrder,createdBy', ...query
+        }
+      });
   }
 
   findById(id: string | number): Observable<GoodsReceiptNoteModel> {
@@ -31,8 +37,8 @@ export class GoodsReceiptNoteService {
       {
         params: {
           hasRejectedItems: true,
-          include: 'activities.createdBy,purchaseOrder,items,items.product,hasRejectedItems,' +
-            'inspectionNote.checklist'
+          include: 'activities.createdBy,purchaseOrder,items.product,hasRejectedItems,' +
+            'inspectionNote.checklist,items.purchaseOrderItem.uom'
         }
       })
       .pipe(map((res: { data: GoodsReceiptNoteModel }) => res.data))
