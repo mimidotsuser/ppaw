@@ -12,7 +12,14 @@
     </a>
   </div>
   <div class="pb-3 pb-sm-3" #worksheetFilters="ngbCollapse" [ngbCollapse]="true">
-    <worksheet-filter-bar (filtersChanged)="filtersChanged($event)"></worksheet-filter-bar>
+    <worksheet-filter-bar (filtersChanged)="filtersChanged($event)">
+      <div class="w-100 justify-content-end d-flex d-md-none">
+        <button type="button" class="btn btn-outline-primary border-0"
+                (click)="worksheetFilters.toggle(false)">
+          CANCEL
+        </button>
+      </div>
+    </worksheet-filter-bar>
   </div>
 </div>
 

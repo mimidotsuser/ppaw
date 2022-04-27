@@ -13,7 +13,14 @@
     </a>
   </div>
   <div class="pb-3 pb-sm-3" #materialRequestsFilters="ngbCollapse" [ngbCollapse]="true">
-    <mrn-filter-bar (filtersChanged)="filtersChanged($event)"></mrn-filter-bar>
+    <mrn-filter-bar (filtersChanged)="filtersChanged($event)">
+      <div class="w-100 justify-content-end d-flex d-md-none">
+        <button type="button" class="btn btn-outline-primary border-0"
+                (click)="materialRequestsFilters.toggle(false)">
+          CANCEL
+        </button>
+      </div>
+    </mrn-filter-bar>
   </div>
 </div>
 
