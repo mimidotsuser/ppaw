@@ -12,6 +12,7 @@ import { CurrencyModel } from '../../../models/currency.model';
 import { addDaysToDate } from '../../../utils/utils';
 import { PaginationModel } from '../../../models/pagination.model';
 import { UOMModel } from '../../../models/u-o-m.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -33,7 +34,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   form!: FormGroup;
 
   constructor(private fb: FormBuilder, private route: ActivatedRoute, private router: Router,
-              private purchaseOrderService: PurchaseOrderService, private vendorService: VendorService) {
+              private purchaseOrderService: PurchaseOrderService,
+              private vendorService: VendorService, private toastService: ToastService) {
 
 
     this.initPurchaseOrderForm()
@@ -348,6 +350,7 @@ export class CreateComponent implements OnInit, OnDestroy {
         next: (model) => {
           this.requestItemsForm.clear();
           this.form.reset();
+          this.toastService.show({message: 'Purchase order created successfully'});
 
           this.router.navigate([], {
             queryParams: {rfq: null},
@@ -358,6 +361,13 @@ export class CreateComponent implements OnInit, OnDestroy {
             }
           });
 
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }
@@ -372,13 +382,21 @@ export class CreateComponent implements OnInit, OnDestroy {
     //submit the client data
     this.vendorService.create(form.value)
       .pipe(finalize(() => this.vendorFormSubmissionBusy = false))
-      .subscribe((vendor: VendorModel) => {
-        //add it into the RFQ form vendors list (set as selected)
-        this._vendors = [...this.vendors, vendor];
+      .subscribe({
+        next: (vendor: VendorModel) => {
+          //add it into the RFQ form vendors list (set as selected)
+          this._vendors = [...this.vendors, vendor];
 
-        //single vendor. Set as selected
-        this.form.get('vendor')?.patchValue(vendor)
-        this.showCreateVendorFormPopup = false;
+          //single vendor. Set as selected
+          this.form.get('vendor')?.patchValue(vendor)
+          this.showCreateVendorFormPopup = false;
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          this.toastService.show({message, type: 'danger'})
+        }
       })
   }
 

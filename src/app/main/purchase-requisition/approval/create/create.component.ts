@@ -9,6 +9,7 @@ import {
 } from '../../../../models/purchase-request.model';
 import { PurchaseRequisitionService } from '../../services/purchase-requisition.service';
 import { PaginationModel } from '../../../../models/pagination.model';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -24,7 +25,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   model?: PurchaseRequestModel;
 
   constructor(private route: ActivatedRoute, private fb: FormBuilder, private router: Router,
-              private purchaseRequisitionService: PurchaseRequisitionService) {
+              private purchaseRequisitionService: PurchaseRequisitionService,
+              private toastService: ToastService) {
 
     this.loadRequest();
 
@@ -121,11 +123,25 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.subSink = this.purchaseRequisitionService
       .createApprovalRequest(this.model.id, this.form.value)
       .pipe(finalize(() => this.formSubmissionBusy = false))
-      .subscribe(() => {
-        this.router.navigate(['../'], {relativeTo: this.route})
-          .then(() => {
-            //show success message
+      .subscribe({
+        next: () => {
+          this.toastService.show({message: 'Form approval status updated successfully'})
+          this.router.navigate(['../'], {relativeTo: this.route})
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 404) {
+            message = 'Purchase request approval status already updated';
+          }
+
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({
+            message,
+            type: 'danger'
           })
+        }
       })
   }
 

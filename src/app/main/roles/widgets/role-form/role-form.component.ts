@@ -37,7 +37,8 @@ export class RoleFormComponent implements OnInit, OnDestroy {
     this.form = this.fb.group({
       name: this.fb.control(null, {validators: [Validators.required]}),
       description: this.fb.control(''),
-      permissions: this.fb.array([])
+      permissions: this.fb.array([],
+        {validators: [Validators.required, Validators.min(1)]})
     });
   }
 

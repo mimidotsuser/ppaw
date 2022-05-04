@@ -130,6 +130,9 @@
     <div class="col-md-6 mb-3">
       <label class="form-label">Stock on Hand</label>
       <input type="number" class="form-control" formControlName="total_qty_in">
+      <small class="text-danger" *ngIf="form.get('total_qty_in')?.hasError('min')">
+        Minimum allowed quantity is {{form.get('total_qty_in')?.getError('min').min}}
+      </small>
     </div>
 
   </div>

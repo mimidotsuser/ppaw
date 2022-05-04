@@ -1,14 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PurchaseRequisitionService } from '../../services/purchase-requisition.service';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { finalize, Subscription } from 'rxjs';
 import {
   PRStage,
   PurchaseRequestItemModel,
   PurchaseRequestModel
 } from '../../../../models/purchase-request.model';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { finalize, Subscription } from 'rxjs';
 import { PaginationModel } from '../../../../models/pagination.model';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -24,7 +25,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
   constructor(private route: ActivatedRoute, private fb: FormBuilder, private router: Router,
-              private purchaseRequisitionService: PurchaseRequisitionService) {
+              private purchaseRequisitionService: PurchaseRequisitionService,
+              private toastService: ToastService) {
 
     //fetch the model
     this.loadRequest();
@@ -110,11 +112,26 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.subSink = this.purchaseRequisitionService
       .createVerificationRequest(this.model.id, this.form.value)
       .pipe(finalize(() => this.formSubmissionBusy = false))
-      .subscribe(() => {
-        this.router.navigate(['../'], {relativeTo: this.route})
-          .then(() => {
-            //show success message
+      .subscribe({
+        next: () => {
+          this.toastService.show({message: 'Form verification status updated successfully'})
+          this.router.navigate(['../'], {relativeTo: this.route})
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 404) {
+            message = 'Purchase request verification status already updated';
+          }
+
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({
+            message,
+            type: 'danger'
           })
+        }
       })
   }
 

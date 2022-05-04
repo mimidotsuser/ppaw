@@ -10,6 +10,7 @@ import { addDaysToDate } from '../../../../utils/utils';
 import { WarehouseModel } from '../../../../models/warehouse.model';
 import { ProductItemModel } from '../../../../models/product-item.model';
 import { serializeDate } from '../../../../utils/serializers/date';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -36,7 +37,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   remarksControl: FormControl;
 
   constructor(private checkoutService: CheckoutService, private fb: FormBuilder,
-              private route: ActivatedRoute, private router: Router) {
+              private route: ActivatedRoute, private router: Router,
+              private toastService: ToastService) {
 
     this.subSink = this.checkoutService.findRequestById(this.route.snapshot.params[ 'id' ])
       .pipe(map((model) => {
@@ -372,7 +374,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       .find((item) => (item.approved_qty || 0) > (item.issued_qty || 0));
 
     if (notIssued) {
-      alert('You have not issued all the items');
+      this.toastService.show({message: 'You have not issued all the items'});
       return;
     }
     const payload = {
@@ -402,9 +404,23 @@ export class CreateComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
+          this.toastService.show({message: 'Form issued items updated successfully'})
           this.router.navigate(['../'], {relativeTo: this.route})
-            .then(() => {
-            })
+
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 404) {
+            message = 'This material request items have already been issued';
+          }
+
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({
+            message,
+            type: 'danger'
+          })
         }
       })
   }

@@ -13,6 +13,7 @@ import { PaginationModel } from '../../../../models/pagination.model';
 import { ProductItemService } from '../../services/product-item.service';
 import { serializeDate } from '../../../../utils/serializers/date';
 import { MRFPurposeCode } from '../../../../models/m-r-f.model';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-index',
@@ -37,7 +38,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   minAllowedWarrantEndDate?: string;
 
   constructor(private productItemService: ProductItemService, private _route: ActivatedRoute,
-              private fb: FormBuilder) {
+              private fb: FormBuilder, private toastService: ToastService) {
 
     this.loadActivities();
 
@@ -69,7 +70,15 @@ export class IndexComponent implements OnInit, OnDestroy {
             warrant_end: v?.active_warrant?.warrant_end,
             purpose_code: v?.latest_activity?.covenant
           })
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to view this item';
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
+
       });
 
     this.subSink = this.productItemService.fetchAllWarehouses
@@ -147,7 +156,14 @@ export class IndexComponent implements OnInit, OnDestroy {
         next: (res) => {
           this.pagination.total = res.total;
           this._activities = this._activities.concat(res.data);
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to view item activities';
+          }
+          this.toastService.show({message, type: 'danger'})
         }
+
       })
   }
 
@@ -255,8 +271,25 @@ export class IndexComponent implements OnInit, OnDestroy {
               warrant_end: new Date(res.warrant.warrant_end).toISOString().slice(0, 10)
             })
           }
+          if (res.location_type && res.location_type === 'warehouse') {
+            this._productItem!['out_of_order'] = payload.out_of_order;
+            this._productItem![ 'latest_activity' ]![ 'location_type' ] = res.location_type;
+            this._productItem![ 'latest_activity' ]![ 'location' ] = res.location;
+          }
           this.showLocationFormPopup = false;
+          this.toastService.show({message: 'Item history logs created successfully', delay: 3000})
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          if (err.status && err.status == 422) {
+            message = err?.error && err.error?.message ? err.error.message : message;
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
+
       })
   }
 

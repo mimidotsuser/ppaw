@@ -9,6 +9,7 @@ import { ProductModel } from '../../../models/product.model';
 import { ProductCategoryModel } from '../../../models/product-category.model';
 import { MaterialRequisitionService } from '../services/material-requisition.service';
 import { WarehouseModel } from '../../../models/warehouse.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -33,7 +34,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   searchInput: FormControl;
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private requisitionService: MaterialRequisitionService) {
+  constructor(private fb: FormBuilder, private requisitionService: MaterialRequisitionService,
+              private toastService: ToastService) {
     this.form = this.fb.group({
       category: this.fb.control(null, {validators: [Validators.required]}),
       parent: this.fb.control(null),
@@ -67,7 +69,7 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     //on product category change,
     this.subSink = this.form.get('category')!.valueChanges
-      .subscribe((val) => {
+      .subscribe(() => {
         //reset product
         this.form.get('product')?.reset();
         this.form.get('maxQty')?.patchValue(0);
@@ -279,6 +281,15 @@ export class CreateComponent implements OnInit, OnDestroy {
         next: () => {
           this._formRequestItems = [];
           this.remarksControl.reset();
+          this.toastService.show({message: 'Form Submitted successfully'})
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }

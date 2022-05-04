@@ -8,6 +8,7 @@ import { ProductModel } from '../../../models/product.model';
 import { PaginationModel } from '../../../models/pagination.model';
 import { WarehouseModel } from '../../../models/warehouse.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -30,7 +31,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   searchInput: FormControl;
 
   constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute,
-              private purchaseRequisitionService: PurchaseRequisitionService) {
+              private purchaseRequisitionService: PurchaseRequisitionService,
+              private toastService: ToastService) {
     this.loadProductBalances();
 
     this.searchInput = this.fb.control('');
@@ -158,10 +160,18 @@ export class CreateComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.form.reset();
+          this.toastService.show({message: 'Purchase request form submitted successfully'})
           this.router.navigate(['../history'], {relativeTo: this.route})
-            .then(() => {
-              //show message
-            })
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({
+            message,
+            type: 'danger'
+          })
         }
       })
   }

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import {
   CustomerContractFormComponent
 } from './customer-contract-form/customer-contract-form.component';
@@ -14,7 +15,8 @@ import { CustomerSearchModule } from '../../../search/customer-search/customer-s
   imports: [
     CommonModule,
     SharedModule,
-    CustomerSearchModule
+    CustomerSearchModule,
+    RouterModule,
   ],
   exports: [
     CustomerContractFormComponent

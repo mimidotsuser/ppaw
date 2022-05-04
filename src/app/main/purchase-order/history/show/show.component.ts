@@ -17,7 +17,7 @@ import { PurchaseOrderService } from '../../services/purchase-order.service';
 export class ShowComponent implements OnInit, OnDestroy {
 
   loadingMainContent = false;
-  pagination: PaginationModel = {total: 0, page: 1, limit: 15}
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   private _subscriptions: Subscription[] = []
   searchInput: FormControl;
   model?: PurchaseOrderModel;

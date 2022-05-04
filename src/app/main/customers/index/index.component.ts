@@ -5,6 +5,7 @@ import { CustomerService } from '../services/customer.service';
 import { CustomerModel } from '../../../models/customer.model';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { PaginationModel } from '../../../models/pagination.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-index',
@@ -23,7 +24,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   private _subscriptions: Subscription[] = []
   searchControl: FormControl;
 
-  constructor(private customerService: CustomerService, private fb: FormBuilder) {
+  constructor(private customerService: CustomerService, private fb: FormBuilder,
+              private toastService: ToastService) {
     this.searchControl = this.fb.control('');
   }
 
@@ -85,7 +87,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   }
 
-  saveClientForm(form: FormGroup) {
+  submitCustomerForm(form: FormGroup) {
     form.markAllAsTouched();
     if (form.invalid) {return;}
     if (!form.dirty) {
@@ -104,20 +106,46 @@ export class IndexComponent implements OnInit, OnDestroy {
     if (this.model.id > 0) {
       this.subSink = this.customerService.update(this.model.id, payload)
         .pipe(finalize(() => this.formSubmissionBusy = false))
-        .subscribe((model) => {
-          const index = this.customers.findIndex((c) => c.id === model.id);
-          if (index > -1) {
-            this.customers[ index ] = model;
-          }
-          this.showCustomerFormPopup = false;
+        .subscribe({
+          next: (model) => {
+            const index = this.customers.findIndex((c) => c.id === model.id);
+            if (index > -1) {
+              this.customers[ index ] = model;
+            }
+            this.showCustomerFormPopup = false;
+            this.toastService.show({delay: 3000, message: 'Customer updated successfully'})
+          }, error: (err) => {
+            let message = 'Unexpected error encountered. Please try again';
+            if (err.status && err.status == 403) {
+              message = 'You do not have required permissions to perform the action';
+            }
+            if (err.status && err.status == 422) {
+              message = err?.error && err.error?.message ? err.error.message : message;
+            }
 
+            this.toastService.show({message, type: 'danger'})
+          }
         })
     } else {
       this.subSink = this.customerService.create(payload)
         .pipe(finalize(() => this.formSubmissionBusy = false))
-        .subscribe((model) => {
-          this.customers.push(model);
-          this.showCustomerFormPopup = false;
+        .subscribe({
+          next: (model) => {
+            this.customers.push(model);
+            this.showCustomerFormPopup = false;
+            this.toastService.show({message: 'Customer added successfully', delay: 3000})
+          },
+          error: (err) => {
+            let message = 'Unexpected error encountered. Please try again';
+            if (err.status && err.status == 403) {
+              message = 'You do not have required permissions to perform the action';
+            }
+            if (err.status && err.status == 422) {
+              message = err?.error && err.error?.message ? err.error.message : message;
+            }
+
+            this.toastService.show({message, type: 'danger'})
+          }
         })
     }
 
@@ -126,10 +154,23 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   deleteCustomer(customer: CustomerModel) {
     this.subSink = this.customerService.destroy(customer.id)
-      .subscribe(() => {
-        const index = this.customers.findIndex((c) => c.id === customer.id);
-        if (index > -1) {
-          this.customers.splice(index, 1);
+      .subscribe({
+        next: () => {
+          const index = this.customers.findIndex((c) => c.id === customer.id);
+          if (index > -1) {
+            this.customers.splice(index, 1);
+          }
+          this.toastService.show({message: 'Customer removed successfully', delay: 3000})
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          if (err.status && err.status == 422) {
+            message = err?.error && err.error?.message ? err.error.message : message;
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }

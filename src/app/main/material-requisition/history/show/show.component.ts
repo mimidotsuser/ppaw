@@ -15,7 +15,7 @@ import { MaterialRequisitionService } from '../../services/material-requisition.
 export class ShowComponent implements OnInit {
 
   faFilePdf = faFilePdf
-  pagination: PaginationModel = {total: 0, page: 1, limit: 15}
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   private _subscriptions: Subscription[] = []
   searchInput: FormControl;
   model?: MRFModel;

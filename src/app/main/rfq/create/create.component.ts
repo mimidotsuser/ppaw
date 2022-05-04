@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { addDaysToDate } from '../../../utils/utils';
 import { finalize, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { addDaysToDate } from '../../../utils/utils';
 import {
   PurchaseRequestItemModel,
   PurchaseRequestModel
@@ -15,6 +15,7 @@ import { VendorService } from '../../vendors/services/vendor.service';
 import { PaginationModel } from '../../../models/pagination.model';
 import { UOMModel } from '../../../models/u-o-m.model';
 import { serializeDate } from '../../../utils/serializers/date';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -34,8 +35,9 @@ export class CreateComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   adhocRFQItemForm!: FormGroup;
 
-  constructor(private route: ActivatedRoute, private rfqService: RequestForQuotationService, private router: Router,
-              private fb: FormBuilder, private vendorService: VendorService) {
+  constructor(private route: ActivatedRoute, private rfqService: RequestForQuotationService,
+              private router: Router, private fb: FormBuilder, private vendorService: VendorService,
+              private toastService: ToastService) {
 
     this.loadPurchaseRequest();
 
@@ -284,12 +286,20 @@ export class CreateComponent implements OnInit, OnDestroy {
     //submit the client data
     this.subSink = this.vendorService.create(form.value)
       .pipe(finalize(() => this.vendorFormSubmissionBusy = false))
-      .subscribe((vendor: VendorModel) => {
-        //add it into the RFQ form vendors list (set as selected)
-        this.vendors = [...this.vendors, vendor];
+      .subscribe({
+        next: (vendor: VendorModel) => {
+          //add it into the RFQ form vendors list (set as selected)
+          this.vendors = [...this.vendors, vendor];
 
-        this.form.get('vendors')?.patchValue([...(this.form.value.vendors || []), vendor])
-        this.showVendorCreateFormPopup = false;
+          this.form.get('vendors')?.patchValue([...(this.form.value.vendors || []), vendor])
+          this.showVendorCreateFormPopup = false;
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          this.toastService.show({message, type: 'danger'})
+        }
       })
 
   }
@@ -328,6 +338,7 @@ export class CreateComponent implements OnInit, OnDestroy {
 
           this.requestItemsForm.clear();
           this.form.reset();
+          this.toastService.show({message: 'RFQ created successfully'});
 
           this.router.navigate([], {
             queryParams: {pr: null},
@@ -338,6 +349,13 @@ export class CreateComponent implements OnInit, OnDestroy {
             }
           })
 
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }

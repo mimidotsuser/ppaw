@@ -5,6 +5,7 @@ import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { ProductModel } from '../../../../models/product.model';
 import { ProductService } from '../../services/product.service';
 import { ProductCategoryModel } from '../../../../models/product-category.model';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-index',
@@ -25,7 +26,8 @@ export class IndexComponent implements OnInit {
   searchControl: FormControl;
 
 
-  constructor(private productService: ProductService, private fb: FormBuilder) {
+  constructor(private productService: ProductService, private fb: FormBuilder,
+              private toastService: ToastService) {
     this.searchControl = this.fb.control('')
   }
 
@@ -36,6 +38,13 @@ export class IndexComponent implements OnInit {
         next: (pc) => {
           this._categories = pc;
           this.fetchProducts()
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          this.toastService.show({message, type: 'danger'})
         }
       })
 
@@ -96,7 +105,7 @@ export class IndexComponent implements OnInit {
 
   }
 
-  saveProductForm(form: FormGroup) {
+  submitProductForm(form: FormGroup) {
     form.markAllAsTouched();
     if (form.invalid) {return}
 
@@ -119,33 +128,67 @@ export class IndexComponent implements OnInit {
     this.subSink = this.productService
       .create(model)
       .pipe(finalize(() => this.formSubmissionBusy = false))
-      .subscribe((prod) => {
-        this.products.unshift(prod);
-        form.reset()
-        this.showProductFormPopup = false;
+      .subscribe({
+        next: (prod) => {
+          this.products.unshift(prod);
+          form.reset()
+          this.showProductFormPopup = false;
+          this.toastService.show({message: 'Product created successfully', delay: 3000})
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          if (err.status && err.status == 422) {
+            message = err?.error && err.error?.message ? err.error.message : message;
+          }
+
+          this.toastService.show({message, type: 'danger'})
+        }
       })
   }
 
   updateProduct(form: FormGroup, model: ProductModel) {
     this.subSink = this.productService.update(this.selectedModel!.id, model)
       .pipe(finalize(() => this.formSubmissionBusy = false))
-      .subscribe((prod) => {
-        const index = this.products.findIndex((p) => p.id === prod.id);
-        if (index > -1) {
-          this.products[ index ] = prod;
+      .subscribe({
+        next: (prod) => {
+          const index = this.products.findIndex((p) => p.id === prod.id);
+          if (index > -1) {
+            this.products[ index ] = prod;
+          }
+          form.reset()
+          this.showProductFormPopup = false;
+          this.toastService.show({message: 'Product updated successfully', delay: 3000})
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          if (err.status && err.status == 422) {
+            message = err?.error && err.error?.message ? err.error.message : message;
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
-        form.reset()
-        this.showProductFormPopup = false;
       })
   }
 
 
   deleteProduct(product: ProductModel) {
     this.subSink = this.productService.destroy(product.id)
-      .subscribe(() => {
-        const index = this.products.findIndex((p) => p.id === product.id);
-        if (index > -1) {
-          this.products.splice(index, 1);
+      .subscribe({
+        next: () => {
+          const index = this.products.findIndex((p) => p.id === product.id);
+          if (index > -1) {
+            this.products.splice(index, 1);
+          }
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }

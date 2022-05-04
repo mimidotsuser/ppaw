@@ -5,6 +5,7 @@ import { finalize, Subscription } from 'rxjs';
 import { PermissionService } from '../services/permission.service';
 import { PermissionModel } from '../../../models/permission.model';
 import { RoleService } from '../services/role.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -18,7 +19,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   private _permissions: PermissionModel[] = [];
 
   constructor(private permissionService: PermissionService, private roleService: RoleService,
-              private route: ActivatedRoute, private router: Router) {
+              private route: ActivatedRoute, private router: Router,
+              private toastService: ToastService) {
     this.subSink = this.permissionService.fetchAll
       .subscribe((res) => {this._permissions = res})
   }
@@ -46,8 +48,21 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     this.subSink = this.roleService.create(data)
       .pipe(finalize(() => this.formSubmissionBusy = false))
-      .subscribe(() => {
-        this.router.navigate(['../'], {relativeTo: this.route.parent})
+      .subscribe({
+        next: () => {
+          this.router.navigate(['../'], {relativeTo: this.route.parent})
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          if (err.status && err.status == 422) {
+            message = err?.error && err.error?.message ? err.error.message : message;
+          }
+
+          this.toastService.show({message, type: 'danger'})
+        }
       })
   }
 

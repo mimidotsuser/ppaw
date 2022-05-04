@@ -22,12 +22,15 @@
                    [ngModelOptions]="{standalone:true}" class="form-check-inline">
             {{item.name}}
           </ng-template>
-          <ng-template ng-footer-tmp>
-            <a role="button" class="btn btn-outline-primary border-0" *can="'vendors.create'"
-               (click)="showVendorForm(vc,vendorFormComponent.form)">
-              <small> + Create new vendor </small>
-            </a>
-          </ng-template>
+          <ng-container *can="'vendors.create'">
+            <ng-template ng-footer-tmp>
+              <a role="button" class="btn btn-outline-primary border-0" *can="'vendors.create'"
+                 (click)="showVendorForm(vc,vendorFormComponent.form)">
+                <small> + Create new vendor </small>
+              </a>
+            </ng-template>
+          </ng-container>
+
         </ng-select>
       </div>
 
@@ -84,7 +87,7 @@
           <span class="td-inline-label">UOM</span>
           <select class="form-select" formControlName="uom" [compareWith]="uomComparator">
             <option *ngFor="let uom of unitOfMeasure"
-                    [ngValue]="uom">{{uom.title}} {{uom.unit}}</option>
+                    [ngValue]="uom">{{uom.title}}</option>
           </select>
         </td>
         <td>
@@ -176,7 +179,7 @@
 
     <div class="col-md-6 mb-3">
       <label for="qty" class="form-label">UOM</label>
-      <select class="form-select" formControlName="uom">
+      <select class="form-select" formControlName="uom" id="qty">
         <option *ngFor="let uom of unitOfMeasure" [ngValue]="uom">{{uom.title}}</option>
       </select>
     </div>

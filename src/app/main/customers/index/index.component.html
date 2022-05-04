@@ -9,7 +9,7 @@
     <div class="d-md-block">
       <button type="button" class="btn btn-outline-primary"
               (click)="showCreateForm()" *can="'customers.create'">
-        + New Client
+        + New Customer
       </button>
     </div>
 
@@ -116,7 +116,7 @@
 <app-side-popup [(show)]="showCustomerFormPopup"
                 [title]="this.model?.id?'Update Customer Details':'Create New Customer'">
 
-  <app-customer-form [model]="this.model" #clientFormComponent>
+  <app-customer-form [model]="this.model" #customerFormComponent>
     <div class="d-flex gap-2">
 
       <ng-container *ngIf="formSubmissionBusy;else submitButton">
@@ -127,16 +127,16 @@
       </ng-container>
       <ng-template #submitButton>
         <button type="submit" class="btn btn-primary" *ngIf="!this.model?.id"
-                (click)="saveClientForm(clientFormComponent.form)">
+                (click)="submitCustomerForm(customerFormComponent.form)">
           CREATE
         </button>
         <button type="submit" class="btn btn-primary" *ngIf="this.model?.id"
-                (click)="saveClientForm(clientFormComponent.form)">
+                (click)="submitCustomerForm(customerFormComponent.form)">
           UPDATE
         </button>
       </ng-template>
       <button type="button" class="btn btn-cancel" [disabled]="formSubmissionBusy"
-              (click)="this.closeCustomerFormPopup(clientFormComponent.form)">
+              (click)="this.closeCustomerFormPopup(customerFormComponent.form)">
         CANCEL
       </button>
     </div>
