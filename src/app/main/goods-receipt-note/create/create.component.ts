@@ -6,6 +6,7 @@ import { ProductModel } from '../../../models/product.model';
 import { WarehouseModel } from '../../../models/warehouse.model';
 import { PaginationModel } from '../../../models/pagination.model';
 import { GoodsReceiptNoteService } from '../services/goods-receipt-note.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -20,13 +21,17 @@ export class CreateComponent implements OnInit, OnDestroy {
   private _warehouses: WarehouseModel[] = [];
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private goodsReceiptNoteService: GoodsReceiptNoteService) {
+  constructor(private fb: FormBuilder, private goodsReceiptNoteService: GoodsReceiptNoteService,
+              private toastService: ToastService) {
     this.form = this.fb.group({
-      purchase_order: this.fb.control(null, {validators: [Validators.required]}),
-      reference: this.fb.control(null, {validators: [Validators.required]}),
+      purchase_order: this.fb.control(null,
+        {validators: [Validators.required]}),
+      reference: this.fb.control(null,
+        {validators: [Validators.required]}),
       items: this.fb.array([]),
       remarks: this.fb.control(null),
-      warehouse: this.fb.control(null, {validators: [Validators.required]})
+      warehouse: this.fb.control(null,
+        {validators: [Validators.required]})
     });
   }
 
@@ -89,7 +94,6 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.form.markAllAsTouched();
     if (this.form.invalid) {return}
 
-    this.formSubmissionBusy = true;
     const items = (this.form.value.items as GoodsReceivedItemFormModel[])
       .map((item) => {
         return {
@@ -100,8 +104,11 @@ export class CreateComponent implements OnInit, OnDestroy {
       }).filter((item) => item.delivered_qty > 0);
 
     if (items.length === 0) {
-      return; //show error
+      this.toastService.show({message: 'Received items not provided', type: 'danger'})
+      return;
     }
+
+    this.formSubmissionBusy = true;
 
     const payload = {
       warehouse_id: this.form.value.warehouse.id,
@@ -116,6 +123,18 @@ export class CreateComponent implements OnInit, OnDestroy {
         next: () => {
           this.goodsReceiptNoteItemsForm.clear();
           this.form.reset();
+          this.toastService.show({
+            message: 'Goods receipt note created successfully. Request forwarded for inspection'
+          })
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }

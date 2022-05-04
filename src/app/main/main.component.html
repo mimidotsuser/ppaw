@@ -96,7 +96,21 @@
 
       </ng-container>
 
-
+      <div class="toast-container">
+        <ng-container *ngFor="let toast of toastNotifications">
+          <ngb-toast [delay]="toast?.delay||15000" class="text-white" #toastComp
+                     [ngClass]="{'bg-success':toast?.type==='success','bg-danger':toast?.type==='danger'}">
+            <div class="d-flex">
+              <div class="toast-body">
+                {{toast.message}}
+              </div>
+              <span role="button" class="me-2 m-auto" aria-label="Close" (click)="toastComp.hide()">
+                <fa-icon [icon]="faTimes"></fa-icon>
+              </span>
+            </div>
+          </ngb-toast>
+        </ng-container>
+      </div>
       <router-outlet></router-outlet>
     </main>
   </div>

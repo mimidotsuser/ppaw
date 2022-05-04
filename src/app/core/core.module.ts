@@ -4,6 +4,7 @@ import { MetaService } from './services/meta.service';
 import { StorageService } from './services/storage.service';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { UnauthenticatedInterceptor } from './interceptors/unauthenticated-interceptor.service';
+import { ToastService } from './services/toast.service';
 
 abstract class EnsureImportedOnce<T> {
   constructor(targetModule: any) {
@@ -31,7 +32,7 @@ export class CoreModule extends EnsureImportedOnce<CoreModule> {
         useClass: UnauthenticatedInterceptor,
         multi: true
       },
-        HttpService, MetaService, StorageService]
+        HttpService, MetaService, StorageService, ToastService]
     }
   }
 }

@@ -127,11 +127,11 @@
       </ng-container>
       <ng-template #submitButton>
         <button type="submit" class="btn btn-primary" *ngIf="!this.selectedModel?.id"
-                (click)="saveUserForm(userFormComponent.form)">
+                (click)="submitUserForm(userFormComponent.form)">
           CREATE
         </button>
         <button type="submit" class="btn btn-primary" *ngIf="this.selectedModel?.id"
-                (click)="saveUserForm(userFormComponent.form)">
+                (click)="submitUserForm(userFormComponent.form)">
           UPDATE
         </button>
       </ng-template>

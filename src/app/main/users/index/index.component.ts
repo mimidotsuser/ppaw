@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { finalize, Subscription } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { UserAccountStatus, UserModel } from '../../../models/user.model';
 import { UserService } from '../services/user.service';
 import { RoleService } from '../../roles/services/role.service';
 import { RoleModel } from '../../../models/role.model';
-import { finalize, Subscription } from 'rxjs';
 import { PaginationModel } from '../../../models/pagination.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-index',
@@ -21,14 +22,14 @@ export class IndexComponent implements OnInit, OnDestroy {
   loadingMainContent = false;
   formSubmissionBusy = false;
   selectedModel: UserModel | null = null;
-  pagination: PaginationModel = {limit: 15, total: 0, page: 1};
+  pagination: PaginationModel = {limit: 25, total: 0, page: 1};
   private _users: UserModel[] = [];
   private _roles: RoleModel[] = [];
   private _subscriptions: Subscription[] = [];
   searchControl: FormControl;
 
   constructor(private userService: UserService, private roleService: RoleService,
-              private fb: FormBuilder) {
+              private fb: FormBuilder, private toastService: ToastService) {
     this.searchControl = this.fb.control('');
     this.loadUsers();
   }
@@ -68,7 +69,16 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.loadingMainContent = true;
     this.subSink = this.userService.fetch()
       .pipe(finalize(() => this.loadingMainContent = false))
-      .subscribe((users) => this._users = users.data)
+      .subscribe({
+        next: (users) => this._users = users.data,
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          this.toastService.show({message, type: 'danger'})
+        }
+      })
   }
 
   resolveUserStatus(code: keyof typeof UserAccountStatus): string {
@@ -107,7 +117,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
 
-  saveUserForm(form: FormGroup) {
+  submitUserForm(form: FormGroup) {
     form.markAllAsTouched();
     if (form.invalid) {return}
 
@@ -115,13 +125,26 @@ export class IndexComponent implements OnInit, OnDestroy {
     if (this.selectedModel?.id) {
       this.subSink = this.userService.update(this.selectedModel!.id, form.value)
         .pipe(finalize(() => this.formSubmissionBusy = false))
-        .subscribe((user) => {
-          const index = this.users.findIndex((u) => u.id === user.id);
-          if (index > -1) {
-            this.users[ index ] = user;
+        .subscribe({
+          next: (user) => {
+            const index = this.users.findIndex((u) => u.id === user.id);
+            if (index > -1) {
+              this.users[ index ] = user;
+            }
+            form.reset();
+            this.showUserFormPopup = false;
+            this.toastService.show({message: 'User account updated successfully', delay: 3000})
+          }, error: (err) => {
+            let message = 'Unexpected error encountered. Please try again';
+            if (err.status && err.status == 403) {
+              message = 'You do not have required permissions to perform the action';
+            }
+            if (err.status && err.status == 422) {
+              message = err?.error && err.error?.message ? err.error.message : message;
+            }
+
+            this.toastService.show({message, type: 'danger'})
           }
-          form.reset();
-          this.showUserFormPopup = false;
         });
       return;
     }
@@ -133,6 +156,18 @@ export class IndexComponent implements OnInit, OnDestroy {
           this.users.unshift(user);
           form.reset();
           this.showUserFormPopup = false;
+          this.toastService.show({message: 'User account created successfully', delay: 3000})
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          if (err.status && err.status == 422) {
+            message = err?.error && err.error?.message ? err.error.message : message;
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }
@@ -140,7 +175,14 @@ export class IndexComponent implements OnInit, OnDestroy {
   resendInvite(user: UserModel) {
     this.subSink = this.userService.resendInvite(user)
       .subscribe({
-        next: () => {alert('Invite sent successfully')}
+        next: () => {this.toastService.show({message: 'Invite sent successfully'})},
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          this.toastService.show({message, type: 'danger'})
+        }
       })
   }
 
@@ -153,8 +195,14 @@ export class IndexComponent implements OnInit, OnDestroy {
           if (index > -1) {
             this.users[ index ] = user;
           }
-
-          alert('User status updated successfully');
+          this.toastService.show({message: 'User account status updated successfully', delay: 3000})
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }
@@ -167,8 +215,14 @@ export class IndexComponent implements OnInit, OnDestroy {
           if (index > -1) {
             this.users.splice(index, 1);
           }
-
-          alert('User account deleted successfully');
+          this.toastService.show({message: 'User account deleted successfully'});
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }

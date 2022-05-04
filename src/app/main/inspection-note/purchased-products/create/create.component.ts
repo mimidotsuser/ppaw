@@ -11,6 +11,7 @@ import {
 import { InspectionNoteService } from '../../services/inspection-note.service';
 import { PaginationModel } from '../../../../models/pagination.model';
 import { ProductModel } from '../../../../models/product.model';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -27,7 +28,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   form!: FormGroup;
 
   constructor(private route: ActivatedRoute, private inspectionService: InspectionNoteService,
-              private fb: FormBuilder, private router: Router) {
+              private fb: FormBuilder, private router: Router, private toastService: ToastService) {
 
     this.subSink = this.inspectionService.fetchRequest(this.route.snapshot.params[ 'id' ])
       .subscribe({
@@ -41,6 +42,11 @@ export class CreateComponent implements OnInit, OnDestroy {
             this.router.navigate(['../../../not-authorized'], {relativeTo: this.route})
           } else if (e.status === 404) {
             this.router.navigate(['../../../not-found'], {relativeTo: this.route})
+          } else {
+            this.toastService.show({
+              message: 'Unexpected error encountered. Please try again',
+              type: 'danger'
+            })
           }
         }
       });
@@ -140,10 +146,20 @@ export class CreateComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
+          this.toastService.show({message: 'Inspection note created successfully'})
           this.router.navigate(['../../'], {relativeTo: this.route})
-            .then(() => {
-              //show success message
-            })
+
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+
+          if (err.status && err.status == 404) {
+            message = 'Inspection note already created!';
+          }
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }

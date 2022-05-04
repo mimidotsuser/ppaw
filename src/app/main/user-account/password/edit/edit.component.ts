@@ -4,6 +4,7 @@ import { debounceTime, distinctUntilChanged, finalize, Subscription } from 'rxjs
 import { UserAccountService } from '../../services/user-account.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { matchValues } from '../../../../utils/validators/match-values';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-edit',
@@ -22,7 +23,7 @@ export class EditComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
   constructor(private fb: FormBuilder, private userAccountService: UserAccountService,
-              private authService: AuthService) {
+              private authService: AuthService, private toastService: ToastService) {
     this.form = this.fb.group({
       old_password: this.fb.control(null, {validators: [Validators.required]}),
       password: this.fb.control(null, {
@@ -66,7 +67,20 @@ export class EditComponent implements OnInit, OnDestroy {
           this.form.reset();
           this.validationStatus = {lengthOk: false, hasLetters: false, hasNumbers: false}
 
-          alert('Password updated successfully');
+          this.toastService.show({message: 'Password updated successfully', delay: 3000});
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+
+          if (err.status && err.status == 404) {
+            message = 'Account not found';
+          }
+
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }

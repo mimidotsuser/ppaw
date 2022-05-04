@@ -13,6 +13,7 @@ import { ProductItemService } from '../services/product-item.service';
 import { WarehouseModel } from '../../../models/warehouse.model';
 import { serializeDate } from '../../../utils/serializers/date';
 import { MRFPurposeCode } from '../../../models/m-r-f.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-index',
@@ -35,7 +36,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
 
-  constructor(private fb: FormBuilder, private productItemService: ProductItemService) {
+  constructor(private fb: FormBuilder, private productItemService: ProductItemService,
+              private toastService: ToastService) {
     this.loadProductItems();
 
     this.searchInput = this.fb.control('');
@@ -259,6 +261,19 @@ export class IndexComponent implements OnInit, OnDestroy {
           this.productItems.unshift(model);
           this.showProductItemFormPopup = false;
           this.pagination.total = this.pagination.total + 1;
+          this.toastService.show({message: 'Product item created successfully', delay: 3000})
+
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          if (err.status && err.status == 422) {
+            message = err?.error && err.error?.message ? err.error.message : message;
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       });
   }
@@ -272,6 +287,17 @@ export class IndexComponent implements OnInit, OnDestroy {
             this.productItems[ index ] = model;
           }
           this.showProductItemFormPopup = false;
+          this.toastService.show({message: 'Product item updated successfully', delay: 3000})
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          if (err.status && err.status == 422) {
+            message = err?.error && err.error?.message ? err.error.message : message;
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       });
   }

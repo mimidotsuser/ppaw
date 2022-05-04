@@ -7,6 +7,7 @@ import { ProductItemModel } from '../../../models/product-item.model';
 import { ProductModel } from '../../../models/product.model';
 import { CustomerModel } from '../../../models/customer.model';
 import { CustomerContractModel } from '../../../models/customer-contract.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-edit',
@@ -19,7 +20,7 @@ export class EditComponent implements OnInit, OnDestroy {
   private _model?: CustomerContractModel;
 
   constructor(private _route: ActivatedRoute, private contractService: CustomerContractService,
-              private router: Router) {
+              private router: Router, private toastService: ToastService) {
     this.subSink = this.contractService.fetchById(this.route.snapshot.params[ 'id' ])
       .subscribe({next: (model) => this._model = model})
   }
@@ -55,10 +56,18 @@ export class EditComponent implements OnInit, OnDestroy {
     this.subSink = this.contractService.update(this.route.snapshot.params[ 'id' ], payload)
       .subscribe({
         next: () => {
+          this.toastService.show({message: 'Contract updated successfully'})
           this.router.navigate(['../../'], {relativeTo: this.route})
-            .then(() => {
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          if (err.status && err.status == 422) {
+            message = err?.error && err.error?.message ? err.error.message : message;
+          }
 
-            })
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }

@@ -7,6 +7,7 @@ import { MRFModel, MRFPurposeCode } from '../../../models/m-r-f.model';
 import { ProductModel } from '../../../models/product.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StockBalanceActivityModel } from '../../../models/stock-balance-activity.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -18,12 +19,13 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   formSubmissionBusy = false;
   loadingMainContent = false;
-  pagination: PaginationModel = {total: 0, page: 1, limit: 15}
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25}
   private _subscriptions: Subscription[] = [];
   form: FormGroup;
 
   constructor(private fb: FormBuilder, private service: StandbySpareCheckinService,
-              private router: Router, private route: ActivatedRoute) {
+              private router: Router, private route: ActivatedRoute,
+              private toastService: ToastService) {
     this.form = this.fb.group({
       material_request: this.fb.control(null, {validators: Validators.required}),
       remarks: this.fb.control(''),
@@ -83,7 +85,10 @@ export class CreateComponent implements OnInit, OnDestroy {
           })
 
           if (spareItems.length === 0) {
-            alert('Material Request has no standby spares')
+            this.toastService.show({
+              message: 'Material Request has no standby spares',
+              type: 'danger'
+            })
           }
           //create form groups for each and push it to the items form array
           spareItems.map((item) => {
@@ -116,6 +121,15 @@ export class CreateComponent implements OnInit, OnDestroy {
           });
 
           this.pagination.total = this.itemsFormArray.length
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }
@@ -147,7 +161,7 @@ export class CreateComponent implements OnInit, OnDestroy {
     const value = group.get('qty')?.value;
 
     (this.itemsFormArray.controls as FormGroup[])
-      .map((controls, index) => {
+      .map((controls) => {
         if (controls != group && controls.get('group_id')?.value === group.get('group_id')?.value) {
           controls.patchValue({qty: max - value})
         }
@@ -165,10 +179,19 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.subSink = this.service.create(payload)
       .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
-        next: () => this.router.navigate(['../'], {relativeTo: this.route})
-          .then(() => {
+        next: () => {
+          this.toastService.show({message: 'Items location and balances updated successfully'})
+          this.router.navigate(['../'], {relativeTo: this.route})
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
 
-          })
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({message, type: 'danger'})
+        }
       })
   }
 

@@ -6,6 +6,7 @@ import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { MaterialRequisitionService } from '../../services/material-requisition.service';
 import { MRFItemModel, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
 import { PaginationModel } from '../../../../models/pagination.model';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-verify',
@@ -16,13 +17,14 @@ export class CreateComponent implements OnInit, OnDestroy {
 
   faExternalLinkAlt = faExternalLinkAlt;
   formSubmissionBusy = false;
-  pagination: PaginationModel = {total: 0, page: 1, limit: 15};
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25};
   private _subscriptions: Subscription[] = [];
   model?: MRFModel;
   form: FormGroup;
 
   constructor(private _route: ActivatedRoute, private router: Router, private fb: FormBuilder,
-              private requisitionService: MaterialRequisitionService) {
+              private requisitionService: MaterialRequisitionService,
+              private toastService: ToastService) {
 
     this.subSink = this.requisitionService
       .fetchRequestPendingVerification(this.route.snapshot.params[ 'id' ])
@@ -120,10 +122,22 @@ export class CreateComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
+          this.toastService.show({message: 'Form verification status updated successfully'})
           this.router.navigate(['../'], {relativeTo: this.route})
-            .then(() => {
-              // alert('Request status updated successfully')
-            })
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 404) {
+            message = 'Material request verification status already updated';
+          }
+
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({
+            message,
+            type: 'danger'
+          })
         }
       })
 

@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { finalize, Subscription } from 'rxjs';
 import { faEllipsisV, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { ProductBalanceModel } from '../../../models/product-balance.model';
 import { StockBalanceService } from '../services/stock-balance.service';
 import { PaginationModel } from '../../../models/pagination.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-index',
@@ -23,7 +24,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   searchInput: FormControl;
   form: FormGroup;
 
-  constructor(private stockBalanceService: StockBalanceService, private fb: FormBuilder) {
+  constructor(private stockBalanceService: StockBalanceService, private fb: FormBuilder,
+              private toastService: ToastService) {
 
     this.searchInput = this.fb.control(null);
 
@@ -58,7 +60,14 @@ export class IndexComponent implements OnInit, OnDestroy {
         next: (res) => {
           this._itemsBalances = this._itemsBalances.concat(res.data);
           this.pagination.total = res.total;
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          this.toastService.show({message, type: 'danger'})
         }
+
       })
 
   }
@@ -78,7 +87,14 @@ export class IndexComponent implements OnInit, OnDestroy {
       manufacturer_part_number: model.product?.manufacturer_part_number || '',
       stock_balance: model.stock_balance,
       total_qty_in: model.stock_balance,
-    })
+    });
+
+    this.form.get('total_qty_in')?.clearValidators();
+    this.form.get('total_qty_in')?.addValidators([
+      Validators.min(model.stock_balance - model.virtual_balance), Validators.required
+    ]);
+
+    this.form.get('total_qty_in')?.updateValueAndValidity();
     this.showAdjustmentFormPopup = true;
   }
 
@@ -92,12 +108,25 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.subSink = this.stockBalanceService
       .update(this.form.get('id')?.value as number, payload)
       .pipe(finalize(() => this.formSubmissionBusy = false))
-      .subscribe((model) => {
-        const index = this.itemsBalances.findIndex((b) => b.id === model.id);
-        if (index > -1) {
-          this.itemsBalances[ index ] = model;
+      .subscribe({
+        next: (model) => {
+          const index = this.itemsBalances.findIndex((b) => b.id === model.id);
+          if (index > -1) {
+            this.itemsBalances[ index ] = model;
+          }
+          this.showAdjustmentFormPopup = false;
+          this.toastService.show({message: 'Item balance adjusted successfully'})
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          if (err.status && err.status == 422) {
+            message = err?.error && err.error?.message ? err.error.message : message;
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
-        this.showAdjustmentFormPopup = false;
       })
   }
 

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { finalize, Subscription } from 'rxjs';
 import { UserAccountService } from '../../services/user-account.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-edit',
@@ -16,7 +17,7 @@ export class EditComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
   constructor(private userAccountService: UserAccountService, private fb: FormBuilder,
-              private authService: AuthService) {
+              private authService: AuthService, private toastService: ToastService) {
     this.form = this.fb.group({
       first_name: this.fb.control(null),
       last_name: this.fb.control(null),
@@ -65,7 +66,18 @@ export class EditComponent implements OnInit, OnDestroy {
             this.authService.user = user;
           }
 
-          alert('Account updated successfully')
+          this.toastService.show({message: 'Account updated successfully', delay: 3000})
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 404) {
+            message = 'Account not found.';
+          }
+
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }

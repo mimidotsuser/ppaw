@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { finalize, Subscription } from 'rxjs';
 import { faWindowClose } from '@fortawesome/free-solid-svg-icons';
@@ -8,7 +9,7 @@ import { WorksheetService } from '../services/worksheet.service';
 import { CustomerModel } from '../../../models/customer.model';
 import { ProductCategoryModel } from '../../../models/product-category.model';
 import { ProductModel } from '../../../models/product.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -27,14 +28,15 @@ export class CreateComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
   constructor(private fb: FormBuilder, private worksheetService: WorksheetService,
-              private router: Router, private route: ActivatedRoute) {
+              private router: Router, private route: ActivatedRoute,
+              private toastService: ToastService) {
     this.form = this.fb.group({
       customer: this.fb.control(null,
         {validators: [Validators.required]}),
       reference: this.fb.control(null,
         {validators: [Validators.required]}),
       entries: this.fb.array([],
-        {validators: [Validators.minLength(1)]})
+        {validators: [Validators.required, Validators.minLength(1)]})
     });
 
     this.worksheetEntryForm = this.createEntryForm();
@@ -104,7 +106,16 @@ export class CreateComponent implements OnInit, OnDestroy {
 
     this.subSink = this.worksheetService
       .fetchCustomerMachines(customer.id)
-      .subscribe((value) => this.customerMachines = value);
+      .subscribe({
+        next: (value) => this.customerMachines = value,
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          this.toastService.show({message, type: 'danger'})
+        }
+      });
   }
 
   createEntryForm(data?: WorksheetEntryFormModel): FormGroup {
@@ -217,10 +228,18 @@ export class CreateComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: () => {
+          this.toastService.show({message: 'Worksheet created successfully'})
           this.router.navigate(['../history'], {relativeTo: this.route})
-            .then(() => {
-              //show message
-            })
+        }, error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+          if (err.status && err.status == 422) {
+            message = err?.error && err.error?.message ? err.error.message : message;
+          }
+
+          this.toastService.show({message, type: 'danger'})
         }
       })
   }

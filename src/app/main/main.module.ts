@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgbCollapseModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule, NgbDropdownModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 import { MainRoutingModule } from './main-routing.module';
 import { MainComponent } from './main.component';
 import { SharedModule } from '../shared/shared.module';
@@ -15,7 +15,8 @@ import { SharedModule } from '../shared/shared.module';
     MainRoutingModule,
     NgbDropdownModule,
     NgbCollapseModule,
-    SharedModule
+    SharedModule,
+    NgbToastModule,
   ]
 })
 export class MainModule {}

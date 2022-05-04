@@ -1,10 +1,12 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { finalize, Subscription } from 'rxjs';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { PaginationModel } from '../../../../models/pagination.model';
 import { CustomerContractService } from '../../services/customer-contract.service';
 import { ProductItemModel } from '../../../../models/product-item.model';
 import { CustomerContractModel } from '../../../../models/customer-contract.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-customer-contract-form',
@@ -13,6 +15,7 @@ import { CustomerContractModel } from '../../../../models/customer-contract.mode
 })
 export class CustomerContractFormComponent implements OnInit, OnDestroy {
 
+  faExternalLinkAlt = faExternalLinkAlt;
   loadingMainContent = false;
   pagination: PaginationModel = {total: 0, page: 1, limit: 35}
   private _subscriptions: Subscription[] = [];
@@ -26,7 +29,8 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
     this.patchForm();
   };
 
-  constructor(private fb: FormBuilder, private customerContractService: CustomerContractService) {
+  constructor(private fb: FormBuilder, private customerContractService: CustomerContractService,
+              private _route: ActivatedRoute) {
     this.form = this.fb.group({
       customer: this.fb.control(null, {validators: Validators.required}),
       category: this.fb.control(null, {validators: Validators.required}),
@@ -44,6 +48,8 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
   private set subSink(v: Subscription) {
     this._subscriptions.push(v);
   }
+
+  get route() {return this._route}
 
   get tableCountStart() {
     return (this.pagination.page - 1) * this.pagination.limit
@@ -111,7 +117,8 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
       searchableStatus: this.fb.control(isSelected && canBeSelected ? 'selected' : ''),
       productItem: this.fb.control(productItem),
       product: this.fb.control(productItem.product),
-      location: this.fb.control(productItem?.latest_activity?.location)
+      location: this.fb.control(productItem?.latest_activity?.location),
+      contract: this.fb.control(contract)
     })
   }
 

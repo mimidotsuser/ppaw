@@ -21,6 +21,7 @@ import {
   faPeopleCarry,
   faShoppingBasket,
   faShoppingCart,
+  faTimes,
   faUserShield,
   faWarehouse
 } from '@fortawesome/free-solid-svg-icons';
@@ -30,6 +31,8 @@ import { MetaService } from '../core/services/meta.service';
 import { AuthService } from '../core/services/auth.service';
 import { DownloadService } from '../core/services/download.service';
 import { Resources } from '../utils/permissions';
+import { ToastService } from '../core/services/toast.service';
+import { ToastNotificationModel } from '../models/notification.model';
 
 @Component({
   selector: 'app-main',
@@ -38,6 +41,7 @@ import { Resources } from '../utils/permissions';
 })
 export class MainComponent implements OnInit, OnDestroy {
 
+  faTimes = faTimes;
   faCircleNotch = faCircleNotch;
   appName: string = environment.app.name;
   logoUrl: string = environment.app.logoUrl;
@@ -49,10 +53,11 @@ export class MainComponent implements OnInit, OnDestroy {
   pageTitle: string = '';
   private _breadcrumbList: { label: string, title: string, path: string, active: boolean }[] = [];
   breadcrumbList: { label: string, title: string, path: string, active: boolean }[] = [];
+  toastNotifications: ToastNotificationModel[] = [];
 
   constructor(private router: Router, private httpService: HttpService,
               private authService: AuthService, private titleService: MetaService,
-              private downloadService: DownloadService) {
+              private downloadService: DownloadService, private toastService: ToastService) {
 
     this.subSink = this.router.events
       .pipe(filter((evt) => evt instanceof NavigationStart))
@@ -63,7 +68,9 @@ export class MainComponent implements OnInit, OnDestroy {
       .pipe(filter((evt) => evt instanceof ActivationEnd || evt instanceof NavigationEnd))
       .subscribe((evt) => {
         this.resolveBreadcrumb(evt as ActivationEnd | NavigationEnd);
-      })
+      });
+
+    this.toastNotifications = this.toastService.toasts();
   }
 
   ngOnInit(): void {

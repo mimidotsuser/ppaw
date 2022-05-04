@@ -12,8 +12,9 @@
           </button>
         </ng-container>
         <ng-template #submitButton>
-          <button type="submit" [disabled]="!model.editable" class="btn btn-primary"
-                  (click)="update(roleForm.form)">UPDATE
+          <button type="submit"
+                  [disabled]="!model.editable || roleForm.form.invalid|| roleForm.selectedTotal===0"
+                  class="btn btn-primary" (click)="update(roleForm.form)">UPDATE
           </button>
           <a routerLink="/main/roles" class="btn btn-outline-primary btn-cancel">CANCEL</a>
         </ng-template>

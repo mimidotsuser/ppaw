@@ -17,7 +17,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   loadingMainContent = false;
   private _requests: MRFModel[] = [];
   private _subscriptions: Subscription[] = [];
-  pagination: PaginationModel = {total: 0, page: 1, limit: 2};
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25};
   searchInput: FormControl;
 
   constructor(private requisitionService: MaterialRequisitionService, private fb: FormBuilder) {

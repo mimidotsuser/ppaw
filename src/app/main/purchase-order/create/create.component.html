@@ -20,12 +20,14 @@
                    [ngModelOptions]="{standalone:true}" class="form-check-inline">
             {{item.name}}
           </ng-template>
-          <ng-template ng-footer-tmp>
-            <a role="button" class="btn btn-outline-primary border-0"
-               (click)="showCreateVendorForm(vc,vendorFormComponent.form)">
-              <small> + Create new vendor </small>
-            </a>
-          </ng-template>
+          <ng-container *can="'vendors.create'">
+            <ng-template ng-footer-tmp>
+              <a role="button" class="btn btn-outline-primary border-0"
+                 (click)="showCreateVendorForm(vc,vendorFormComponent.form)">
+                <small> + Create new vendor </small>
+              </a>
+            </ng-template>
+          </ng-container>
         </ng-select>
       </div>
 

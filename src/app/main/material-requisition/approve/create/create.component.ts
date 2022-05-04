@@ -6,6 +6,7 @@ import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { MRFItemModel, MRFModel, MRFStage } from '../../../../models/m-r-f.model';
 import { MaterialRequisitionService } from '../../services/material-requisition.service';
 import { PaginationModel } from '../../../../models/pagination.model';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create',
@@ -17,12 +18,13 @@ export class CreateComponent implements OnInit, OnDestroy {
   faExternalLinkAlt = faExternalLinkAlt;
   formSubmissionBusy = false;
   private _subscriptions: Subscription[] = [];
-  pagination: PaginationModel = {total: 0, page: 1, limit: 15};
+  pagination: PaginationModel = {total: 0, page: 1, limit: 25};
   model?: MRFModel;
   form: FormGroup;
 
   constructor(private _route: ActivatedRoute, private router: Router, private fb: FormBuilder,
-              private requisitionService: MaterialRequisitionService) {
+              private requisitionService: MaterialRequisitionService,
+              private toastService: ToastService) {
 
 
     this.subSink = this.requisitionService
@@ -128,10 +130,23 @@ export class CreateComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => {this.formSubmissionBusy = false}))
       .subscribe({
         next: () => {
+          this.toastService.show({message: 'Form approval status updated successfully'})
           this.router.navigate(['../'], {relativeTo: this.route})
-            .then(() => {
-              // alert('Request status updated successfully')
-            })
+        },
+        error: (err) => {
+          let message = 'Unexpected error encountered. Please try again';
+          if (err.status && err.status == 404) {
+            message = 'Material request approval status already updated';
+          }
+
+          if (err.status && err.status == 403) {
+            message = 'You do not have required permissions to perform the action';
+          }
+
+          this.toastService.show({
+            message,
+            type: 'danger'
+          })
         }
       })
 
