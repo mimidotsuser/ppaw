@@ -78,9 +78,9 @@
       <tr>
         <td class="text-center py-5" colspan="9">
           <ng-container *ngIf="!searchControl.value;else noResults">
-            There is no customers.&nbsp;
+            No data available at the moment.&nbsp;
             <a class="text-decoration-none" (click)="showCreateForm()" *can="'customers.create'">
-              Click to add new item
+              Click to add a customer
             </a>
           </ng-container>
           <ng-template #noResults>

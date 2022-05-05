@@ -83,12 +83,12 @@
 
     <ng-container *ngIf="users.length==0">
       <tr class="no-data">
-        <td colspan="4" class="py-3 text-center">
+        <td colspan="4" class="py-5 text-center">
           <div *ngIf="this.searchControl.value;else noData">
             No data matching the searched criteria
           </div>
           <ng-template #noData>
-            No data at the moment
+            No data available at the moment.
           </ng-template>
         </td>
       </tr>

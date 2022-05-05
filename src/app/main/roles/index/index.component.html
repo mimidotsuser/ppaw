@@ -77,7 +77,13 @@
 
     <ng-container *ngIf="isSearching && data.length==0 && !loadingMainContent">
       <tr class="no-data">
-        <td colspan="4" class="py-3 text-center"> No data matching the search criteria</td>
+        <td colspan="4" class="py-5 text-center" *ngIf="!this.searchControl.value">
+          No data available at the moment.
+        </td>
+
+        <td colspan="4" class="py-5 text-center" *ngIf="this.searchControl.value">
+          No data matching searched criteria
+        </td>
       </tr>
     </ng-container>
 
