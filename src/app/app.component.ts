@@ -35,6 +35,7 @@ export class AppComponent {
 
   injectTrackingScript() {
     const paq = (window as any)[ '_paq' ] ? (window as any) [ '_paq' ] as any[] : [];
+    (window as any)[ '_paq' ] = paq;
     paq.push(['trackPageView']);
     paq.push(['enableLinkTracking']);
     paq.push(['setTrackerUrl', environment.app.matomo.url]);
