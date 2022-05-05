@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Router, RoutesRecognized } from '@angular/router';
+import { filter, pairwise, } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 import { environment } from '../environments/environment';
 
 @Component({
@@ -7,14 +10,31 @@ import { environment } from '../environments/environment';
   styles: []
 })
 export class AppComponent {
-  constructor() {
-    if (!environment.production) {
+  constructor(private router: Router, private titleService: Title) {
+    if (environment.production) {
       this.injectTrackingScript();
+
+      //tracking starts after loading the initial page
+      this.router.events
+        .pipe(filter((evt) => evt instanceof RoutesRecognized), pairwise())
+        .subscribe((evt: any[]) => {
+
+          setTimeout(() => {
+            if ((window as any)[ '_paq' ]) {
+              (window as any)[ '_paq' ].push(['setCustomUrl', evt[ 1 ].urlAfterRedirects]);
+              (window as any)[ '_paq' ].push(['setDocumentTitle', titleService.getTitle()]);
+              (window as any)[ '_paq' ].push(['setReferrerUrl', evt[ 0 ].urlAfterRedirects]);
+              (window as any)[ '_paq' ].push(['trackPageView']);
+            }
+          })
+
+        })
+
     }
   }
 
   injectTrackingScript() {
-    const paq =  (window as any)['_paq'] ? (window as any) ['_paq'] as any[] : [];
+    const paq = (window as any)[ '_paq' ] ? (window as any) [ '_paq' ] as any[] : [];
     paq.push(['trackPageView']);
     paq.push(['enableLinkTracking']);
     paq.push(['setTrackerUrl', environment.app.matomo.url]);
