@@ -90,10 +90,7 @@
       <tr>
         <td class="text-center py-5" colspan="9">
           <ng-container *ngIf="!searchInput.value;else noResults">
-            There is no product items.&nbsp;
-            <a class="text-decoration-none" routerLink="create">
-              Click to add a new item
-            </a>
+            No data available at the moment
           </ng-container>
           <ng-template #noResults>
             No data matching filtered criteria

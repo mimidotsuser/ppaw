@@ -87,11 +87,11 @@
 
     <ng-container *ngIf="products.length===0 && !loadingMainContent">
       <tr class="no-data">
-        <td class="text-center py-4" colspan="7">
-          There is no data at the moment yet.
+        <td class="text-center py-5" colspan="7">
+          No data available at the moment.
           <a role="button" class="text-decoration-none" (click)="showCreateProductFormPopup()"
              *can="'products.create'">
-            Add new item
+            Add new product
           </a>
         </td>
       </tr>

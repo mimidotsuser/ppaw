@@ -96,10 +96,10 @@
       <tr>
         <td class="text-center py-5" colspan="8">
           <ng-container *ngIf="!searchInput.value;else noResults">
-            There are no contracts.&nbsp;
+            No data available at the moment.
             <a class="text-decoration-none" routerLink="../create" [relativeTo]="route"
                *can="'contracts.create'">
-              Click here to create new contract.
+              Click here to add new contract.
             </a>
           </ng-container>
           <ng-template #noResults>
