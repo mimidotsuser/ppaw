@@ -42,7 +42,7 @@ export class EditComponent implements OnInit, OnDestroy {
       .subscribe((value) => {
         this.validationStatus.hasNumbers = /(?=.*\d)/.test(value);
         this.validationStatus.hasLetters = /(?=.*[A-Za-z])/.test(value);
-        this.validationStatus.lengthOk = value.length >= 8;
+        this.validationStatus.lengthOk = !!value && value.length >= 8;
       })
   }
 
