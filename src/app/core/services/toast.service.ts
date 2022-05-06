@@ -18,4 +18,8 @@ export class ToastService {
   toasts() {
     return this._toasts;
   }
+
+  clearAll() {
+    this._toasts = [];
+  }
 }
