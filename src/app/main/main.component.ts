@@ -75,6 +75,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.toastNotifications = []; //reset
+    this.toastService.clearAll();
 
     this.subSink = this.downloadService.queueEvents.subscribe({
       next: (data) => {
