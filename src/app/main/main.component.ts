@@ -74,6 +74,8 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.toastNotifications = []; //reset
+
     this.subSink = this.downloadService.queueEvents.subscribe({
       next: (data) => {
         if (data.status === 'processed' || data.status === 'failed') {
