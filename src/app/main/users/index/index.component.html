@@ -81,7 +81,7 @@
       </td>
     </tr>
 
-    <ng-container *ngIf="users.length==0">
+    <ng-container *ngIf="users.length==0 && !loadingMainContent">
       <tr class="no-data">
         <td colspan="4" class="py-5 text-center">
           <div *ngIf="this.searchControl.value;else noData">
