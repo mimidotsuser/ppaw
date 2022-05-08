@@ -17,7 +17,7 @@
     </thead>
     <tbody>
     <tr
-      *ngFor="let request of requests|slice:tableCountStart:tableCountEnd|filter:this.searchInput.value">
+      *ngFor="let request of requests|slice:tableCountStart:tableCountEnd">
       <td>
         <span class="td-inline-label">Request No.</span>
         <a [routerLink]="request.id.toString()"

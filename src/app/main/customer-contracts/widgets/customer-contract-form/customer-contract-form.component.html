@@ -55,7 +55,7 @@
         </thead>
         <tbody formArrayName="contract_items">
         <ng-container
-          *ngFor="let group of contractItemsFormArray.controls|slice:tableCountStart:tableCountEnd|filter:searchInput.value:searchFields">
+          *ngFor="let group of contractItemsFormArray.controls|filter:searchInput.value:searchFields|slice:tableCountStart:tableCountEnd">
           <tr [formGroup]="$any(group)">
             <td>
               <span class="td-inline-label">Select</span>
