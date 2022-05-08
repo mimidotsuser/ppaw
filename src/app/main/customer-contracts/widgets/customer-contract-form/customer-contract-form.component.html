@@ -94,18 +94,18 @@
             <td>
               <span class="td-inline-label">Current Contract</span>
 
-              <ng-container *ngIf="group.get('contract')?.value">
+              <ng-container *ngIf="group.get('contract')?.value as contract">
                 <ng-template #rfqViewFallback>
-                  {{group.get('contract').value?.sn}} |
-                  {{group.get('contract').value?.category_title}}
+                  {{contract?.sn}} |
+                  {{contract?.category_title}}
                 </ng-template>
 
                 <a *can="'rfq.view';else:rfqViewFallback" [relativeTo]="route" target="_blank"
                    class="text-decoration-none"
-                   routerLink="../history/{{group.get('contract').value?.id}}">
+                   routerLink="../history/{{contract?.id}}">
                   <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
-                  {{group.get('contract').value?.sn}} |
-                  {{group.get('contract').value?.category_title}}
+                  {{contract?.sn}} |
+                  {{contract?.category_title}}
                 </a>
 
               </ng-container>

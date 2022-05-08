@@ -1,10 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({name: 'filter'})
-export class FilterPipe<T> implements PipeTransform {
+export class FilterPipe implements PipeTransform {
   private keyDelimiter = '.';
 
-  transform(model: T[], searchTerm: string, searchFields?: string[]): T[] {
+  transform<T>(model: Array<T>, searchTerm: string, searchFields?: string[]): Array<T> {
     if (!searchTerm || !searchTerm.trim() || !model || !Array.isArray(model)) {
       return model;
     }
