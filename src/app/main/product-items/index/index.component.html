@@ -49,10 +49,10 @@
         <span class="td-inline-label">Location</span>
         {{item?.latest_activity?.location?.name }}
         <div>
-          <small>
-            {{item?.latest_activity?.location?.branch }}
-            {{item?.latest_activity?.location?.region ? '|' : ''}}
-            {{item?.latest_activity?.location?.region }}
+          <small *ngIf="item?.latest_activity?.location_type=='customer'">
+            {{$any(item?.latest_activity?.location)?.branch }}
+            {{$any(item?.latest_activity?.location)?.region ? '|' : ''}}
+            {{$any(item?.latest_activity?.location)?.region! }}
           </small>
         </div>
       </td>

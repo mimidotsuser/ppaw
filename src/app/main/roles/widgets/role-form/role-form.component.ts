@@ -1,12 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RoleModel } from '../../../../models/role.model';
 import { PermissionModel } from '../../../../models/permission.model';
 import { FilterPipe } from '../../../../shared/pipes/filter.pipe';
@@ -31,7 +24,7 @@ export class RoleFormComponent implements OnInit, OnDestroy {
   searchControl: FormControl;
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private filterPipe: FilterPipe<AbstractControl>) {
+  constructor(private fb: FormBuilder, private filterPipe: FilterPipe) {
     this.searchControl = this.fb.control('');
 
     this.form = this.fb.group({
