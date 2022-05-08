@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { finalize, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, Subscription } from 'rxjs';
 import { CustomerService } from '../services/customer.service';
 import { CustomerModel } from '../../../models/customer.model';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
@@ -31,6 +31,16 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadCustomers();
+
+    this.subSink = this.searchControl.valueChanges
+      .pipe(debounceTime(800), distinctUntilChanged())
+      .subscribe((v: string) => {
+        if (v && v.trim()) {
+          this._customers = [];  //reset current items-very important
+          this.pagination.total = 0;
+          this.loadCustomers(); //initiate loading of customers
+        }
+      })
   }
 
   set subSink(value: Subscription) {
@@ -54,7 +64,13 @@ export class IndexComponent implements OnInit, OnDestroy {
     //if data has already been loaded, don't re-fetch it
     if (this.tableCountEnd <= this.customers.length) {return;}
     this.loadingMainContent = true;
-    this.subSink = this.customerService.fetch(this.pagination)
+
+    let params = {}
+    if (this.searchControl.value) {
+      params = {search: this.searchControl.value.trim()};
+    }
+
+    this.subSink = this.customerService.fetch({...params, ...this.pagination})
       .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {

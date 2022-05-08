@@ -111,7 +111,7 @@ export class TypeaheadSearchInputComponent<T> implements OnInit, ControlValueAcc
 
   autoSearch: (searchTerm: Observable<string>) => Observable<T[] | [] | [null]> =
     (searchTerm: Observable<string>) =>
-      searchTerm.pipe(debounceTime(200), distinctUntilChanged())
+      searchTerm.pipe(debounceTime(800), distinctUntilChanged())
         .pipe(tap(() => this.searching = true))
         .pipe(tap(() => this.searchFailed = false))
         .pipe(switchMap((v: string) => {

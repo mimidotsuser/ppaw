@@ -1,32 +1,22 @@
-<div class="container-fluid">
-  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
-    <div class="data-filters d-flex gap-2 col-md-6">
-      <div class="col-md-5 mb-1">
-        <input type="text" class="form-control search" [formControl]="searchInput"
-               placeholder="Search by serial number">
-      </div>
-      <div class="col-md-4 mb-1">
+<div class="container-fluid ps-lg-0">
 
-      </div>
+  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+    <div class="col-12 col-md-4 col-lg-3 data-filters">
+      <input type="text" class="form-control search" placeholder="Search item by serial number"
+             [formControl]="searchControl">
     </div>
 
-    <div class="col-md-5 gap-2 justify-content-end d-flex">
-      <div class="d-md-block">
-        <button type="button" class="btn btn-outline-primary" *can="'productItems.create'"
-                (click)="openCreateForm()">
-          + New Product Item
-        </button>
-      </div>
-      <div class="d-md-block ">
-        <a type="button" class="btn btn-outline-success d-none" routerLink="create"
-           *can="'productItems.create'">
-          + Bulk Items Entry
-        </a>
-      </div>
+    <div class="d-md-block">
+      <button type="button" class="btn btn-outline-primary" *can="'productItems.create'"
+              (click)="openCreateForm()">
+        + New Product Item
+      </button>
     </div>
 
   </div>
+
 </div>
+
 <div class="container-md-fluid mt-3">
   <table class="table table-hover table-block-sm table-bordered">
     <thead>
@@ -41,7 +31,7 @@
     </thead>
     <tbody>
     <tr
-      *ngFor="let item of productItems|slice:tableCountStart:tableCountEnd|filter:this.searchInput.value">
+      *ngFor="let item of productItems|slice:tableCountStart:tableCountEnd|filter:this.searchControl.value">
       <td>
         <span class="td-inline-label">Item</span>
         <div class="d-flex flex-column">
@@ -123,7 +113,7 @@
     <ng-container *ngIf="productItems.length===0 && !loadingMainContent">
       <tr>
         <td class="text-center py-5" colspan="9">
-          <ng-container *ngIf="!searchInput.value;else noResults">
+          <ng-container *ngIf="!searchControl.value;else noResults">
             There is no product items.&nbsp;
             <a class="text-decoration-none" (click)="openCreateForm()" *can="'productItems.create'">
               Click to add a new item
