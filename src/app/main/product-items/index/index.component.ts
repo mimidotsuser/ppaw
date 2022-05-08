@@ -97,7 +97,7 @@ export class IndexComponent implements OnInit, OnDestroy {
     if (this.tableCountEnd <= this._productItems.length) {return;}
 
     let params = {}
-    if (this.searchControl.value) {
+    if (this.searchControl?.value) {
       params = {search: this.searchControl.value.trim()};
     }
 
