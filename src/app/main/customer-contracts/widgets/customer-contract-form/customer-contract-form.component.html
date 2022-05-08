@@ -100,9 +100,9 @@
                   {{contract?.category_title}}
                 </ng-template>
 
-                <a *can="'rfq.view';else:rfqViewFallback" [relativeTo]="route" target="_blank"
+                <a *can="'rfq.view';else:rfqViewFallback" target="_blank"
                    class="text-decoration-none"
-                   routerLink="../history/{{contract?.id}}">
+                   routerLink="/main/customer-contracts/history/{{contract?.id}}">
                   <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
                   {{contract?.sn}} |
                   {{contract?.category_title}}
