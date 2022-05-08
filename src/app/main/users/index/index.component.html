@@ -28,7 +28,7 @@
     </thead>
     <tbody>
 
-    <tr *ngFor="let user of users|paginate:pagination|filter:this.searchControl.value">
+    <tr *ngFor="let user of users|filter:this.searchControl.value|paginate:pagination">
 
       <td>
         <span class="td-inline-label">Name</span>
