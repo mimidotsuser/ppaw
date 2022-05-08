@@ -35,11 +35,9 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.subSink = this.searchControl.valueChanges
       .pipe(debounceTime(800), distinctUntilChanged())
       .subscribe((v: string) => {
-        if (v && v.trim()) {
-          this._customers = [];  //reset current items-very important
-          this.pagination.total = 0;
-          this.loadCustomers(); //initiate loading of customers
-        }
+        this._customers = [];  //reset current items-very important
+        this.pagination.total = 0;
+        this.loadCustomers(); //initiate loading of customers
       })
   }
 
@@ -66,7 +64,7 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.loadingMainContent = true;
 
     let params = {}
-    if (this.searchControl?.value) {
+    if (this.searchControl?.value && this.searchControl.value.trim()) {
       params = {search: this.searchControl.value.trim()};
     }
 
