@@ -32,8 +32,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadCustomers();
 
-    this.searchControl.valueChanges
-      .pipe(debounceTime(200), distinctUntilChanged())
+    this.subSink = this.searchControl.valueChanges
+      .pipe(debounceTime(800), distinctUntilChanged())
       .subscribe((v: string) => {
         if (v && v.trim()) {
           this._customers = [];  //reset current items-very important

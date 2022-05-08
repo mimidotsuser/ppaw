@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { finalize, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, Subscription } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { environment } from '../../../../environments/environment';
 import {
@@ -32,7 +32,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   private _productCategories: ProductCategoryModel[] = [];
   private _warehouses: WarehouseModel[] = [];
   minAllowedWarrantEndDate?: string;
-  searchInput: FormControl;
+  searchControl: FormControl;
   form: FormGroup;
 
 
@@ -40,7 +40,7 @@ export class IndexComponent implements OnInit, OnDestroy {
               private toastService: ToastService) {
     this.loadProductItems();
 
-    this.searchInput = this.fb.control('');
+    this.searchControl = this.fb.control('');
 
     this.form = this.fb.group({
       id: this.fb.control(null),
@@ -79,6 +79,16 @@ export class IndexComponent implements OnInit, OnDestroy {
           } catch (e) {}
         }
 
+      });
+
+    this.subSink = this.searchControl.valueChanges
+      .pipe(debounceTime(800), distinctUntilChanged())
+      .subscribe((v: string) => {
+        if (v && v.trim()) {
+          this._productItems = [];  //reset current items-very important
+          this.pagination.total = 0;
+          this.loadProductItems(); //initiate loading of customers
+        }
       })
   }
 
@@ -86,8 +96,13 @@ export class IndexComponent implements OnInit, OnDestroy {
     //if data has already been loaded, don't re-fetch it
     if (this.tableCountEnd <= this._productItems.length) {return;}
 
+    let params = {}
+    if (this.searchControl.value) {
+      params = {search: this.searchControl.value.trim()};
+    }
+
     this.loadingMainContent = true;
-    this.subSink = this.productItemService.fetch(this.pagination)
+    this.subSink = this.productItemService.fetch({...params, ...this.pagination})
       .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
