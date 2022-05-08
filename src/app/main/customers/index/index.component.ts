@@ -66,7 +66,7 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.loadingMainContent = true;
 
     let params = {}
-    if (this.searchControl.value) {
+    if (this.searchControl?.value) {
       params = {search: this.searchControl.value.trim()};
     }
 
