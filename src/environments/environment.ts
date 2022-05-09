@@ -8,7 +8,12 @@ export const environment = {
     name: 'PPA APP',
     logoUrl: 'https://mediantinternational.com/assets/images/main-logo.png',
     apiUrl: '/api/v1',
-    faviconUrl: 'favicon.ico'
+    faviconUrl: 'favicon.ico',
+    matomo:{
+      url: '//analytics.mediantinternational.com/matomo.php',
+      siteId:'2',
+      scriptUrl:'//analytics.mediantinternational.com/matomo.js'
+    }
   }
 };
 
