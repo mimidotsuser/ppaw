@@ -76,7 +76,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {
-          this._itemBalance = res.data;
+          this._itemBalance = this._itemBalance.concat(res.data);
           this.pagination.total = res.total;
         }
       });
