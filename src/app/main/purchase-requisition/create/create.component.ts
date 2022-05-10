@@ -24,6 +24,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   loadingMainContent = false;
   formSubmissionBusy = false;
   pagination: PaginationModel = {page: 1, limit: 25, total: 0}
+  cartPagination: PaginationModel = {page: 1, limit: 25, total: 0}
   private _itemBalance: ProductBalanceModel[] = [];
   private _subscriptions: Subscription[] = [];
   private _warehouses: WarehouseModel[] = [];
@@ -67,6 +68,14 @@ export class CreateComponent implements OnInit, OnDestroy {
     return this._itemBalance;
   }
 
+  get cartTableCountStart() {
+    return (this.cartPagination.page - 1) * this.cartPagination.limit
+  }
+
+  get cartTableCountEnd() {
+    return this.cartPagination.page * this.cartPagination.limit
+  }
+
   loadProductBalances() {
     if (this.tableCountEnd <= this._itemBalance.length) {
       return;
@@ -107,6 +116,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   addToCart(productBalance: ProductBalanceModel) {
     const group = this.createFormGroup(productBalance);
     this.cartForm.push(group);
+    this.updateCartTablePagination();
   }
 
   updateOrderQty(product?: ProductModel, by = 10) {
@@ -118,6 +128,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       //remove the form group from cart
       const index = this.cartForm.controls.indexOf(subForm);
       this.cartForm.removeAt(index);
+      this.updateCartTablePagination()
     } else {
       subForm.get('request_qty')?.patchValue(Number(subForm.get('request_qty')?.value) + by)
     }
@@ -139,7 +150,17 @@ export class CreateComponent implements OnInit, OnDestroy {
   toggleCartPopup() {
     if (this.totalItems > 0) {
       this.showCartPopup = !this.showCartPopup;
+    } else {
+      this.toastService.show({
+        message: 'Add items to cart first',
+        delay: 2000,
+        type: 'danger'
+      })
     }
+  }
+
+  updateCartTablePagination() {
+    this.cartPagination.total = this.cartForm.length;
   }
 
   submitForm() {

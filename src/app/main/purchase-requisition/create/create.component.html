@@ -1,203 +1,219 @@
 <form [formGroup]="form">
-<div class="container-fluid">
-  <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
-    <div>
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center my-3 flex-wrap-reverse gap-2">
+      <div>
+
+      </div>
+
+      <div class="col-lg-3 justify-content-end d-flex">
+        <small class="text-muted" role="button" (click)="toggleCartPopup()">
+          Cart (Items/Qty): {{totalQty}}/ {{totalItems}}
+        </small>
+      </div>
 
     </div>
-
-    <div class="col-lg-3 justify-content-end d-flex">
-      <small class="text-muted" role="button" (click)="toggleCartPopup()">
-        Totals(Items/Qty): {{totalQty}}/ {{totalItems}}
-      </small>
-    </div>
-
   </div>
-</div>
-<div class="container-md-fluid mt-3">
-  <table class="table table-hover table-block-sm table-bordered">
-    <thead>
-    <tr>
-      <th>Item</th>
-      <th>M-PN</th>
-      <th>EOQ</th>
-      <th>MIN-L</th>
-      <th>RO-L</th>
-      <th>MAX-L</th>
-      <th>Physical Bal</th>
-      <th>Out of Stock</th>
-      <th></th>
-    </tr>
-    </thead>
-    <tbody formArrayName="cart_items">
-    <tr *ngFor="let item of itemsBalances|slice:tableCountStart:tableCountEnd">
-      <td>
-        <span class="td-inline-label">Item</span>
-        <div class="d-flex flex-column">
-          {{item?.product?.item_code}}
-          <small class="text-muted">
-            {{item?.product?.local_description || item?.product?.description}}
-          </small>
-        </div>
-      </td>
-      <td>
-        <span class="td-inline-label">M-PN</span>
-        {{item.product?.manufacturer_part_number}}
-      </td>
-      <td>
-        <span class="td-inline-label">EOQ</span>
-        {{item.product?.economic_order_qty}}
-      </td>
-      <td>
-        <span class="td-inline-label">MIN-L</span>
-        {{item.product?.min_level}}
-      </td>
-      <td>
-        <span class="td-inline-label">RO-L</span>
-        {{item.product?.reorder_level}}
-      </td>
-      <td>
-        <span class="td-inline-label">MAX-L</span>
-        {{item.product?.max_level}}
-      </td>
-      <td>
-        <span class="td-inline-label">Physical Bal</span>
-        {{item?.stock_balance}}
-      </td>
-      <td>
-        <span class="td-inline-label">Out of Stock</span>
-        <span class="badge badge-status me-1"
-              [ngClass]="item.out_of_stock?'bg-danger':'bg-success' "></span>
-        {{item?.out_of_stock ? 'Yes' : 'No'}}
-      </td>
-
-      <td class="cart-actions-column">
-        <div class="d-flex gap-2 justify-content-center w-100 cart-actions">
-
-          <ng-container *ngIf="!requestForm(item.product!);else requestTemplate">
-            <button type="button" class="btn btn-outline-primary"
-                    (click)="addToCart(item)">
-              Add to Cart
-              <fa-icon [icon]="faShoppingCart"></fa-icon>
-            </button>
-          </ng-container>
-
-          <ng-template #requestTemplate>
-            <div class="input-group" [formGroup]="requestForm(item.product!)!">
-              <button class="input-group-text" (click)="updateOrderQty(item.product,-10)">-
-              </button>
-              <input type="number" min="1" class="form-control" formControlName="request_qty">
-              <button class="input-group-text" (click)="updateOrderQty(item.product)">+</button>
-            </div>
-          </ng-template>
-
-        </div>
-      </td>
-    </tr>
-
-    <ng-container *ngIf="itemsBalances.length===0 && !loadingMainContent">
+  <div class="container-md-fluid mt-3">
+    <table class="table table-hover table-block-sm table-bordered">
+      <thead>
       <tr>
-        <td class="text-center py-5" colspan="9">
-          <ng-container *ngIf="!searchInput.value;else noResults">
-            No inventory products available at the moment
-          </ng-container>
-          <ng-template #noResults>
-            No data matching that criteria
-          </ng-template>
-        </td>
+        <th>Item</th>
+        <th>M-PN</th>
+        <th>EOQ</th>
+        <th>MIN-L</th>
+        <th>RO-L</th>
+        <th>MAX-L</th>
+        <th>Physical Bal</th>
+        <th>Out of Stock</th>
+        <th></th>
       </tr>
-    </ng-container>
-
-    <ng-container *ngIf="loadingMainContent">
-      <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
-        <td *ngFor="let x of [].constructor(9)">
-          <div class="placeholder w-100 py-3"></div>
-        </td>
-      </tr>
-    </ng-container>
-
-    </tbody>
-  </table>
-  <div class="pagination-col d-flex justify-content-end w-100 pr-5">
-    <pagination [meta]="pagination" (pageChange)="loadProductBalances()"></pagination>
-  </div>
-  <div class="row mt-2">
-    <div class="col-md-3 mb-3">
-      <label for="warehouse_id" class="required form-label">Collection Point</label>
-      <select id="warehouse_id" class="form-select" formControlName="warehouse_id">
-        <option *ngFor="let warehouse of warehouses" [value]="warehouse.id">
-          {{warehouse.name}}
-        </option>
-      </select>
-    </div>
-    <div class="col-12"></div>
-    <div class="col-md-6 mb-3">
-      <label for="remarks" class="form-label required">Remarks</label>
-      <textarea id="remarks" class="form-control" rows="4" formControlName="remarks"></textarea>
-    </div>
-    <div class="col-12">
-      <ng-container *ngIf="formSubmissionBusy;else submitButton">
-        <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
-          <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
-          Please wait ...
-        </button>
-      </ng-container>
-      <ng-template #submitButton>
-        <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submitForm()"
-                [disabled]="totalItems===0">
-          Submit
-        </button>
-      </ng-template>
-    </div>
-  </div>
-</div>
-
-<app-side-popup title="Selected Items" [(show)]="showCartPopup" [isFullScreen]="true">
-
-  <table class="table table-striped table-responsive table-bordered">
-    <thead>
-    <tr>
-      <th>Item</th>
-      <th>Physical Balance</th>
-      <th>Qty Requested</th>
-    </tr>
-    </thead>
-    <tbody formArrayName="cart_items">
-    <ng-container *ngFor="let group of cartForm.controls;let i=index">
-      <tr [formGroup]="$any(group)">
+      </thead>
+      <tbody formArrayName="cart_items">
+      <tr *ngFor="let item of itemsBalances|slice:tableCountStart:tableCountEnd">
         <td>
           <span class="td-inline-label">Item</span>
           <div class="d-flex flex-column">
-            {{group.get('product')!.value?.item_code || ''}}
+            {{item?.product?.item_code}}
             <small class="text-muted">
-              {{group.get('product')!.value?.local_description || group.get('product')!.value?.description || ''}}
+              {{item?.product?.local_description || item?.product?.description}}
             </small>
           </div>
         </td>
         <td>
-          <span class="td-inline-label">Balance</span>
-          {{group.get('physical_qty')!.value}}
+          <span class="td-inline-label">M-PN</span>
+          {{item.product?.manufacturer_part_number}}
+        </td>
+        <td>
+          <span class="td-inline-label">EOQ</span>
+          {{item.product?.economic_order_qty}}
+        </td>
+        <td>
+          <span class="td-inline-label">MIN-L</span>
+          {{item.product?.min_level}}
+        </td>
+        <td>
+          <span class="td-inline-label">RO-L</span>
+          {{item.product?.reorder_level}}
+        </td>
+        <td>
+          <span class="td-inline-label">MAX-L</span>
+          {{item.product?.max_level}}
+        </td>
+        <td>
+          <span class="td-inline-label">Physical Bal</span>
+          {{item?.stock_balance}}
+        </td>
+        <td>
+          <span class="td-inline-label">Out of Stock</span>
+          <span class="badge badge-status me-1"
+                [ngClass]="item.out_of_stock?'bg-danger':'bg-success' "></span>
+          {{item?.out_of_stock ? 'Yes' : 'No'}}
         </td>
 
         <td class="cart-actions-column">
-          <div class="d-flex gap-2 justify-content-center cart-actions">
-            <div class="input-group">
-              <button class="input-group-text"
-                      (click)="updateOrderQty(group.get('product')!.value,-10)">-
+          <div class="d-flex gap-2 justify-content-center w-100 cart-actions">
+
+            <ng-container *ngIf="!requestForm(item.product!);else requestTemplate">
+              <button type="button" class="btn btn-outline-primary"
+                      (click)="addToCart(item)">
+                Add to Cart
+                <fa-icon [icon]="faShoppingCart"></fa-icon>
               </button>
-              <input type="disabled" min="1" class="form-control" formControlName="request_qty">
-              <button class="input-group-text"
-                      (click)="updateOrderQty(group.get('product')!.value)">+
-              </button>
-            </div>
+            </ng-container>
+
+            <ng-template #requestTemplate>
+              <div class="input-group" [formGroup]="requestForm(item.product!)!">
+                <button class="input-group-text" (click)="updateOrderQty(item.product,-10)">-
+                </button>
+                <input type="number" min="1" class="form-control" formControlName="request_qty">
+                <button class="input-group-text" (click)="updateOrderQty(item.product)">+</button>
+              </div>
+            </ng-template>
+
           </div>
         </td>
-
       </tr>
-    </ng-container>
-    </tbody>
-  </table>
 
+      <ng-container *ngIf="itemsBalances.length===0 && !loadingMainContent">
+        <tr>
+          <td class="text-center py-5" colspan="9">
+            <ng-container *ngIf="!searchInput.value;else noResults">
+              No inventory products available at the moment
+            </ng-container>
+            <ng-template #noResults>
+              No data matching that criteria
+            </ng-template>
+          </td>
+        </tr>
+      </ng-container>
 
-</app-side-popup>
+      <ng-container *ngIf="loadingMainContent">
+        <tr class="placeholder-glow" *ngFor="let i of [].constructor(5)">
+          <td *ngFor="let x of [].constructor(9)">
+            <div class="placeholder w-100 py-3"></div>
+          </td>
+        </tr>
+      </ng-container>
+
+      </tbody>
+    </table>
+    <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+      <pagination [meta]="pagination" (pageChange)="loadProductBalances()"></pagination>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-3 mb-3">
+        <label for="warehouse_id" class="required form-label">Collection Point</label>
+        <select id="warehouse_id" class="form-select" formControlName="warehouse_id">
+          <option *ngFor="let warehouse of warehouses" [value]="warehouse.id">
+            {{warehouse.name}}
+          </option>
+        </select>
+      </div>
+      <div class="col-12"></div>
+      <div class="col-md-6 mb-3">
+        <label for="remarks" class="form-label required">Remarks</label>
+        <textarea id="remarks" class="form-control" rows="4" formControlName="remarks"></textarea>
+      </div>
+      <div class="col-12">
+        <ng-container *ngIf="formSubmissionBusy;else submitButton">
+          <button type="button" disabled class="btn btn-primary btn-lg btn-submit">
+            <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
+            Please wait ...
+          </button>
+        </ng-container>
+        <ng-template #submitButton>
+          <button type="button" class="btn btn-primary btn-lg btn-submit" (click)="submitForm()"
+                  [disabled]="totalItems===0">
+            Submit
+          </button>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <app-side-popup title="Selected Items" [(show)]="showCartPopup" [isFullScreen]="true">
+
+    <table class="table table-striped table-responsive table-bordered">
+      <thead>
+      <tr>
+        <th>Item</th>
+        <th>Physical Balance</th>
+        <th>Qty Requested</th>
+      </tr>
+      </thead>
+      <tbody formArrayName="cart_items">
+      <ng-container
+        *ngFor="let group of cartForm.controls|slice:cartTableCountStart:cartTableCountEnd;index as i">
+        <tr [formGroup]="$any(group)">
+          <td>
+            <span class="td-inline-label">Item</span>
+            <div class="d-flex flex-column">
+              {{group.get('product')!.value?.item_code || ''}}
+              <small class="text-muted">
+                {{group.get('product')!.value?.local_description || group.get('product')!.value?.description || ''}}
+              </small>
+            </div>
+          </td>
+          <td>
+            <span class="td-inline-label">Balance</span>
+            {{group.get('physical_qty')!.value}}
+          </td>
+
+          <td class="cart-actions-column">
+            <div class="d-flex gap-2 justify-content-center cart-actions">
+              <div class="input-group">
+                <button class="input-group-text"
+                        (click)="updateOrderQty(group.get('product')!.value,-10)">-
+                </button>
+                <input type="disabled" min="1" class="form-control" formControlName="request_qty">
+                <button class="input-group-text"
+                        (click)="updateOrderQty(group.get('product')!.value)">+
+                </button>
+              </div>
+            </div>
+          </td>
+
+        </tr>
+      </ng-container>
+
+      <ng-container *ngIf="cartForm.length===0 ">
+        <tr>
+          <td class="text-center py-5" colspan="9">
+            No inventory products on the cart at the moment
+          </td>
+        </tr>
+      </ng-container>
+
+      </tbody>
+    </table>
+    <div class="pagination-col d-flex justify-content-end w-100 pr-5">
+      <pagination [meta]="cartPagination"></pagination>
+    </div>
+    <div class="my-5">
+      <button type="button" class="btn btn-primary" (click)="this.showCartPopup=false">
+        CLOSE
+      </button>
+    </div>
+  </app-side-popup>
 
 </form>
