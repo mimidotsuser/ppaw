@@ -171,7 +171,7 @@ export class MainComponent implements OnInit, OnDestroy {
         icon: faShoppingBasket,
         items: [
           {
-            title: 'New Requests',
+            title: 'New Request',
             url: 'purchase-requisition/create',
             display: this.authService.can(Resources.purchaseRequests, 'create')
           },
