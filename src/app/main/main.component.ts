@@ -70,12 +70,14 @@ export class MainComponent implements OnInit, OnDestroy {
         this.resolveBreadcrumb(evt as ActivationEnd | NavigationEnd);
       });
 
-    this.toastNotifications = this.toastService.toasts();
   }
 
   ngOnInit(): void {
     this.toastNotifications = []; //reset
     this.toastService.clearAll();
+
+    this.toastNotifications = this.toastService.toasts();
+
 
     this.subSink = this.downloadService.queueEvents.subscribe({
       next: (data) => {
@@ -171,7 +173,7 @@ export class MainComponent implements OnInit, OnDestroy {
         icon: faShoppingBasket,
         items: [
           {
-            title: 'New Requests',
+            title: 'New Request',
             url: 'purchase-requisition/create',
             display: this.authService.can(Resources.purchaseRequests, 'create')
           },
