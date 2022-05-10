@@ -142,7 +142,7 @@ export class CreateComponent implements OnInit, OnDestroy {
   get totalQty(): number {
     return (this.cartForm.controls as FormGroup[])
       .reduce((acc, group) => {
-        acc += (group.get('request_qty')?.value || 0)
+        acc += +(group.get('request_qty')?.value || 0)
         return acc;
       }, 0)
   }

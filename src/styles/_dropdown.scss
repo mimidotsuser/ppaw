@@ -8,6 +8,12 @@
   width: 100%;
 }
 
-.data-filters .dropdown-menu{
+.data-filters .dropdown-menu {
   min-width: 200px;
+}
+
+.dropdown-item .title {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
