@@ -52,7 +52,11 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   loadProductBalances() {
     //if data has already been loaded, don't re-fetch it
-    if (this.tableCountEnd <= this._itemsBalances.length) {return;}
+    if (this.tableCountEnd <= this._itemsBalances.length
+      || (this._itemsBalances.length === this.pagination.total && this.pagination.total !== 0)) {
+      return;
+    }
+
     this.loadingMainContent = true;
     this.subSink = this.stockBalanceService.fetchAll(this.pagination)
       .pipe(finalize(() => this.loadingMainContent = false))

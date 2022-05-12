@@ -52,7 +52,10 @@ export class IndexComponent implements OnInit {
   get route() {return this._route}
 
   loadWorksheets() {
-    if (this.tableCountEnd <= this._worksheets.length) {return;}
+    if (this.tableCountEnd <= this._worksheets.length
+      || (this._worksheets.length === this.pagination.total && this.pagination.total !== 0)) {
+      return;
+    }
 
     this.loadingMainContent = true;
     this.subSink = this.worksheetService

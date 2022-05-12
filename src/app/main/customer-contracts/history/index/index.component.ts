@@ -50,7 +50,11 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   loadContracts() {
-    if (this.tableCountEnd <= this._contracts.length) {return;}
+    if (this.tableCountEnd <= this._contracts.length
+      || (this._contracts.length === this.pagination.total && this.pagination.total !== 0)) {
+      return;
+    }
+
     this.loadingMainContent = true;
     this.subSink = this.contractService.fetch(this.pagination)
       .pipe(finalize(() => this.loadingMainContent = false))

@@ -60,7 +60,10 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   loadCustomers() {
     //if data has already been loaded, don't re-fetch it
-    if (this.tableCountEnd <= this.customers.length) {return;}
+    if (this.tableCountEnd <= this._customers.length
+      || (this._customers.length === this.pagination.total && this.pagination.total !== 0)) {
+      return;
+    }
     this.loadingMainContent = true;
 
     let params = {}

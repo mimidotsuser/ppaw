@@ -92,7 +92,10 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   loadProductItems() {
     //if data has already been loaded, don't re-fetch it
-    if (this.tableCountEnd <= this._productItems.length) {return;}
+    if (this.tableCountEnd <= this._productItems.length
+      || (this._productItems.length === this.pagination.total && this.pagination.total !== 0)) {
+      return;
+    }
 
     let params = {}
     if (this.searchControl?.value && this.searchControl.value.trim()) {

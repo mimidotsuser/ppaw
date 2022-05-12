@@ -137,7 +137,10 @@ export class CustomerContractFormComponent implements OnInit, OnDestroy {
 
   loadProductItems() {
     //if data has already been loaded, don't re-fetch it
-    if (this.tableCountEnd <= this.contractItemsFormArray.length) {return;}
+    if (this.tableCountEnd <= this.contractItemsFormArray.length
+      || (this.contractItemsFormArray.length === this.pagination.total && this.pagination.total !== 0)) {
+      return;
+    }
 
     this.loadingMainContent = true;
     this.subSink = this.customerContractService
