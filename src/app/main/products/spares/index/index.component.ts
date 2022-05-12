@@ -81,7 +81,7 @@ export class IndexComponent implements OnInit {
       .fetchProducts((this.spareCategory?.id || 0), this.pagination, true)
       .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe((res) => {
-        this._products = res.data;
+        this._products = this._products.concat(res.data);
         this.pagination.total = res.total;
       })
   }
