@@ -18,7 +18,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   faAngleUp = faAngleUp;
   faEllipsisV = faEllipsisV;
   loadingMainContent = false;
-  pagination: PaginationModel = {page: 1, limit: 15, total: 0};
+  pagination: PaginationModel = {page: 1, limit: 25, total: 0};
   private _roles: RoleModel[] = [];
   private _subscriptions: Subscription[] = [];
   searchControl: FormControl;
