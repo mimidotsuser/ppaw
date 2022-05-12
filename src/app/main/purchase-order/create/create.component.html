@@ -231,13 +231,13 @@
   <app-vendor-form #vendorFormComponent>
 
     <div class="col-12 d-flex gap-2 mt-3">
-      <ng-container *ngIf="vendorFormSubmissionBusy;else submitButton">
+      <ng-container *ngIf="vendorFormSubmissionBusy;else vendorSubmitButton">
         <button type="button" disabled class="btn btn-primary">
           <span class="spinner-grow spinner-grow-sm me-2" role="status" aria-hidden="true"></span>
           Please wait ...
         </button>
       </ng-container>
-      <ng-template #submitButton>
+      <ng-template #vendorSubmitButton>
 
         <button type="button" class="btn btn-primary"
                 (click)="submitVendorForm(vendorFormComponent.form)">

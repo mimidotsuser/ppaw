@@ -28,7 +28,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let product of products">
+    <tr *ngFor="let product of products|slice:tableCountStart:tableCountEnd">
 
       <td>
         <span class="td-inline-label">Item Code</span>
@@ -107,7 +107,7 @@
     </tbody>
   </table>
   <div class="pagination-col d-flex justify-content-end w-100 pr-5">
-    <pagination [meta]="pagination"></pagination>
+    <pagination [meta]="pagination" (pageChange)="fetchProducts()"></pagination>
   </div>
 </div>
 

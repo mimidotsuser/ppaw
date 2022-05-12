@@ -211,7 +211,7 @@ export class MainComponent implements OnInit, OnDestroy {
             exact: false
           },
           {
-            title: 'All RFQ\'s',
+            title: 'All RFQs',
             url: 'request-for-quotations/history',
             display: this.authService.can(Resources.rfq, 'view'),
             exact: false

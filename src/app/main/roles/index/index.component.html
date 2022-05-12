@@ -104,7 +104,7 @@
     </tbody>
   </table>
   <div class="pagination-col d-flex justify-content-end w-100 pr-5">
-    <pagination [meta]="pagination"></pagination>
+    <pagination [meta]="pagination" (pageChange)="loadRoles()"></pagination>
   </div>
 
 </div>
