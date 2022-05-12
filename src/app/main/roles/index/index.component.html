@@ -24,9 +24,8 @@
       <th></th>
     </tr>
     </thead>
-    <tbody *ngIf="(roles|filter:this.searchControl.value) as data">
-    <ng-container *ngFor="let role of data|paginate:pagination; let i=index">
-
+    <tbody>
+    <ng-container *ngFor="let role of roles | paginate:pagination; let i=index">
       <tr>
         <td>
           <button class="btn w-100 h-100 border-0" type="button"
@@ -75,7 +74,7 @@
       </tr>
     </ng-container>
 
-    <ng-container *ngIf="isSearching && data.length==0 && !loadingMainContent">
+    <ng-container *ngIf="roles.length===0 && !loadingMainContent">
       <tr class="no-data">
         <td colspan="4" class="py-5 text-center" *ngIf="!this.searchControl.value">
           No data available at the moment.

@@ -22,7 +22,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   loadingMainContent = false;
   formSubmissionBusy = false;
   selectedModel: UserModel | null = null;
-  pagination: PaginationModel = {limit: 2, total: 0, page: 1};
+  pagination: PaginationModel = {limit: 25, total: 0, page: 1};
   private _users: UserModel[] = [];
   private _roles: RoleModel[] = [];
   private _subscriptions: Subscription[] = [];
@@ -35,7 +35,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subSink = this.roleService.fetchAll
+    this.subSink = this.roleService.fetch({limit: 300})
       .subscribe((roles) => this._roles = roles)
 
     this.subSink = this.searchControl.valueChanges
@@ -72,12 +72,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   loadUsers() {
-    if(this._users.length === this.pagination.total && this.pagination.total !== 0){
-      return;
-    }
-
-    if (this.tableCountEnd <= this._users.length || (this._users.length === this.pagination.total &&
-      this.pagination.total !== 0)) {return;}
+    if (this.tableCountEnd <= this._users.length
+      || (this._users.length === this.pagination.total && this.pagination.total !== 0)) {return;}
 
     let params = {}
     if (this.searchControl?.value && this.searchControl.value.trim()) {
