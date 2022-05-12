@@ -146,7 +146,10 @@ export class IndexComponent implements OnInit, OnDestroy {
   get route() {return this._route;}
 
   loadActivities() {
-    if (this.tableCountEnd <= this._activities.length) {return;}
+    if (this.tableCountEnd <= this._activities.length
+      || (this._activities.length === this.pagination.total && this.pagination.total !== 0)) {
+      return;
+    }
 
     this.loadingMainContent = true;
     this.subSink = this.productItemService.fetchActivities(
@@ -272,7 +275,7 @@ export class IndexComponent implements OnInit, OnDestroy {
             })
           }
           if (res.location_type && res.location_type === 'warehouse') {
-            this._productItem!['out_of_order'] = payload.out_of_order;
+            this._productItem![ 'out_of_order' ] = payload.out_of_order;
             this._productItem![ 'latest_activity' ]![ 'location_type' ] = res.location_type;
             this._productItem![ 'latest_activity' ]![ 'location' ] = res.location;
           }

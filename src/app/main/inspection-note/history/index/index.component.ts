@@ -60,7 +60,8 @@ export class IndexComponent implements OnInit {
   get route() {return this._route}
 
   loadRequests() {
-    if (this.tableCountEnd <= this._requests.length) {
+    if (this.tableCountEnd <= this._requests.length
+      || (this._requests.length === this.pagination.total && this.pagination.total !== 0)) {
       return;
     }
     this.loadingMainContent = true;

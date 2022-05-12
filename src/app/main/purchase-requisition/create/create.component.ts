@@ -77,7 +77,8 @@ export class CreateComponent implements OnInit, OnDestroy {
   }
 
   loadProductBalances() {
-    if (this.tableCountEnd <= this._itemBalance.length) {
+    if (this.tableCountEnd <= this._itemBalance.length
+      || (this._itemBalance.length === this.pagination.total && this.pagination.total !== 0)) {
       return;
     }
     this.loadingMainContent = true;

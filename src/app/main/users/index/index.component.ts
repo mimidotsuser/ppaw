@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { finalize, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, Subscription } from 'rxjs';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { UserAccountStatus, UserModel } from '../../../models/user.model';
 import { UserService } from '../services/user.service';
@@ -35,8 +35,16 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subSink = this.roleService.fetchAll
+    this.subSink = this.roleService.fetch({limit: 300})
       .subscribe((roles) => this._roles = roles)
+
+    this.subSink = this.searchControl.valueChanges
+      .pipe(debounceTime(800), distinctUntilChanged())
+      .subscribe((v: string) => {
+        this._users = [];  //very important
+        this.pagination.total = 0;
+        this.loadUsers();
+      })
   }
 
   set subSink(v: Subscription) {
@@ -64,13 +72,22 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   loadUsers() {
-    if (this.tableCountEnd <= this._users.length) {return;}
+    if (this.tableCountEnd <= this._users.length
+      || (this._users.length === this.pagination.total && this.pagination.total !== 0)) {return;}
+
+    let params = {}
+    if (this.searchControl?.value && this.searchControl.value.trim()) {
+      params = {search: this.searchControl.value.trim()};
+    }
 
     this.loadingMainContent = true;
-    this.subSink = this.userService.fetch()
+    this.subSink = this.userService.fetch({...this.pagination, ...params, include: 'role'})
       .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
-        next: (users) => this._users = users.data,
+        next: (res) => {
+          this._users = this._users.concat(res.data);
+          this.pagination.total = res.total;
+        },
         error: (err) => {
           let message = 'Unexpected error encountered. Please try again';
           if (err.status && err.status == 403) {

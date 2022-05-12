@@ -13,8 +13,9 @@ export class RoleService {
 
   constructor(private httpService: HttpService) {}
 
-  get fetchAll(): Observable<RoleModel[]> {
-    return this.httpService.get(this.httpService.endpoint.roles, {params: {include: 'permissions'}})
+  fetch(obj?: object): Observable<RoleModel[]> {
+    return this.httpService.get(this.httpService.endpoint.roles,
+      {params: {include: 'permissions', ...obj || []}})
       .pipe(map((res: { data: RoleModel[] }) => res.data))
   }
 

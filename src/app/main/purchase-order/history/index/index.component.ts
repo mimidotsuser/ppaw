@@ -69,7 +69,10 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   loadPurchaseOrders() {
-    if (this.tableCountEnd <= this.requests.length) {return;}
+    if (this.tableCountEnd <= this._requests.length
+      || (this._requests.length === this.pagination.total && this.pagination.total !== 0)) {
+      return;
+    }
     this.loadingMainContent = true;
     this.subSink = this.purchaseOrderService.fetch(this.pagination,
       {include: 'items,createdBy,rfq'})

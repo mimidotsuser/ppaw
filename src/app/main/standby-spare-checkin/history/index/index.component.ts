@@ -42,7 +42,11 @@ export class IndexComponent implements OnInit, OnDestroy {
   get requests() {return this._requests}
 
   loadRequests() {
-    if (this.tableCountEnd <= this.requests.length) {return;}
+    if (this.tableCountEnd <= this._requests.length
+      || (this._requests.length === this.pagination.total && this.pagination.total !== 0)) {
+      return;
+    }
+
     this.loadingMainContent = true;
     this.subSink = this.service.fetch(this.pagination)
       .pipe(finalize(() => this.loadingMainContent = false))

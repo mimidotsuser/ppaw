@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { finalize, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, Subscription } from 'rxjs';
 import { faAngleRight, faAngleUp, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { RoleService } from '../services/role.service';
 import { RoleModel } from '../../../models/role.model';
@@ -29,23 +29,43 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.subSink = this.searchControl.valueChanges
+      .pipe(debounceTime(800), distinctUntilChanged())
+      .subscribe((v: string) => {
+        this._roles = [];  //very important
+        this.pagination.total = 0;
+        this.loadRoles();
+      })
   }
 
   set subSink(value: Subscription) {
     this._subscriptions.push(value);
   }
 
+  get tableCountStart() {
+    return (this.pagination.page - 1) * this.pagination.limit
+  }
+
+  get tableCountEnd() {
+    return this.pagination.page * this.pagination.limit
+  }
+
   get roles(): RoleModel[] {
     return this._roles;
   }
 
-  get isSearching() {
-    return this.searchControl.value.trim().length > 0;
-  }
 
   loadRoles() {
+    if (this.tableCountEnd <= this._roles.length
+      || (this._roles.length === this.pagination.total && this.pagination.total !== 0)) {return;}
+
+    let params = {}
+    if (this.searchControl?.value && this.searchControl.value.trim()) {
+      params = {search: this.searchControl.value.trim()};
+    }
+
     this.loadingMainContent = true;
-    this.subSink = this.roleService.fetchAll
+    this.subSink = this.roleService.fetch({...params, ...this.pagination})
       .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe((roles) => {
         this._roles = roles;

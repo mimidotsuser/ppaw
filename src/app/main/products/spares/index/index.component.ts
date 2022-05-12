@@ -74,7 +74,10 @@ export class IndexComponent implements OnInit {
 
 
   fetchProducts() {
-    if (this.tableCountEnd <= this._products.length) {return;}
+    if (this.tableCountEnd <= this._products.length
+      || (this._products.length === this.pagination.total && this.pagination.total !== 0)) {
+      return;
+    }
 
     this.loadingMainContent = true;
     this.subSink = this.productService

@@ -57,7 +57,11 @@ export class IndexComponent implements OnInit, OnDestroy {
   get route() {return this._route}
 
   loadRequestForQuotations() {
-    if (this.tableCountEnd <= this.requests.length) {return;}
+    if (this.tableCountEnd <= this.requests.length
+      || (this.requests.length === this.pagination.total && this.pagination.total !== 0)) {
+      return;
+    }
+
     this.loadingMainContent = true;
     this.subSink = this.rfqService
       .fetch(this.pagination, {include: 'purchaseOrder,createdBy,vendors,items,purchaseRequest'})

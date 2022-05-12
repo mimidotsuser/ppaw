@@ -44,7 +44,8 @@ export class IndexComponent implements OnInit {
 
   loadRequests() {
     //if data has already been loaded, don't re-fetch it
-    if (this.tableCountEnd <= this.requests.length) {
+    if (this.tableCountEnd <= this.requests.length
+      || (this.requests.length === this.pagination.total && this.pagination.total !== 0)) {
       return;
     }
 
