@@ -296,6 +296,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   updateProductItem(id: number, payload: object) {
     this.subSink = this.productItemService.update(id, payload)
+      .pipe(finalize(() => this.formSubmissionBusy = false))
       .subscribe({
         next: (model) => {
           const index = this.productItems.findIndex((p) => p.id === model.id);
