@@ -9,7 +9,7 @@ export class ToastService {
 
   show(obj: Omit<ToastNotificationModel, 'delay' | 'type'> & { delay?: number, type?: 'success' | 'danger' }) {
 
-    if (!obj?.delay) {obj.delay = 1500000}
+    if (!obj?.delay) {obj.delay = 15000}
     if (!obj?.type) {obj.type = 'success'}
 
     this._toasts.push(obj as ToastNotificationModel);
