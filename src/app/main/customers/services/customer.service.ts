@@ -16,7 +16,7 @@ export class CustomerService {
 
   fetch(params: object): Observable<HttpResponseModel<CustomerModel>> {
     return this.httpService
-      .get(this.httpService.endpoint.customers, {params: {...params, include: 'parent'}});
+      .get(this.httpService.endpoint.customers, {params: {...params}});
   }
 
   create(model: CustomerModel): Observable<CustomerModel> {

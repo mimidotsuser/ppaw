@@ -8,7 +8,6 @@ import {
   WorksheetByCustomerAnalytics
 } from '../../../models/analytics.model';
 import { HomeModule } from '../home.module';
-import { CustomerModel } from '../../../models/customer.model';
 
 @Injectable({
   providedIn: HomeModule
@@ -41,10 +40,4 @@ export class AnalyticsService {
       .pipe(map((res: { data: WorksheetByAuthorAnalytics[] }) => res.data))
   }
 
-
-  fetchCustomers(): Observable<CustomerModel[]> {
-    return this.httpService
-      .get(this.httpService.endpoint.customers, {params: {limit: 300}})
-      .pipe(map((res) => res.data));
-  }
 }
