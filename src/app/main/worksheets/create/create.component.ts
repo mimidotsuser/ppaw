@@ -216,7 +216,7 @@ export class CreateComponent implements OnInit, OnDestroy {
             parsed[ 'repair_items' ] = entry
               .repairItems.map((repair) => ({
                 old_total: repair.old_total,
-                new_total: repair.old_total,
+                new_total: repair.new_total,
                 product_id: repair.product.id,
               }))
           }
