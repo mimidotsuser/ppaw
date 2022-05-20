@@ -90,12 +90,12 @@ export class FilterBarComponent implements OnInit, OnDestroy {
         this.customerSearchBusy = true;
         this.subSink = this.customerService.fetch({
           limit: 10, search: searchTerm,
-          exclude: this._customers.map((c) => c.id).join(',')
+          exclude: (this.model.customers || []).map((c) => c.id).join(',')
         })
           .pipe(finalize(() => this.customerSearchBusy = false))
           .subscribe({
             next: (res) => {
-              this._customers = this._customers.concat(res.data)
+              this._customers = (this.model.customers || []).concat(res.data)
             }
           })
       })

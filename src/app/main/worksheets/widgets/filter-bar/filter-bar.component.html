@@ -1,38 +1,13 @@
 <div class="row filter-bar">
   <div class="row col-md-10">
-    <div class="col-md-3 mb-3">
-      <label>Customer</label>
-      <ng-select [multiple]="true" [minTermLength]="2" [items]="customers" class="custom-select"
-                 [typeahead]="customerSearch$" typeToSearchText="Please enter 2 or more characters"
-                 [trackByFn]="customersTrackByFn" [loading]="customerSearchBusy"
-                 placeholder="Select customers" [(ngModel)]="model.customers">
-
-        <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
-          <div class="ng-value" *ngFor="let item of items|slice:0:1">
-              <span class="ng-value-label">
-                {{$any(item)?.name}}| {{$any(item)?.branch}}
-
-              </span>
-          </div>
-          <div class="ng-value" *ngIf="items.length>1">
-            <span class="ng-value-label">{{items.length - 1}} more...</span>
-          </div>
-        </ng-template>
-        <ng-template ng-option-tmp let-item="item" let-index="index" let-item$="item$">
-          <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
-                 [ngModelOptions]="{standalone:true}" class="form-check-inline">
-          {{$any(item)?.name}} | {{$any(item)?.branch}}
-        </ng-template>
-      </ng-select>
-    </div>
 
     <div class="col-md-3 mb-3">
       <label>Created By</label>
 
       <ng-select [multiple]="true" [minTermLength]="2" [items]="users"
-                 [typeahead]="userSearch$" typeToSearchText="Please enter 2 or more characters"
+                 [typeahead]="userSearch$" typeToSearchText="Enter 2 or more characters"
                  [trackByFn]="userTrackByFn" [loading]="userSearchBusy"
-                 placeholder="Select user" [(ngModel)]="model.users">
+                 placeholder="Search users" [(ngModel)]="model.users">
 
         <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
           <div class="ng-value" *ngFor="let item of items|slice:0:1">
@@ -88,6 +63,31 @@
           <div class="ng-value" *ngIf=" entryCategories.length===items.length">
             <span class="ng-value-label">All categories ({{items.length}})</span>
           </div>
+        </ng-template>
+      </ng-select>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label>Customer</label>
+      <ng-select [multiple]="true" [minTermLength]="2" [items]="customers" class="custom-select"
+                 [typeahead]="customerSearch$" typeToSearchText="Enter 2 or more characters"
+                 [trackByFn]="customersTrackByFn" [loading]="customerSearchBusy"
+                 placeholder="Search customers" [(ngModel)]="model.customers">
+
+        <ng-template ng-multi-label-tmp let-items="items">
+          <div class="ng-value" *ngFor="let item of items|slice:0:2">
+              <span class="ng-value-label">
+                {{$any(item)?.name}}| {{$any(item)?.branch}}
+              </span>
+          </div>
+          <div class="ng-value" *ngIf="items.length>2">
+            <span class="ng-value-label">{{items.length - 2}} more...</span>
+          </div>
+        </ng-template>
+        <ng-template ng-option-tmp let-item="item" let-index="index" let-item$="item$">
+          <input type="checkbox" id="item-{{index}}" [ngModel]="item$.selected"
+                 [ngModelOptions]="{standalone:true}" class="form-check-inline">
+          {{$any(item)?.name}} | {{$any(item)?.branch}}
         </ng-template>
       </ng-select>
     </div>

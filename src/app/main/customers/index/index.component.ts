@@ -71,7 +71,9 @@ export class IndexComponent implements OnInit, OnDestroy {
       params = {search: this.searchControl.value.trim()};
     }
 
-    this.subSink = this.customerService.fetch({...params, ...this.pagination})
+    this.subSink = this.customerService.fetch({
+      ...params, ...this.pagination, include: 'parent'
+    })
       .pipe(finalize(() => this.loadingMainContent = false))
       .subscribe({
         next: (res) => {

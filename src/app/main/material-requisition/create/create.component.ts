@@ -201,6 +201,17 @@ export class CreateComponent implements OnInit, OnDestroy {
           this.form.get('qty')?.addValidators([Validators.max(this.maxAllowedQty)]);
           this.form.get('qty')?.updateValueAndValidity();
         },
+        error: () => {
+          this.toastService.show({
+            type: 'danger',
+            message: 'Unable to retrieve available balance at the moment'
+          });
+
+          this.form.get('maxQty')?.patchValue(0); //must be done before adding max validator
+          this.form.get('qty')?.addValidators([Validators.min(1)]);
+          this.form.get('qty')?.addValidators([Validators.max(this.maxAllowedQty)]);
+          this.form.get('qty')?.updateValueAndValidity();
+        }
       })
   }
 
