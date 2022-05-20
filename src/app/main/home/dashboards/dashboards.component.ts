@@ -243,6 +243,9 @@ export class DashboardsComponent implements OnInit, OnDestroy {
 
   private patchSelectedCustomers() {
 
+    //don't execute if there's no analytical data
+    if (this._worksheetsByCustomer.length === 0) {return}
+
     const selectedUniqueCustomerIds: { [ key: number ]: number } = this._worksheetsByCustomer
       .reduce((acc, row) => {
         acc[ row.customer_id ] = row.customer_id;
