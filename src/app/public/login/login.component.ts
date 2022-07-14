@@ -26,9 +26,9 @@ export class LoginComponent implements OnInit, OnDestroy {
               private authService: AuthService) {
     this.meta.title = 'Login'
     this.form = this.fb.group({
-      username: this.fb.control('',
+      username: this.fb.control('murage@mimidots.com',
         {validators: [Validators.required, Validators.pattern(this.emailPattern)]}),
-      password: this.fb.control('', {validators: [Validators.required]})
+      password: this.fb.control('bJgN4s8bvuaAenO', {validators: [Validators.required]})
     })
   }
 
